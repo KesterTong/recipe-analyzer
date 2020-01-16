@@ -1,0 +1,9 @@
+# node
+/node_modules
+package-lock.json
+
+# clasp config
+.clasp.json
+
+# misc
+.DS_Store
