@@ -92,6 +92,8 @@ function canonicalizeQuantity(quantity: Quantity): Quantity {
     'kg': 1000.00,
   };
   const mlEquivalentByUnit = {
+    'fl oz': 29.5735,
+    'fl. oz': 29.5735,
     'cup': 236.59,
     'tbsp': 14.79,
     'tablespoon': 14.79,
