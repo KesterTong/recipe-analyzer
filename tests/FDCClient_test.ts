@@ -34,9 +34,10 @@ describe('FoodDatabase', () => {
   when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
   let propertiesService = instance(mockedPropertiesService);
 
-  global['DocumentApp'] = instance(mock<GoogleAppsScript.Document.DocumentApp>());
-  global['CacheService'] = cacheService;
-  global['PropertiesService'] = propertiesService;
+  let globals = <any>global;
+  globals['DocumentApp'] = instance(mock<GoogleAppsScript.Document.DocumentApp>());
+  globals['CacheService'] = cacheService;
+  globals['PropertiesService'] = propertiesService;
 
   let fdcClient = new FDCClient();
   it('cached', () => {
@@ -53,7 +54,7 @@ describe('FoodDatabase', () => {
     let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
     when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
       instance(mockedHTTPResponse));
-    global['UrlFetchApp'] = instance(mockedUrlFetchApp);
+      globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
     expect(fdcClient.getFoodData('12345')).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
@@ -65,7 +66,7 @@ describe('FoodDatabase', () => {
     let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
     when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/23456?api_key=abcde')).thenReturn(
       instance(mockedHTTPResponse));
-    global['UrlFetchApp'] = instance(mockedUrlFetchApp);
+      globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
     expect(fdcClient.getFoodData('23456')).to.deep.equal(TEST_BRANDED_FOOD_DATA);
     verify(mockedUserCache.put('23456', JSON.stringify(TEST_BRANDED_FOOD), 21600)).once();
   });

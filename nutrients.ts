@@ -31,16 +31,16 @@ export interface FoodData {
   servingEquivalentQuantities: {[index: string]: number};
 }
 
-export function scaleNutrients(nutrients: Nutrients, scale: number) {
-  var result = {};
+export function scaleNutrients(nutrients: Nutrients, scale: number): Nutrients {
+  var result: Nutrients = {};
   for (var nutrientKey in nutrients) {
     result[nutrientKey] = nutrients[nutrientKey] * scale;
   }
   return result;
 }
 
-export function addNutrients(lhs: Nutrients, rhs: Nutrients) {
-  var result = {};
+export function addNutrients(lhs: Nutrients, rhs: Nutrients): Nutrients {
+  var result: Nutrients = {};
   for (var nutrientKey in lhs) {
     result[nutrientKey] = lhs[nutrientKey];
   }
@@ -86,12 +86,12 @@ export function makeFoodData(
 function canonicalizeQuantity(quantity: Quantity): Quantity {
   var amount = quantity.amount;
   var unit = quantity.unit.toLowerCase().replace(/(\w*)s$/, '$1');
-  const gramEquivalentByUnit = {
+  const gramEquivalentByUnit: {[index: string]: number} = {
     'oz': 28.35,
     'lb': 453.59,
     'kg': 1000.00,
   };
-  const mlEquivalentByUnit = {
+  const mlEquivalentByUnit: {[index: string]: number} = {
     'fl oz': 29.5735,
     'fl. oz': 29.5735,
     'cup': 236.59,

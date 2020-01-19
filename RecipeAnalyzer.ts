@@ -66,7 +66,7 @@ export class RecipeAnalyzer {
       INSIDE_RECIPE,
     }
     let state: State = State.LOOKING_FOR_RECIPE;
-    let totalElement = null;
+    let totalElement: GoogleAppsScript.Document.ListItem = null;
     let runningTotal = null;
     let body = document.getBody();
     for (let i = body.getNumChildren() - 1; i > 0; i--) {
@@ -92,7 +92,7 @@ export class RecipeAnalyzer {
         runningTotal = null;
         state = State.LOOKING_FOR_RECIPE;
       } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
-        totalElement = element;
+        totalElement = element.asListItem();
         runningTotal = {calories: 0, protein: 0};
         state = State.INSIDE_RECIPE;
       } else if (state == State.INSIDE_RECIPE) {
