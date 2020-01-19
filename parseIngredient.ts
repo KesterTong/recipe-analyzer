@@ -55,7 +55,7 @@ export function parseIngredient(textElement: GoogleAppsScript.Document.Text): Pa
   if (linkUrl == null) {
     return null;
   }
-  let fdcIdMatch = linkUrl.match('^https://fdc.nal.usda.gov/fdc-app.html#/food-details/(\\d*)');
+  let fdcIdMatch = linkUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
   let fdcId = fdcIdMatch ? fdcIdMatch[1] : null;
   let bookmarkIdMatch = linkUrl.match('^#bookmark=(.*)');
   let bookmarkId = bookmarkIdMatch ? bookmarkIdMatch[1] : null;

@@ -1,3 +1,5 @@
 tests/**
 node_modules/**
+public/**
+index.ts
 webpack.config.js
