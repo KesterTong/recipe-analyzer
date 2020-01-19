@@ -2,8 +2,9 @@
 /node_modules
 package-lock.json
 
-# clasp config
+# deployment configs
 .clasp.json
+.firebaserc
 
 # misc
 .DS_Store
