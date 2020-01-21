@@ -27,7 +27,4 @@ export interface FDCFoodDetails {
   servingSize?: number,
   servingSizeUnit?: string,
   householdServingFullText?: string,
-  labelNutrients?: {
-    [index: string]: {value: number};
-  };
 }
