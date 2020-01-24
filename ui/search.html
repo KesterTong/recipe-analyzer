@@ -1,7 +1,9 @@
 <html>
   <body>
-    <input id="search-query" type="text">
-    <ul id="search-results"></ul>
+    <form>
+      <input id="search-query" type="text" style="width: 100%;display: inline-block;">
+      <select id="search-results" size="20" style="width: 100%;display: inline-block;"></select>
+    </form>
 
     <script>
       function onSuccess(queryResults) {
@@ -12,7 +14,7 @@
         }
         // Add new results
         queryResults.forEach(function(result) {
-          var listItem = document.createElement('li');
+          var listItem = document.createElement('option');
           listItem.appendChild(document.createTextNode(result));
           searchResults.appendChild(listItem)
         });
