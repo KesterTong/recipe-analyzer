@@ -3,12 +3,21 @@
     <h1>Add Ingredient</h1>
     <input id="search-query" type="text">
     <button id="search-button">search</button>
-    <div id="search-results">results</div>
+    <ul id="search-results"></ul>
 
     <script>
       function onSuccess(queryResults) {
-        var div = document.getElementById('search-results');
-        div.innerHTML = queryResults;
+        let searchResults = document.getElementById('search-results');
+        // Clear search reults
+        while (searchResults.firstChild) {
+          searchResults.removeChild(searchResults.firstChild);
+        }
+        // Add new results
+        queryResults.forEach(function(result) {
+          var listItem = document.createElement('li');
+          listItem.appendChild(document.createTextNode(result));
+          searchResults.appendChild(listItem)
+        });
       }
       document.getElementById('search-button').addEventListener('click', function(event) {
         let query = document.getElementById('search-query').value;

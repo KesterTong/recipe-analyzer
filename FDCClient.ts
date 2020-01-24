@@ -16,6 +16,24 @@ import { FoodData } from  './nutrients';
 import { FDCFoodDetails } from './FDCFoodDetails';
 import { convertFDCFoodDetailsToFoodData } from './convertFDCFoodDetailsToFoodData';
 
+interface FDCQueryResult {
+  foodSearchCriteria: {
+    generalSearchInput: string,
+    pageNumber: Number,
+    requireAllWords: boolean},
+  totalHits: Number,
+  currentPage: Number,
+  totalPages: Number,
+  foods: {
+    fdcId: Number,
+    description: string,
+    dataType: string,
+    gtinUpc: string,
+    brandOwner: string
+    score: Number
+  }[];
+}
+
 /**
  * Client for USDA Food Data Central database.
  * 
@@ -29,10 +47,11 @@ export class FDCClient {
     }
     return convertFDCFoodDetailsToFoodData(foodDetails);
   }
-  searchFoods(query: string): string {
+  searchFoods(query: string): string[] {
     const API_KEY = PropertiesService.getScriptProperties().getProperty('USDA_API_KEY');
     let url = "https://api.nal.usda.gov/fdc/v1/search?api_key=" + API_KEY + "&generalSearchInput=" + query;
-    return UrlFetchApp.fetch(url).getContentText();  
+    let result = <FDCQueryResult>JSON.parse(UrlFetchApp.fetch(url).getContentText());
+    return result.foods.map(food => food.description);
   }
 }
 

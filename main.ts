@@ -32,7 +32,7 @@ export function addIngredient() {
   ui.showDialog(userInterface);
 }
 
-export function getSearchResults(query: string) {
+export function getSearchResults(query: string): string[] {
   let fdcClient = new FDCClient();
   return  fdcClient.searchFoods(query);
 }
