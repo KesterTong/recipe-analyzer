@@ -2,21 +2,26 @@
   <body>
     <form>
       <input id="search-query" type="text" style="width: 100%;display: inline-block;" autofocus>
-      <select id="search-results" size="20" style="width: 100%;display: inline-block;"></select>
+      <select id="search-results" size=15 style="width: 49%"></select>
+      <div id="search-details" style="width: 49%;display: inline-block">Details</div>
     </form>
 
     <script>
+      const searchResults = document.getElementById('search-results');
+      let detailsByFdcId = {};
       function onSuccess(queryResults) {
-        let searchResults = document.getElementById('search-results');
+        detailsByFdcId = {}
         // Clear search reults
         while (searchResults.firstChild) {
           searchResults.removeChild(searchResults.firstChild);
         }
         // Add new results
         queryResults.forEach(function(result) {
-          var listItem = document.createElement('option');
-          listItem.appendChild(document.createTextNode(result));
-          searchResults.appendChild(listItem)
+          detailsByFdcId[result.fdcId] = result;
+          var option = document.createElement('option');
+          option.appendChild(document.createTextNode(result.description));
+          option.value = result.fdcId;
+          searchResults.appendChild(option)
         });
       }
       let timeout = null;
@@ -36,6 +41,10 @@
       };
       document.getElementById('search-query').addEventListener('keyup', function(event) {
         getSearchResultsDebounced(queryInput.value);
+      });
+      searchResults.addEventListener('change', function(event) {
+        let fdcId = Number(event.target.value);
+        document.getElementById('search-details').innerText = JSON.stringify(detailsByFdcId[fdcId]);
       });
     </script>
   </body>
