@@ -1,7 +1,7 @@
 <html>
   <body>
     <form>
-      <input id="search-query" type="text" style="width: 100%;display: inline-block;">
+      <input id="search-query" type="text" style="width: 100%;display: inline-block;" autofocus>
       <select id="search-results" size="20" style="width: 100%;display: inline-block;"></select>
     </form>
 
@@ -31,6 +31,9 @@
         }, debounceTimeMillis);
       };
       const queryInput = document.getElementById('search-query');
+      window.onload = function() {
+        queryInput.focus();
+      };
       document.getElementById('search-query').addEventListener('keyup', function(event) {
         getSearchResultsDebounced(queryInput.value);
       });
