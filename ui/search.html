@@ -1,0 +1,19 @@
+<html>
+  <body>
+    <h1>Add Ingredient</h1>
+    <input id="search-query" type="text">
+    <button id="search-button">search</button>
+    <div id="search-results">results</div>
+
+    <script>
+      function onSuccess(queryResults) {
+        var div = document.getElementById('search-results');
+        div.innerHTML = queryResults;
+      }
+      document.getElementById('search-button').addEventListener('click', function(event) {
+        let query = document.getElementById('search-query').value;
+        google.script.run.withSuccessHandler(onSuccess).getSearchResults(query);
+      });
+    </script>
+  </body>
+</html>

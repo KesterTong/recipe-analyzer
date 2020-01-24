@@ -22,7 +22,19 @@ export function onOpen() {
   let ui = DocumentApp.getUi();
   ui.createMenu('Nutrient Data')
       .addItem('Recalculate', 'updateNutritionTables')
+      .addItem('Add Ingredient', 'addIngredient')
       .addToUi();
+}
+
+export function addIngredient() {
+  let ui = DocumentApp.getUi();
+  let userInterface = HtmlService.createHtmlOutputFromFile('ui/search');
+  ui.showDialog(userInterface);
+}
+
+export function getSearchResults(query: string) {
+  let fdcClient = new FDCClient();
+  return  fdcClient.searchFoods(query);
 }
 
 export function updateNutritionTables() {

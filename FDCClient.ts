@@ -29,6 +29,11 @@ export class FDCClient {
     }
     return convertFDCFoodDetailsToFoodData(foodDetails);
   }
+  searchFoods(query: string): string {
+    const API_KEY = PropertiesService.getScriptProperties().getProperty('USDA_API_KEY');
+    let url = "https://api.nal.usda.gov/fdc/v1/search?api_key=" + API_KEY + "&generalSearchInput=" + query;
+    return UrlFetchApp.fetch(url).getContentText();  
+  }
 }
 
 // TODO: handle API call failures gracefully.
