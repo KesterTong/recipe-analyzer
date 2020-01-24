@@ -28,7 +28,7 @@ export function onOpen() {
 export function addIngredient() {
   let ui = DocumentApp.getUi();
   let userInterface = HtmlService.createHtmlOutputFromFile('ui/search');
-  ui.showDialog(userInterface);
+  ui.showModalDialog(userInterface, 'Add Ingredient');
 }
 
 export function getSearchResults(query: string): string[] {

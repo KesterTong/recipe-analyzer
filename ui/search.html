@@ -1,8 +1,6 @@
 <html>
   <body>
-    <h1>Add Ingredient</h1>
     <input id="search-query" type="text">
-    <button id="search-button">search</button>
     <ul id="search-results"></ul>
 
     <script>
@@ -19,9 +17,20 @@
           searchResults.appendChild(listItem)
         });
       }
-      document.getElementById('search-button').addEventListener('click', function(event) {
-        let query = document.getElementById('search-query').value;
-        google.script.run.withSuccessHandler(onSuccess).getSearchResults(query);
+      let timeout = null;
+      let query = null;
+      const debounceTimeMillis = 300;
+      function getSearchResultsDebounced(q) {
+        query = q;
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+          timeout = null;
+          google.script.run.withSuccessHandler(onSuccess).getSearchResults(query);
+        }, debounceTimeMillis);
+      };
+      const queryInput = document.getElementById('search-query');
+      document.getElementById('search-query').addEventListener('keyup', function(event) {
+        getSearchResultsDebounced(queryInput.value);
       });
     </script>
   </body>
