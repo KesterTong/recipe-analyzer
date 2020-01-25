@@ -26,8 +26,14 @@ export function onOpen() {
 }
 
 export function addIngredient(fdcId: Number, description: string) {
-  let paragraph = DocumentApp.getActiveDocument().getBody().insertParagraph(0, description);
-  paragraph.setLinkUrl('https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + fdcId + '/nutrients');
+  let unitString = '100 g ';
+  let fullText = unitString + description
+  let listItem = DocumentApp.getActiveDocument().getBody().insertListItem(0, fullText);
+  listItem.setGlyphType(DocumentApp.GlyphType.BULLET);
+  listItem.getChild(0).asText().setLinkUrl(
+    unitString.length,
+    fullText.length - 1,
+    'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + fdcId + '/nutrients');
 }
 
 export function showAddIngredientDialog() {
