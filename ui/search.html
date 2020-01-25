@@ -14,8 +14,6 @@
     <button id="add-ingredient">Add Ingredient</button>
 
     <script>
-      const searchDetails = document.getElementById('search-details');
-
       let detailsByFdcId = {};
       function onSuccess(queryResults) {
         detailsByFdcId = {}
@@ -53,7 +51,7 @@
         Object.keys(details).forEach(function(key) {
           detailsString += key + ': ' + details[key] + '\n';
         })
-        searchDetails.innerText = detailsString;
+        $('#search-details').text(detailsString);
       });
       document.getElementById('add-ingredient').addEventListener('click', function(event) {
         let fdcId = $('#search-results').val();
