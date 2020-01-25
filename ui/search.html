@@ -5,7 +5,7 @@
     <input id="search-query" type="text" style="width: 100%;display: inline-block;">
     <select id="search-results" size=15 style="width: 49%"></select>
     <div id="search-details" style="width: 49%;height: 200px; overflow: auto; display: inline-block">Details</div>
-    <button>Add Ingredient</button>
+    <button id="add-ingredient">Add Ingredient</button>
 
     <script>
       const includeBranded = document.getElementById('include-branded');
@@ -59,6 +59,18 @@
         })
         searchDetails.innerText = detailsString;
       });
+      document.getElementById('add-ingredient').addEventListener('click', function(event) {
+        let fdcId = searchResults.value;
+        if (!fdcId) {
+          return;
+        }
+        let details = detailsByFdcId[fdcId];
+        if (!details) {
+          return;
+        }
+        google.script.run.withSuccessHandler(google.script.host.close).addIngredient(
+            fdcId, details.description);
+      })
     </script>
   </body>
 </html>

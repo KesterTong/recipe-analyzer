@@ -25,6 +25,11 @@ export function onOpen() {
       .addToUi();
 }
 
+export function addIngredient(fdcId: Number, description: string) {
+  let paragraph = DocumentApp.getActiveDocument().getBody().insertParagraph(0, description);
+  paragraph.setLinkUrl('https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + fdcId + '/nutrients');
+}
+
 export function showAddIngredientDialog() {
   let ui = DocumentApp.getUi();
   let userInterface = HtmlService.createHtmlOutputFromFile('ui/search');
