@@ -47,11 +47,13 @@
       $('#search-results').on('change', function(event) {
         let fdcId = Number(event.target.value);
         let details = detailsByFdcId[fdcId];
-        let detailsString = ''
-        Object.keys(details).forEach(function(key) {
-          detailsString += key + ': ' + details[key] + '\n';
-        })
-        $('#search-details').text(detailsString);
+        var searchDetails = $('#search-details');
+        searchDetails.empty();
+        if (details.dataType == 'Branded') {
+          searchDetails.text(details.brandOwner);
+          searchDetails.append('<h2>Ingredients</h2>');
+          searchDetails.append($('<p></p>').text(details.ingredients));
+        }
       });
       document.getElementById('add-ingredient').addEventListener('click', function(event) {
         let fdcId = $('#search-results').val();
