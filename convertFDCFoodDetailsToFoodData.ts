@@ -23,7 +23,6 @@ export function convertFDCFoodDetailsToFoodData(foodDetails: FDCFoodDetails): Fo
   return makeFoodData(foodDetails.description, nutrientsPerServing, servingEquivalentQuantitiesFromFoodDetails(foodDetails));
 }
 
-
 export function nutrientsFromFoodDetails(foodDetails: FDCFoodDetails): Nutrients {
   var calories = 0;
   var protein = 0;
