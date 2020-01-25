@@ -48,11 +48,23 @@ export class FDCClient {
     return convertFDCFoodDetailsToFoodData(foodDetails);
   }
   searchFoods(query: string): any[] {
-    const API_KEY = PropertiesService.getScriptProperties().getProperty('USDA_API_KEY');
-    let url = "https://api.nal.usda.gov/fdc/v1/search?api_key=" + API_KEY + "&generalSearchInput=" + query;
+    let url = fdcApiUrl('search', {
+      generalSearchInput: query,
+    });
     let result = <FDCQueryResult>JSON.parse(UrlFetchApp.fetch(url).getContentText());
     return result.foods;
   }
+}
+
+function fdcApiUrl(resource: string, options: {[index: string]: string}): string {
+  const API_KEY = PropertiesService.getScriptProperties().getProperty('USDA_API_KEY');
+  let url = 'https://api.nal.usda.gov/fdc/v1/';
+  url += encodeURIComponent(resource);
+  url += '?api_key=' + API_KEY;
+  Object.keys(options).forEach(key => {
+    url += '&' + key + '=' + options[key];
+  })
+  return url;
 }
 
 // TODO: handle API call failures gracefully.
@@ -68,8 +80,7 @@ function getFoodDetails(fdcId: string): FDCFoodDetails {
     cache.put(fdcId, response, 21600);
     return JSON.parse(response);
   }
-  const API_KEY = PropertiesService.getScriptProperties().getProperty('USDA_API_KEY');
-  let url = "https://api.nal.usda.gov/fdc/v1/" + encodeURIComponent(fdcId) + "?api_key=" + API_KEY;
+  let url = fdcApiUrl(fdcId, {});
   response = UrlFetchApp.fetch(url).getContentText();
   // Add to cache for 6 hours (maximum ttl allowed).
   cache.put(fdcId, response, 21600);
