@@ -1,4 +1,10 @@
 <html>
+  <head>
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"></script>
+  </head>
   <body>
     <input id="include-branded" type="checkbox" name="include-branded">
     <label for="include-branded">Include Branded foods</label>
@@ -8,7 +14,6 @@
     <button id="add-ingredient">Add Ingredient</button>
 
     <script>
-      const includeBranded = document.getElementById('include-branded');
       const queryInput = document.getElementById('search-query');
       const searchResults = document.getElementById('search-results');
       const searchDetails = document.getElementById('search-details');
@@ -30,23 +35,24 @@
           searchResults.appendChild(option)
         });
       }
+      function getSearchResults() {
+        google.script.run.withSuccessHandler(onSuccess).getSearchResults(
+            queryInput.value, $('#include-branded').is(':checked'));
+      }
       let timeout = null;
       const debounceTimeMillis = 300;
       function getSearchResultsDebounced() {
         clearTimeout(timeout);
         timeout = setTimeout(function() {
           timeout = null;
-          google.script.run.withSuccessHandler(onSuccess).getSearchResults(
-            queryInput.value, includeBranded.checked);
+          getSearchResults();
         }, debounceTimeMillis);
       };
 
       window.onload = function() {
         queryInput.focus();
       };
-      includeBranded.addEventListener('change', function(event) {
-        getSearchResultsDebounced();
-      });
+      $('#include-branded').on('change', getSearchResults);
       queryInput.addEventListener('keyup', function(event) {
         getSearchResultsDebounced();
       });
