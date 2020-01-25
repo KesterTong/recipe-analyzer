@@ -12,6 +12,7 @@
       const includeBranded = document.getElementById('include-branded');
       const queryInput = document.getElementById('search-query');
       const searchResults = document.getElementById('search-results');
+      const searchDetails = document.getElementById('search-details');
 
       let detailsByFdcId = {};
       function onSuccess(queryResults) {
@@ -52,7 +53,12 @@
       });
       searchResults.addEventListener('change', function(event) {
         let fdcId = Number(event.target.value);
-        document.getElementById('search-details').innerText = JSON.stringify(detailsByFdcId[fdcId]);
+        let details = detailsByFdcId[fdcId];
+        let detailsString = ''
+        Object.keys(details).forEach(function(key) {
+          detailsString += key + ': ' + details[key] + '\n';
+        })
+        searchDetails.innerText = detailsString;
       });
     </script>
   </body>
