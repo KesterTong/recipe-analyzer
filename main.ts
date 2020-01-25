@@ -13,9 +13,10 @@
 // limitations under the License.
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
-import { FDCClient } from './FDCClient';
+import { FDCClient, SearchResult } from './FDCClient';
 import { LocalIngredients } from './LocalIngredients';
 import { CustomIngredientsAnalyzer } from './CustomIngredientsAnalyzer';
+import { FDCFoodDetails } from './FDCFoodDetails';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -44,9 +45,14 @@ export function showAddIngredientDialog() {
   ui.showModalDialog(userInterface, 'Add Ingredient');
 }
 
-export function getSearchResults(query: string, includeBranded: boolean): any[] {
+export function getSearchResults(query: string, includeBranded: boolean): SearchResult[] {
   let fdcClient = new FDCClient();
   return  fdcClient.searchFoods(query, includeBranded);
+}
+
+export function getFoodDetails(fdcId: Number): FDCFoodDetails {
+  let fdcClient = new FDCClient();
+  return fdcClient.getFoodDetails(fdcId.toString());
 }
 
 export function updateNutritionTables() {

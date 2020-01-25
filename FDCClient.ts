@@ -34,26 +34,57 @@ interface FDCQueryResult {
   }[];
 }
 
+export interface SearchResult {
+  fdcId: Number,
+  description: string,
+}
+
 /**
  * Client for USDA Food Data Central database.
  * 
  * This database provides food data from a variety of sources.
  */
 export class FDCClient {
+  // TODO: handle API call failures gracefully.
+  getFoodDetails(fdcId: string): FDCFoodDetails {
+    // Ensure that fdcId is all digits.
+    if (!fdcId.match(/^\d+$/)) {
+      return null;
+    }
+    let cache = CacheService.getUserCache();
+    let response = cache.get(fdcId);
+    if (response != null) {
+      // Keep the item alive in the cache.
+      cache.put(fdcId, response, 21600);
+      return JSON.parse(response);
+    }
+    let url = fdcApiUrl(fdcId, {});
+    response = UrlFetchApp.fetch(url).getContentText();
+    // Add to cache for 6 hours (maximum ttl allowed).
+    cache.put(fdcId, response, 21600);
+    return JSON.parse(response);
+  }
+
   getFoodData(fdcId: string): FoodData {
-    let foodDetails = getFoodDetails(fdcId);
+    let foodDetails = this.getFoodDetails(fdcId);
     if (foodDetails == null) {
       return null;
     }
     return convertFDCFoodDetailsToFoodData(foodDetails);
   }
-  searchFoods(query: string, includeBranded: boolean): any[] {
+
+  searchFoods(query: string, includeBranded: boolean): SearchResult[] {
     let url = fdcApiUrl('search', {
       generalSearchInput: encodeURIComponent(query),
       includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
     });
     let result = <FDCQueryResult>JSON.parse(UrlFetchApp.fetch(url).getContentText());
-    return result.foods;
+    return result.foods.map(details => {
+      return {
+        fdcId: details.fdcId,
+        description: details.description,
+      };
+    });
   }
 }
 
@@ -66,24 +97,4 @@ function fdcApiUrl(resource: string, options: {[index: string]: string}): string
     url += '&' + key + '=' + options[key];
   })
   return url;
-}
-
-// TODO: handle API call failures gracefully.
-function getFoodDetails(fdcId: string): FDCFoodDetails {
-  // Ensure that fdcId is all digits.
-  if (!fdcId.match(/^\d+$/)) {
-    return null;
-  }
-  let cache = CacheService.getUserCache();
-  let response = cache.get(fdcId);
-  if (response != null) {
-    // Keep the item alive in the cache.
-    cache.put(fdcId, response, 21600);
-    return JSON.parse(response);
-  }
-  let url = fdcApiUrl(fdcId, {});
-  response = UrlFetchApp.fetch(url).getContentText();
-  // Add to cache for 6 hours (maximum ttl allowed).
-  cache.put(fdcId, response, 21600);
-  return JSON.parse(response);
 }
