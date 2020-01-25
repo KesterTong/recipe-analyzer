@@ -21,11 +21,11 @@ export function onOpen() {
   let ui = DocumentApp.getUi();
   ui.createMenu('Nutrient Data')
       .addItem('Recalculate', 'updateNutritionTables')
-      .addItem('Add Ingredient', 'addIngredient')
+      .addItem('Add Ingredient', 'showAddIngredientDialog')
       .addToUi();
 }
 
-export function addIngredient() {
+export function showAddIngredientDialog() {
   let ui = DocumentApp.getUi();
   let userInterface = HtmlService.createHtmlOutputFromFile('ui/search');
   ui.showModalDialog(userInterface, 'Add Ingredient');
