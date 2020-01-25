@@ -14,7 +14,6 @@
     <button id="add-ingredient">Add Ingredient</button>
 
     <script>
-      const queryInput = document.getElementById('search-query');
       const searchResults = document.getElementById('search-results');
       const searchDetails = document.getElementById('search-details');
 
@@ -37,7 +36,7 @@
       }
       function getSearchResults() {
         google.script.run.withSuccessHandler(onSuccess).getSearchResults(
-            queryInput.value, $('#include-branded').is(':checked'));
+            $('#search-query').val(), $('#include-branded').is(':checked'));
       }
       let timeout = null;
       const debounceTimeMillis = 300;
@@ -50,12 +49,10 @@
       };
 
       window.onload = function() {
-        queryInput.focus();
+        $('#search-query').focus();
       };
       $('#include-branded').on('change', getSearchResults);
-      queryInput.addEventListener('keyup', function(event) {
-        getSearchResultsDebounced();
-      });
+      $('#search-query').on('keyup', getSearchResultsDebounced);
       searchResults.addEventListener('change', function(event) {
         let fdcId = Number(event.target.value);
         let details = detailsByFdcId[fdcId];
