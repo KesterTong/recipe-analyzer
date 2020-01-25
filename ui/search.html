@@ -29,21 +29,21 @@
         google.script.run.withSuccessHandler(onSuccess).getSearchResults(
             $('#search-query').val(), $('#include-branded').is(':checked'));
       }
-      let timeout = null;
-      const debounceTimeMillis = 300;
-      function getSearchResultsDebounced() {
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-          timeout = null;
-          getSearchResults();
-        }, debounceTimeMillis);
+      function debounce(fn, delay) {
+        let timeout = null;
+        return function() {
+          clearTimeout(timeout);
+          timeout = setTimeout(function() {
+            timeout = null;
+            fn();
+          }, delay);
+        }
       };
-
       window.onload = function() {
         $('#search-query').focus();
       };
       $('#include-branded').on('change', getSearchResults);
-      $('#search-query').on('keyup', getSearchResultsDebounced);
+      $('#search-query').on('keyup', debounce(getSearchResults));
       $('#search-results').on('change', function(event) {
         let fdcId = Number(event.target.value);
         let details = detailsByFdcId[fdcId];
