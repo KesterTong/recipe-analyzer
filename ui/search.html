@@ -55,15 +55,11 @@
       });
       document.getElementById('add-ingredient').addEventListener('click', function(event) {
         let fdcId = $('#search-results').val();
-        if (!fdcId) {
-          return;
+        if (fdcId && detailsByFdcId[fdcId]) {
+          google.script.run
+          .withSuccessHandler(google.script.host.close)
+          .addIngredient(fdcId, detailsByFdcId[fdcId].description);
         }
-        let details = detailsByFdcId[fdcId];
-        if (!details) {
-          return;
-        }
-        google.script.run.withSuccessHandler(google.script.host.close).addIngredient(
-            fdcId, details.description);
       })
     </script>
   </body>
