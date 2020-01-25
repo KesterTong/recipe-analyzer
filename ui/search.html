@@ -1,13 +1,18 @@
 <html>
   <body>
     <form>
-      <input id="search-query" type="text" style="width: 100%;display: inline-block;">
-      <select id="search-results" size=15 style="width: 49%"></select>
+        <input id="include-branded" type="checkbox" name="include-branded">
+        <label for="include-branded">Include Branded foods</label>
+        <input id="search-query" type="text" style="width: 100%;display: inline-block;">
+        <select id="search-results" size=15 style="width: 49%"></select>
       <div id="search-details" style="width: 49%;height: 200px; overflow: auto; display: inline-block">Details</div>
     </form>
 
     <script>
+      const includeBranded = document.getElementById('include-branded');
+      const queryInput = document.getElementById('search-query');
       const searchResults = document.getElementById('search-results');
+
       let detailsByFdcId = {};
       function onSuccess(queryResults) {
         // Clear details
@@ -26,22 +31,24 @@
         });
       }
       let timeout = null;
-      let query = null;
       const debounceTimeMillis = 300;
-      function getSearchResultsDebounced(q) {
-        query = q;
+      function getSearchResultsDebounced() {
         clearTimeout(timeout);
         timeout = setTimeout(function() {
           timeout = null;
-          google.script.run.withSuccessHandler(onSuccess).getSearchResults(query);
+          google.script.run.withSuccessHandler(onSuccess).getSearchResults(
+            queryInput.value, includeBranded.checked);
         }, debounceTimeMillis);
       };
-      const queryInput = document.getElementById('search-query');
+
       window.onload = function() {
         queryInput.focus();
       };
-      document.getElementById('search-query').addEventListener('keyup', function(event) {
-        getSearchResultsDebounced(queryInput.value);
+      includeBranded.addEventListener('change', function(event) {
+        getSearchResultsDebounced();
+      });
+      queryInput.addEventListener('keyup', function(event) {
+        getSearchResultsDebounced();
       });
       searchResults.addEventListener('change', function(event) {
         let fdcId = Number(event.target.value);

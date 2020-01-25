@@ -47,9 +47,10 @@ export class FDCClient {
     }
     return convertFDCFoodDetailsToFoodData(foodDetails);
   }
-  searchFoods(query: string): any[] {
+  searchFoods(query: string, includeBranded: boolean): any[] {
     let url = fdcApiUrl('search', {
-      generalSearchInput: query,
+      generalSearchInput: encodeURIComponent(query),
+      includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
     });
     let result = <FDCQueryResult>JSON.parse(UrlFetchApp.fetch(url).getContentText());
     return result.foods;

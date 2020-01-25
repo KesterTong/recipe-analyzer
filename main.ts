@@ -31,9 +31,9 @@ export function addIngredient() {
   ui.showModalDialog(userInterface, 'Add Ingredient');
 }
 
-export function getSearchResults(query: string): any[] {
+export function getSearchResults(query: string, includeBranded: boolean): any[] {
   let fdcClient = new FDCClient();
-  return  fdcClient.searchFoods(query);
+  return  fdcClient.searchFoods(query, includeBranded);
 }
 
 export function updateNutritionTables() {
