@@ -28,12 +28,14 @@ export function onOpen() {
 export function addIngredient(fdcId: Number, description: string) {
   let unitString = '100 g ';
   let fullText = unitString + description
-  let cursor = DocumentApp.getActiveDocument().getCursor();
+  let document = DocumentApp.getActiveDocument();
+  let cursor = document.getCursor();
   let text = cursor.insertText(fullText);
   text.setLinkUrl(
     unitString.length,
     fullText.length - 1,
     'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + fdcId + '/nutrients');
+  document.setCursor(document.newPosition(text, fullText.length));
 }
 
 export function showAddIngredientDialog() {
