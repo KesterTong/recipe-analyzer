@@ -14,24 +14,17 @@
     <button id="add-ingredient">Add Ingredient</button>
 
     <script>
-      const searchResults = document.getElementById('search-results');
       const searchDetails = document.getElementById('search-details');
 
       let detailsByFdcId = {};
       function onSuccess(queryResults) {
-        // Clear details
         detailsByFdcId = {}
-        // Clear search reults
-        while (searchResults.firstChild) {
-          searchResults.removeChild(searchResults.firstChild);
-        }
-        // Add new results
-        queryResults.forEach(function(result) {
-          detailsByFdcId[result.fdcId] = result;
-          var option = document.createElement('option');
-          option.appendChild(document.createTextNode(result.description));
-          option.value = result.fdcId;
-          searchResults.appendChild(option)
+        $('#search-results').empty();
+        queryResults.forEach(function(details) {
+          detailsByFdcId[details.fdcId] = details;
+          var option = $('<option></option>', {value: details.fdcId});
+          option.text(details.description);
+          $('#search-results').append(option);
         });
       }
       function getSearchResults() {
@@ -53,7 +46,7 @@
       };
       $('#include-branded').on('change', getSearchResults);
       $('#search-query').on('keyup', getSearchResultsDebounced);
-      searchResults.addEventListener('change', function(event) {
+      $('#search-results').on('change', function(event) {
         let fdcId = Number(event.target.value);
         let details = detailsByFdcId[fdcId];
         let detailsString = ''
@@ -63,7 +56,7 @@
         searchDetails.innerText = detailsString;
       });
       document.getElementById('add-ingredient').addEventListener('click', function(event) {
-        let fdcId = searchResults.value;
+        let fdcId = $('#search-results').val();
         if (!fdcId) {
           return;
         }
