@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodData } from '../nutrients';
+import { FoodData } from '../core/FoodData';
 
 export const TEST_SR_LEGACY_FOOD = {
   description: 'Bananas',

@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Nutrients, nutrientsForQuantity, FoodData, addNutrients } from './nutrients';
+import { nutrientsForQuantity } from './core/Quantity';
+import { Nutrients, addNutrients } from "./core/Nutrients";
+import { FoodData } from "./core/FoodData";
 import { parseIngredient, updateIngredient, ParsedIngredient } from './parseIngredient';
 import { FDCClient } from './FDCClient';
 import { LocalIngredients } from './LocalIngredients';

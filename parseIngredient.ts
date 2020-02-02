@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity, Nutrients } from "./nutrients";
+import { Quantity } from "./core/Quantity";
+import { Nutrients } from "./core/Nutrients";
 
 export interface ParsedIngredient {
   quantity: Quantity;

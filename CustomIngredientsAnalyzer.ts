@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import { LocalIngredients } from './LocalIngredients';
-import { makeFoodData } from './nutrients';
 import { parseServingSize } from './parseServingSize';
+import { makeFoodData } from './core/FoodData';
 
 export class CustomIngredientsAnalyzer {
   constructor(private localIngredients: LocalIngredients) { }

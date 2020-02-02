@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "./nutrients";
+import { Quantity } from "./core/Quantity";
 
 /**
  * Parse the textual representation of a food's serving size and equivalent units.

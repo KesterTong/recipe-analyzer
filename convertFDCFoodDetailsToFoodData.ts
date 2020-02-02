@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodData, makeFoodData, Quantity, Nutrients } from './nutrients';
+import { Quantity } from './core/Quantity';
+import { Nutrients } from "./core/Nutrients";
+import { FoodData, makeFoodData } from "./core/FoodData";
 import { FoodDetails } from './core/FoodDetails';
 
 export function convertFDCFoodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
