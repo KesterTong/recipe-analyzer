@@ -16,7 +16,7 @@ import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { FDCClient, SearchResult } from './FDCClient';
 import { LocalIngredients } from './LocalIngredients';
 import { CustomIngredientsAnalyzer } from './CustomIngredientsAnalyzer';
-import { FDCFoodDetails } from './FDCFoodDetails';
+import { FoodDetails } from './core/FoodDetails';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -50,7 +50,7 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
-export function getFoodDetails(fdcId: Number): FDCFoodDetails {
+export function getFoodDetails(fdcId: Number): FoodDetails {
   let fdcClient = new FDCClient();
   return fdcClient.getFoodDetails(fdcId.toString());
 }

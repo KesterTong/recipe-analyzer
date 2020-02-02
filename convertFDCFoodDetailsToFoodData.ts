@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import { FoodData, makeFoodData, Quantity, Nutrients } from './nutrients';
-import { FDCFoodDetails } from './FDCFoodDetails';
+import { FoodDetails } from './core/FoodDetails';
 
-export function convertFDCFoodDetailsToFoodData(foodDetails: FDCFoodDetails): FoodData {
+export function convertFDCFoodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails);
   if (nutrientsPerServing == null) {
     return null;
@@ -23,7 +23,7 @@ export function convertFDCFoodDetailsToFoodData(foodDetails: FDCFoodDetails): Fo
   return makeFoodData(foodDetails.description, nutrientsPerServing, servingEquivalentQuantitiesFromFoodDetails(foodDetails));
 }
 
-export function nutrientsFromFoodDetails(foodDetails: FDCFoodDetails): Nutrients {
+export function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
   var calories = 0;
   var protein = 0;
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
@@ -39,7 +39,7 @@ export function nutrientsFromFoodDetails(foodDetails: FDCFoodDetails): Nutrients
   return {calories: calories, protein: protein};
 }
 
-export function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FDCFoodDetails): Quantity[] {
+export function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FoodDetails): Quantity[] {
   if (foodDetails.dataType == 'Recipe') {
     return [{amount: 1.0, unit: 'serving'}];
   } else if (foodDetails.dataType == 'SR Legacy') {
@@ -51,7 +51,7 @@ export function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FDCFoodD
   }
 }
 
-function SRLegacyServingEquivalentQuantities(foodDetails: FDCFoodDetails) : Quantity[] {
+function SRLegacyServingEquivalentQuantities(foodDetails: FoodDetails) : Quantity[] {
   // A serving is 100g for SR Legacy data.
   var servingEquivalentQuantities: Quantity[] = [{
     amount: 100.0,
@@ -70,7 +70,7 @@ function SRLegacyServingEquivalentQuantities(foodDetails: FDCFoodDetails) : Quan
   return servingEquivalentQuantities;
 }
 
-function brandedServingEquivalentQuantities(foodDetails: FDCFoodDetails) : Quantity[] {
+function brandedServingEquivalentQuantities(foodDetails: FoodDetails) : Quantity[] {
   var servingEquivalentQuantities: Quantity[] = [{
     amount: 100.0,
     unit: foodDetails.servingSizeUnit,

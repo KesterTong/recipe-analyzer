@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { LocalIngredients } from './LocalIngredients';
-import { FoodData, makeFoodData } from './nutrients';
+import { makeFoodData } from './nutrients';
 import { parseServingSize } from './parseServingSize';
 
 export class CustomIngredientsAnalyzer {

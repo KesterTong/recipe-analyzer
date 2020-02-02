@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { FoodData } from  './nutrients';
-import { FDCFoodDetails } from './FDCFoodDetails';
+import { FoodDetails } from './core/FoodDetails';
 import { convertFDCFoodDetailsToFoodData } from './convertFDCFoodDetailsToFoodData';
 
 interface FDCQueryResult {
@@ -47,7 +47,7 @@ export interface SearchResult {
  */
 export class FDCClient {
   // TODO: handle API call failures gracefully.
-  getFoodDetails(fdcId: string): FDCFoodDetails {
+  getFoodDetails(fdcId: string): FoodDetails {
     // Ensure that fdcId is all digits.
     if (!fdcId.match(/^\d+$/)) {
       return null;
