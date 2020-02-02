@@ -14,7 +14,7 @@
 
 import { FoodData } from "./core/FoodData";
 import { FoodDetails } from './core/FoodDetails';
-import { convertFDCFoodDetailsToFoodData } from './convertFDCFoodDetailsToFoodData';
+import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -64,14 +64,6 @@ export class FDCClient {
     // Add to cache for 6 hours (maximum ttl allowed).
     cache.put(fdcId, response, 21600);
     return JSON.parse(response);
-  }
-
-  getFoodData(fdcId: string): FoodData {
-    let foodDetails = this.getFoodDetails(fdcId);
-    if (foodDetails == null) {
-      return null;
-    }
-    return convertFDCFoodDetailsToFoodData(foodDetails);
   }
 
   searchFoods(query: string, includeBranded: boolean): SearchResult[] {

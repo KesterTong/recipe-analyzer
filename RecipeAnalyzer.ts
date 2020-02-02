@@ -18,6 +18,7 @@ import { FoodData } from "./core/FoodData";
 import { parseIngredient, updateIngredient, ParsedIngredient } from './parseIngredient';
 import { FDCClient } from './FDCClient';
 import { LocalIngredients } from './LocalIngredients';
+import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 
 export class RecipeAnalyzer {
   
@@ -32,7 +33,11 @@ export class RecipeAnalyzer {
     }
     let foodData: FoodData;
     if (ingredient.id.fdcId != null) {
-      foodData = this.fdcClient.getFoodData(ingredient.id.fdcId);
+      let foodDetails = this.fdcClient.getFoodDetails(ingredient.id.fdcId);
+      if (foodDetails == null) {
+        return null;
+      }
+      foodData = foodDetailsToFoodData(foodDetails);
     } else {
       foodData = this.localIngredients.getFoodData(ingredient.id.bookmarkId);
     }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { FDCClient } from '../FDCClient';
-import { TEST_SR_LEGACY_FOOD_DATA, TEST_BRANDED_FOOD_DATA, TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from './testData';
+import { TEST_SR_LEGACY_FOOD } from './testData';
 
 import { expect } from 'chai';
 import 'mocha';
@@ -43,11 +43,11 @@ describe('FoodDatabase', () => {
   it('cached', () => {
     mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
     when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-    expect(fdcClient.getFoodData('11111')).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+    expect(fdcClient.getFoodDetails('11111')).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('11111', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
-  it('SR legacy', () => {
+  it('not cached', () => {
     mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
     let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
     when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
@@ -55,19 +55,7 @@ describe('FoodDatabase', () => {
     when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
       instance(mockedHTTPResponse));
       globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
-    expect(fdcClient.getFoodData('12345')).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+    expect(fdcClient.getFoodDetails('12345')).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
-  });
-
-  it('branded', () => {
-    mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
-    let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
-    when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_BRANDED_FOOD));
-    let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
-    when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/23456?api_key=abcde')).thenReturn(
-      instance(mockedHTTPResponse));
-      globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
-    expect(fdcClient.getFoodData('23456')).to.deep.equal(TEST_BRANDED_FOOD_DATA);
-    verify(mockedUserCache.put('23456', JSON.stringify(TEST_BRANDED_FOOD), 21600)).once();
   });
 });

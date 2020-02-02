@@ -16,7 +16,7 @@ import { RecipeAnalyzer } from '../RecipeAnalyzer';
 
 import { expect } from 'chai';
 import 'mocha';
-import { TEST_BRANDED_FOOD_DATA, TEST_RECIPE_DATA } from './testData';
+import { TEST_BRANDED_FOOD_DATA, TEST_RECIPE_DATA, TEST_BRANDED_FOOD } from './testData';
 import { mock, instance, when, verify, anyString, anyNumber } from 'ts-mockito';
 import { FDCClient } from '../FDCClient';
 import { LocalIngredients } from '../LocalIngredients';
@@ -129,7 +129,7 @@ describe('updateElementAndRunningTotal', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<LocalIngredients>()),
       instance(mockFdcClient));
-    when(mockFdcClient.getFoodData('12345')).thenReturn(TEST_BRANDED_FOOD_DATA);
+    when(mockFdcClient.getFoodDetails('12345')).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 

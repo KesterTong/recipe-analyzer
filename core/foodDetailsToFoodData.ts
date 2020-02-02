@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from './core/Quantity';
-import { Nutrients } from "./core/Nutrients";
-import { FoodData, makeFoodData } from "./core/FoodData";
-import { FoodDetails } from './core/FoodDetails';
+import { Quantity } from './Quantity';
+import { Nutrients } from "./Nutrients";
+import { FoodData, makeFoodData } from "./FoodData";
+import { FoodDetails } from './FoodDetails';
 
-export function convertFDCFoodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
+export function foodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails);
   if (nutrientsPerServing == null) {
     return null;
@@ -25,7 +25,7 @@ export function convertFDCFoodDetailsToFoodData(foodDetails: FoodDetails): FoodD
   return makeFoodData(foodDetails.description, nutrientsPerServing, servingEquivalentQuantitiesFromFoodDetails(foodDetails));
 }
 
-export function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
+function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
   var calories = 0;
   var protein = 0;
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
@@ -41,7 +41,7 @@ export function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
   return {calories: calories, protein: protein};
 }
 
-export function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FoodDetails): Quantity[] {
+function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FoodDetails): Quantity[] {
   if (foodDetails.dataType == 'Recipe') {
     return [{amount: 1.0, unit: 'serving'}];
   } else if (foodDetails.dataType == 'SR Legacy') {
