@@ -20,7 +20,8 @@ interface FDCQueryResult {
   foodSearchCriteria: {
     generalSearchInput: string,
     pageNumber: Number,
-    requireAllWords: boolean},
+    requireAllWords: boolean
+  },
   totalHits: Number,
   currentPage: Number,
   totalPages: Number,
