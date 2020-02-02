@@ -14,7 +14,7 @@
 
 import { expect } from 'chai';
 import 'mocha';
-import { addNutrients, scaleNutrients } from '../core/Nutrients';
+import { addNutrients, scaleNutrients } from '../../core/Nutrients';
 
 describe('scaleNutrients', () => {
   it('scaleNutrients', () => {
