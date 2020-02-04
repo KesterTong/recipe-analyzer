@@ -14,7 +14,6 @@
 
 import { parseQuantity } from '../../core/parseQuantity';
 import { expect } from 'chai';
-import { mock, when, instance } from 'ts-mockito';
 
 describe('parseQuantity', () => {
   it('no unit', () => {
