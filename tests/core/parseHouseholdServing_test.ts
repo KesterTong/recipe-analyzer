@@ -31,4 +31,7 @@ describe('parseHouseholdServing', () => {
       householdServingFullText: null,
     });
   });
+  it('1 cup', () => {
+    expect(parseHouseholdServing('1 cup')).to.equal(null);
+  });
 });
