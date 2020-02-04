@@ -17,7 +17,12 @@ import { HouseholdServing } from "./FoodDetails";
 import { parseQuantity } from "./parseQuantity";
 
 /**
- * Parse the textual representation of a food's serving size and equivalent units.
+ * Parse the serving size unit from a USDA label.
+ * 
+ * E.g. "30 ml" or "1 cup (230 g)" or "1 scoop (36 ml)".
+ * 
+ * Note that "1 cup" is not allowed since the gram or ml
+ * equivalent must be specified.
  */
 export function parseHouseholdServing(text: string): HouseholdServing {
   let metricUnits: Quantity;
