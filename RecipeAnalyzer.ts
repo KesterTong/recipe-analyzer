@@ -17,30 +17,21 @@ import { Nutrients, addNutrients } from "./core/Nutrients";
 import { FoodData } from "./core/FoodData";
 import { parseIngredient, updateIngredient, ParsedIngredient } from './parseIngredient';
 import { FDCClient } from './FDCClient';
-import { LocalIngredients } from './LocalIngredients';
 import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
+import { BookmarkManager } from './BookmarkManager';
 
 export class RecipeAnalyzer {
   
-  constructor(
-    private localIngredients: LocalIngredients,
-    private fdcClient: FDCClient) {
+  constructor(private bookmarkManager: BookmarkManager, private fdcClient: FDCClient) {
   }
 
   private computeNutrients(ingredient: ParsedIngredient): Nutrients {
-    if (ingredient.id == null) {
+    let foodData: FoodData;
+    let foodDetails = this.fdcClient.getFoodDetails(ingredient.id);
+    if (foodDetails == null) {
       return null;
     }
-    let foodData: FoodData;
-    if (ingredient.id.fdcId != null) {
-      let foodDetails = this.fdcClient.getFoodDetails(ingredient.id.fdcId);
-      if (foodDetails == null) {
-        return null;
-      }
-      foodData = foodDetailsToFoodData(foodDetails);
-    } else {
-      foodData = this.localIngredients.getFoodData(ingredient.id.bookmarkId);
-    }
+    foodData = foodDetailsToFoodData(foodDetails);
     if (foodData == null) {
       return null;
     }
@@ -88,13 +79,26 @@ export class RecipeAnalyzer {
       }
   
       let maybeBookmarkId: string;
-      if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.localIngredients.bookmarkIdForElement(element))) {
-        this.localIngredients.insertFoodData(
+      if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkManager.bookmarkIdForElement(element))) {
+        this.fdcClient.addLocalFood(
           maybeBookmarkId,
           {
+            dataType: 'Branded',
             description: element.asParagraph().getText(),
-            nutrientsPerServing: runningTotal,
-            servingEquivalentQuantities: {'serving': 1},
+            foodNutrients: [
+              {
+                nutrient: {id: 1008},  // calories
+                amount: runningTotal.calories,
+              },
+              {
+                nutrient: {id: 1003},  // protein
+                amount: runningTotal.protein,
+              },
+            ],
+            // Fake values that make the nutrient values correct.
+            servingSize: 100,
+            servingSizeUnit: 'g',
+            householdServingFullText: '1 serving',
           });
         runningTotal = null;
         state = State.LOOKING_FOR_RECIPE;

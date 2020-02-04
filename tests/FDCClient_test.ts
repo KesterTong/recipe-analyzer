@@ -43,7 +43,7 @@ describe('FoodDatabase', () => {
   it('cached', () => {
     mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
     when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-    expect(fdcClient.getFoodDetails('11111')).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFoodDetails({fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('11111', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
@@ -55,7 +55,7 @@ describe('FoodDatabase', () => {
     when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
       instance(mockedHTTPResponse));
       globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
-    expect(fdcClient.getFoodDetails('12345')).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFoodDetails({fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 });

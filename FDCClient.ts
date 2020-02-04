@@ -12,32 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodData } from "./core/FoodData";
 import { FoodDetails } from './core/FoodDetails';
-import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 
 interface FDCQueryResult {
   foodSearchCriteria: {
     generalSearchInput: string,
-    pageNumber: Number,
+    pageNumber: number,
     requireAllWords: boolean
   },
-  totalHits: Number,
-  currentPage: Number,
-  totalPages: Number,
+  totalHits: number,
+  currentPage: number,
+  totalPages: number,
   foods: {
-    fdcId: Number,
+    fdcId: number,
     description: string,
     dataType: string,
     gtinUpc: string,
     brandOwner: string
-    score: Number
+    score: number
   }[];
 }
 
 export interface SearchResult {
-  fdcId: Number,
+  fdcId: number,
   description: string,
+}
+
+export interface FoodIdentifier {
+  fdcId?: number,
+  bookmarkId?: string,
 }
 
 /**
@@ -46,12 +49,19 @@ export interface SearchResult {
  * This database provides food data from a variety of sources.
  */
 export class FDCClient {
+  private localFoodDetailsByBookmarkId: {[index: string]: FoodDetails} = {};
+
+  addLocalFood(bookmarkId: string, foodDetails: FoodDetails) {
+    this.localFoodDetailsByBookmarkId[bookmarkId] = foodDetails;
+  }
+
   // TODO: handle API call failures gracefully.
-  getFoodDetails(fdcId: string): FoodDetails {
+  getFoodDetails(foodIdentifier: FoodIdentifier): FoodDetails {
     // Ensure that fdcId is all digits.
-    if (!fdcId.match(/^\d+$/)) {
-      return null;
+    if (foodIdentifier.bookmarkId != null) {
+      return this.localFoodDetailsByBookmarkId[foodIdentifier.bookmarkId] || null;
     }
+    let fdcId = foodIdentifier.fdcId.toString();
     let cache = CacheService.getUserCache();
     let response = cache.get(fdcId);
     if (response != null) {

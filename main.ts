@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
+import { BookmarkManager } from './BookmarkManager';
 import { FDCClient, SearchResult } from './FDCClient';
-import { LocalIngredients } from './LocalIngredients';
-import { CustomIngredientsAnalyzer } from './CustomIngredientsAnalyzer';
+import { loadCustomIngredients } from './loadCustomIngredients';
 import { FoodDetails } from './core/FoodDetails';
 
 export function onOpen() {
@@ -50,18 +50,17 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
-export function getFoodDetails(fdcId: Number): FoodDetails {
+export function getFoodDetails(fdcId: number): FoodDetails {
   let fdcClient = new FDCClient();
-  return fdcClient.getFoodDetails(fdcId.toString());
+  return fdcClient.getFoodDetails({fdcId: fdcId});
 }
 
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
-  let localIngredients = new LocalIngredients(document);
   let fdcClient = new FDCClient();
-  let customIngredientsAnalyzer = new CustomIngredientsAnalyzer(localIngredients);
-  customIngredientsAnalyzer.parseCustomIngredientsTable(document);
-  let recipeAnalyzer = new RecipeAnalyzer(localIngredients, fdcClient);
+  let bookmarkManager = new BookmarkManager(document);
+  loadCustomIngredients(document, bookmarkManager, fdcClient);
+  let recipeAnalyzer = new RecipeAnalyzer(bookmarkManager, fdcClient);
   recipeAnalyzer.updateDocument(document);
 }
 

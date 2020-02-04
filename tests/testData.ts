@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { FoodData } from '../core/FoodData';
+import { FoodDetails } from '../core/FoodDetails';
 
 export const TEST_SR_LEGACY_FOOD = {
   description: 'Bananas',
@@ -70,8 +71,17 @@ export const TEST_BRANDED_FOOD_DATA: FoodData = {
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
 };
 
-export const TEST_RECIPE_DATA: FoodData = {
+export const TEST_RECIPE_DETAILS: FoodDetails = {
+  dataType: 'Branded',
   description: 'My Recipe',
-  nutrientsPerServing: {calories: 100, protein: 20},
-  servingEquivalentQuantities: {'serving': 1.0},
+  foodNutrients: [{
+    nutrient: {id: 1008},
+    amount: 100.0
+  }, {
+    nutrient: {id: 1003},
+    amount: 20.0
+  }],
+  servingSize: 100,
+  servingSizeUnit: 'g',
+  householdServingFullText: '1 serving',
 };

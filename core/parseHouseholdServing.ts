@@ -28,7 +28,6 @@ export function parseHouseholdServing(text: string): HouseholdServing {
   let metricUnits: Quantity;
   let customaryUnitsText: string;
   let match = text.match(/^([^\(]*)\(([^\)]*)\)$/);
-  console.log(match)
   if (match == null) {
     metricUnits = parseQuantity(text);
     customaryUnitsText = null;

@@ -15,10 +15,11 @@
 import { Quantity } from "./core/Quantity";
 import { Nutrients } from "./core/Nutrients";
 import { parseQuantity } from './core/parseQuantity';
+import { FoodIdentifier } from "./FDCClient";
 
 export interface ParsedIngredient {
   quantity: Quantity;
-  id: {fdcId: string, bookmarkId: string};
+  id: FoodIdentifier;
 }
 
 /**
@@ -40,7 +41,7 @@ export function parseIngredient(textElement: GoogleAppsScript.Document.Text): Pa
     return null;
   }
   let fdcIdMatch = linkUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
-  let fdcId = fdcIdMatch ? fdcIdMatch[1] : null;
+  let fdcId = fdcIdMatch ? Number(fdcIdMatch[1]) : null;
   let bookmarkIdMatch = linkUrl.match('^#bookmark=(.*)');
   let bookmarkId = bookmarkIdMatch ? bookmarkIdMatch[1] : null;
   if (!(fdcId || bookmarkId)) {

@@ -14,9 +14,8 @@
 
 import { FoodData } from "./core/FoodData";
 
-export class LocalIngredients {
+export class BookmarkManager {
   private bookmarkIdByText : {[index: string]: string} = {};
-  private foodDataByBookmarkId: {[index: string]: FoodData} = {};
 
   constructor(document: GoogleAppsScript.Document.Document) {
     this.parseBookmarks(document);
@@ -29,14 +28,6 @@ export class LocalIngredients {
         this.bookmarkIdByText[text] = bookmark.getId();
       }
     });
-  }
-
-  getFoodData(fdcId: string): FoodData {
-    return this.foodDataByBookmarkId[fdcId];
-  }
-
-  insertFoodData(fdcId: string, foodData: FoodData) {
-    this.foodDataByBookmarkId[fdcId] = foodData;
   }
 
   /**
