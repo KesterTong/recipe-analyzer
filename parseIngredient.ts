@@ -14,6 +14,7 @@
 
 import { Quantity } from "./core/Quantity";
 import { Nutrients } from "./core/Nutrients";
+import { link } from "fs";
 
 export interface ParsedIngredient {
   quantity: Quantity;
@@ -24,8 +25,17 @@ export interface ParsedIngredient {
  * Parse an ingredient with quantitiy, e.g. "1 cup flour"
  */
 export function parseIngredient(textElement: GoogleAppsScript.Document.Text): ParsedIngredient {
+  let linkUrl = null;
+  let ingredientStart = 0;
   let text = textElement.getText();
-  text = text.match(/^(?:[^\t]*)/)[0];
+  let textLength = text.length;
+  while(ingredientStart < textLength && (linkUrl = textElement.getLinkUrl(ingredientStart)) == null) {
+    ingredientStart++;
+  }
+  if (linkUrl == null) {
+    return null;
+  }
+  text = text.substr(0, ingredientStart);
   const fractionValueBySymbol: {[index: string]: number} = {
     '': 0,
     '½': 1 / 2,
@@ -49,11 +59,6 @@ export function parseIngredient(textElement: GoogleAppsScript.Document.Text): Pa
   };
   let match = text.match(/(\s*(\d*\.?\d*)\s*([½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅐⅛⅜⅝⅞⅑⅒]?)\s*(\w*)\s*)(.*)/);
   if (match == null) {
-    return null;
-  }
-  let ingredientStart = match[1].length;
-  let linkUrl = textElement.getLinkUrl(ingredientStart);
-  if (linkUrl == null) {
     return null;
   }
   let fdcIdMatch = linkUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
