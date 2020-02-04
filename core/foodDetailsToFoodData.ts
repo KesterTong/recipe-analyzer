@@ -74,11 +74,11 @@ function SRLegacyServingEquivalentQuantities(foodDetails: FoodDetails) : Quantit
 }
 
 function brandedServingEquivalentQuantities(foodDetails: FoodDetails) : Quantity[] {
-  var result: Quantity[] = [{
+  let result: Quantity[] = [{
     amount: 100.0,
     unit: foodDetails.servingSizeUnit,
   }];
-  var householdServingQuantity = parseQuantity(foodDetails.householdServingFullText);
+  let householdServingQuantity = foodDetails.householdServingFullText == null ? null : parseQuantity(foodDetails.householdServingFullText);
   if (householdServingQuantity != null) {
     result.push({
       amount: 100.0 * householdServingQuantity.amount / foodDetails.servingSize,

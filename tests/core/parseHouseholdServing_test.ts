@@ -12,24 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { parseServingSize } from '../parseServingSize';
+import { parseHouseholdServing } from '../../core/parseHouseholdServing';
 import { expect } from 'chai';
 import 'mocha';
 
-describe('parseFood', () => {
-  it('100 g', () => {
-    expect(parseServingSize('100 g\n1 tablespoon = 13.5 g\n1 cup = 216 g\n1 tsp = 4.5 g')).to.deep.equal([
-      {amount: 100, unit: 'g'},
-      {amount: 100 / 13.5, unit: 'tablespoon'},
-      {amount: 100 / 216, unit: 'cup'},
-      {amount: 100 / 4.5, unit: 'tsp'},
-    ]);
-  });
-
+describe('parseHouseholdServing', () => {
   it('1 cup (240 ml)', () => {
-    expect(parseServingSize('1 cup (240 ml)')).to.deep.equal([
-      {amount: 1, unit: 'cup'},
-      {amount: 240, unit: 'ml'},
-    ]);
+    expect(parseHouseholdServing('1 cup (240 ml)')).to.deep.equal({
+      servingSize: 240.0,
+      servingSizeUnit: 'ml',
+      householdServingFullText: '1 cup',
+    });
+  });
+  it('240 ml', () => {
+    expect(parseHouseholdServing('240 ml')).to.deep.equal({
+      servingSize: 240.0,
+      servingSizeUnit: 'ml',
+      householdServingFullText: null,
+    });
   });
 });

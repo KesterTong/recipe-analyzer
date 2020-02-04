@@ -15,13 +15,13 @@
 /**
  * Serving size as printed on USDA label, e.g. "1 cup (220 g)" or "1 scoop (36 ml)".
  */
-export interface ServingSize {
+export interface HouseholdServing {
   servingSize?: number,
   servingSizeUnit?: string,
   householdServingFullText?: string,
 }
 
-export interface FoodDetails extends ServingSize {
+export interface FoodDetails extends HouseholdServing {
   description: string,
   dataType: string,
   foodNutrients: {

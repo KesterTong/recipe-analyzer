@@ -46,6 +46,6 @@ export function parseQuantity(text: string): Quantity {
   }
   return {
     amount: Number(match[2] || (match[3] ? 0.0 : 1.0)) + fractionValueBySymbol[match[3]],
-    unit: match[4] || 'serving',
+    unit: match[4].trim() || 'serving',
   };
 }

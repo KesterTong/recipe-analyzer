@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import { LocalIngredients } from './LocalIngredients';
-import { parseServingSize } from './parseServingSize';
-import { makeFoodData } from './core/FoodData';
+import { parseHouseholdServing } from './core/parseHouseholdServing';
+import { FoodDetails } from './core/FoodDetails';
+import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 
 export class CustomIngredientsAnalyzer {
   constructor(private localIngredients: LocalIngredients) { }
@@ -39,14 +40,31 @@ export class CustomIngredientsAnalyzer {
     if (bookmarkId == null) {
       return;
     }
-    let description = row.getCell(0).getText();
-    let servingSize = parseServingSize(row.getCell(1).getText());
-    let calories = Number(row.getCell(2).getText());
-    let protein = Number(row.getCell(3).getText());
-    let foodData = makeFoodData(
-      description,
-      {calories: calories, protein: protein},
-      servingSize);
+    let householdServing = parseHouseholdServing(row.getCell(1).getText());
+    if (householdServing == null) {
+      return;
+    }
+    // Label nutrients are per household unit, while the serving size is 100 g/mL.
+    // So we convert using the scale factor below.
+    let scale = 100.0 / householdServing.servingSize;
+    let foodDetails: FoodDetails = {
+      dataType: 'Branded',
+      description: row.getCell(0).getText(),
+      servingSize: householdServing.servingSize,
+      servingSizeUnit: householdServing.servingSizeUnit,
+      householdServingFullText: householdServing.householdServingFullText,
+      foodNutrients: [
+        {
+          nutrient: {id: 1008},  // calories
+          amount: Number(row.getCell(2).getText()) * scale,
+        },
+        {
+          nutrient: {id: 1003},  // protein
+          amount: Number(row.getCell(3).getText()) * scale,
+        },
+      ],
+    }
+    let foodData = foodDetailsToFoodData(foodDetails);
     this.localIngredients.insertFoodData(bookmarkId, foodData);
   }
 }
