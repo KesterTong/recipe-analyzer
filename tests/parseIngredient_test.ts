@@ -17,53 +17,27 @@ import { expect } from 'chai';
 import { mock, when, instance } from 'ts-mockito';
 
 describe('parseIngredient', () => {
-  it('number', () => {
+  it('no link', () => {
+    let mockedText = mock<GoogleAppsScript.Document.Text>();
+    when(mockedText.getText()).thenReturn('1 cup banana');
+    let text = instance(mockedText); 
+    expect(parseIngredient(text)).to.equal(null);
+  });
+  // Regression test for old parsing logic that would error out when
+  // there was no quanity unit.
+  it('no link no quantity', () => {
+    let mockedText = mock<GoogleAppsScript.Document.Text>();
+    when(mockedText.getText()).thenReturn('1 banana');
+    let text = instance(mockedText); 
+    expect(parseIngredient(text)).to.equal(null);
+  });
+  it('Local ingredient', () => {
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     when(mockedText.getText()).thenReturn('1 cup banana');
     when(mockedText.getLinkUrl(6)).thenReturn('#bookmark=id.abc123');
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 1.0, unit: 'cup'},
-      id: {fdcId: null, bookmarkId: 'id.abc123'},
-    });
-  });
-  it('number with decimel', () => {
-    let mockedText = mock<GoogleAppsScript.Document.Text>();
-    when(mockedText.getText()).thenReturn('1.5 cup banana');
-    when(mockedText.getLinkUrl(8)).thenReturn('#bookmark=id.abc123');
-    let text = instance(mockedText); 
-    expect(parseIngredient(text)).to.deep.equal({
-      quantity: {amount: 1.5, unit: 'cup'},
-      id: {fdcId: null, bookmarkId: 'id.abc123'},
-    });
-  });
-  it('number with trailing decimal point', () => {
-    let mockedText = mock<GoogleAppsScript.Document.Text>();
-    when(mockedText.getLinkUrl(7)).thenReturn('#bookmark=id.abc123');
-    when(mockedText.getText()).thenReturn('1. cup banana');
-    let text = instance(mockedText); 
-    expect(parseIngredient(text)).to.deep.equal({
-      quantity: {amount: 1.0, unit: 'cup'},
-      id: {fdcId: null, bookmarkId: 'id.abc123'},
-    });
-  });
-  it('pure fraction', () => {
-    let mockedText = mock<GoogleAppsScript.Document.Text>();
-    when(mockedText.getText()).thenReturn('½ cup banana');
-    when(mockedText.getLinkUrl(6)).thenReturn('#bookmark=id.abc123');
-    let text = instance(mockedText); 
-    expect(parseIngredient(text)).to.deep.equal({
-      quantity: {amount: 0.5, unit: 'cup'},
-      id: {fdcId: null, bookmarkId: 'id.abc123'},
-    });
-  });
-  it('compound fraction', () => {
-    let mockedText = mock<GoogleAppsScript.Document.Text>();
-    when(mockedText.getText()).thenReturn('1½ cup banana');
-    when(mockedText.getLinkUrl(7)).thenReturn('#bookmark=id.abc123');
-    let text = instance(mockedText); 
-    expect(parseIngredient(text)).to.deep.equal({
-      quantity: {amount: 1.5, unit: 'cup'},
       id: {fdcId: null, bookmarkId: 'id.abc123'},
     });
   });
