@@ -16,6 +16,7 @@ import { Quantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
 import { FoodData, makeFoodData } from "./FoodData";
 import { FoodDetails } from './FoodDetails';
+import { parseQuantity } from './parseQuantity';
 
 export function foodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails);
@@ -73,23 +74,16 @@ function SRLegacyServingEquivalentQuantities(foodDetails: FoodDetails) : Quantit
 }
 
 function brandedServingEquivalentQuantities(foodDetails: FoodDetails) : Quantity[] {
-  var servingEquivalentQuantities: Quantity[] = [{
+  var result: Quantity[] = [{
     amount: 100.0,
     unit: foodDetails.servingSizeUnit,
   }];
-  var match = foodDetails.householdServingFullText.match(/\s*(\d+\.?\d*)\s*(.*)/);
-  if (match == null) {
-    servingEquivalentQuantities.push({
-      amount: 100.0 / foodDetails.servingSize,
-      unit: foodDetails.householdServingFullText,
-    });
-  } else {
-    // Assume that if the household serving starts with number, it has the
-    // form "2 scoops" and so put the "2" into the quantity. 
-    servingEquivalentQuantities.push({
-      amount: Number(match[1]) * 100.0 / foodDetails.servingSize,
-      unit: match[2],
+  var householdServingQuantity = parseQuantity(foodDetails.householdServingFullText);
+  if (householdServingQuantity != null) {
+    result.push({
+      amount: 100.0 * householdServingQuantity.amount / foodDetails.servingSize,
+      unit: householdServingQuantity.unit,
     });
   }
-  return servingEquivalentQuantities;
+  return result;
 }

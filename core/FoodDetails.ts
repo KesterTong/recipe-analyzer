@@ -12,7 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface FoodDetails {
+/**
+ * Serving size as printed on USDA label, e.g. "1 cup (220 g)" or "1 scoop (36 ml)".
+ */
+export interface ServingSize {
+  servingSize?: number,
+  servingSizeUnit?: string,
+  householdServingFullText?: string,
+}
+
+export interface FoodDetails extends ServingSize {
   description: string,
   dataType: string,
   foodNutrients: {
@@ -24,7 +33,4 @@ export interface FoodDetails {
     gramWeight: number,
     amount: number,
   }[];
-  servingSize?: number,
-  servingSizeUnit?: string,
-  householdServingFullText?: string,
 }
