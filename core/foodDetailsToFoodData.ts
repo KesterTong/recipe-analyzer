@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from './Quantity';
+import { Quantity, canonicalizeQuantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
-import { FoodData, makeFoodData } from "./FoodData";
+import { FoodData } from "./FoodData";
 import { FoodDetails } from './FoodDetails';
 import { parseQuantity } from './parseQuantity';
 
@@ -23,7 +23,17 @@ export function foodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
   if (nutrientsPerServing == null) {
     return null;
   }
-  return makeFoodData(foodDetails.description, nutrientsPerServing, servingEquivalentQuantitiesFromFoodDetails(foodDetails));
+
+  let servingEquivalentQuantitiesDict: {[index: string]: number} = {};
+  servingEquivalentQuantitiesFromFoodDetails(foodDetails).forEach(quantity => {
+    quantity = canonicalizeQuantity(quantity);
+    servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
+  });
+  return {
+    description: foodDetails.description,
+    nutrientsPerServing: nutrientsPerServing,
+    servingEquivalentQuantities: servingEquivalentQuantitiesDict,
+  };
 }
 
 function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
