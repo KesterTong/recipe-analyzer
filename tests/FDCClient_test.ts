@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { FDCClient } from '../FDCClient';
-import { TEST_SR_LEGACY_FOOD } from './testData';
+import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 
 import { expect } from 'chai';
 import 'mocha';
@@ -57,5 +57,14 @@ describe('FoodDatabase', () => {
       globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
     expect(fdcClient.getFoodDetails({fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
+  });
+
+  it('local', () => {
+    fdcClient.addLocalFood('id.abc123', TEST_RECIPE_DETAILS);
+    expect(fdcClient.getFoodDetails({bookmarkId: 'id.abc123'})).to.deep.equal(TEST_RECIPE_DETAILS);
+  });
+
+  it('local not found', () => {
+    expect(fdcClient.getFoodDetails({bookmarkId: 'id.def456'})).to.equal(null);
   });
 });
