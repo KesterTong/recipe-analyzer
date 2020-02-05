@@ -51,6 +51,11 @@ export interface FoodIdentifier {
 export class FDCClient {
   private localFoodDetailsByBookmarkId: {[index: string]: FoodDetails} = {};
 
+  constructor(
+      private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
+      private cacheService: GoogleAppsScript.Cache.CacheService,
+      private propertiesService: GoogleAppsScript.Properties.PropertiesService) {}
+
   addLocalFood(bookmarkId: string, foodDetails: FoodDetails) {
     this.localFoodDetailsByBookmarkId[bookmarkId] = foodDetails;
   }
@@ -62,26 +67,26 @@ export class FDCClient {
       return this.localFoodDetailsByBookmarkId[foodIdentifier.bookmarkId] || null;
     }
     let fdcId = foodIdentifier.fdcId.toString();
-    let cache = CacheService.getUserCache();
+    let cache = this.cacheService.getUserCache();
     let response = cache.get(fdcId);
     if (response != null) {
       // Keep the item alive in the cache.
       cache.put(fdcId, response, 21600);
       return JSON.parse(response);
     }
-    let url = fdcApiUrl(fdcId, {});
-    response = UrlFetchApp.fetch(url).getContentText();
+    let url = this.fdcApiUrl(fdcId, {});
+    response = this.urlFetchApp.fetch(url).getContentText();
     // Add to cache for 6 hours (maximum ttl allowed).
     cache.put(fdcId, response, 21600);
     return JSON.parse(response);
   }
 
   searchFoods(query: string, includeBranded: boolean): SearchResult[] {
-    let url = fdcApiUrl('search', {
+    let url = this.fdcApiUrl('search', {
       generalSearchInput: encodeURIComponent(query),
       includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
     });
-    let result = <FDCQueryResult>JSON.parse(UrlFetchApp.fetch(url).getContentText());
+    let result = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
     return result.foods.map(details => {
       return {
         fdcId: details.fdcId,
@@ -89,15 +94,15 @@ export class FDCClient {
       };
     });
   }
-}
 
-function fdcApiUrl(resource: string, options: {[index: string]: string}): string {
-  const API_KEY = PropertiesService.getScriptProperties().getProperty('USDA_API_KEY');
-  let url = 'https://api.nal.usda.gov/fdc/v1/';
-  url += encodeURIComponent(resource);
-  url += '?api_key=' + API_KEY;
-  Object.keys(options).forEach(key => {
-    url += '&' + key + '=' + options[key];
-  })
-  return url;
+  private fdcApiUrl(resource: string, options: {[index: string]: string}): string {
+    const API_KEY = this.propertiesService.getScriptProperties().getProperty('USDA_API_KEY');
+    let url = 'https://api.nal.usda.gov/fdc/v1/';
+    url += encodeURIComponent(resource);
+    url += '?api_key=' + API_KEY;
+    Object.keys(options).forEach(key => {
+      url += '&' + key + '=' + options[key];
+    })
+    return url;
+  }
 }

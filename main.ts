@@ -46,18 +46,18 @@ export function showAddIngredientDialog() {
 }
 
 export function getSearchResults(query: string, includeBranded: boolean): SearchResult[] {
-  let fdcClient = new FDCClient();
+  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
 export function getFoodDetails(fdcId: number): FoodDetails {
-  let fdcClient = new FDCClient();
+  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
   return fdcClient.getFoodDetails({fdcId: fdcId});
 }
 
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
-  let fdcClient = new FDCClient();
+  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
   let bookmarkManager = new BookmarkManager(document);
   loadCustomIngredients(document, bookmarkManager, fdcClient);
   let recipeAnalyzer = new RecipeAnalyzer(

@@ -34,11 +34,10 @@ describe('FoodDatabase', () => {
   when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
   let propertiesService = instance(mockedPropertiesService);
 
-  let globals = <any>global;
-  globals['CacheService'] = cacheService;
-  globals['PropertiesService'] = propertiesService;
+  let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
+  let urlFetchApp = instance(mockedUrlFetchApp);
 
-  let fdcClient = new FDCClient();
+  let fdcClient = new FDCClient(urlFetchApp, cacheService, propertiesService);
   it('cached', () => {
     mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
     when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
@@ -50,10 +49,8 @@ describe('FoodDatabase', () => {
     mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
     let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
     when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-    let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
     when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
       instance(mockedHTTPResponse));
-      globals['UrlFetchApp'] = instance(mockedUrlFetchApp);
     expect(fdcClient.getFoodDetails({fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
