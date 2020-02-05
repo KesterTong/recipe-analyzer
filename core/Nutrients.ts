@@ -28,11 +28,6 @@ export function nutrientNames(): {[index: number]: string} {
   };
 };
 
-// TODO: set this in properties
-export function nutrientsToDisplay(): number[] {
-  return [1008, 1003];
-}
-
 export function scaleNutrients(nutrients: Nutrients, scale: number): Nutrients {
   let result: Nutrients = {};
   for (let nutrientKey in nutrients) {

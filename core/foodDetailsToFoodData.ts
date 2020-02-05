@@ -13,13 +13,13 @@
 // limitations under the License.
 
 import { Quantity, canonicalizeQuantity } from './Quantity';
-import { Nutrients, nutrientsToDisplay } from "./Nutrients";
+import { Nutrients } from "./Nutrients";
 import { FoodData } from "./FoodData";
 import { FoodDetails } from './FoodDetails';
 import { parseQuantity } from './parseQuantity';
 
-export function foodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
-  let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails);
+export function foodDetailsToFoodData(foodDetails: FoodDetails, nutrientsToDisplay: number[]): FoodData {
+  let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails, nutrientsToDisplay);
   if (nutrientsPerServing == null) {
     return null;
   }
@@ -36,15 +36,15 @@ export function foodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
   };
 }
 
-function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
+function nutrientsFromFoodDetails(foodDetails: FoodDetails, nutrientsToDisplay: number[]): Nutrients {
   let result: Nutrients = {};
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
     var foodNutrient = foodDetails.foodNutrients[i];
     var nutrientId = foodNutrient.nutrient.id;
     var nutrientAmount = foodNutrient.amount || 0;
-    // Only include nutrients in NUTRIENTS to reduce computational cost
-    // of adding up and scaling nutrients.
-    if (nutrientsToDisplay().indexOf(nutrientId) != -1) {
+    // Only include nutrients that will be displayed, in order to reduce 
+    // the computational cost of adding up and scaling nutrients.
+    if (nutrientsToDisplay.indexOf(nutrientId) != -1) {
       result[nutrientId] = nutrientAmount
     }
   }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Quantity } from "./core/Quantity";
-import { Nutrients, nutrientsToDisplay } from "./core/Nutrients";
+import { Nutrients } from "./core/Nutrients";
 import { parseQuantity } from './core/parseQuantity';
 import { FoodIdentifier } from "./FDCClient";
 
@@ -53,14 +53,14 @@ export function parseIngredient(textElement: GoogleAppsScript.Document.Text): Pa
   };
 }
 
-export function updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients) {
+export function updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients, nutrientsToDisplay: number[]) {
   let displayNutrients: string;
   if (nutrients == null) {
     // Display '-' to indicate that no nutrient value could be computed.
     displayNutrients = '\t-\t-';
     nutrients = {};
   } else {
-    displayNutrients = '\t' + nutrientsToDisplay().map(nutrientId => nutrients[nutrientId].toFixed(0)).join('\t');
+    displayNutrients = '\t' + nutrientsToDisplay.map(nutrientId => nutrients[nutrientId].toFixed(0)).join('\t');
   }
   // Truncate to end of link and add nutrient info.  Appending text will extend the link
   // if the current text ends with a link, so we explicitly set the link url to null for

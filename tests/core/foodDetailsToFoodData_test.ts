@@ -20,10 +20,10 @@ import 'mocha';
 
 describe('foodDetailsToFoodData', () => {
   it('SR legacy food', () => {
-    expect(foodDetailsToFoodData(TEST_SR_LEGACY_FOOD)).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+    expect(foodDetailsToFoodData(TEST_SR_LEGACY_FOOD, [1008, 1003])).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
   });
 
   it('branded food', () => {
-    expect(foodDetailsToFoodData(TEST_BRANDED_FOOD)).to.deep.equal(TEST_BRANDED_FOOD_DATA);
+    expect(foodDetailsToFoodData(TEST_BRANDED_FOOD, [1008, 1003])).to.deep.equal(TEST_BRANDED_FOOD_DATA);
   });
 });

@@ -58,10 +58,19 @@ function setupMockText(mockedText: GoogleAppsScript.Document.Text) {
 }
 
 describe('updateElementAndRunningTotal', () => {
+  let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
+  when(mockedScriptProperties.getProperty('DISPLAY_NUTRIENTS')).thenReturn('[1008, 1003]');
+  let scriptProperties = instance(mockedScriptProperties);
+
+  let mockedPropertiesService = mock<GoogleAppsScript.Properties.PropertiesService>();
+  when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
+  let propertiesService = instance(mockedPropertiesService);
+
   it('no link', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mock<FDCClient>()));
+      instance(mock<FDCClient>()),
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -76,7 +85,8 @@ describe('updateElementAndRunningTotal', () => {
   it('no link with tabs', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mock<FDCClient>()));
+      instance(mock<FDCClient>()),
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -92,7 +102,8 @@ describe('updateElementAndRunningTotal', () => {
     let mockFdcClient = mock<FDCClient>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mockFdcClient));
+      instance(mockFdcClient),
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -110,7 +121,8 @@ describe('updateElementAndRunningTotal', () => {
     let mockFdcClient = mock<FDCClient>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mockFdcClient));
+      instance(mockFdcClient),
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -128,7 +140,8 @@ describe('updateElementAndRunningTotal', () => {
     let mockFdcClient = mock<FDCClient>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mockFdcClient));
+      instance(mockFdcClient),
+      propertiesService);
     when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: null, fdcId: 12345}))).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -146,7 +159,8 @@ describe('updateElementAndRunningTotal', () => {
     let mockFdcClient = mock<FDCClient>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mockFdcClient));
+      instance(mockFdcClient),
+      propertiesService);
     when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.ghi789', fdcId: null}))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -164,7 +178,8 @@ describe('updateElementAndRunningTotal', () => {
     let mockFdcClient = mock<FDCClient>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mockFdcClient));
+      instance(mockFdcClient),
+      propertiesService);
     when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.ghi789', fdcId: null}))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -182,7 +197,8 @@ describe('updateElementAndRunningTotal', () => {
     let mockFdcClient = mock<FDCClient>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mockFdcClient));
+      instance(mockFdcClient),
+      propertiesService);
     when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.ghi789', fdcId: null}))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
