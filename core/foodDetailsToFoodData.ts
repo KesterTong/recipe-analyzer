@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Quantity, canonicalizeQuantity } from './Quantity';
-import { Nutrients } from "./Nutrients";
+import { Nutrients, nutrientsToDisplay } from "./Nutrients";
 import { FoodData } from "./FoodData";
 import { FoodDetails } from './FoodDetails';
 import { parseQuantity } from './parseQuantity';
@@ -37,19 +37,18 @@ export function foodDetailsToFoodData(foodDetails: FoodDetails): FoodData {
 }
 
 function nutrientsFromFoodDetails(foodDetails: FoodDetails): Nutrients {
-  var calories = 0;
-  var protein = 0;
+  let result: Nutrients = {};
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
     var foodNutrient = foodDetails.foodNutrients[i];
     var nutrientId = foodNutrient.nutrient.id;
     var nutrientAmount = foodNutrient.amount || 0;
-    if (nutrientId == 1008) {
-      calories = nutrientAmount;
-    } else if (nutrientId == 1003) {
-      protein = nutrientAmount;
+    // Only include nutrients in NUTRIENTS to reduce computational cost
+    // of adding up and scaling nutrients.
+    if (nutrientsToDisplay().indexOf(nutrientId) != -1) {
+      result[nutrientId] = nutrientAmount
     }
   }
-  return {calories: calories, protein: protein};
+  return result;
 }
 
 function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FoodDetails): Quantity[] {

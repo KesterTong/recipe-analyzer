@@ -14,23 +14,39 @@
 
 /** Tools for computations with nutritional data */
 export interface Nutrients {
-  [index: string]: number;
+  [index: number]: number;
+}
+
+// NOTE: using functions here as constants don't seem to work with
+// TypeScript -> Apps Script conversion.
+export function nutrientNames(): {[index: number]: string} {
+  return {
+    1003: 'protein (g)',
+    1004: 'fat (g)',
+    1005: 'carbohydrate (g)',
+    1008: 'energy (kcal)',
+  };
+};
+
+// TODO: set this in properties
+export function nutrientsToDisplay(): number[] {
+  return [1008, 1003];
 }
 
 export function scaleNutrients(nutrients: Nutrients, scale: number): Nutrients {
-  var result: Nutrients = {};
-  for (var nutrientKey in nutrients) {
+  let result: Nutrients = {};
+  for (let nutrientKey in nutrients) {
     result[nutrientKey] = nutrients[nutrientKey] * scale;
   }
   return result;
 }
 
 export function addNutrients(lhs: Nutrients, rhs: Nutrients): Nutrients {
-  var result: Nutrients = {};
-  for (var nutrientKey in lhs) {
+  let result: Nutrients = {};
+  for (let nutrientKey in lhs) {
     result[nutrientKey] = lhs[nutrientKey];
   }
-  for (var nutrientKey in rhs) {
+  for (let nutrientKey in rhs) {
     result[nutrientKey] = (result[nutrientKey] || 0) + rhs[nutrientKey];
   }
   return result;

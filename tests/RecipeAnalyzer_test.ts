@@ -137,7 +137,7 @@ describe('updateElementAndRunningTotal', () => {
     text.setLinkUrl(10, 21, 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients');
     let listItem = createListItem(text);
     let nutrients = recipeAnalyzer.updateElement(listItem);
-    expect(nutrients).to.deep.equal({calories: 1700.0, protein: 20.0});
+    expect(nutrients).to.deep.equal({1008: 1700.0, 1003: 20.0});
     expect(text.getText()).to.equal('60 pieces Banana Chips\t1700\t20');
     verify(mockedText.setLinkUrl(22, 29, null)).once();
   });
@@ -155,7 +155,7 @@ describe('updateElementAndRunningTotal', () => {
     text.setLinkUrl(12, 20, '#bookmark=id.ghi789');
     let listItem = createListItem(text);
     let nutrients = recipeAnalyzer.updateElement(listItem);
-    expect(nutrients).to.deep.equal({calories: 50.0, protein: 10.0});
+    expect(nutrients).to.deep.equal({1008: 50.0, 1003: 10.0});
     expect(text.getText()).to.equal('0.5 serving My Recipe\t50\t10');
     verify(mockedText.setLinkUrl(21, 26, null)).once();
   });
@@ -173,7 +173,7 @@ describe('updateElementAndRunningTotal', () => {
     text.setLinkUrl(13, 21, '#bookmark=id.ghi789');
     let listItem = createListItem(text);
     let nutrients = recipeAnalyzer.updateElement(listItem);
-    expect(nutrients).to.deep.equal({calories: 150.0, protein: 30.0});
+    expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, null)).once();
   });
@@ -191,7 +191,7 @@ describe('updateElementAndRunningTotal', () => {
     text.setLinkUrl(13, 21, '#bookmark=id.ghi789');
     let listItem = createListItem(text);
     var nutrients = recipeAnalyzer.updateElement(listItem);
-    expect(nutrients).to.deep.equal({calories: 150.0, protein: 30.0});
+    expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, null)).once();
   });

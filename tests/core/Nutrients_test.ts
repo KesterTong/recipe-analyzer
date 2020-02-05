@@ -18,18 +18,18 @@ import { addNutrients, scaleNutrients } from '../../core/Nutrients';
 
 describe('scaleNutrients', () => {
   it('scaleNutrients', () => {
-    expect(scaleNutrients({calories: 10, protein: 20}, 2)).to.deep.equal(
-      {calories: 20, protein: 40});
+    expect(scaleNutrients({1008: 10, 1003: 20}, 2)).to.deep.equal(
+      {1008: 20, 1003: 40});
   });
 });
 
 describe('addNutrients', () => {
   it('sameKeys', () => {
-    expect(addNutrients({calories: 10, protein: 20}, {calories: 5, protein: 2})).to.deep.equal(
-      {calories: 15, protein: 22});
+    expect(addNutrients({1008: 10, 1003: 20}, {1008: 5, 1003: 2})).to.deep.equal(
+      {1008: 15, 1003: 22});
   });
   it('differentKeys', () => {
-    expect(addNutrients({calories: 10, fat: 20}, {calories: 5, protein: 2})).to.deep.equal(
-      {calories: 15, fat:20, protein: 2});
+    expect(addNutrients({1008: 10, 1004: 20}, {1008: 5, 1003: 2})).to.deep.equal(
+      {1008: 15, 1004:20, 1003: 2});
   });
 });

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Quantity } from "./core/Quantity";
-import { Nutrients } from "./core/Nutrients";
+import { Nutrients, nutrientsToDisplay } from "./core/Nutrients";
 import { parseQuantity } from './core/parseQuantity';
 import { FoodIdentifier } from "./FDCClient";
 
@@ -60,7 +60,7 @@ export function updateIngredient(textElement: GoogleAppsScript.Document.Text, nu
     displayNutrients = '\t-\t-';
     nutrients = {};
   } else {
-    displayNutrients = '\t' + nutrients.calories.toFixed(0) + '\t' + nutrients.protein.toFixed(0);
+    displayNutrients = '\t' + nutrientsToDisplay().map(nutrientId => nutrients[nutrientId].toFixed(0)).join('\t');
   }
   // Truncate to end of link and add nutrient info.  Appending text will extend the link
   // if the current text ends with a link, so we explicitly set the link url to null for

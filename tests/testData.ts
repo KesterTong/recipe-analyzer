@@ -38,7 +38,7 @@ export const TEST_SR_LEGACY_FOOD = {
 
 export const TEST_SR_LEGACY_FOOD_DATA: FoodData = {
   description: 'Bananas',
-  nutrientsPerServing: {calories: 123, protein: 10},
+  nutrientsPerServing: {1008: 123, 1003: 10},
   servingEquivalentQuantities: {
     'g': 100.0,
     'ml': 102.86521739130434,
@@ -67,7 +67,7 @@ export const TEST_BRANDED_FOOD = {
 
 export const TEST_BRANDED_FOOD_DATA: FoodData = {
   description: 'Plantain Chips',
-  nutrientsPerServing: {calories: 425, protein: 5},
+  nutrientsPerServing: {1008: 425, 1003: 5},
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
 };
 

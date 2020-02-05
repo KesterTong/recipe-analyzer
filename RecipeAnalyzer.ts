@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { nutrientsForQuantity } from './core/Quantity';
-import { Nutrients, addNutrients } from "./core/Nutrients";
+import { Nutrients, addNutrients, nutrientsToDisplay } from "./core/Nutrients";
 import { FoodData } from "./core/FoodData";
 import { parseIngredient, updateIngredient, ParsedIngredient } from './parseIngredient';
 import { FDCClient } from './FDCClient';
@@ -65,7 +65,7 @@ export class RecipeAnalyzer {
     }
     let state: State = State.LOOKING_FOR_RECIPE;
     let totalElement: GoogleAppsScript.Document.ListItem = null;
-    let runningTotal = null;
+    let runningTotal: Nutrients = null;
     let body = document.getBody();
     for (let i = body.getNumChildren() - 1; i > 0; i--) {
       let element = body.getChild(i);
@@ -85,16 +85,10 @@ export class RecipeAnalyzer {
           {
             dataType: 'Branded',
             description: element.asParagraph().getText(),
-            foodNutrients: [
-              {
-                nutrient: {id: 1008},  // calories
-                amount: runningTotal.calories,
-              },
-              {
-                nutrient: {id: 1003},  // protein
-                amount: runningTotal.protein,
-              },
-            ],
+            foodNutrients: nutrientsToDisplay().map(nutrientId => ({
+              nutrient: {id: nutrientId},
+              amount: runningTotal[nutrientId],
+            })),
             // Fake values that make the nutrient values correct.
             servingSize: 100,
             servingSizeUnit: 'g',
@@ -104,7 +98,7 @@ export class RecipeAnalyzer {
         state = State.LOOKING_FOR_RECIPE;
       } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
         totalElement = element.asListItem();
-        runningTotal = {calories: 0, protein: 0};
+        runningTotal = {};
         state = State.INSIDE_RECIPE;
       } else if (state == State.INSIDE_RECIPE) {
         var nutrients = this.updateElement(element.asListItem());
@@ -120,6 +114,6 @@ export class RecipeAnalyzer {
   }
 
   updateTotalElement(totalElement: GoogleAppsScript.Document.ListItem, runningTotal: Nutrients) {
-    totalElement.setText('Total\t' + runningTotal.calories.toFixed(0) + '\t' + runningTotal.protein.toFixed(0));
+    totalElement.setText('Total\t' + nutrientsToDisplay().map(nutrientId => runningTotal[nutrientId].toFixed(0)).join('\t'));
   }
 }
