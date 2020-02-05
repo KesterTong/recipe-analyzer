@@ -23,7 +23,11 @@ import { BookmarkManager } from './BookmarkManager';
 export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
   
-  constructor(private bookmarkManager: BookmarkManager, private fdcClient: FDCClient, propertiesService: GoogleAppsScript.Properties.PropertiesService) {
+  constructor(
+      private bookmarkManager: BookmarkManager,
+      private fdcClient: FDCClient,
+      propertiesService: GoogleAppsScript.Properties.PropertiesService,
+      private documentApp: GoogleAppsScript.Document.DocumentApp) {
     this.nutrientsToDisplay = JSON.parse(
       propertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS'));
   }
@@ -47,7 +51,7 @@ export class RecipeAnalyzer {
       return {};
     }
     let childElement = element.getChild(0);
-    if (childElement.getType() != DocumentApp.ElementType.TEXT) {
+    if (childElement.getType() != this.documentApp.ElementType.TEXT) {
       return {};
     }
     let textElement = <GoogleAppsScript.Document.Text>childElement;
@@ -75,7 +79,7 @@ export class RecipeAnalyzer {
       // First we do a state transition to LOOKING_FOR_TITLE in the case
       // that the current element is not a list item.  This is so we can then
       // check if the current element is the title.
-      if (state == State.INSIDE_RECIPE && element.getType() != DocumentApp.ElementType.LIST_ITEM) {
+      if (state == State.INSIDE_RECIPE && element.getType() != this.documentApp.ElementType.LIST_ITEM) {
         this.updateTotalElement(totalElement, runningTotal);
         totalElement = null;
         state = State.LOOKING_FOR_TITLE;
@@ -112,7 +116,7 @@ export class RecipeAnalyzer {
 
   isTotalElement(element: GoogleAppsScript.Document.Element): boolean {
     return (
-      element.getType() == DocumentApp.ElementType.LIST_ITEM &&
+      element.getType() == this.documentApp.ElementType.LIST_ITEM &&
       (<GoogleAppsScript.Document.Paragraph>element).getText().substr(0, 5) == 'Total');
   }
 

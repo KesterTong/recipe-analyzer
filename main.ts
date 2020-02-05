@@ -60,7 +60,11 @@ export function updateNutritionTables() {
   let fdcClient = new FDCClient();
   let bookmarkManager = new BookmarkManager(document);
   loadCustomIngredients(document, bookmarkManager, fdcClient);
-  let recipeAnalyzer = new RecipeAnalyzer(bookmarkManager, fdcClient, PropertiesService);
+  let recipeAnalyzer = new RecipeAnalyzer(
+    bookmarkManager,
+    fdcClient,
+    PropertiesService,
+    DocumentApp);
   recipeAnalyzer.updateDocument(document);
 }
 

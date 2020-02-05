@@ -35,7 +35,6 @@ describe('FoodDatabase', () => {
   let propertiesService = instance(mockedPropertiesService);
 
   let globals = <any>global;
-  globals['DocumentApp'] = instance(mock<GoogleAppsScript.Document.DocumentApp>());
   globals['CacheService'] = cacheService;
   globals['PropertiesService'] = propertiesService;
 
