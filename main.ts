@@ -17,13 +17,30 @@ import { BookmarkManager } from './BookmarkManager';
 import { FDCClient, SearchResult } from './FDCClient';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { printHouseholdServing } from './core/printHouseholdServing';
+import { FoodDetails } from './core/FoodDetails';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
   ui.createMenu('Nutrient Data')
       .addItem('Recalculate', 'updateNutritionTables')
       .addItem('Add Ingredient', 'showAddIngredientDialog')
+      .addItem('Custom Ingredients', 'showSidebar')
       .addToUi();
+}
+
+export function getCustomFoods(): FoodDetails[] {
+  let document = DocumentApp.getActiveDocument();
+  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
+  let bookmarkManager = new BookmarkManager(document);
+  loadCustomIngredients(document, bookmarkManager, fdcClient);
+  return fdcClient.getCustomFoods();
+}
+
+export function showSidebar() {
+  var htmlOutput = HtmlService
+      .createHtmlOutputFromFile('ui/custom_ingredients')
+      .setTitle('Custom Ingredients');
+  DocumentApp.getUi().showSidebar(htmlOutput);
 }
 
 export function addIngredient(fdcId: Number, description: string) {

@@ -1,0 +1,26 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+    crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <select id="custom-foods-list" size=12 style="width: 100%"></select>
+    <script>
+      function handleCustomFoods(customFoods) {
+        $('#custom-foods-list').empty();
+        customFoods.forEach(function(details) {
+          var option = $('<option></option>');
+          option.text(details.description);
+          $('#custom-foods-list').append(option);
+        });
+      }
+      window.onload = function() {
+        google.script.run
+        .withSuccessHandler(handleCustomFoods)
+        .getCustomFoods();
+      };
+    </script>
+  </body>
+</html>

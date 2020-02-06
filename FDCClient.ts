@@ -60,6 +60,14 @@ export class FDCClient {
     this.localFoodDetailsByBookmarkId[bookmarkId] = foodDetails;
   }
 
+  getCustomFoods(): FoodDetails[] {
+    let result: FoodDetails[] = [];
+    for (let bookmarkId in this.localFoodDetailsByBookmarkId) {
+      result.push(this.localFoodDetailsByBookmarkId[bookmarkId]);
+    }
+    return result;
+  }
+
   // TODO: handle API call failures gracefully.
   getFoodDetails(foodIdentifier: FoodIdentifier): FoodDetails {
     // Ensure that fdcId is all digits.
