@@ -21,10 +21,10 @@ export interface Nutrients {
 // TypeScript -> Apps Script conversion.
 export function nutrientNames(): {[index: number]: string} {
   return {
-    1003: 'protein (g)',
-    1004: 'fat (g)',
-    1005: 'carbohydrate (g)',
-    1008: 'energy (kcal)',
+    1003: 'Protein (g)',
+    1004: 'Fat (g)',
+    1005: 'Carbohydrate (g)',
+    1008: 'Energy (kcal)',
   };
 };
 
