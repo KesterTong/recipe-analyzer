@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { FoodData } from '../core/FoodData';
-import { FDCFood } from '../core/FoodDetails';
+import { FDCFood, CustomFood } from '../core/FoodDetails';
 
 export const TEST_SR_LEGACY_FOOD: FDCFood = {
   description: 'Bananas',
@@ -38,7 +38,7 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
 };
 
 export const TEST_SR_LEGACY_FOOD_DATA: FoodData = {
-  fdcId: 12345,
+  foodIdentifier: {foodType: 'FDC Food', fdcId: 12345},
   brandOwner: '',
   ingredients: '',
   description: 'Bananas',
@@ -67,7 +67,7 @@ export const TEST_BRANDED_FOOD: FDCFood = {
 };
 
 export const TEST_BRANDED_FOOD_DATA: FoodData = {
-  fdcId: 23456,
+  foodIdentifier: {foodType: 'FDC Food', fdcId: 23456},
   brandOwner: '',
   ingredients: '',
   description: 'Plantain Chips',
@@ -75,9 +75,9 @@ export const TEST_BRANDED_FOOD_DATA: FoodData = {
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
 };
 
-export const TEST_RECIPE_DETAILS: FDCFood = {
-  dataType: 'Branded',
-  fdcId: -1,
+export const TEST_RECIPE_DETAILS: CustomFood = {
+  dataType: 'Custom',
+  bookmarkId: 'id.abc123',
   description: 'My Recipe',
   foodNutrients: [{
     nutrient: {id: 1008},

@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from './core/FoodDetails';
+import { FDCFood, CustomFood } from './core/FoodDetails';
+import { FoodIdentifier } from './core/FoodIdentifier';
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -34,21 +35,9 @@ interface FDCQueryResult {
 }
 
 export interface SearchResult {
-  fdcId: number,
+  foodIdentifier: FoodIdentifier,
   description: string,
 }
-
-export interface FDCFoodIdentifier {
-  foodType: 'FDC Food',
-  fdcId: number,
-}
-
-export interface LocalFoodIdentifier {
-  foodType: 'Local Food',
-  bookmarkId: string,
-}
-
-export type FoodIdentifier = FDCFoodIdentifier | LocalFoodIdentifier;
 
 /**
  * Client for USDA Food Data Central database.
@@ -56,23 +45,25 @@ export type FoodIdentifier = FDCFoodIdentifier | LocalFoodIdentifier;
  * This database provides food data from a variety of sources.
  */
 export class FDCClient {
-  private localFoodDetailsByBookmarkId: {[index: string]: FDCFood} = {};
+  private customFoodsByBookmarkId: {[index: string]: FDCFood} = {};
 
   constructor(
       private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
       private cacheService: GoogleAppsScript.Cache.CacheService,
       private propertiesService: GoogleAppsScript.Properties.PropertiesService) {}
 
-  addLocalFood(bookmarkId: string, foodDetails: FDCFood) {
-    this.localFoodDetailsByBookmarkId[bookmarkId] = foodDetails;
+  addCustomFood(foodDetails: CustomFood) {
+    this.customFoodsByBookmarkId[foodDetails.bookmarkId] = foodDetails;
   }
 
-  getCustomFoods(): FDCFood[] {
-    let result: FDCFood[] = [];
-    for (let bookmarkId in this.localFoodDetailsByBookmarkId) {
-      result.push(this.localFoodDetailsByBookmarkId[bookmarkId]);
-    }
-    return result;
+  saveCustomFoods() {
+    this.propertiesService.getDocumentProperties().setProperty(
+      'CUSTOM_FOODS', JSON.stringify(this.customFoodsByBookmarkId));
+  }
+
+  loadCustomFoods() {
+    let json = this.propertiesService.getDocumentProperties().getProperty('CUSTOM_FOODS');
+    this.customFoodsByBookmarkId =  json == null ? {} : JSON.parse(json);
   }
 
   // TODO: handle API call failures gracefully.
@@ -81,7 +72,7 @@ export class FDCClient {
       case 'FDC Food':
         return this.FDCFoodDetails(foodIdentifier.fdcId);
       case 'Local Food':
-        return this.localFoodDetailsByBookmarkId[foodIdentifier.bookmarkId] || null;
+        return this.customFoodsByBookmarkId[foodIdentifier.bookmarkId] || null;
     }
   }
 
@@ -109,13 +100,28 @@ export class FDCClient {
       generalSearchInput: encodeURIComponent(query),
       includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
     });
-    let result = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
-    return result.foods.map(details => {
-      return {
-        fdcId: details.fdcId,
+    let result: SearchResult[] = [];
+    for (let bookmarkId in this.customFoodsByBookmarkId) {
+      let details = this.customFoodsByBookmarkId[bookmarkId];
+      result.push({
+        foodIdentifier: {
+          foodType: 'Local Food',
+          bookmarkId: bookmarkId,
+        },
         description: details.description,
-      };
+      });
+    }
+    let queryResult = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
+    queryResult.foods.forEach(details => {
+      result.push({
+        foodIdentifier: {
+          foodType: 'FDC Food',
+          fdcId: details.fdcId,
+        },
+        description: details.description,
+      });
     });
+    return result;
   }
 
   private fdcApiUrl(resource: string, options: {[index: string]: string}): string {

@@ -71,6 +71,8 @@
       $('#unit').on('change', handleQuantityChange);
 
       function handleFoodDetails(details) {
+
+        console.log(details);
         currentDetails = details;
         $('#more-details').on('click', function(event) {
           window.open(
@@ -93,7 +95,11 @@
           source: function(request, response) {
             function handleSearchResults(results) {
               response(results.map(function(details) {
-                return {label: details.description, value: details.fdcId};
+                console.log(details);
+                return {
+                  label: details.description,
+                  value: details.foodIdentifier.fdcId || details.foodIdentifier.bookmarkId
+                };
               }));
             }
             google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
@@ -101,10 +107,16 @@
           },
           select: function(event, ui) {
             event.preventDefault();
-            let fdcId = Number(ui.item.value);
+            let foodIdentifier;
+            if (isNaN(ui.item.value)) {
+              foodIdentifier = {foodType: 'Local Food', bookmarkId: ui.item.value};
+            } else {
+              foodIdentifier = {foodType: 'FDC Food', fdcId: Number(ui.item.value)};
+            }
+            console.log(foodIdentifier);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
-            .getFoodDetails(fdcId);
+            .getFoodDetails(foodIdentifier);
           },
         });
         $('#description').focus();
@@ -120,7 +132,7 @@
           // TODO: parse this server side.
           let amount = Number($('#amount').val());
           let unit = $('#unit').val()
-          google.script.run.addIngredient(currentDetails.fdcId, amount, unit, description);
+          google.script.run.addIngredient(currentDetails.foodIdentifier, amount, unit, description);
         }
       })
     </script>

@@ -15,7 +15,7 @@
 import { FDCClient } from "./FDCClient";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
-import { FDCFood } from "./core/FoodDetails";
+import { FDCFood, CustomFood } from "./core/FoodDetails";
 
 export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: FDCClient) {
   let ingredientsTable = getIngredientsTable(document);
@@ -26,22 +26,22 @@ export function loadCustomIngredients(document: GoogleAppsScript.Document.Docume
   // Iterate over all rows except the header row
   for (let rowIndex = 1; rowIndex < numRows; rowIndex++) {
     let row = ingredientsTable.getRow(rowIndex);
-    if (row.getNumCells() != 4) {
-      continue;
-    }
-    let bookmarkId = bookmarkManager.bookmarkIdForElement(row.getCell(0));
-    if (bookmarkId == null) {
-      continue;
-    }  
-    var foodDetails = parseRow(row);
+    var foodDetails = parseRow(row, bookmarkManager);
     if (foodDetails == null) {
       continue;
     }
-    fdcClient.addLocalFood(bookmarkId, foodDetails);
+    fdcClient.addCustomFood(foodDetails);
   }
 }
 
-function parseRow(row: GoogleAppsScript.Document.TableRow): FDCFood | null {
+function parseRow(row: GoogleAppsScript.Document.TableRow, bookmarkManager: BookmarkManager): CustomFood | null {
+  if (row.getNumCells() != 4) {
+    return null;
+  }
+  let bookmarkId = bookmarkManager.bookmarkIdForElement(row.getCell(0));
+  if (bookmarkId == null) {
+    return null;
+  }  
   let householdServing = parseHouseholdServing(row.getCell(1).getText());
   if (householdServing == null) {
     return null;
@@ -50,8 +50,8 @@ function parseRow(row: GoogleAppsScript.Document.TableRow): FDCFood | null {
   // So we convert using the scale factor below.
   let scale = 100.0 / householdServing.servingSize;
   return {
-    dataType: 'Branded',
-    fdcId: -1,  // TODO: either make this meaningful or make it optional
+    dataType: 'Custom',
+    bookmarkId: bookmarkId,
     description: row.getCell(0).getText(),
     servingSize: householdServing.servingSize,
     servingSizeUnit: householdServing.servingSizeUnit,

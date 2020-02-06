@@ -15,7 +15,7 @@
 import { Quantity } from "./core/Quantity";
 import { Nutrients } from "./core/Nutrients";
 import { parseQuantity } from './core/parseQuantity';
-import { FoodIdentifier } from "./FDCClient";
+import { FoodIdentifier } from "./core/FoodIdentifier";
 
 export interface ParsedIngredient {
   quantity: Quantity;

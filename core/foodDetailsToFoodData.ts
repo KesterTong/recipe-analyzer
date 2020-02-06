@@ -15,8 +15,9 @@
 import { Quantity, canonicalizeQuantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
 import { FoodData } from "./FoodData";
-import { FDCFood, SRLegacyFood, BrandedFood } from './FoodDetails';
+import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FoodDetails';
 import { parseQuantity } from './parseQuantity';
+import { FoodIdentifier } from './FoodIdentifier'
 
 export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): FoodData | null {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails, nutrientsToDisplay);
@@ -29,8 +30,21 @@ export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: 
     quantity = canonicalizeQuantity(quantity);
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
+
+  let foodIdentifier: FoodIdentifier;
+  switch (foodDetails.dataType) {
+    case 'Branded':
+    case 'SR Legacy':
+      foodIdentifier = {foodType: 'FDC Food', fdcId: foodDetails.fdcId};
+      break;
+    case 'Custom':
+      foodIdentifier = {foodType: 'Local Food', bookmarkId: foodDetails.bookmarkId};
+      break;
+  }
+
+  // TODO: Set this properly
   return {
-    fdcId: foodDetails.fdcId,
+    foodIdentifier: foodIdentifier,
     ingredients: (<BrandedFood>foodDetails).ingredients || '',
     brandOwner: (<BrandedFood>foodDetails).brandOwner || '',
     description: foodDetails.description,
@@ -59,6 +73,7 @@ function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FDCFood): Quant
     case 'SR Legacy':
       return SRLegacyServingEquivalentQuantities(foodDetails);
     case 'Branded':
+    case 'Custom':
       return brandedServingEquivalentQuantities(foodDetails);
   }
 }
@@ -82,7 +97,7 @@ function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) : Quanti
   return servingEquivalentQuantities;
 }
 
-function brandedServingEquivalentQuantities(foodDetails: BrandedFood) : Quantity[] {
+function brandedServingEquivalentQuantities(foodDetails: HouseholdServing) : Quantity[] {
   let result: Quantity[] = [{
     amount: 100.0,
     unit: foodDetails.servingSizeUnit,
