@@ -9,8 +9,8 @@
     <input id="include-branded" type="checkbox" name="include-branded">
     <label for="include-branded">Include Branded foods</label>
     <input id="search-query" type="text" style="width: 100%;display: inline-block;">
-    <select id="search-results" size=12 style="width: 49%"></select>
-    <div id="search-details" style="width: 49%;height: 200px; overflow: auto; display: inline-block">Details</div>
+    <select id="search-results" size=12 style="width: 100%"></select>
+    <div id="search-details" style="width: 100%;height: 200px; overflow: auto; display: inline-block">Details</div>
     <button class="action" id="add-ingredient">Add Ingredient</button>
 
     <script>
@@ -73,9 +73,7 @@
         let fdcId = $('#search-results').val();
         let description = $("#search-results option:selected").text();
         if (fdcId) {
-          google.script.run
-          .withSuccessHandler(google.script.host.close)
-          .addIngredient(fdcId, description);
+          google.script.run.addIngredient(fdcId, description);
         }
       })
     </script>

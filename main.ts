@@ -23,8 +23,7 @@ export function onOpen() {
   let ui = DocumentApp.getUi();
   ui.createMenu('Nutrient Data')
       .addItem('Recalculate', 'updateNutritionTables')
-      .addItem('Add Ingredient', 'showAddIngredientDialog')
-      .addItem('Custom Ingredients', 'showSidebar')
+      .addItem('Ingredients', 'showIngredientsSidebar')
       .addToUi();
 }
 
@@ -34,13 +33,6 @@ export function getCustomFoods(): FoodDetails[] {
   let bookmarkManager = new BookmarkManager(document);
   loadCustomIngredients(document, bookmarkManager, fdcClient);
   return fdcClient.getCustomFoods();
-}
-
-export function showSidebar() {
-  var htmlOutput = HtmlService
-      .createHtmlOutputFromFile('ui/custom_ingredients')
-      .setTitle('Custom Ingredients');
-  DocumentApp.getUi().showSidebar(htmlOutput);
 }
 
 export function addIngredient(fdcId: Number, description: string) {
@@ -56,10 +48,12 @@ export function addIngredient(fdcId: Number, description: string) {
   document.setCursor(document.newPosition(text, fullText.length));
 }
 
-export function showAddIngredientDialog() {
+export function showIngredientsSidebar() {
   let ui = DocumentApp.getUi();
-  let userInterface = HtmlService.createHtmlOutputFromFile('ui/search');
-  ui.showModalDialog(userInterface, 'Add Ingredient');
+  let userInterface = HtmlService
+  .createHtmlOutputFromFile('ui/ingredients')
+  .setTitle('Custom Ingredients');
+  DocumentApp.getUi().showSidebar(userInterface);
 }
 
 export function getSearchResults(query: string, includeBranded: boolean): SearchResult[] {
