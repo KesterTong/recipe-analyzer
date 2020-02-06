@@ -1,17 +1,15 @@
 <html>
   <head>
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
-    crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   </head>
   <body>
     <input id="include-branded" type="checkbox" name="include-branded">
     <label for="include-branded">Include Branded foods</label>
-    <input id="search-query" type="text" style="width: 100%;display: inline-block;">
-    <select id="search-results" size=8 style="width: 100%"></select>
     <div id="details" class="block form-group">
-      <input id="description" type="text" name="description" style="width: 100%" disabled>
+      <input id="description" type="text" name="description" style="width: 100%">
       <label for="description">Description</label><a id="link" target="_blank">🔗</a>
       <input id="brand" type="text" name="brand" style="width: 100%" disabled>
       <label for="brand">Brand</label>
@@ -23,14 +21,6 @@
     <button class="action" id="add-ingredient">Add Ingredient</button>
 
     <script>
-      function handleSearchResults(queryResults) {
-        $('#search-results').empty();
-        queryResults.forEach(function(details) {
-          var option = $('<option></option>', {value: details.fdcId});
-          option.text(details.description);
-          $('#search-results').append(option);
-        });
-      }
       function handleNutrientNames(nutrientNames) {
         nutrientNames.forEach(function(name) {
           let input = $('<input>');
@@ -57,38 +47,34 @@
           $('#' + nutrient.id.toString()).val(nutrient.amount);
         });
       }
-      function getSearchResults() {
-        google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
-            $('#search-query').val(), $('#include-branded').is(':checked'));
-      }
-      function debounce(fn, delay) {
-        let timeout = null;
-        return function() {
-          clearTimeout(timeout);
-          timeout = setTimeout(function() {
-            timeout = null;
-            fn();
-          }, delay);
-        }
-      };
+      let fdcId = null;
       window.onload = function() {
-        $('#search-query').focus();
+        $('#description').autocomplete({
+          source: function(request, response) {
+            function handleSearchResults(results) {
+              response(results.map(function(details) {
+                return {label: details.description, value: details.fdcId};
+              }));
+            }
+            google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
+              request.term, $('#include-branded').is(':checked'));
+          },
+          select: function(event, ui) {
+            event.preventDefault();
+            fdcId = Number(ui.item.value);
+            google.script.run
+            .withSuccessHandler(handleFoodDetails)
+            .getFoodDetails(fdcId);
+          },
+        });
+        $('#description').focus();
         google.script.run
         .withSuccessHandler(handleNutrientNames)
         .getNutrientNames();
       };
-      $('#include-branded').on('change', getSearchResults);
-      $('#search-query').on('keyup', debounce(getSearchResults));
-      $('#search-results').on('change', function(event) {
-        let fdcId = Number(event.target.value);
-        google.script.run
-        .withSuccessHandler(handleFoodDetails)
-        .getFoodDetails(fdcId);
-      });
       document.getElementById('add-ingredient').addEventListener('click', function(event) {
-        let fdcId = $('#search-results').val();
-        let description = $("#search-results option:selected").text();
         if (fdcId) {
+          let description = $("#description").val();
           google.script.run.addIngredient(fdcId, description);
         }
       })
