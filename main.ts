@@ -18,6 +18,7 @@ import { FDCClient, SearchResult } from './FDCClient';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { printHouseholdServing } from './core/printHouseholdServing';
 import { FoodDetails } from './core/FoodDetails';
+import { nutrientNames } from './core/Nutrients';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -69,6 +70,14 @@ export function getFoodDetails(fdcId: number): any {
     portionText += foodPortion.amount + ' ' + foodPortion.modifier;
     portionText += ' = ' + foodPortion.gramWeight + 'g\n';
   });
+  let scale: number = details.dataType == 'Branded' ? details.servingSize / 100.0 : 1.0;
+  let nutrients: {id: number, amount: number}[] = [];
+  details.foodNutrients.forEach(nutrient => {
+    nutrients.push({
+      id: nutrient.nutrient.id,
+      amount: (nutrient.amount || 0) * scale,
+    });
+  });
   return {
     description: details.description,
     linkUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients',
@@ -76,7 +85,18 @@ export function getFoodDetails(fdcId: number): any {
     brandOwner: details.brandOwner,
     ingredients: details.ingredients,
     portionText: portionText,
+    nutrients: nutrients,
   };
+}
+
+export function getNutrientNames(): {id: number, name: string}[] {
+  let namesById = nutrientNames();
+  let nutrientsToDisplay = <number[]>JSON.parse(
+    PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS'));
+  return nutrientsToDisplay.map(id => ({
+    id: id,
+    name: namesById[id],
+  }));
 }
 
 export function updateNutritionTables() {

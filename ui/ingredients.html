@@ -10,7 +10,7 @@
     <label for="include-branded">Include Branded foods</label>
     <input id="search-query" type="text" style="width: 100%;display: inline-block;">
     <select id="search-results" size=8 style="width: 100%"></select>
-    <div class="block form-group">
+    <div id="details" class="block form-group">
       <input id="description" type="text" name="description" style="width: 100%" disabled>
       <label for="description">Description</label><a id="link" target="_blank">🔗</a>
       <input id="brand" type="text" name="brand" style="width: 100%" disabled>
@@ -32,14 +32,32 @@
           $('#search-results').append(option);
         });
       }
+      function handleNutrientNames(nutrientNames) {
+        nutrientNames.forEach(function(name) {
+          let input = $('<input>');
+          input.attr('id', name.id);
+          input.attr('name', name.id);
+          input.attr('disabled', true);
+          input.attr('style', 'width: 100%');
+          $('#details').append(input);
+
+          let label = $('<label></label>');
+          label.attr('for', name.id);
+          label.text(name.name);
+          $('#details').append(label);
+        })
+      }
       function handleFoodDetails(details) {
+        console.log(details);
         $('#link').attr('href', details.linkUrl);
         $('#description').val(details.description);
         $('#brand').val(details.brandOwner);
         $('#serving-size').val(details.householdServing);
         $('#ingredients').val(details.ingredients);
-        $('#serving-size').val('100 g');
         $('#measures').text(details.portionText);
+        details.nutrients.forEach(nutrient => {
+          $('#' + nutrient.id.toString()).val(nutrient.amount);
+        });
       }
       function getSearchResults() {
         google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
@@ -57,6 +75,9 @@
       };
       window.onload = function() {
         $('#search-query').focus();
+        google.script.run
+        .withSuccessHandler(handleNutrientNames)
+        .getNutrientNames();
       };
       $('#include-branded').on('change', getSearchResults);
       $('#search-query').on('keyup', debounce(getSearchResults));
