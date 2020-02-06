@@ -71,8 +71,6 @@
       $('#unit').on('change', handleQuantityChange);
 
       function handleFoodDetails(details) {
-
-        console.log(details);
         currentDetails = details;
         $('#more-details').on('click', function(event) {
           window.open(
@@ -95,7 +93,6 @@
           source: function(request, response) {
             function handleSearchResults(results) {
               response(results.map(function(details) {
-                console.log(details);
                 return {
                   label: details.description,
                   value: details.foodIdentifier.fdcId || details.foodIdentifier.bookmarkId
@@ -113,7 +110,6 @@
             } else {
               foodIdentifier = {foodType: 'FDC Food', fdcId: Number(ui.item.value)};
             }
-            console.log(foodIdentifier);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
             .getFoodDetails(foodIdentifier);
