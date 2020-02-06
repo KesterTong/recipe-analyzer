@@ -64,9 +64,19 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
 export function getFoodDetails(fdcId: number): any {
   let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
   let details = fdcClient.getFoodDetails({fdcId: fdcId});
-  let result = <any>details;
-  result.householdServing = printHouseholdServing(details);
-  return result;
+  let portionText = '';
+  details.foodPortions.forEach(function(foodPortion) {
+    portionText += foodPortion.amount + ' ' + foodPortion.modifier;
+    portionText += ' = ' + foodPortion.gramWeight + 'g\n';
+  });
+  return {
+    description: details.description,
+    linkUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients',
+    householdServing: details.dataType == 'Branded' ? printHouseholdServing(details) : '100 g',
+    brandOwner: details.brandOwner,
+    ingredients: details.ingredients,
+    portionText: portionText,
+  };
 }
 
 export function updateNutritionTables() {

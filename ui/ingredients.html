@@ -33,23 +33,13 @@
         });
       }
       function handleFoodDetails(details) {
-        let fdcLinkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients';
-        $('#link').attr('href', fdcLinkUrl);
+        $('#link').attr('href', details.linkUrl);
         $('#description').val(details.description);
-        if (details.dataType == 'Branded') {
-          $('#brand').val(details.brandOwner);
-          $('#serving-size').val(details.householdServing);
-          $('#ingredients').val(details.ingredients);
-          $('#measures').empty();
-        } else if (details.dataType == 'SR Legacy') {
-          $('#serving-size').val('100 g');
-          let portionText = '';
-          details.foodPortions.forEach(function(foodPortion) {
-            portionText += foodPortion.amount + ' ' + foodPortion.modifier;
-            portionText += ' = ' + foodPortion.gramWeight + 'g\n';
-          });
-          $('#measures').text(portionText);
-        }
+        $('#brand').val(details.brandOwner);
+        $('#serving-size').val(details.householdServing);
+        $('#ingredients').val(details.ingredients);
+        $('#serving-size').val('100 g');
+        $('#measures').text(details.portionText);
       }
       function getSearchResults() {
         google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(

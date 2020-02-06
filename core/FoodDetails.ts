@@ -22,15 +22,18 @@ export interface HouseholdServing {
 }
 
 export interface FoodDetails extends HouseholdServing {
+  fdcId?: number,
   description: string,
   dataType: string,
   foodNutrients: {
-    nutrient: {id: number};
-    amount: number;
-  }[];
+    nutrient: {id: number},
+    amount: number,
+  }[],
+  ingredients?: string,
+  brandOwner?: string,
   foodPortions?: {
     modifier: string,
     gramWeight: number,
     amount: number,
-  }[];
+  }[],
 }
