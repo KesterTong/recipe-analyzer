@@ -103,13 +103,15 @@ export class FDCClient {
     let result: SearchResult[] = [];
     for (let bookmarkId in this.customFoodsByBookmarkId) {
       let details = this.customFoodsByBookmarkId[bookmarkId];
-      result.push({
-        foodIdentifier: {
-          foodType: 'Local Food',
-          bookmarkId: bookmarkId,
-        },
-        description: details.description,
-      });
+      if (details.description.match(query)) {
+        result.push({
+          foodIdentifier: {
+            foodType: 'Local Food',
+            bookmarkId: bookmarkId,
+          },
+          description: details.description,
+        });
+      }
     }
     let queryResult = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
     queryResult.foods.forEach(details => {
