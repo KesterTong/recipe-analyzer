@@ -2,10 +2,8 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "target": "es5",
     "allowJs": true
-  },
-  "exclude": [
-      "./tests/"
-  ]
+  }
 }

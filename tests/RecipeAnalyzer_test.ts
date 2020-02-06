@@ -33,7 +33,8 @@ function setupMockText(mockedText: GoogleAppsScript.Document.Text) {
   let asText = '';
   let linkStartOffset: number = 0;
   let linkEndOffsetInclusive: number = 0;
-  let linkUrl: string = null;
+  // TODO: check if null is correct here.
+  let linkUrl: string = <any>null;
   when(mockedText.getText()).thenCall(() => {
     return asText;
   });
@@ -82,7 +83,7 @@ describe('updateElementAndRunningTotal', () => {
     var nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
-    verify(mockedText.setLinkUrl(12, 15, null)).once();
+    verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
   });
 
   it('no link with tabs', () => {
@@ -99,7 +100,7 @@ describe('updateElementAndRunningTotal', () => {
     let nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
-    verify(mockedText.setLinkUrl(12, 15, null)).once();
+    verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
   });
 
   it('recipe not found', () => {
@@ -118,8 +119,8 @@ describe('updateElementAndRunningTotal', () => {
     var nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
-    verify(mockedText.setLinkUrl(12, 15, null)).once();
-    verify(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.NOT_AN_ID', fdcId: null}))).once();
+    verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
+    verify(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.NOT_AN_ID'}))).once();
   });
 
   it('recipe not found with tabs', () => {
@@ -138,8 +139,8 @@ describe('updateElementAndRunningTotal', () => {
     let nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
-    verify(mockedText.setLinkUrl(12, 15, null)).once();
-    verify(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.NOT_AN_ID', fdcId: null}))).once();
+    verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
+    verify(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.NOT_AN_ID'}))).once();
   });
 
   it('FDC data', () => {
@@ -149,7 +150,7 @@ describe('updateElementAndRunningTotal', () => {
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: null, fdcId: 12345}))).thenReturn(TEST_BRANDED_FOOD);
+    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'FDC Food', fdcId: 12345}))).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -159,7 +160,7 @@ describe('updateElementAndRunningTotal', () => {
     let nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({1008: 1700.0, 1003: 20.0});
     expect(text.getText()).to.equal('60 pieces Banana Chips\t1700\t20');
-    verify(mockedText.setLinkUrl(22, 29, null)).once();
+    verify(mockedText.setLinkUrl(22, 29, <any>null)).once();
   });
 
   it('recipe', () => {
@@ -169,7 +170,7 @@ describe('updateElementAndRunningTotal', () => {
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.ghi789', fdcId: null}))).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.ghi789'}))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -179,7 +180,7 @@ describe('updateElementAndRunningTotal', () => {
     let nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({1008: 50.0, 1003: 10.0});
     expect(text.getText()).to.equal('0.5 serving My Recipe\t50\t10');
-    verify(mockedText.setLinkUrl(21, 26, null)).once();
+    verify(mockedText.setLinkUrl(21, 26, <any>null)).once();
   });
 
   it('recipe with plural', () => {
@@ -189,7 +190,7 @@ describe('updateElementAndRunningTotal', () => {
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.ghi789', fdcId: null}))).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.ghi789'}))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -199,7 +200,7 @@ describe('updateElementAndRunningTotal', () => {
     let nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
-    verify(mockedText.setLinkUrl(22, 28, null)).once();
+    verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
   });
 
   it('recipe with existing output', () => {
@@ -209,7 +210,7 @@ describe('updateElementAndRunningTotal', () => {
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({bookmarkId: 'id.ghi789', fdcId: null}))).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.ghi789'}))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -219,6 +220,6 @@ describe('updateElementAndRunningTotal', () => {
     var nutrients = recipeAnalyzer.updateElement(listItem);
     expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
-    verify(mockedText.setLinkUrl(22, 28, null)).once();
+    verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
   });
 });

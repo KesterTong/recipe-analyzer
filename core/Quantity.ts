@@ -20,7 +20,7 @@ export interface Quantity {
   unit: string;
 }
 
-export function nutrientsForQuantity(quantity: Quantity, foodData: FoodData): Nutrients {
+export function nutrientsForQuantity(quantity: Quantity, foodData: FoodData): Nutrients | null {
   quantity = canonicalizeQuantity(quantity);
   // The number of units of the quantity per serving.
   let unitsPerServing = foodData.servingEquivalentQuantities[quantity.unit];

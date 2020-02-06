@@ -25,7 +25,7 @@ export interface ParsedIngredient {
 /**
  * Parse an ingredient with quantitiy, e.g. "1 cup flour"
  */
-export function parseIngredient(textElement: GoogleAppsScript.Document.Text): ParsedIngredient {
+export function parseIngredient(textElement: GoogleAppsScript.Document.Text): ParsedIngredient | null {
   let linkUrl = null;
   let ingredientStart = 0;
   let text = textElement.getText();
@@ -41,24 +41,26 @@ export function parseIngredient(textElement: GoogleAppsScript.Document.Text): Pa
     return null;
   }
   let fdcIdMatch = linkUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
-  let fdcId = fdcIdMatch ? Number(fdcIdMatch[1]) : null;
   let bookmarkIdMatch = linkUrl.match('^#bookmark=(.*)');
-  let bookmarkId = bookmarkIdMatch ? bookmarkIdMatch[1] : null;
-  if (!(fdcId || bookmarkId)) {
+  let id: FoodIdentifier;
+  if (fdcIdMatch) {
+    id = {foodType: 'FDC Food', fdcId: Number(fdcIdMatch[1])};
+  } else if (bookmarkIdMatch) {
+    id = {foodType: 'Local Food', bookmarkId: bookmarkIdMatch[1]}
+  } else {
     return null;
   }
   return {
     quantity: quantity,
-    id: {bookmarkId: bookmarkId, fdcId: fdcId},
+    id: id,
   };
 }
 
-export function updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients, nutrientsToDisplay: number[]) {
+export function updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients | null, nutrientsToDisplay: number[]) {
   let displayNutrients: string;
   if (nutrients == null) {
     // Display '-' to indicate that no nutrient value could be computed.
     displayNutrients = '\t-\t-';
-    nutrients = {};
   } else {
     displayNutrients = '\t' + nutrientsToDisplay.map(nutrientId => nutrients[nutrientId].toFixed(0)).join('\t');
   }
@@ -68,5 +70,6 @@ export function updateIngredient(textElement: GoogleAppsScript.Document.Text, nu
   textElement.replaceText('\\t.*$', '');
   var originalSize = textElement.getText().length;
   textElement.appendText(displayNutrients);
-  textElement.setLinkUrl(originalSize, originalSize + displayNutrients.length - 1, null);
+  // TODO: null works but might be invalid, maybe use empty string.
+  textElement.setLinkUrl(originalSize, originalSize + displayNutrients.length - 1, <any>null);
 }

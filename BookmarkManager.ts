@@ -35,8 +35,12 @@ export class BookmarkManager {
    * 
    * @param element An Element.
    */
-  bookmarkIdForElement(element: GoogleAppsScript.Document.Element): string {
-    return this.bookmarkIdByText[getText(element)];
+  bookmarkIdForElement(element: GoogleAppsScript.Document.Element): string | null {
+    let text = getText(element);
+    if (text == null) {
+      return null;
+    }
+    return this.bookmarkIdByText[text] || null;
   }
 
 }
@@ -55,7 +59,7 @@ export class BookmarkManager {
  * @param element An element
  * @requires The text that the element contains.
  */
-function getText(element: GoogleAppsScript.Document.Element): string {
+function getText(element: GoogleAppsScript.Document.Element): string | null {
   switch (element.getType()) {
     case DocumentApp.ElementType.PARAGRAPH:
       return element.asParagraph().getText();

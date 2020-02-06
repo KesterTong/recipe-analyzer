@@ -24,23 +24,23 @@ import { parseQuantity } from "./parseQuantity";
  * Note that "1 cup" is not allowed since the gram or ml
  * equivalent must be specified.
  */
-export function parseHouseholdServing(text: string): HouseholdServing {
-  let metricUnits: Quantity;
-  let customaryUnitsText: string;
+export function parseHouseholdServing(text: string): HouseholdServing | null {
+  let metricUnits: Quantity | null;
+  let customaryUnitsText: string | undefined;
   let match = text.match(/^([^\(]*)\(([^\)]*)\)$/);
   if (match == null) {
     metricUnits = parseQuantity(text);
-    customaryUnitsText = null;
+    customaryUnitsText = undefined;
   } else {
     metricUnits = parseQuantity(match[2]);
     customaryUnitsText = match[1].trim();
   }
-  if (metricUnits.unit != 'g' && metricUnits.unit != 'ml') {
+  if (metricUnits == null || (metricUnits.unit != 'g' && metricUnits.unit != 'ml')) {
     return null;
   }
   return {
     servingSize: metricUnits.amount,
     servingSizeUnit: metricUnits.unit,
-    householdServingFullText: customaryUnitsText
+    householdServingFullText: customaryUnitsText,
   };
 }

@@ -28,17 +28,17 @@ export class RecipeAnalyzer {
       private fdcClient: FDCClient,
       propertiesService: GoogleAppsScript.Properties.PropertiesService,
       private documentApp: GoogleAppsScript.Document.DocumentApp) {
-    this.nutrientsToDisplay = JSON.parse(
-      propertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS'));
+    let json = propertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS')
+    // TODO: nutrientsToDisplay == [] should be an error.
+    this.nutrientsToDisplay = json == null ? [] : JSON.parse(json);
   }
 
-  private computeNutrients(ingredient: ParsedIngredient): Nutrients {
-    let foodData: FoodData;
+  private computeNutrients(ingredient: ParsedIngredient): Nutrients | null {
     let foodDetails = this.fdcClient.getFoodDetails(ingredient.id);
     if (foodDetails == null) {
       return null;
     }
-    foodData = foodDetailsToFoodData(foodDetails, this.nutrientsToDisplay);
+    let foodData = foodDetailsToFoodData(foodDetails, this.nutrientsToDisplay);
     if (foodData == null) {
       return null;
     }
@@ -55,10 +55,10 @@ export class RecipeAnalyzer {
       return {};
     }
     let textElement = <GoogleAppsScript.Document.Text>childElement;
+    let nutrients: Nutrients | null =  null;
     let ingredient = parseIngredient(textElement);
-    let nutrients: Nutrients = null;
     if (ingredient != null) {
-      nutrients = this.computeNutrients(ingredient)
+      nutrients = this.computeNutrients(ingredient);
     }
     updateIngredient(textElement, nutrients, this.nutrientsToDisplay);
     return nutrients || {};
@@ -71,8 +71,8 @@ export class RecipeAnalyzer {
       INSIDE_RECIPE,
     }
     let state: State = State.LOOKING_FOR_RECIPE;
-    let totalElement: GoogleAppsScript.Document.ListItem = null;
-    let runningTotal: Nutrients = null;
+    let totalElement: GoogleAppsScript.Document.ListItem | null = null;
+    let runningTotal: Nutrients | null = null;
     let body = document.getBody();
     for (let i = body.getNumChildren() - 1; i > 0; i--) {
       let element = body.getChild(i);
@@ -80,21 +80,22 @@ export class RecipeAnalyzer {
       // that the current element is not a list item.  This is so we can then
       // check if the current element is the title.
       if (state == State.INSIDE_RECIPE && element.getType() != this.documentApp.ElementType.LIST_ITEM) {
-        this.updateTotalElement(totalElement, runningTotal);
+        this.updateTotalElement(totalElement!, runningTotal!);
         totalElement = null;
         state = State.LOOKING_FOR_TITLE;
       }
   
-      let maybeBookmarkId: string;
+      let maybeBookmarkId: string | null;
       if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkManager.bookmarkIdForElement(element))) {
         this.fdcClient.addLocalFood(
           maybeBookmarkId,
           {
             dataType: 'Branded',
+            fdcId: -1, // TODO: make this meaningful or make field optional.
             description: element.asParagraph().getText(),
             foodNutrients: this.nutrientsToDisplay.map(nutrientId => ({
               nutrient: {id: nutrientId},
-              amount: runningTotal[nutrientId],
+              amount: runningTotal![nutrientId],
             })),
             // Fake values that make the nutrient values correct.
             servingSize: 100,
@@ -109,7 +110,7 @@ export class RecipeAnalyzer {
         state = State.INSIDE_RECIPE;
       } else if (state == State.INSIDE_RECIPE) {
         var nutrients = this.updateElement(element.asListItem());
-        runningTotal = addNutrients(runningTotal, nutrients);
+        runningTotal = addNutrients(runningTotal!, nutrients);
       }
     }
   }

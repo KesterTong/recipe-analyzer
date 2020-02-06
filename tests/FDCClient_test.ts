@@ -20,7 +20,8 @@ import 'mocha';
 import { mock, instance, when, verify } from 'ts-mockito';
 
 describe('FoodDatabase', () => {
-  let mockedUserCache: GoogleAppsScript.Cache.Cache = null;
+  let mockedUserCache: GoogleAppsScript.Cache.Cache = mock<GoogleAppsScript.Cache.Cache>();
+  when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
 
   let mockedCacheService = mock<GoogleAppsScript.Cache.CacheService>();
   when(mockedCacheService.getUserCache()).thenCall(() => instance(mockedUserCache));
@@ -34,33 +35,31 @@ describe('FoodDatabase', () => {
   when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
   let propertiesService = instance(mockedPropertiesService);
 
+  let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
+  when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
+
   let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
+  when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
+    instance(mockedHTTPResponse));
   let urlFetchApp = instance(mockedUrlFetchApp);
 
   let fdcClient = new FDCClient(urlFetchApp, cacheService, propertiesService);
   it('cached', () => {
-    mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
-    when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-    expect(fdcClient.getFoodDetails({fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFoodDetails({foodType: 'FDC Food', fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('11111', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
   it('not cached', () => {
-    mockedUserCache = mock<GoogleAppsScript.Cache.Cache>();
-    let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
-    when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-    when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
-      instance(mockedHTTPResponse));
-    expect(fdcClient.getFoodDetails({fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFoodDetails({foodType: 'FDC Food', fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
   it('local', () => {
     fdcClient.addLocalFood('id.abc123', TEST_RECIPE_DETAILS);
-    expect(fdcClient.getFoodDetails({bookmarkId: 'id.abc123'})).to.deep.equal(TEST_RECIPE_DETAILS);
+    expect(fdcClient.getFoodDetails({foodType: 'Local Food', bookmarkId: 'id.abc123'})).to.deep.equal(TEST_RECIPE_DETAILS);
   });
 
   it('local not found', () => {
-    expect(fdcClient.getFoodDetails({bookmarkId: 'id.def456'})).to.equal(null);
+    expect(fdcClient.getFoodDetails({foodType: 'Local Food', bookmarkId: 'id.def456'})).to.equal(null);
   });
 });

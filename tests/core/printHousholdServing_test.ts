@@ -28,7 +28,6 @@ describe('printHouseholdServing', () => {
     expect(printHouseholdServing({
       servingSize: 240.0,
       servingSizeUnit: 'ml',
-      householdServingFullText: null,
     })).to.equal('240 ml');
   });
 });

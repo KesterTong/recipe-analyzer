@@ -17,8 +17,9 @@ import { BookmarkManager } from './BookmarkManager';
 import { FDCClient, SearchResult } from './FDCClient';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { printHouseholdServing } from './core/printHouseholdServing';
-import { FoodDetails } from './core/FoodDetails';
+import { FDCFood } from './core/FoodDetails';
 import { nutrientNames } from './core/Nutrients';
+import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -28,7 +29,7 @@ export function onOpen() {
       .addToUi();
 }
 
-export function getCustomFoods(): FoodDetails[] {
+export function getCustomFoods(): FDCFood[] {
   let document = DocumentApp.getActiveDocument();
   let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
   let bookmarkManager = new BookmarkManager(document);
@@ -64,13 +65,30 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
 
 export function getFoodDetails(fdcId: number): any {
   let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
-  let details = fdcClient.getFoodDetails({fdcId: fdcId});
+  let details = fdcClient.getFoodDetails({foodType: 'FDC Food', fdcId: fdcId});
+  if (details == null) {
+    // TODO: handle this in the client
+    return null;
+  }
   let portionText = '';
-  details.foodPortions.forEach(function(foodPortion) {
-    portionText += foodPortion.amount + ' ' + foodPortion.modifier;
-    portionText += ' = ' + foodPortion.gramWeight + 'g\n';
-  });
-  let scale: number = details.dataType == 'Branded' ? details.servingSize / 100.0 : 1.0;
+  let householdServing = '100 g';
+  let brandOwner = '';
+  let ingredients = ''
+  let scale: number = 1.0;
+  switch (details.dataType) {
+    case 'Branded':
+      scale = details.servingSize / 100.0;
+      householdServing = printHouseholdServing(details);
+      brandOwner = details.brandOwner || '';
+      ingredients = details.ingredients || '';
+      break;
+    case 'SR Legacy':
+      details.foodPortions.forEach(function(foodPortion) {
+        portionText += foodPortion.amount + ' ' + foodPortion.modifier;
+        portionText += ' = ' + foodPortion.gramWeight + 'g\n';
+      });
+      break;
+  }
   let nutrients: {id: number, amount: number}[] = [];
   details.foodNutrients.forEach(nutrient => {
     nutrients.push({
@@ -81,9 +99,9 @@ export function getFoodDetails(fdcId: number): any {
   return {
     description: details.description,
     linkUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients',
-    householdServing: details.dataType == 'Branded' ? printHouseholdServing(details) : '100 g',
-    brandOwner: details.brandOwner,
-    ingredients: details.ingredients,
+    householdServing: householdServing,
+    brandOwner: brandOwner,
+    ingredients: ingredients,
     portionText: portionText,
     nutrients: nutrients,
   };
@@ -91,8 +109,8 @@ export function getFoodDetails(fdcId: number): any {
 
 export function getNutrientNames(): {id: number, name: string}[] {
   let namesById = nutrientNames();
-  let nutrientsToDisplay = <number[]>JSON.parse(
-    PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS'));
+  let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
+  let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
   return nutrientsToDisplay.map(id => ({
     id: id,
     name: namesById[id],
@@ -127,7 +145,7 @@ export function updateNutritionTablesIfDocumentHasChanged() {
   var documentHash = Utilities.base64Encode(
     Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, body.getText()));
   var cache = CacheService.getUserCache();
-  if (cache.get('documentHash') ==  documentHash) {
+  if (cache != null && cache.get('documentHash') ==  documentHash) {
     // Note we don't extend the TTL as we want to keep the hash entries for the USDA
     // database lookups alive, and to do this we need to scan the document again.  This
     // also requires that we use a shorter TLL on the document hash than the USDA data
@@ -143,5 +161,7 @@ export function updateNutritionTablesIfDocumentHasChanged() {
   documentHash = Utilities.base64Encode(
     Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, body.getText()));
   // Store in cache with TTL of 1 hour.
-  cache.put('documentHash', documentHash, 3600);
+  if (cache != null) {
+    cache.put('documentHash', documentHash, 3600);
+  }
 }

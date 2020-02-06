@@ -18,7 +18,7 @@ import { Quantity } from "./Quantity";
 /**
  * Parse a quantity, e.g. "1 cup"
  */
-export function parseQuantity(text: string): Quantity {
+export function parseQuantity(text: string): Quantity | null {
   const fractionValueBySymbol: {[index: string]: number} = {
     '': 0,
     '½': 1 / 2,

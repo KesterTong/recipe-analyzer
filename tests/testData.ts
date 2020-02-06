@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import { FoodData } from '../core/FoodData';
-import { FoodDetails } from '../core/FoodDetails';
+import { FDCFood } from '../core/FoodDetails';
 
-export const TEST_SR_LEGACY_FOOD = {
+export const TEST_SR_LEGACY_FOOD: FDCFood = {
   description: 'Bananas',
   dataType: 'SR Legacy',
+  fdcId: 12345,
   foodNutrients: [{
     nutrient: {id: 1008},
     amount: 123.0
@@ -46,8 +47,9 @@ export const TEST_SR_LEGACY_FOOD_DATA: FoodData = {
   },
 };
 
-export const TEST_BRANDED_FOOD = {
+export const TEST_BRANDED_FOOD: FDCFood = {
   description: 'Plantain Chips',
+  fdcId: 23456,
   dataType: 'Branded',
   foodNutrients: [{
     nutrient: {id: 1008},
@@ -59,10 +61,6 @@ export const TEST_BRANDED_FOOD = {
   servingSize: 40,
   servingSizeUnit: 'g',
   householdServingFullText: '6 pieces',
-  labelNutrients: {
-    'calories': {value: 170},
-    'protein': {value: 2},
-  },
 };
 
 export const TEST_BRANDED_FOOD_DATA: FoodData = {
@@ -71,8 +69,9 @@ export const TEST_BRANDED_FOOD_DATA: FoodData = {
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
 };
 
-export const TEST_RECIPE_DETAILS: FoodDetails = {
+export const TEST_RECIPE_DETAILS: FDCFood = {
   dataType: 'Branded',
+  fdcId: -1,
   description: 'My Recipe',
   foodNutrients: [{
     nutrient: {id: 1008},

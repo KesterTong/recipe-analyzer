@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodDetails } from './core/FoodDetails';
+import { FDCFood } from './core/FoodDetails';
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -38,10 +38,17 @@ export interface SearchResult {
   description: string,
 }
 
-export interface FoodIdentifier {
-  fdcId?: number,
-  bookmarkId?: string,
+export interface FDCFoodIdentifier {
+  foodType: 'FDC Food',
+  fdcId: number,
 }
+
+export interface LocalFoodIdentifier {
+  foodType: 'Local Food',
+  bookmarkId: string,
+}
+
+export type FoodIdentifier = FDCFoodIdentifier | LocalFoodIdentifier;
 
 /**
  * Client for USDA Food Data Central database.
@@ -49,19 +56,19 @@ export interface FoodIdentifier {
  * This database provides food data from a variety of sources.
  */
 export class FDCClient {
-  private localFoodDetailsByBookmarkId: {[index: string]: FoodDetails} = {};
+  private localFoodDetailsByBookmarkId: {[index: string]: FDCFood} = {};
 
   constructor(
       private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
       private cacheService: GoogleAppsScript.Cache.CacheService,
       private propertiesService: GoogleAppsScript.Properties.PropertiesService) {}
 
-  addLocalFood(bookmarkId: string, foodDetails: FoodDetails) {
+  addLocalFood(bookmarkId: string, foodDetails: FDCFood) {
     this.localFoodDetailsByBookmarkId[bookmarkId] = foodDetails;
   }
 
-  getCustomFoods(): FoodDetails[] {
-    let result: FoodDetails[] = [];
+  getCustomFoods(): FDCFood[] {
+    let result: FDCFood[] = [];
     for (let bookmarkId in this.localFoodDetailsByBookmarkId) {
       result.push(this.localFoodDetailsByBookmarkId[bookmarkId]);
     }
@@ -69,23 +76,31 @@ export class FDCClient {
   }
 
   // TODO: handle API call failures gracefully.
-  getFoodDetails(foodIdentifier: FoodIdentifier): FoodDetails {
-    // Ensure that fdcId is all digits.
-    if (foodIdentifier.bookmarkId != null) {
-      return this.localFoodDetailsByBookmarkId[foodIdentifier.bookmarkId] || null;
+  getFoodDetails(foodIdentifier: FoodIdentifier): FDCFood | null{
+    switch (foodIdentifier.foodType) {
+      case 'FDC Food':
+        return this.FDCFoodDetails(foodIdentifier.fdcId);
+      case 'Local Food':
+        return this.localFoodDetailsByBookmarkId[foodIdentifier.bookmarkId] || null;
     }
-    let fdcId = foodIdentifier.fdcId.toString();
+  }
+
+  FDCFoodDetails(fdcId: number): FDCFood | null {
+    let fdcIdString = fdcId.toString();
     let cache = this.cacheService.getUserCache();
-    let response = cache.get(fdcId);
+    if (cache == null) {
+      return null;
+    }
+    let response = cache.get(fdcIdString);
     if (response != null) {
       // Keep the item alive in the cache.
-      cache.put(fdcId, response, 21600);
+      cache.put(fdcIdString, response, 21600);
       return JSON.parse(response);
     }
-    let url = this.fdcApiUrl(fdcId, {});
+    let url = this.fdcApiUrl(fdcIdString, {});
     response = this.urlFetchApp.fetch(url).getContentText();
     // Add to cache for 6 hours (maximum ttl allowed).
-    cache.put(fdcId, response, 21600);
+    cache.put(fdcIdString, response, 21600);
     return JSON.parse(response);
   }
 

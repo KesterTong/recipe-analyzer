@@ -38,7 +38,7 @@ describe('parseIngredient', () => {
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 1.0, unit: 'cup'},
-      id: {fdcId: null, bookmarkId: 'id.abc123'},
+      id: {foodType: 'Local Food', bookmarkId: 'id.abc123'},
     });
   });
   it('fdc ingredient', () => {
@@ -48,7 +48,7 @@ describe('parseIngredient', () => {
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 100, unit: 'g'},
-      id: {fdcId: 173945, bookmarkId: null},
+      id: {foodType: 'FDC Food', fdcId: 173945},
     });
   });
   it('fdc ingredient with trailing space', () => {
@@ -58,7 +58,7 @@ describe('parseIngredient', () => {
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 100, unit: 'g'},
-      id: {fdcId: 173945, bookmarkId: null},
+      id: {foodType: 'FDC Food', fdcId: 173945},
     });
   });
 });

@@ -16,24 +16,37 @@
  * Serving size as printed on USDA label, e.g. "1 cup (220 g)" or "1 scoop (36 ml)".
  */
 export interface HouseholdServing {
-  servingSize?: number,
-  servingSizeUnit?: string,
+  servingSize: number,
+  servingSizeUnit: string,
   householdServingFullText?: string,
 }
 
-export interface FoodDetails extends HouseholdServing {
-  fdcId?: number,
+export interface BrandedFood extends HouseholdServing {
+  dataType: 'Branded',
+  fdcId: number,
   description: string,
-  dataType: string,
   foodNutrients: {
     nutrient: {id: number},
-    amount: number,
+    amount?: number,
   }[],
   ingredients?: string,
   brandOwner?: string,
-  foodPortions?: {
+}
+
+export interface SRLegacyFood {
+  dataType: 'SR Legacy',
+  fdcId: number,
+  description: string,
+  foodNutrients: {
+    nutrient: {id: number},
+    amount?: number,
+  }[],
+  foodPortions: {
     modifier: string,
     gramWeight: number,
     amount: number,
   }[],
 }
+
+export type FDCFood = BrandedFood | SRLegacyFood;
+

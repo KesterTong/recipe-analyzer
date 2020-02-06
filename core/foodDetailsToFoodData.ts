@@ -15,10 +15,10 @@
 import { Quantity, canonicalizeQuantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
 import { FoodData } from "./FoodData";
-import { FoodDetails } from './FoodDetails';
+import { FDCFood, SRLegacyFood, BrandedFood } from './FoodDetails';
 import { parseQuantity } from './parseQuantity';
 
-export function foodDetailsToFoodData(foodDetails: FoodDetails, nutrientsToDisplay: number[]): FoodData {
+export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): FoodData | null {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails, nutrientsToDisplay);
   if (nutrientsPerServing == null) {
     return null;
@@ -36,7 +36,7 @@ export function foodDetailsToFoodData(foodDetails: FoodDetails, nutrientsToDispl
   };
 }
 
-function nutrientsFromFoodDetails(foodDetails: FoodDetails, nutrientsToDisplay: number[]): Nutrients {
+function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {
   let result: Nutrients = {};
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
     var foodNutrient = foodDetails.foodNutrients[i];
@@ -51,19 +51,16 @@ function nutrientsFromFoodDetails(foodDetails: FoodDetails, nutrientsToDisplay: 
   return result;
 }
 
-function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FoodDetails): Quantity[] {
-  if (foodDetails.dataType == 'Recipe') {
-    return [{amount: 1.0, unit: 'serving'}];
-  } else if (foodDetails.dataType == 'SR Legacy') {
-    return SRLegacyServingEquivalentQuantities(foodDetails);
-  } else if (foodDetails.dataType == 'Branded') {
-    return brandedServingEquivalentQuantities(foodDetails);
-  } else {
-    throw 'Unknown DataType ' + foodDetails.dataType
+function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FDCFood): Quantity[] {
+  switch (foodDetails.dataType) {
+    case 'SR Legacy':
+      return SRLegacyServingEquivalentQuantities(foodDetails);
+    case 'Branded':
+      return brandedServingEquivalentQuantities(foodDetails);
   }
 }
 
-function SRLegacyServingEquivalentQuantities(foodDetails: FoodDetails) : Quantity[] {
+function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) : Quantity[] {
   // A serving is 100g for SR Legacy data.
   var servingEquivalentQuantities: Quantity[] = [{
     amount: 100.0,
@@ -82,7 +79,7 @@ function SRLegacyServingEquivalentQuantities(foodDetails: FoodDetails) : Quantit
   return servingEquivalentQuantities;
 }
 
-function brandedServingEquivalentQuantities(foodDetails: FoodDetails) : Quantity[] {
+function brandedServingEquivalentQuantities(foodDetails: BrandedFood) : Quantity[] {
   let result: Quantity[] = [{
     amount: 100.0,
     unit: foodDetails.servingSizeUnit,

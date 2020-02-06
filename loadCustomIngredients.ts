@@ -15,7 +15,7 @@
 import { FDCClient } from "./FDCClient";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
-import { FoodDetails } from "./core/FoodDetails";
+import { FDCFood } from "./core/FoodDetails";
 
 export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: FDCClient) {
   let ingredientsTable = getIngredientsTable(document);
@@ -41,7 +41,7 @@ export function loadCustomIngredients(document: GoogleAppsScript.Document.Docume
   }
 }
 
-function parseRow(row: GoogleAppsScript.Document.TableRow): FoodDetails {
+function parseRow(row: GoogleAppsScript.Document.TableRow): FDCFood | null {
   let householdServing = parseHouseholdServing(row.getCell(1).getText());
   if (householdServing == null) {
     return null;
@@ -51,6 +51,7 @@ function parseRow(row: GoogleAppsScript.Document.TableRow): FoodDetails {
   let scale = 100.0 / householdServing.servingSize;
   return {
     dataType: 'Branded',
+    fdcId: -1,  // TODO: either make this meaningful or make it optional
     description: row.getCell(0).getText(),
     servingSize: householdServing.servingSize,
     servingSizeUnit: householdServing.servingSizeUnit,
@@ -68,7 +69,7 @@ function parseRow(row: GoogleAppsScript.Document.TableRow): FoodDetails {
   };
 }
 
-function getIngredientsTable(document: GoogleAppsScript.Document.Document): GoogleAppsScript.Document.Table {
+function getIngredientsTable(document: GoogleAppsScript.Document.Document): GoogleAppsScript.Document.Table | null {
   let tables = document.getBody().getTables();
   if (tables.length == 0) {
     return null;

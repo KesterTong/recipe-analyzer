@@ -28,7 +28,7 @@ describe('parseHouseholdServing', () => {
     expect(parseHouseholdServing('240 ml')).to.deep.equal({
       servingSize: 240.0,
       servingSizeUnit: 'ml',
-      householdServingFullText: null,
+      householdServingFullText: undefined,
     });
   });
   it('1 cup', () => {
