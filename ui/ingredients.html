@@ -20,8 +20,10 @@
         <label for="serving-size">Serving size</label>
         <input id="ingredients" type="text" name="ingredients" style="width: 100%" disabled>
         <label for="ingredients">Ingredients</label>
-        <button class="action" id="add-ingredient">Add ingredient</button>
-        <button id="more-details">More details</button>
+        <div class="block" id="button-bar">
+          <button class="action" id="add-ingredient">Add ingredient</button>
+          <button id="more-details">More details</button>
+        </div>
       </form>
     </div>
 
@@ -35,13 +37,13 @@
             style: 'width: 100%',
             type: 'text',
           });
-          $('#add-ingredient').before(input);
+          $('#button-bar').before(input);
 
           let label = $('<label></label>', {
             for: name.id,
           });
           label.text(name.name);
-          $('#add-ingredient').before(label);
+          $('#button-bar').before(label);
         })
       }
       let currentDetails = null;
