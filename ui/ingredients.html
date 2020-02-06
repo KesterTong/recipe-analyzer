@@ -73,7 +73,9 @@
       function handleFoodDetails(details) {
         currentDetails = details;
         $('#more-details').on('click', function(event) {
-          window.open(details.linkUrl, '_blank');
+          window.open(
+            'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients',
+            '_blank');
         });
         $('#description').val(details.description);
         $('#brand').text(details.brandOwner);
