@@ -86,7 +86,7 @@ export function getFoodDetails(fdcId: number): any {
       householdServing = '100 g';
       let equivalents: string[] = details.foodPortions.map(foodPortion =>
         foodPortion.amount + ' ' + foodPortion.modifier +  ' = ' + foodPortion.gramWeight + ' g');
-      householdServing += equivalents ? ' (' + equivalents.join(', ') + ')' : '';
+      householdServing += equivalents.length > 0 ? ' (' + equivalents.join(', ') + ')' : '';
       break;
   }
   let nutrients: {id: number, amount: number}[] = [];
