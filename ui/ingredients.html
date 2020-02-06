@@ -34,11 +34,11 @@
           </select>
         </div>
         <p>
-          <b>Brand:</b>
+          <b>Brand: </b>
           <span id="brand"></span>
         </p>
         <p>
-          <b>Ingredients:</b>
+          <b>Ingredients: </b>
           <span id="ingredients"></span>
         </p>
         <div class="block" id="button-bar">
@@ -51,7 +51,7 @@
     <script>
       function handleNutrientNames(nutrientNames) {
         nutrientNames.forEach(function(name) {
-          let label = $('<b></b>').text(name.name + ':');
+          let label = $('<b></b>').text(name.name + ': ');
           let amount = $('<span></span>', {id: 'nutrient-' + name.id});
           $('#button-bar').before($('<p></p>').append([label, amount]));
         })
