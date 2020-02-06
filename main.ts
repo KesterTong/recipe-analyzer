@@ -71,7 +71,7 @@ export function getFoodDetails(fdcId: number): any {
     return null;
   }
   let portionText = '';
-  let householdServing = '100 g';
+  let householdServing: string;
   let brandOwner = '';
   let ingredients = ''
   let scale: number = 1.0;
@@ -83,10 +83,10 @@ export function getFoodDetails(fdcId: number): any {
       ingredients = details.ingredients || '';
       break;
     case 'SR Legacy':
-      details.foodPortions.forEach(function(foodPortion) {
-        portionText += foodPortion.amount + ' ' + foodPortion.modifier;
-        portionText += ' = ' + foodPortion.gramWeight + 'g\n';
-      });
+      householdServing = '100 g';
+      let equivalents: string[] = details.foodPortions.map(foodPortion =>
+        foodPortion.amount + ' ' + foodPortion.modifier +  ' = ' + foodPortion.gramWeight + ' g');
+      householdServing += equivalents ? ' (' + equivalents.join(', ') + ')' : '';
       break;
   }
   let nutrients: {id: number, amount: number}[] = [];

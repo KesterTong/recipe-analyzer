@@ -19,7 +19,6 @@
       <label for="serving-size">Serving Size</label>
       <input id="ingredients" type="text" name="ingredients" style="width: 100%" disabled>
       <label for="ingredients">Ingredients</label>
-      <pre id="measures"></pre>
     </div>
     <button class="action" id="add-ingredient">Add Ingredient</button>
 
@@ -54,7 +53,6 @@
         $('#brand').val(details.brandOwner);
         $('#serving-size').val(details.householdServing);
         $('#ingredients').val(details.ingredients);
-        $('#measures').text(details.portionText);
         details.nutrients.forEach(nutrient => {
           $('#' + nutrient.id.toString()).val(nutrient.amount);
         });
