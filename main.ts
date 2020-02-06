@@ -25,7 +25,7 @@ export function onOpen() {
   let ui = DocumentApp.getUi();
   ui.createMenu('Nutrient Data')
       .addItem('Recalculate', 'updateNutritionTables')
-      .addItem('Ingredients', 'showIngredientsSidebar')
+      .addItem('Show ingredients browser', 'showIngredientsSidebar')
       .addToUi();
 }
 
@@ -54,7 +54,7 @@ export function showIngredientsSidebar() {
   let ui = DocumentApp.getUi();
   let userInterface = HtmlService
   .createHtmlOutputFromFile('ui/ingredients')
-  .setTitle('Custom Ingredients');
+  .setTitle('Ingredients');
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
