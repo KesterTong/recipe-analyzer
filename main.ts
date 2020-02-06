@@ -97,6 +97,7 @@ export function getFoodDetails(fdcId: number): any {
     });
   });
   return {
+    fdcId: details.fdcId,
     description: details.description,
     linkUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients',
     householdServing: householdServing,

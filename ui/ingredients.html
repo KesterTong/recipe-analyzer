@@ -10,7 +10,7 @@
     <label for="include-branded">Include branded foods</label>
     <div id="details" class="block form-group">
       <input id="description" type="text" name="description" style="width: 100%">
-      <label for="description">Description</label><a id="link" target="_blank">🔗</a>
+      <label for="description">Description</label>
       <input id="brand" type="text" name="brand" style="width: 100%" disabled>
       <label for="brand">Brand</label>
       <input id="serving-size" type="text" name="serving-size" style="width: 100%" disabled>
@@ -18,7 +18,9 @@
       <input id="ingredients" type="text" name="ingredients" style="width: 100%" disabled>
       <label for="ingredients">Ingredients</label>
     </div>
+
     <button class="action" id="add-ingredient">Add ingredient</button>
+    <button id="more-details">More details</button>
 
     <script>
       function handleNutrientNames(nutrientNames) {
@@ -36,9 +38,12 @@
           $('#details').append(label);
         })
       }
+      let currentDetails = null;
       function handleFoodDetails(details) {
-        console.log(details);
-        $('#link').attr('href', details.linkUrl);
+        currentDetails = details;
+        $('#more-details').on('click', function(event) {
+          window.open(details.linkUrl, '_blank');
+        });
         $('#description').val(details.description);
         $('#brand').val(details.brandOwner);
         $('#serving-size').val(details.householdServing);
@@ -47,7 +52,6 @@
           $('#' + nutrient.id.toString()).val(nutrient.amount);
         });
       }
-      let fdcId = null;
       window.onload = function() {
         $('#description').autocomplete({
           source: function(request, response) {
@@ -61,7 +65,7 @@
           },
           select: function(event, ui) {
             event.preventDefault();
-            fdcId = Number(ui.item.value);
+            let fdcId = Number(ui.item.value);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
             .getFoodDetails(fdcId);
@@ -73,9 +77,8 @@
         .getNutrientNames();
       };
       document.getElementById('add-ingredient').addEventListener('click', function(event) {
-        if (fdcId) {
-          let description = $("#description").val();
-          google.script.run.addIngredient(fdcId, description);
+        if (currentDetails != null) {
+          google.script.run.addIngredient(currentDetails.fdcId, currentDetails.description);
         }
       })
     </script>
