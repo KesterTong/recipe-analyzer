@@ -16,7 +16,7 @@ import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { BookmarkManager } from './BookmarkManager';
 import { FDCClient, SearchResult } from './FDCClient';
 import { loadCustomIngredients } from './loadCustomIngredients';
-import { FoodDetails } from './core/FoodDetails';
+import { printHouseholdServing } from './core/printHouseholdServing';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -50,9 +50,12 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
-export function getFoodDetails(fdcId: number): FoodDetails {
+export function getFoodDetails(fdcId: number): any {
   let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
-  return fdcClient.getFoodDetails({fdcId: fdcId});
+  let details = fdcClient.getFoodDetails({fdcId: fdcId});
+  let result = <any>details;
+  result.householdServing = printHouseholdServing(details);
+  return result;
 }
 
 export function updateNutritionTables() {

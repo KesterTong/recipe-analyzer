@@ -30,11 +30,9 @@
           $('<a></a>', {href: fdcLinkUrl, target: '_blank'})
           .text(details.description));
         if (details.dataType == 'Branded') {
-          let servingSize = details.householdServingFullText;
-          servingSize += ' (' + details.servingSize + ' ' + details.servingSizeUnit + ')';
           searchDetails.append($('<p></p>').text(details.brandOwner));
           searchDetails.append('<h2>Serving Size</h2>');
-          searchDetails.append($('<p></p>').text(servingSize));
+          searchDetails.append($('<p></p>').text(details.householdServing));
           searchDetails.append('<h2>Ingredients</h2>');
           searchDetails.append($('<p></p>').text(details.ingredients));
         } else if (details.dataType == 'SR Legacy') {
