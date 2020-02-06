@@ -1,41 +1,47 @@
+<!DOCTYPE html>
 <html>
   <head>
+    <base target="_top">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   </head>
   <body>
-    <input id="include-branded" type="checkbox" name="include-branded">
-    <label for="include-branded">Include branded foods</label>
-    <div id="details" class="block form-group">
-      <input id="description" type="text" name="description" style="width: 100%">
-      <label for="description">Description</label>
-      <input id="brand" type="text" name="brand" style="width: 100%" disabled>
-      <label for="brand">Brand</label>
-      <input id="serving-size" type="text" name="serving-size" style="width: 100%" disabled>
-      <label for="serving-size">Serving size</label>
-      <input id="ingredients" type="text" name="ingredients" style="width: 100%" disabled>
-      <label for="ingredients">Ingredients</label>
+    <div class="sidebar">
+      <form>
+        <input id="include-branded" type="checkbox" name="include-branded">
+        <label for="include-branded">Include branded foods</label>
+        <input id="description" type="text" name="description" style="width: 100%">
+        <label for="description">Description</label>
+        <input id="brand" type="text" name="brand" style="width: 100%" disabled>
+        <label for="brand">Brand</label>
+        <input id="serving-size" type="text" name="serving-size" style="width: 100%" disabled>
+        <label for="serving-size">Serving size</label>
+        <input id="ingredients" type="text" name="ingredients" style="width: 100%" disabled>
+        <label for="ingredients">Ingredients</label>
+        <button class="action" id="add-ingredient">Add ingredient</button>
+        <button id="more-details">More details</button>
+      </form>
     </div>
-
-    <button class="action" id="add-ingredient">Add ingredient</button>
-    <button id="more-details">More details</button>
 
     <script>
       function handleNutrientNames(nutrientNames) {
         nutrientNames.forEach(function(name) {
-          let input = $('<input>');
-          input.attr('id', name.id);
-          input.attr('name', name.id);
-          input.attr('disabled', true);
-          input.attr('style', 'width: 100%');
-          $('#details').append(input);
+          let input = $('<input>', {
+            id: name.id,
+            name: name.id,
+            disabled: true,
+            style: 'width: 100%',
+            type: 'text',
+          });
+          $('#add-ingredient').before(input);
 
-          let label = $('<label></label>');
-          label.attr('for', name.id);
+          let label = $('<label></label>', {
+            for: name.id,
+          });
           label.text(name.name);
-          $('#details').append(label);
+          $('#add-ingredient').before(label);
         })
       }
       let currentDetails = null;
