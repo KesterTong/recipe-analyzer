@@ -30,6 +30,9 @@ export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: 
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
   return {
+    fdcId: foodDetails.fdcId,
+    ingredients: (<BrandedFood>foodDetails).ingredients || '',
+    brandOwner: (<BrandedFood>foodDetails).brandOwner || '',
     description: foodDetails.description,
     nutrientsPerServing: nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantitiesDict,

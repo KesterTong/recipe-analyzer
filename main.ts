@@ -16,10 +16,10 @@ import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { BookmarkManager } from './BookmarkManager';
 import { FDCClient, SearchResult } from './FDCClient';
 import { loadCustomIngredients } from './loadCustomIngredients';
-import { printHouseholdServing } from './core/printHouseholdServing';
 import { FDCFood } from './core/FoodDetails';
 import { nutrientNames } from './core/Nutrients';
 import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
+import { FoodData } from './core/FoodData';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -37,8 +37,8 @@ export function getCustomFoods(): FDCFood[] {
   return fdcClient.getCustomFoods();
 }
 
-export function addIngredient(fdcId: Number, description: string) {
-  let unitString = '100 g ';
+export function addIngredient(fdcId: number, amount: number, unit: string, description: string) {
+  let unitString = amount.toString() + ' ' + unit + ' ';
   let fullText = unitString + description
   let document = DocumentApp.getActiveDocument();
   let cursor = document.getCursor();
@@ -63,49 +63,16 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
-export function getFoodDetails(fdcId: number): any {
+export function getFoodDetails(fdcId: number): FoodData | null {
   let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
   let details = fdcClient.getFoodDetails({foodType: 'FDC Food', fdcId: fdcId});
   if (details == null) {
     // TODO: handle this in the client
     return null;
   }
-  let portionText = '';
-  let householdServing: string;
-  let brandOwner = '';
-  let ingredients = ''
-  let scale: number = 1.0;
-  switch (details.dataType) {
-    case 'Branded':
-      scale = details.servingSize / 100.0;
-      householdServing = printHouseholdServing(details);
-      brandOwner = details.brandOwner || '';
-      ingredients = details.ingredients || '';
-      break;
-    case 'SR Legacy':
-      householdServing = '100 g';
-      let equivalents: string[] = details.foodPortions.map(foodPortion =>
-        foodPortion.amount + ' ' + foodPortion.modifier +  ' = ' + foodPortion.gramWeight + ' g');
-      householdServing += equivalents.length > 0 ? ' (' + equivalents.join(', ') + ')' : '';
-      break;
-  }
-  let nutrients: {id: number, amount: number}[] = [];
-  details.foodNutrients.forEach(nutrient => {
-    nutrients.push({
-      id: nutrient.nutrient.id,
-      amount: (nutrient.amount || 0) * scale,
-    });
-  });
-  return {
-    fdcId: details.fdcId,
-    description: details.description,
-    linkUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.fdcId + '/nutrients',
-    householdServing: householdServing,
-    brandOwner: brandOwner,
-    ingredients: ingredients,
-    portionText: portionText,
-    nutrients: nutrients,
-  };
+  let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
+  let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
+  return foodDetailsToFoodData(details, nutrientsToDisplay);
 }
 
 export function getNutrientNames(): {id: number, name: string}[] {

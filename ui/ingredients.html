@@ -6,23 +6,44 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+      .block .form-group {
+        width: 100%;
+      }
+      input, select {
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <div class="sidebar">
       <form>
-        <input id="include-branded" type="checkbox" name="include-branded">
-        <label for="include-branded">Include branded foods</label>
-        <input id="description" type="text" name="description" style="width: 100%">
-        <label for="description">Description</label>
-        <input id="brand" type="text" name="brand" style="width: 100%" disabled>
-        <label for="brand">Brand</label>
-        <input id="serving-size" type="text" name="serving-size" style="width: 100%" disabled>
-        <label for="serving-size">Serving size</label>
-        <input id="ingredients" type="text" name="ingredients" style="width: 100%" disabled>
-        <label for="ingredients">Ingredients</label>
+        <div class="block form-group">
+          <label for="description">Description</label>
+          <input id="description" type="text" name="description">
+        </div>
+        <div class="block form-group">
+          <label for="amount">Amount</label>
+          <input type="text" id="amount" name="amount">
+        </div>
+        <div class="block form-group">
+          <label for="unit">Unit</label>
+          <select id="unit" name="unit">
+            <option>grams</option>
+            <option>mL</option>
+          </select>
+        </div>
+        <p>
+          <b>Brand:</b>
+          <span id="brand"></span>
+        </p>
+        <p>
+          <b>Ingredients:</b>
+          <span id="ingredients"></span>
+        </p>
         <div class="block" id="button-bar">
-          <button class="action" id="add-ingredient">Add ingredient</button>
-          <button id="more-details">More details</button>
+          <button class="action" id="insert-ingredient">Insert ingredient</button>
+          <button id="more-details">Details</button>
         </div>
       </form>
     </div>
@@ -30,35 +51,40 @@
     <script>
       function handleNutrientNames(nutrientNames) {
         nutrientNames.forEach(function(name) {
-          let input = $('<input>', {
-            id: name.id,
-            name: name.id,
-            disabled: true,
-            style: 'width: 100%',
-            type: 'text',
-          });
-          $('#button-bar').before(input);
-
-          let label = $('<label></label>', {
-            for: name.id,
-          });
-          label.text(name.name);
-          $('#button-bar').before(label);
+          let label = $('<b></b>').text(name.name + ':');
+          let amount = $('<span></span>', {id: 'nutrient-' + name.id});
+          $('#button-bar').before($('<p></p>').append([label, amount]));
         })
       }
       let currentDetails = null;
+
+      function handleQuantityChange() {
+        let unit = $('#unit').val();
+        // TODO: do this computation server side.
+        let servings = Number($('#amount').val()) / currentDetails.servingEquivalentQuantities[unit];
+        for (let id in currentDetails.nutrientsPerServing) {
+          let value = servings * currentDetails.nutrientsPerServing[id];
+          $('#nutrient-' + id).text(value);
+        }
+      }
+      $('#amount').on('keyup', handleQuantityChange);
+      $('#unit').on('change', handleQuantityChange);
+
       function handleFoodDetails(details) {
         currentDetails = details;
         $('#more-details').on('click', function(event) {
           window.open(details.linkUrl, '_blank');
         });
         $('#description').val(details.description);
-        $('#brand').val(details.brandOwner);
-        $('#serving-size').val(details.householdServing);
-        $('#ingredients').val(details.ingredients);
-        details.nutrients.forEach(nutrient => {
-          $('#' + nutrient.id.toString()).val(nutrient.amount);
-        });
+        $('#brand').text(details.brandOwner);
+        $('#ingredients').text(details.ingredients);
+        $('#unit').empty()
+        for (let unit in details.servingEquivalentQuantities) {
+          $('#unit').append($('<option></option>').text(unit));
+        }
+        $('#unit').val('g');
+        $('#amount').val(100);
+        handleQuantityChange();
       }
       window.onload = function() {
         $('#description').autocomplete({
@@ -69,7 +95,7 @@
               }));
             }
             google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
-              request.term, $('#include-branded').is(':checked'));
+              request.term, true /** includeBranded */);
           },
           select: function(event, ui) {
             event.preventDefault();
@@ -84,9 +110,15 @@
         .withSuccessHandler(handleNutrientNames)
         .getNutrientNames();
       };
-      document.getElementById('add-ingredient').addEventListener('click', function(event) {
+      document.getElementById('insert-ingredient').addEventListener('click', function(event) {
         if (currentDetails != null) {
-          google.script.run.addIngredient(currentDetails.fdcId, currentDetails.description);
+          // Fetch description from text input so that user can override description
+          // when inserting ingredient.
+          let description = $('#description').val();
+          // TODO: parse this server side.
+          let amount = Number($('#amount').val());
+          let unit = $('#unit').val()
+          google.script.run.addIngredient(currentDetails.fdcId, amount, unit, description);
         }
       })
     </script>

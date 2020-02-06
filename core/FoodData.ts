@@ -15,6 +15,7 @@
 import { Nutrients } from "./Nutrients";
 
 export interface FoodData {
+  fdcId: number;
   description: string;
   nutrientsPerServing: Nutrients;
   // amount and unit of serving equivalent quantities,
@@ -22,4 +23,6 @@ export interface FoodData {
   servingEquivalentQuantities: {
     [index: string]: number;
   };
+  ingredients: string,
+  brandOwner: string,
 }
