@@ -58,7 +58,6 @@ export class RecipeAnalyzer {
     return nutrientsForQuantity(quantity, foodData);
   }
 
-
   private updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients | null, nutrientsToDisplay: number[]) {
     let displayNutrients: string;
     if (nutrients == null) {
