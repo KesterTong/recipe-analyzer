@@ -67,7 +67,7 @@ export class FDCClient {
   }
 
   // TODO: handle API call failures gracefully.
-  getFoodDetails(foodIdentifier: FoodIdentifier): FDCFood | null{
+  getFoodDetails(foodIdentifier: FoodIdentifier): FDCFood | null {
     switch (foodIdentifier.foodType) {
       case 'FDC Food':
         return this.FDCFoodDetails(foodIdentifier.fdcId);
