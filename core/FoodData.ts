@@ -13,10 +13,9 @@
 // limitations under the License.
 
 import { Nutrients } from "./Nutrients";
-import { FoodIdentifier } from "./FoodIdentifier";
 
 export interface FoodData {
-  foodIdentifier: FoodIdentifier;
+  //foodIdentifier: FoodIdentifier;
   description: string;
   nutrientsPerServing: Nutrients;
   // amount and unit of serving equivalent quantities,

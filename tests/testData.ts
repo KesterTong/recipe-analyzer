@@ -38,7 +38,6 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
 };
 
 export const TEST_SR_LEGACY_FOOD_DATA: FoodData = {
-  foodIdentifier: {foodType: 'FDC Food', fdcId: 12345},
   brandOwner: '',
   ingredients: '',
   description: 'Bananas',
@@ -67,7 +66,6 @@ export const TEST_BRANDED_FOOD: FDCFood = {
 };
 
 export const TEST_BRANDED_FOOD_DATA: FoodData = {
-  foodIdentifier: {foodType: 'FDC Food', fdcId: 23456},
   brandOwner: '',
   ingredients: '',
   description: 'Plantain Chips',

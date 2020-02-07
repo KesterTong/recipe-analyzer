@@ -17,7 +17,6 @@ import { Nutrients } from "./Nutrients";
 import { FoodData } from "./FoodData";
 import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FoodDetails';
 import { parseQuantity } from './parseQuantity';
-import { FoodIdentifier } from './FoodIdentifier'
 
 export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): FoodData | null {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails, nutrientsToDisplay);
@@ -31,20 +30,20 @@ export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: 
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
 
-  let foodIdentifier: FoodIdentifier;
-  switch (foodDetails.dataType) {
-    case 'Branded':
-    case 'SR Legacy':
-      foodIdentifier = {foodType: 'FDC Food', fdcId: foodDetails.fdcId};
-      break;
-    case 'Custom':
-      foodIdentifier = {foodType: 'Local Food', bookmarkId: foodDetails.bookmarkId};
-      break;
-  }
+  // let foodIdentifier: FoodIdentifier;
+  // switch (foodDetails.dataType) {
+  //   case 'Branded':
+  //   case 'SR Legacy':
+  //     foodIdentifier = {foodType: 'FDC Food', fdcId: foodDetails.fdcId};
+  //     break;
+  //   case 'Custom':
+  //     foodIdentifier = {foodType: 'Local Food', bookmarkId: foodDetails.bookmarkId};
+  //     break;
+  // }
 
   // TODO: Set this properly
   return {
-    foodIdentifier: foodIdentifier,
+    //foodIdentifier: foodIdentifier,
     ingredients: (<BrandedFood>foodDetails).ingredients || '',
     brandOwner: (<BrandedFood>foodDetails).brandOwner || '',
     description: foodDetails.description,

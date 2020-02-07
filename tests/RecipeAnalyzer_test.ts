@@ -18,7 +18,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { TEST_BRANDED_FOOD_DATA, TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
 import { mock, instance, when, verify, anyString, anyNumber, deepEqual } from 'ts-mockito';
-import { FDCClient } from '../FDCClient';
+import { IngredientDatabase } from '../IngredientDatabase';
 import { BookmarkManager } from '../BookmarkManager';
 
 function createListItem(text: GoogleAppsScript.Document.Text): GoogleAppsScript.Document.ListItem {
@@ -72,7 +72,7 @@ describe('updateElementAndRunningTotal', () => {
   it('no link', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mock<FDCClient>()),
+      instance(mock<IngredientDatabase>()),
       propertiesService,
       documentApp);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
@@ -89,7 +89,7 @@ describe('updateElementAndRunningTotal', () => {
   it('no link with tabs', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
-      instance(mock<FDCClient>()),
+      instance(mock<IngredientDatabase>()),
       propertiesService,
       documentApp);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
@@ -104,7 +104,7 @@ describe('updateElementAndRunningTotal', () => {
   });
 
   it('recipe not found', () => {
-    let mockFdcClient = mock<FDCClient>();
+    let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
       instance(mockFdcClient),
@@ -120,11 +120,11 @@ describe('updateElementAndRunningTotal', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
-    verify(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.NOT_AN_ID'}))).once();
+    verify(mockFdcClient.getFoodDetails('#bookmark=id.NOT_AN_ID')).once();
   });
 
   it('recipe not found with tabs', () => {
-    let mockFdcClient = mock<FDCClient>();
+    let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
       instance(mockFdcClient),
@@ -140,17 +140,17 @@ describe('updateElementAndRunningTotal', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
-    verify(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.NOT_AN_ID'}))).once();
+    verify(mockFdcClient.getFoodDetails('#bookmark=id.NOT_AN_ID')).once();
   });
 
   it('FDC data', () => {
-    let mockFdcClient = mock<FDCClient>();
+    let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'FDC Food', fdcId: 12345}))).thenReturn(TEST_BRANDED_FOOD);
+    when(mockFdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients')).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -164,13 +164,13 @@ describe('updateElementAndRunningTotal', () => {
   });
 
   it('recipe', () => {
-    let mockFdcClient = mock<FDCClient>();
+    let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.ghi789'}))).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -184,13 +184,13 @@ describe('updateElementAndRunningTotal', () => {
   });
 
   it('recipe with plural', () => {
-    let mockFdcClient = mock<FDCClient>();
+    let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.ghi789'}))).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -204,13 +204,13 @@ describe('updateElementAndRunningTotal', () => {
   });
 
   it('recipe with existing output', () => {
-    let mockFdcClient = mock<FDCClient>();
+    let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
-    when(mockFdcClient.getFoodDetails(deepEqual({foodType: 'Local Food', bookmarkId: 'id.ghi789'}))).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 

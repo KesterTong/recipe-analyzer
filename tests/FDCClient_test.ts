@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCClient } from '../FDCClient';
+import { IngredientDatabase } from '../IngredientDatabase';
 import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 
 import { expect } from 'chai';
@@ -43,23 +43,23 @@ describe('FoodDatabase', () => {
     instance(mockedHTTPResponse));
   let urlFetchApp = instance(mockedUrlFetchApp);
 
-  let fdcClient = new FDCClient(urlFetchApp, cacheService, propertiesService);
+  let fdcClient = new IngredientDatabase(urlFetchApp, cacheService, propertiesService);
   it('cached', () => {
-    expect(fdcClient.getFoodDetails({foodType: 'FDC Food', fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/11111/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('11111', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
   it('not cached', () => {
-    expect(fdcClient.getFoodDetails({foodType: 'FDC Food', fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
   it('local', () => {
     fdcClient.addCustomFood(TEST_RECIPE_DETAILS);
-    expect(fdcClient.getFoodDetails({foodType: 'Local Food', bookmarkId: 'id.abc123'})).to.deep.equal(TEST_RECIPE_DETAILS);
+    expect(fdcClient.getFoodDetails('#bookmark=id.abc123')).to.deep.equal(TEST_RECIPE_DETAILS);
   });
 
   it('local not found', () => {
-    expect(fdcClient.getFoodDetails({foodType: 'Local Food', bookmarkId: 'id.def456'})).to.equal(null);
+    expect(fdcClient.getFoodDetails('#bookmark=id.def456')).to.equal(null);
   });
 });

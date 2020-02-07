@@ -56,6 +56,7 @@
           $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
         })
       }
+      let currentIngredientUrl = null;
       let currentDetails = null;
 
       function handleQuantityChange() {
@@ -71,17 +72,13 @@
       $('#unit').on('change', handleQuantityChange);
 
       $('#more-details').on('click', function(event) {
-        let foodIdentifier = currentDetails.foodIdentifier;
-        switch (foodIdentifier.foodType) {
-          case 'Local Food':
-            google.script.run.moveCursorToBookmark(foodIdentifier.bookmarkId);
-            break;
-          case 'FDC Food':
-            window.open(
-              'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.foodIdentifier.fdcId + '/nutrients',
-              '_blank');
-            break;
+        if (currentIngredientUrl == null) {
+          return;
         }
+        if (currentIngredientUrl.substr(0, 1) == '#') {
+          return google.script.run.moveCursorToBookmark(currentIngredientUrl);
+        }
+        window.open(currentIngredientUrl, '_blank');
       });
 
       function handleFoodDetails(details) {
@@ -101,10 +98,10 @@
         $('#description').autocomplete({
           source: function(request, response) {
             function handleSearchResults(results) {
-              response(results.map(function(details) {
+              response(results.map(function(entry) {
                 return {
-                  label: details.description,
-                  value: details.foodIdentifier.fdcId || details.foodIdentifier.bookmarkId
+                  label: entry.description,
+                  value: entry.url,
                 };
               }));
             }
@@ -113,15 +110,10 @@
           },
           select: function(event, ui) {
             event.preventDefault();
-            let foodIdentifier;
-            if (isNaN(ui.item.value)) {
-              foodIdentifier = {foodType: 'Local Food', bookmarkId: ui.item.value};
-            } else {
-              foodIdentifier = {foodType: 'FDC Food', fdcId: Number(ui.item.value)};
-            }
+            currentIngredientUrl = ui.item.value;
             google.script.run
             .withSuccessHandler(handleFoodDetails)
-            .getFoodDetails(foodIdentifier);
+            .getFoodDetails(currentIngredientUrl);
           },
         });
         $('#description').focus();
@@ -137,7 +129,7 @@
           // TODO: parse this server side.
           let amount = Number($('#amount').val());
           let unit = $('#unit').val()
-          google.script.run.addIngredient(currentDetails.foodIdentifier, amount, unit, description);
+          google.script.run.addIngredient(currentIngredientUrl, amount, unit, description);
         }
       })
     </script>

@@ -38,7 +38,7 @@ describe('parseIngredient', () => {
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 1.0, unit: 'cup'},
-      id: {foodType: 'Local Food', bookmarkId: 'id.abc123'},
+      ingredientUrl: '#bookmark=id.abc123',
     });
   });
   it('fdc ingredient', () => {
@@ -48,7 +48,7 @@ describe('parseIngredient', () => {
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 100, unit: 'g'},
-      id: {foodType: 'FDC Food', fdcId: 173945},
+      ingredientUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/173945/nutrients',
     });
   });
   it('fdc ingredient with trailing space', () => {
@@ -58,7 +58,7 @@ describe('parseIngredient', () => {
     let text = instance(mockedText); 
     expect(parseIngredient(text)).to.deep.equal({
       quantity: {amount: 100, unit: 'g'},
-      id: {foodType: 'FDC Food', fdcId: 173945},
+      ingredientUrl: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/173945/nutrients',
     });
   });
 });

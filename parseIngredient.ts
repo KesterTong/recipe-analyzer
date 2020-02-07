@@ -15,44 +15,33 @@
 import { Quantity } from "./core/Quantity";
 import { Nutrients } from "./core/Nutrients";
 import { parseQuantity } from './core/parseQuantity';
-import { FoodIdentifier } from "./core/FoodIdentifier";
 
 export interface ParsedIngredient {
   quantity: Quantity;
-  id: FoodIdentifier;
+  ingredientUrl: string;
 }
 
 /**
  * Parse an ingredient with quantitiy, e.g. "1 cup flour"
  */
 export function parseIngredient(textElement: GoogleAppsScript.Document.Text): ParsedIngredient | null {
-  let linkUrl = null;
+  let ingredientUrl = null;
   let ingredientStart = 0;
   let text = textElement.getText();
   let textLength = text.length;
-  while(ingredientStart < textLength && (linkUrl = textElement.getLinkUrl(ingredientStart)) == null) {
+  while(ingredientStart < textLength && (ingredientUrl = textElement.getLinkUrl(ingredientStart)) == null) {
     ingredientStart++;
   }
-  if (linkUrl == null) {
+  if (ingredientUrl == null) {
     return null;
   }
   let quantity = parseQuantity(text.substr(0, ingredientStart));
   if (quantity == null) {
     return null;
   }
-  let fdcIdMatch = linkUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
-  let bookmarkIdMatch = linkUrl.match('^#bookmark=(.*)');
-  let id: FoodIdentifier;
-  if (fdcIdMatch) {
-    id = {foodType: 'FDC Food', fdcId: Number(fdcIdMatch[1])};
-  } else if (bookmarkIdMatch) {
-    id = {foodType: 'Local Food', bookmarkId: bookmarkIdMatch[1]}
-  } else {
-    return null;
-  }
   return {
     quantity: quantity,
-    id: id,
+    ingredientUrl: ingredientUrl,
   };
 }
 

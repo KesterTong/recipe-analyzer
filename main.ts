@@ -14,12 +14,12 @@
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { BookmarkManager } from './BookmarkManager';
-import { FDCClient, SearchResult } from './FDCClient';
+import { IngredientDatabase, SearchResult } from './IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { nutrientNames } from './core/Nutrients';
 import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 import { FoodData } from './core/FoodData';
-import { FoodIdentifier } from './core/FoodIdentifier';
+import { parseUrl, FoodIdentifier } from './FoodIdentifier';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -29,30 +29,25 @@ export function onOpen() {
       .addToUi();
 }
 
-export function moveCursorToBookmark(bookmarkId: string) {
+export function moveCursorToBookmark(url: string) {
+  let foodIdentifier: FoodIdentifier | null = parseUrl(url);
+  if (foodIdentifier == null || foodIdentifier.foodType != 'Local Food') {
+    return;
+  }
   let document = DocumentApp.getActiveDocument()
-  let bookmark = document.getBookmark(bookmarkId);
+  let bookmark = document.getBookmark(foodIdentifier.bookmarkId);
   if (bookmark == null) {
     return;
   }
   document.setCursor(bookmark.getPosition());
 }
 
-export function addIngredient(foodIdentifier: FoodIdentifier, amount: number, unit: string, description: string) {
+export function addIngredient(linkUrl: string, amount: number, unit: string, description: string) {
   let unitString = amount.toString() + ' ' + unit + ' ';
   let fullText = unitString + description
   let document = DocumentApp.getActiveDocument();
   let cursor = document.getCursor();
   let text = cursor.insertText(fullText);
-  let linkUrl: string;
-  switch (foodIdentifier.foodType) {
-    case 'FDC Food':
-      linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + foodIdentifier.fdcId + '/nutrients';
-      break;
-    case 'Local Food':
-      linkUrl = '#bookmark=' + foodIdentifier.bookmarkId;
-      break;
-  }
   text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
   document.setCursor(document.newPosition(text, fullText.length));
 }
@@ -66,15 +61,15 @@ export function showIngredientsSidebar() {
 }
 
 export function getSearchResults(query: string, includeBranded: boolean): SearchResult[] {
-  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
   fdcClient.loadCustomFoods();
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
-export function getFoodDetails(foodIdentifier: FoodIdentifier): FoodData | null {
-  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
+export function getFoodDetails(url: string): FoodData | null {
+  let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
   fdcClient.loadCustomFoods();
-  let details = fdcClient.getFoodDetails(foodIdentifier);
+  let details = fdcClient.getFoodDetails(url);
   if (details == null) {
     // TODO: handle this in the client
     return null;
@@ -96,7 +91,7 @@ export function getNutrientNames(): {id: number, name: string}[] {
 
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
-  let fdcClient = new FDCClient(UrlFetchApp, CacheService, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
   let bookmarkManager = new BookmarkManager(document);
   loadCustomIngredients(document, bookmarkManager, fdcClient);
   let recipeAnalyzer = new RecipeAnalyzer(

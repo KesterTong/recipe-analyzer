@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCClient } from "./FDCClient";
+import { IngredientDatabase } from "./IngredientDatabase";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
 import { FDCFood, CustomFood } from "./core/FoodDetails";
 
-export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: FDCClient) {
+export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: IngredientDatabase) {
   let ingredientsTable = getIngredientsTable(document);
   if (ingredientsTable == null) {
     return;

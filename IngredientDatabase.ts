@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { FDCFood, CustomFood } from './core/FoodDetails';
-import { FoodIdentifier } from './core/FoodIdentifier';
+import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -35,16 +35,16 @@ interface FDCQueryResult {
 }
 
 export interface SearchResult {
-  foodIdentifier: FoodIdentifier,
+  url: string,
   description: string,
 }
 
 /**
- * Client for USDA Food Data Central database.
+ * Class to store and lookup ingredients.
  * 
- * This database provides food data from a variety of sources.
+ * Looks up USDA Food Data Central database and stores and looks up local ingredients.
  */
-export class FDCClient {
+export class IngredientDatabase {
   private customFoodsByBookmarkId: {[index: string]: FDCFood} = {};
 
   constructor(
@@ -67,7 +67,11 @@ export class FDCClient {
   }
 
   // TODO: handle API call failures gracefully.
-  getFoodDetails(foodIdentifier: FoodIdentifier): FDCFood | null {
+  getFoodDetails(url: string): FDCFood | null {
+    let foodIdentifier: FoodIdentifier | null = parseUrl(url);
+    if (foodIdentifier == null) {
+      return null;
+    }
     switch (foodIdentifier.foodType) {
       case 'FDC Food':
         return this.FDCFoodDetails(foodIdentifier.fdcId);
@@ -105,22 +109,16 @@ export class FDCClient {
       let details = this.customFoodsByBookmarkId[bookmarkId];
       if (details.description.match(query)) {
         result.push({
-          foodIdentifier: {
-            foodType: 'Local Food',
-            bookmarkId: bookmarkId,
-          },
+          url: generateUrl({foodType: 'Local Food', bookmarkId: bookmarkId}),
           description: details.description,
         });
       }
     }
     let queryResult = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
-    queryResult.foods.forEach(details => {
+    queryResult.foods.forEach(entry => {
       result.push({
-        foodIdentifier: {
-          foodType: 'FDC Food',
-          fdcId: details.fdcId,
-        },
-        description: details.description,
+        url: generateUrl({foodType: 'FDC Food', fdcId: entry.fdcId}),
+        description: entry.description,
       });
     });
     return result;

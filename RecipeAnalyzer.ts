@@ -13,10 +13,9 @@
 // limitations under the License.
 
 import { nutrientsForQuantity } from './core/Quantity';
-import { Nutrients, addNutrients } from "./core/Nutrients";
-import { FoodData } from "./core/FoodData";
+import { Nutrients, addNutrients } from './core/Nutrients';
 import { parseIngredient, updateIngredient, ParsedIngredient } from './parseIngredient';
-import { FDCClient } from './FDCClient';
+import { IngredientDatabase } from './IngredientDatabase';
 import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 import { BookmarkManager } from './BookmarkManager';
 
@@ -25,7 +24,7 @@ export class RecipeAnalyzer {
   
   constructor(
       private bookmarkManager: BookmarkManager,
-      private fdcClient: FDCClient,
+      private fdcClient: IngredientDatabase,
       propertiesService: GoogleAppsScript.Properties.PropertiesService,
       private documentApp: GoogleAppsScript.Document.DocumentApp) {
     let json = propertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS')
@@ -34,7 +33,7 @@ export class RecipeAnalyzer {
   }
 
   private computeNutrients(ingredient: ParsedIngredient): Nutrients | null {
-    let foodDetails = this.fdcClient.getFoodDetails(ingredient.id);
+    let foodDetails = this.fdcClient.getFoodDetails(ingredient.ingredientUrl);
     if (foodDetails == null) {
       return null;
     }
