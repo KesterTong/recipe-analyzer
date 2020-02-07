@@ -29,6 +29,15 @@ export function onOpen() {
       .addToUi();
 }
 
+export function moveCursorToBookmark(bookmarkId: string) {
+  let document = DocumentApp.getActiveDocument()
+  let bookmark = document.getBookmark(bookmarkId);
+  if (bookmark == null) {
+    return;
+  }
+  document.setCursor(bookmark.getPosition());
+}
+
 export function addIngredient(foodIdentifier: FoodIdentifier, amount: number, unit: string, description: string) {
   let unitString = amount.toString() + ' ' + unit + ' ';
   let fullText = unitString + description
