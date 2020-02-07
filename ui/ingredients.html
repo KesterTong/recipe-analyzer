@@ -70,21 +70,24 @@
       $('#amount').on('keyup', handleQuantityChange);
       $('#unit').on('change', handleQuantityChange);
 
-      let linkUrl;
+      let linkUrl = null;
       let target;
       $('#more-details').on('click', function(event) {
-        window.open(linkUrl, target);
+        if (linkUrl != null) {
+          window.open(linkUrl, '_blank');
+        }
       });
 
       function handleFoodDetails(details) {
         currentDetails = details;
         switch (details.foodIdentifier.foodType) {
           case 'Local Food':
-            linkUrl = '#bookmark=' + foodDetails.foodIdentifier.bookmarkId;
+            linkUrl = null;
+            $('#more-details').attr('disabled', true);
             break;
           case 'FDC Food':
             linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + details.foodIdentifier.fdcId + '/nutrients';
-            target = '_blank';
+            $('#more-details').attr('disabled', false);
             break;
         }
         $('#description').val(details.description);
