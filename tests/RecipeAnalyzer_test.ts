@@ -16,8 +16,8 @@ import { RecipeAnalyzer } from '../RecipeAnalyzer';
 
 import { expect } from 'chai';
 import 'mocha';
-import { TEST_BRANDED_FOOD_DATA, TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
-import { mock, instance, when, verify, anyString, anyNumber, deepEqual } from 'ts-mockito';
+import { TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
+import { mock, instance, when, verify, anyString, anyNumber } from 'ts-mockito';
 import { IngredientDatabase } from '../IngredientDatabase';
 import { BookmarkManager } from '../BookmarkManager';
 
@@ -68,7 +68,6 @@ describe('updateElementAndRunningTotal', () => {
   let propertiesService = instance(mockedPropertiesService);
   let documentApp = instance(mock<GoogleAppsScript.Document.DocumentApp>());
 
-
   it('no link', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<BookmarkManager>()),
@@ -84,6 +83,25 @@ describe('updateElementAndRunningTotal', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
+  });
+
+  // Regression test for old parsing logic that would error out when
+  // there was no quanity unit.
+  it('no link no units', () => {
+    let recipeAnalyzer = new RecipeAnalyzer(
+      instance(mock<BookmarkManager>()),
+      instance(mock<IngredientDatabase>()),
+      propertiesService,
+      documentApp);
+    let mockedText = mock<GoogleAppsScript.Document.Text>();
+    setupMockText(mockedText);
+    let text = instance(mockedText); 
+    text.appendText('10 bananas');
+    let listItem = createListItem(text);
+    var nutrients = recipeAnalyzer.updateElement(listItem);
+    expect(nutrients).to.deep.equal({});
+    expect(text.getText()).to.equal('10 bananas\t-\t-');
+    verify(mockedText.setLinkUrl(10, 13, <any>null)).once();
   });
 
   it('no link with tabs', () => {
@@ -221,5 +239,25 @@ describe('updateElementAndRunningTotal', () => {
     expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
+  });
+
+  it('recipe with trailing space', () => {
+    let mockFdcClient = mock<IngredientDatabase>();
+    let recipeAnalyzer = new RecipeAnalyzer(
+      instance(mock<BookmarkManager>()),
+      instance(mockFdcClient),
+      propertiesService,
+      documentApp);
+    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    let mockedText = mock<GoogleAppsScript.Document.Text>();
+    setupMockText(mockedText);
+    let text = instance(mockedText); 
+    text.appendText('1 serving My Recipe \t-\t-');
+    text.setLinkUrl(10, 18, '#bookmark=id.ghi789');
+    let listItem = createListItem(text);
+    var nutrients = recipeAnalyzer.updateElement(listItem);
+    expect(nutrients).to.deep.equal({1008: 100.0, 1003: 20.0});
+    expect(text.getText()).to.equal('1 serving My Recipe \t100\t20');
+    verify(mockedText.setLinkUrl(20, 26, <any>null)).once();
   });
 });

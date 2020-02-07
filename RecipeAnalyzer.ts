@@ -14,10 +14,10 @@
 
 import { nutrientsForQuantity } from './core/Quantity';
 import { Nutrients, addNutrients } from './core/Nutrients';
-import { parseIngredient, updateIngredient, ParsedIngredient } from './parseIngredient';
 import { IngredientDatabase } from './IngredientDatabase';
 import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
 import { BookmarkManager } from './BookmarkManager';
+import { parseQuantity } from './core/parseQuantity';
 
 export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
@@ -32,8 +32,22 @@ export class RecipeAnalyzer {
     this.nutrientsToDisplay = json == null ? [] : JSON.parse(json);
   }
 
-  private computeNutrients(ingredient: ParsedIngredient): Nutrients | null {
-    let foodDetails = this.fdcClient.getFoodDetails(ingredient.ingredientUrl);
+  private computeNutrients(textElement: GoogleAppsScript.Document.Text): Nutrients | null {
+    let ingredientUrl = null;
+    let ingredientStart = 0;
+    let text = textElement.getText();
+    let textLength = text.length;
+    while(ingredientStart < textLength && (ingredientUrl = textElement.getLinkUrl(ingredientStart)) == null) {
+      ingredientStart++;
+    }
+    if (ingredientUrl == null) {
+      return null;
+    }
+    let quantity = parseQuantity(text.substr(0, ingredientStart));
+    if (quantity == null) {
+      return null;
+    }
+    let foodDetails = this.fdcClient.getFoodDetails(ingredientUrl);
     if (foodDetails == null) {
       return null;
     }
@@ -41,7 +55,26 @@ export class RecipeAnalyzer {
     if (foodData == null) {
       return null;
     }
-    return nutrientsForQuantity(ingredient.quantity, foodData);
+    return nutrientsForQuantity(quantity, foodData);
+  }
+
+
+  private updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients | null, nutrientsToDisplay: number[]) {
+    let displayNutrients: string;
+    if (nutrients == null) {
+      // Display '-' to indicate that no nutrient value could be computed.
+      displayNutrients = '\t-\t-';
+    } else {
+      displayNutrients = '\t' + nutrientsToDisplay.map(nutrientId => nutrients[nutrientId].toFixed(0)).join('\t');
+    }
+    // Truncate to end of link and add nutrient info.  Appending text will extend the link
+    // if the current text ends with a link, so we explicitly set the link url to null for
+    // the appended text.
+    textElement.replaceText('\\t.*$', '');
+    var originalSize = textElement.getText().length;
+    textElement.appendText(displayNutrients);
+    // TODO: null works but might be invalid, maybe use empty string.
+    textElement.setLinkUrl(originalSize, originalSize + displayNutrients.length - 1, <any>null);
   }
 
   updateElement(element: GoogleAppsScript.Document.ListItem): Nutrients {
@@ -54,12 +87,8 @@ export class RecipeAnalyzer {
       return {};
     }
     let textElement = <GoogleAppsScript.Document.Text>childElement;
-    let nutrients: Nutrients | null =  null;
-    let ingredient = parseIngredient(textElement);
-    if (ingredient != null) {
-      nutrients = this.computeNutrients(ingredient);
-    }
-    updateIngredient(textElement, nutrients, this.nutrientsToDisplay);
+    let nutrients: Nutrients | null = this.computeNutrients(textElement);
+    this.updateIngredient(textElement, nutrients, this.nutrientsToDisplay);
     return nutrients || {};
   }
 
