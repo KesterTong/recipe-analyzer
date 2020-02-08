@@ -117,16 +117,12 @@ export class RecipeAnalyzer {
         this.fdcClient.addCustomFood(
           maybeBookmarkId,
           {
-            dataType: 'Branded',
+            dataType: 'Normalized',
             description: element.asParagraph().getText(),
-            foodNutrients: this.nutrientsToDisplay.map(nutrientId => ({
-              nutrient: {id: nutrientId},
-              amount: runningTotal![nutrientId],
-            })),
-            // Fake values that make the nutrient values correct.
-            servingSize: 100,
-            servingSizeUnit: 'g',
-            householdServingFullText: '1 serving',
+            nutrientsPerServing: runningTotal!,
+            servingEquivalentQuantities: {'serving': 1.0},
+            ingredients: '',
+            brandOwner: '',
           });
         runningTotal = null;
         state = State.LOOKING_FOR_RECIPE;
