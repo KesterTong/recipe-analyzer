@@ -16,7 +16,7 @@ import { IngredientDatabase } from "./IngredientDatabase";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
 import { nutrientNames } from "./core/Nutrients";
-import { FDCFood } from "./core/FDCFood";
+import { Food } from "./core/Food";
 
 export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: IngredientDatabase) {
   let ingredientsTable = getIngredientsTable(document);
@@ -73,7 +73,7 @@ function parseHeaderRow(row: GoogleAppsScript.Document.TableRow): number[] | nul
   return result;
 }
 
-function parseRow(row: GoogleAppsScript.Document.TableRow, nutrients: number[], bookmarkManager: BookmarkManager): FDCFood | null {
+function parseRow(row: GoogleAppsScript.Document.TableRow, nutrients: number[], bookmarkManager: BookmarkManager): Food | null {
   let householdServing = parseHouseholdServing(row.getCell(1).getText());
   if (householdServing == null) {
     return null;
