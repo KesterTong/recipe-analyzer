@@ -18,7 +18,7 @@ import { IngredientDatabase, SearchResult } from './IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { nutrientNames } from './core/Nutrients';
 import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
-import { FoodData } from './core/FoodData';
+import { NormalizedFood } from './core/NormalizedFood';
 import { parseUrl, FoodIdentifier } from './FoodIdentifier';
 
 export function onOpen() {
@@ -66,7 +66,7 @@ export function getSearchResults(query: string, includeBranded: boolean): Search
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
-export function getFoodDetails(url: string): FoodData | null {
+export function getFoodDetails(url: string): NormalizedFood | null {
   let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
   fdcClient.loadCustomFoods();
   let details = fdcClient.getFoodDetails(url);

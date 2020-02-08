@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodData } from "./core/FoodData";
+import { NormalizedFood } from "./core/NormalizedFood";
 
 export class BookmarkManager {
   private bookmarkIdByText : {[index: string]: string} = {};

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodData } from '../core/FoodData';
+import { NormalizedFood } from '../core/NormalizedFood';
 import { FDCFood } from '../core/FDCFood';
 
 export const TEST_SR_LEGACY_FOOD: FDCFood = {
@@ -36,7 +36,7 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
   }]
 };
 
-export const TEST_SR_LEGACY_FOOD_DATA: FoodData = {
+export const TEST_SR_LEGACY_FOOD_DATA: NormalizedFood = {
   brandOwner: '',
   ingredients: '',
   description: 'Bananas',
@@ -63,7 +63,7 @@ export const TEST_BRANDED_FOOD: FDCFood = {
   householdServingFullText: '6 pieces',
 };
 
-export const TEST_BRANDED_FOOD_DATA: FoodData = {
+export const TEST_BRANDED_FOOD_DATA: NormalizedFood = {
   brandOwner: '',
   ingredients: '',
   description: 'Plantain Chips',

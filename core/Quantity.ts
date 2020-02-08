@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodData } from "./FoodData";
+import { NormalizedFood } from "./NormalizedFood";
 import { Nutrients, scaleNutrients } from "./Nutrients";
 
 export interface Quantity {
@@ -20,7 +20,7 @@ export interface Quantity {
   unit: string;
 }
 
-export function nutrientsForQuantity(quantity: Quantity, foodData: FoodData): Nutrients | null {
+export function nutrientsForQuantity(quantity: Quantity, foodData: NormalizedFood): Nutrients | null {
   quantity = canonicalizeQuantity(quantity);
   // The number of units of the quantity per serving.
   let unitsPerServing = foodData.servingEquivalentQuantities[quantity.unit];

@@ -14,11 +14,11 @@
 
 import { Quantity, canonicalizeQuantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
-import { FoodData } from "./FoodData";
+import { NormalizedFood } from "./NormalizedFood";
 import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FDCFood';
 import { parseQuantity } from './parseQuantity';
 
-export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): FoodData | null {
+export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): NormalizedFood | null {
   let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails, nutrientsToDisplay);
   if (nutrientsPerServing == null) {
     return null;

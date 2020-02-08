@@ -14,7 +14,7 @@
 
 import { Nutrients } from "./Nutrients";
 
-export interface FoodData {
+export interface NormalizedFood {
   description: string;
   nutrientsPerServing: Nutrients;
   // amount and unit of serving equivalent quantities,
