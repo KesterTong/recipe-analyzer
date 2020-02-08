@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Food } from './core/Food';
+import { FoodLink } from './core/FoodLink';
 import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
 
 interface FDCQueryResult {
@@ -32,11 +33,6 @@ interface FDCQueryResult {
     brandOwner: string
     score: number
   }[];
-}
-
-export interface SearchResult {
-  url: string,
-  description: string,
 }
 
 /**
@@ -99,12 +95,12 @@ export class IngredientDatabase {
     return JSON.parse(response);
   }
 
-  searchFoods(query: string, includeBranded: boolean): SearchResult[] {
+  searchFoods(query: string, includeBranded: boolean): FoodLink[] {
     let url = this.fdcApiUrl('search', {
       generalSearchInput: encodeURIComponent(query),
       includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
     });
-    let result: SearchResult[] = [];
+    let result: FoodLink[] = [];
     for (let bookmarkId in this.customFoodsByBookmarkId) {
       let details = this.customFoodsByBookmarkId[bookmarkId];
       if (details.description.match(query)) {

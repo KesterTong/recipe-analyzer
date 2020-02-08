@@ -14,8 +14,9 @@
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { BookmarkManager } from './BookmarkManager';
-import { IngredientDatabase, SearchResult } from './IngredientDatabase';
+import { IngredientDatabase } from './IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
+import { FoodLink } from './core/FoodLink';
 import { nutrientNames } from './core/Nutrients';
 import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
@@ -60,7 +61,7 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-export function getSearchResults(query: string, includeBranded: boolean): SearchResult[] {
+export function getSearchResults(query: string, includeBranded: boolean): FoodLink[] {
   let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
   fdcClient.loadCustomFoods();
   return  fdcClient.searchFoods(query, includeBranded);
