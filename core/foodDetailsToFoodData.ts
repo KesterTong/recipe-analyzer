@@ -30,20 +30,7 @@ export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: 
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
 
-  // let foodIdentifier: FoodIdentifier;
-  // switch (foodDetails.dataType) {
-  //   case 'Branded':
-  //   case 'SR Legacy':
-  //     foodIdentifier = {foodType: 'FDC Food', fdcId: foodDetails.fdcId};
-  //     break;
-  //   case 'Custom':
-  //     foodIdentifier = {foodType: 'Local Food', bookmarkId: foodDetails.bookmarkId};
-  //     break;
-  // }
-
-  // TODO: Set this properly
   return {
-    //foodIdentifier: foodIdentifier,
     ingredients: (<BrandedFood>foodDetails).ingredients || '',
     brandOwner: (<BrandedFood>foodDetails).brandOwner || '',
     description: foodDetails.description,
