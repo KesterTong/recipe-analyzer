@@ -59,7 +59,6 @@ function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FDCFood): Quant
     case 'SR Legacy':
       return SRLegacyServingEquivalentQuantities(foodDetails);
     case 'Branded':
-    case 'Custom':
       return brandedServingEquivalentQuantities(foodDetails);
   }
 }

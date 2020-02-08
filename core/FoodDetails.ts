@@ -21,19 +21,8 @@ export interface HouseholdServing {
   householdServingFullText?: string,
 }
 
-export interface CustomFood extends HouseholdServing {
-  dataType: 'Custom',
-  bookmarkId: string,
-  description: string,
-  foodNutrients: {
-    nutrient: {id: number},
-    amount?: number,
-  }[],
-}
-
 export interface BrandedFood extends HouseholdServing {
   dataType: 'Branded',
-  fdcId: number,
   description: string,
   foodNutrients: {
     nutrient: {id: number},
@@ -45,7 +34,6 @@ export interface BrandedFood extends HouseholdServing {
 
 export interface SRLegacyFood {
   dataType: 'SR Legacy',
-  fdcId: number,
   description: string,
   foodNutrients: {
     nutrient: {id: number},
@@ -58,5 +46,5 @@ export interface SRLegacyFood {
   }[],
 }
 
-export type FDCFood = CustomFood | BrandedFood | SRLegacyFood;
+export type FDCFood = BrandedFood | SRLegacyFood;
 

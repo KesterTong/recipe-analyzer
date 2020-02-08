@@ -15,8 +15,8 @@
 import { IngredientDatabase } from "./IngredientDatabase";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
-import { CustomFood } from "./core/FoodDetails";
 import { nutrientNames } from "./core/Nutrients";
+import { FDCFood } from "./core/FoodDetails";
 
 export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: IngredientDatabase) {
   let ingredientsTable = getIngredientsTable(document);
@@ -35,11 +35,18 @@ export function loadCustomIngredients(document: GoogleAppsScript.Document.Docume
   // Iterate over all rows except the header row
   for (let rowIndex = 1; rowIndex < numRows; rowIndex++) {
     let row = ingredientsTable.getRow(rowIndex);
+    if (row.getNumCells() != nutrients.length + 2) {
+      continue;
+    }
+    let bookmarkId = bookmarkManager.bookmarkIdForElement(row.getCell(0));
+    if (bookmarkId == null) {
+      continue;
+    }    
     var foodDetails = parseRow(row, nutrients, bookmarkManager);
     if (foodDetails == null) {
       continue;
     }
-    fdcClient.addCustomFood(foodDetails);
+    fdcClient.addCustomFood(bookmarkId, foodDetails);
   }
 }
 
@@ -66,15 +73,7 @@ function parseHeaderRow(row: GoogleAppsScript.Document.TableRow): number[] | nul
   return result;
 }
 
-function parseRow(row: GoogleAppsScript.Document.TableRow, nutrients: number[], bookmarkManager: BookmarkManager): CustomFood | null {
-  if (row.getNumCells() != nutrients.length + 2) {
-    return null;
-  }
-  let bookmarkId = bookmarkManager.bookmarkIdForElement(row.getCell(0));
-  if (bookmarkId == null) {
-    return null;
-  }  
-
+function parseRow(row: GoogleAppsScript.Document.TableRow, nutrients: number[], bookmarkManager: BookmarkManager): FDCFood | null {
   let householdServing = parseHouseholdServing(row.getCell(1).getText());
   if (householdServing == null) {
     return null;
@@ -92,8 +91,7 @@ function parseRow(row: GoogleAppsScript.Document.TableRow, nutrients: number[], 
   }
 
   return {
-    dataType: 'Custom',
-    bookmarkId: bookmarkId,
+    dataType: 'Branded',
     description: row.getCell(0).getText(),
     servingSize: householdServing.servingSize,
     servingSizeUnit: householdServing.servingSizeUnit,

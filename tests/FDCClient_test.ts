@@ -55,7 +55,7 @@ describe('FoodDatabase', () => {
   });
 
   it('local', () => {
-    fdcClient.addCustomFood(TEST_RECIPE_DETAILS);
+    fdcClient.addCustomFood('id.abc123', TEST_RECIPE_DETAILS);
     expect(fdcClient.getFoodDetails('#bookmark=id.abc123')).to.deep.equal(TEST_RECIPE_DETAILS);
   });
 

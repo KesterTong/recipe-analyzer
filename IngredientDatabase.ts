@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood, CustomFood } from './core/FoodDetails';
+import { FDCFood } from './core/FoodDetails';
 import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
 
 interface FDCQueryResult {
@@ -52,8 +52,8 @@ export class IngredientDatabase {
       private cacheService: GoogleAppsScript.Cache.CacheService,
       private propertiesService: GoogleAppsScript.Properties.PropertiesService) {}
 
-  addCustomFood(foodDetails: CustomFood) {
-    this.customFoodsByBookmarkId[foodDetails.bookmarkId] = foodDetails;
+  addCustomFood(bookmarkId: string, foodDetails: FDCFood) {
+    this.customFoodsByBookmarkId[bookmarkId] = foodDetails;
   }
 
   saveCustomFoods() {

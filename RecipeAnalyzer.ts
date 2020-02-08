@@ -114,19 +114,20 @@ export class RecipeAnalyzer {
   
       let maybeBookmarkId: string | null;
       if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkManager.bookmarkIdForElement(element))) {
-        this.fdcClient.addCustomFood({
-          dataType: 'Custom',
-          bookmarkId: maybeBookmarkId,
-          description: element.asParagraph().getText(),
-          foodNutrients: this.nutrientsToDisplay.map(nutrientId => ({
-            nutrient: {id: nutrientId},
-            amount: runningTotal![nutrientId],
-          })),
-          // Fake values that make the nutrient values correct.
-          servingSize: 100,
-          servingSizeUnit: 'g',
-          householdServingFullText: '1 serving',
-        });
+        this.fdcClient.addCustomFood(
+          maybeBookmarkId,
+          {
+            dataType: 'Branded',
+            description: element.asParagraph().getText(),
+            foodNutrients: this.nutrientsToDisplay.map(nutrientId => ({
+              nutrient: {id: nutrientId},
+              amount: runningTotal![nutrientId],
+            })),
+            // Fake values that make the nutrient values correct.
+            servingSize: 100,
+            servingSizeUnit: 'g',
+            householdServingFullText: '1 serving',
+          });
         runningTotal = null;
         state = State.LOOKING_FOR_RECIPE;
       } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
