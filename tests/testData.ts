@@ -37,6 +37,7 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
 };
 
 export const TEST_SR_LEGACY_FOOD_DATA: NormalizedFood = {
+  dataType: 'Normalized',
   brandOwner: '',
   ingredients: '',
   description: 'Bananas',
@@ -64,6 +65,7 @@ export const TEST_BRANDED_FOOD: FDCFood = {
 };
 
 export const TEST_BRANDED_FOOD_DATA: NormalizedFood = {
+  dataType: 'Normalized',
   brandOwner: '',
   ingredients: '',
   description: 'Plantain Chips',

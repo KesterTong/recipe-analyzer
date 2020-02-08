@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { foodDetailsToFoodData } from '../../core/foodDetailsToFoodData';
+import { normalizeFood } from '../../core/normalizeFood';
 import { TEST_SR_LEGACY_FOOD, TEST_SR_LEGACY_FOOD_DATA, TEST_BRANDED_FOOD, TEST_BRANDED_FOOD_DATA } from '../testData';
 
 import { expect } from 'chai';
@@ -20,10 +20,10 @@ import 'mocha';
 
 describe('foodDetailsToFoodData', () => {
   it('SR legacy food', () => {
-    expect(foodDetailsToFoodData(TEST_SR_LEGACY_FOOD, [1008, 1003])).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+    expect(normalizeFood(TEST_SR_LEGACY_FOOD, [1008, 1003])).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
   });
 
   it('branded food', () => {
-    expect(foodDetailsToFoodData(TEST_BRANDED_FOOD, [1008, 1003])).to.deep.equal(TEST_BRANDED_FOOD_DATA);
+    expect(normalizeFood(TEST_BRANDED_FOOD, [1008, 1003])).to.deep.equal(TEST_BRANDED_FOOD_DATA);
   });
 });

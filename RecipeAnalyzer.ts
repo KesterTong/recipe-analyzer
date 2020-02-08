@@ -15,7 +15,7 @@
 import { nutrientsForQuantity } from './core/Quantity';
 import { Nutrients, addNutrients } from './core/Nutrients';
 import { IngredientDatabase } from './IngredientDatabase';
-import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
+import { normalizeFood } from './core/normalizeFood';
 import { BookmarkManager } from './BookmarkManager';
 import { parseQuantity } from './core/parseQuantity';
 
@@ -51,7 +51,7 @@ export class RecipeAnalyzer {
     if (foodDetails == null) {
       return null;
     }
-    let foodData = foodDetailsToFoodData(foodDetails, this.nutrientsToDisplay);
+    let foodData = normalizeFood(foodDetails, this.nutrientsToDisplay);
     if (foodData == null) {
       return null;
     }

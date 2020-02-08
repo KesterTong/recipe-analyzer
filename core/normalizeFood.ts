@@ -17,23 +17,28 @@ import { Nutrients } from "./Nutrients";
 import { NormalizedFood } from "./NormalizedFood";
 import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FDCFood';
 import { parseQuantity } from './parseQuantity';
+import { Food } from './Food';
 
-export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): NormalizedFood | null {
-  let nutrientsPerServing = nutrientsFromFoodDetails(foodDetails, nutrientsToDisplay);
+export function normalizeFood(food: Food, nutrientsToDisplay: number[]): NormalizedFood | null {
+  if (food.dataType == 'Normalized') {
+    return food;
+  }
+  let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientsToDisplay);
   if (nutrientsPerServing == null) {
     return null;
   }
 
   let servingEquivalentQuantitiesDict: {[index: string]: number} = {};
-  servingEquivalentQuantitiesFromFoodDetails(foodDetails).forEach(quantity => {
+  servingEquivalentQuantitiesFromFoodDetails(food).forEach(quantity => {
     quantity = canonicalizeQuantity(quantity);
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
 
   return {
-    ingredients: (<BrandedFood>foodDetails).ingredients || '',
-    brandOwner: (<BrandedFood>foodDetails).brandOwner || '',
-    description: foodDetails.description,
+    dataType: 'Normalized',
+    ingredients: (<BrandedFood>food).ingredients || '',
+    brandOwner: (<BrandedFood>food).brandOwner || '',
+    description: food.description,
     nutrientsPerServing: nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantitiesDict,
   };

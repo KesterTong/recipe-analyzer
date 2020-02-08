@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from './core/FDCFood';
+import { Food } from './core/Food';
 import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
 
 interface FDCQueryResult {
@@ -45,14 +45,14 @@ export interface SearchResult {
  * Looks up USDA Food Data Central database and stores and looks up local ingredients.
  */
 export class IngredientDatabase {
-  private customFoodsByBookmarkId: {[index: string]: FDCFood} = {};
+  private customFoodsByBookmarkId: {[index: string]: Food} = {};
 
   constructor(
       private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
       private cacheService: GoogleAppsScript.Cache.CacheService,
       private propertiesService: GoogleAppsScript.Properties.PropertiesService) {}
 
-  addCustomFood(bookmarkId: string, foodDetails: FDCFood) {
+  addCustomFood(bookmarkId: string, foodDetails: Food) {
     this.customFoodsByBookmarkId[bookmarkId] = foodDetails;
   }
 
@@ -67,7 +67,7 @@ export class IngredientDatabase {
   }
 
   // TODO: handle API call failures gracefully.
-  getFoodDetails(url: string): FDCFood | null {
+  getFoodDetails(url: string): Food | null {
     let foodIdentifier: FoodIdentifier | null = parseUrl(url);
     if (foodIdentifier == null) {
       return null;
@@ -80,7 +80,7 @@ export class IngredientDatabase {
     }
   }
 
-  FDCFoodDetails(fdcId: number): FDCFood | null {
+  FDCFoodDetails(fdcId: number): Food | null {
     let fdcIdString = fdcId.toString();
     let cache = this.cacheService.getUserCache();
     if (cache == null) {

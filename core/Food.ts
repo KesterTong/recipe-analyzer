@@ -12,17 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Nutrients } from "./Nutrients";
+import { FDCFood } from "./FDCFood";
+import { NormalizedFood } from "./NormalizedFood";
 
-export interface NormalizedFood {
-  dataType: 'Normalized',
-  description: string;
-  nutrientsPerServing: Nutrients;
-  // amount and unit of serving equivalent quantities,
-  // represented as a dict.
-  servingEquivalentQuantities: {
-    [index: string]: number;
-  };
-  ingredients: string,
-  brandOwner: string,
-}
+export type Food = FDCFood | NormalizedFood;

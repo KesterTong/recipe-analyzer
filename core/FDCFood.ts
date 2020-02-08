@@ -47,4 +47,3 @@ export interface SRLegacyFood {
 }
 
 export type FDCFood = BrandedFood | SRLegacyFood;
-

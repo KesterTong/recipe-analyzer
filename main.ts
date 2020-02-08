@@ -17,7 +17,7 @@ import { BookmarkManager } from './BookmarkManager';
 import { IngredientDatabase, SearchResult } from './IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { nutrientNames } from './core/Nutrients';
-import { foodDetailsToFoodData } from './core/foodDetailsToFoodData';
+import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
 import { parseUrl, FoodIdentifier } from './FoodIdentifier';
 
@@ -76,7 +76,7 @@ export function getFoodDetails(url: string): NormalizedFood | null {
   }
   let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
   let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
-  return foodDetailsToFoodData(details, nutrientsToDisplay);
+  return normalizeFood(details, nutrientsToDisplay);
 }
 
 export function getNutrientNames(): {id: number, name: string}[] {
