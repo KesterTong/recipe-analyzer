@@ -14,13 +14,13 @@
 
 import { Quantity, canonicalizeQuantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
-import { NormalizedFood } from "./NormalizedFood";
-import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FDCFood';
+import { FDCFood, SRLegacyFood, HouseholdServing } from './FDCFood';
 import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
+import { NormalizedFood } from './NormalizedFood';
 
 export function normalizeFood(food: Food, nutrientsToDisplay: number[]): NormalizedFood | null {
-  if (food.dataType == 'Normalized') {
+  if (food.dataType == 'Custom' || food.dataType == 'Recipe') {
     return food;
   }
   let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientsToDisplay);
@@ -49,7 +49,6 @@ export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Normali
   });
 
   return {
-    dataType: 'Normalized',
     ingredients: ingredients,
     brandOwner: brandOwner,
     description: food.description,

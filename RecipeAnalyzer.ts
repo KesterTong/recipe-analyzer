@@ -18,6 +18,8 @@ import { IngredientDatabase } from './IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
 import { BookmarkManager } from './BookmarkManager';
 import { parseQuantity } from './core/parseQuantity';
+import { Ingredient } from './core/Food';
+import { Recipe } from "./core/Recipe";
 
 export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
@@ -32,7 +34,7 @@ export class RecipeAnalyzer {
     this.nutrientsToDisplay = json == null ? [] : JSON.parse(json);
   }
 
-  private computeNutrients(textElement: GoogleAppsScript.Document.Text): Nutrients | null {
+  private parseIngredient(textElement: GoogleAppsScript.Document.Text): Nutrients | null {
     let ingredientUrl = null;
     let ingredientStart = 0;
     let text = textElement.getText();
@@ -86,7 +88,7 @@ export class RecipeAnalyzer {
       return {};
     }
     let textElement = <GoogleAppsScript.Document.Text>childElement;
-    let nutrients: Nutrients | null = this.computeNutrients(textElement);
+    let nutrients = this.parseIngredient(textElement);
     this.updateIngredient(textElement, nutrients, this.nutrientsToDisplay);
     return nutrients || {};
   }
@@ -99,7 +101,7 @@ export class RecipeAnalyzer {
     }
     let state: State = State.LOOKING_FOR_RECIPE;
     let totalElement: GoogleAppsScript.Document.ListItem | null = null;
-    let runningTotal: Nutrients | null = null;
+    let currentRecipe: Recipe | null = null;
     let body = document.getBody();
     for (let i = body.getNumChildren() - 1; i > 0; i--) {
       let element = body.getChild(i);
@@ -107,32 +109,36 @@ export class RecipeAnalyzer {
       // that the current element is not a list item.  This is so we can then
       // check if the current element is the title.
       if (state == State.INSIDE_RECIPE && element.getType() != this.documentApp.ElementType.LIST_ITEM) {
-        this.updateTotalElement(totalElement!, runningTotal!);
+        this.updateTotalElement(totalElement!, currentRecipe!.nutrientsPerServing);
         totalElement = null;
         state = State.LOOKING_FOR_TITLE;
       }
   
       let maybeBookmarkId: string | null;
       if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkManager.bookmarkIdForElement(element))) {
-        this.fdcClient.addCustomFood(
-          maybeBookmarkId,
-          {
-            dataType: 'Normalized',
-            description: element.asParagraph().getText(),
-            nutrientsPerServing: runningTotal!,
-            servingEquivalentQuantities: {'serving': 1.0},
-            ingredients: '',
-            brandOwner: '',
-          });
-        runningTotal = null;
+        // Don't store ingredients as we are hitting max size on "Properties"
+        currentRecipe!.ingredientsList = [];
+        currentRecipe!.description = element.asParagraph().getText();
+        this.fdcClient.addCustomFood(maybeBookmarkId, currentRecipe!);
+        currentRecipe = null;
         state = State.LOOKING_FOR_RECIPE;
       } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
         totalElement = element.asListItem();
-        runningTotal = {};
+        currentRecipe = {
+          dataType: 'Recipe',
+          ingredients: '',
+          brandOwner: '',
+          description: '',
+          ingredientsList: [],
+          nutrientsPerServing: {},
+          servingEquivalentQuantities: {'serving': 1},
+        };
         state = State.INSIDE_RECIPE;
       } else if (state == State.INSIDE_RECIPE) {
         var nutrients = this.updateElement(element.asListItem());
-        runningTotal = addNutrients(runningTotal!, nutrients);
+        currentRecipe!.nutrientsPerServing = addNutrients(
+            currentRecipe!.nutrientsPerServing,
+            nutrients);
       }
     }
   }

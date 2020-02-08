@@ -58,7 +58,7 @@ function setupMockText(mockedText: GoogleAppsScript.Document.Text) {
   return instance(mockedText)
 }
 
-describe('updateElementAndRunningTotal', () => {
+describe('updateElement', () => {
   let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
   when(mockedScriptProperties.getProperty('DISPLAY_NUTRIENTS')).thenReturn('[1008, 1003]');
   let scriptProperties = instance(mockedScriptProperties);

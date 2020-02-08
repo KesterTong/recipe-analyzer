@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Nutrients } from "./Nutrients";
+import { NormalizedFood } from "./NormalizedFood";
+import { Ingredient } from "./Food";
 
-export interface NormalizedFood {
-  description: string;
-  nutrientsPerServing: Nutrients;
-  // amount and unit of serving equivalent quantities,
-  // represented as a dict.
-  servingEquivalentQuantities: {
-    [index: string]: number;
-  };
-  ingredients: string,
-  brandOwner: string,
+// Note that Ingredient (and Recipe) store their nutritional values,
+// even though these could becomputed from the ingredients.
+//
+// This is a form of database normalization since Recipe might be stored
+// in a database and so storing the nutritional values avoids extra lookups.
+export interface Recipe extends NormalizedFood {
+  dataType: 'Recipe';
+  // Note this is distinct from the ingredients field which is a text field
+  // used for FDC foods.
+  ingredientsList: Ingredient[];
 }

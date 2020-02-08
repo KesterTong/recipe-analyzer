@@ -14,5 +14,19 @@
 
 import { FDCFood } from "./FDCFood";
 import { NormalizedFood } from "./NormalizedFood";
+import { Quantity } from "./Quantity";
+import { FoodLink } from "./FoodLink";
+import { Nutrients } from "./Nutrients";
+import { Recipe } from "./Recipe";
 
-export type Food = FDCFood | NormalizedFood;
+export interface CustomFood extends NormalizedFood {
+  dataType: 'Custom',
+}
+
+export interface Ingredient {
+  quantity: Quantity,
+  foodLink: FoodLink,
+  nutrients: Nutrients,
+}
+
+export type Food = FDCFood | CustomFood | Recipe;
