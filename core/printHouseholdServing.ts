@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { HouseholdServing } from "./FoodDetails";
+import { HouseholdServing } from "./FDCFood";
 
 export function printHouseholdServing(householdServing: HouseholdServing): string {
   let result = householdServing.servingSize + ' ' + householdServing.servingSizeUnit;

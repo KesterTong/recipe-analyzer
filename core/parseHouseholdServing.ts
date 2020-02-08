@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Quantity } from "./Quantity";
-import { HouseholdServing } from "./FoodDetails";
+import { HouseholdServing } from "./FDCFood";
 import { parseQuantity } from "./parseQuantity";
 
 /**

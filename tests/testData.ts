@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { FoodData } from '../core/FoodData';
-import { FDCFood } from '../core/FoodDetails';
+import { FDCFood } from '../core/FDCFood';
 
 export const TEST_SR_LEGACY_FOOD: FDCFood = {
   description: 'Bananas',

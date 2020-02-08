@@ -15,7 +15,7 @@
 import { Quantity, canonicalizeQuantity } from './Quantity';
 import { Nutrients } from "./Nutrients";
 import { FoodData } from "./FoodData";
-import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FoodDetails';
+import { FDCFood, SRLegacyFood, BrandedFood, HouseholdServing } from './FDCFood';
 import { parseQuantity } from './parseQuantity';
 
 export function foodDetailsToFoodData(foodDetails: FDCFood, nutrientsToDisplay: number[]): FoodData | null {

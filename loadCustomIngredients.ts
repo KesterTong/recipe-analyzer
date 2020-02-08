@@ -16,7 +16,7 @@ import { IngredientDatabase } from "./IngredientDatabase";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
 import { nutrientNames } from "./core/Nutrients";
-import { FDCFood } from "./core/FoodDetails";
+import { FDCFood } from "./core/FDCFood";
 
 export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: IngredientDatabase) {
   let ingredientsTable = getIngredientsTable(document);
