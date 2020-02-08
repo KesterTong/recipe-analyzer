@@ -15,7 +15,8 @@
 import { IngredientDatabase } from "./IngredientDatabase";
 import { BookmarkManager } from "./BookmarkManager";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
-import { FDCFood, CustomFood } from "./core/FoodDetails";
+import { CustomFood } from "./core/FoodDetails";
+import { nutrientNames } from "./core/Nutrients";
 
 export function loadCustomIngredients(document: GoogleAppsScript.Document.Document, bookmarkManager: BookmarkManager, fdcClient: IngredientDatabase) {
   let ingredientsTable = getIngredientsTable(document);
@@ -23,10 +24,18 @@ export function loadCustomIngredients(document: GoogleAppsScript.Document.Docume
     return;
   }
   let numRows = ingredientsTable.getNumRows();
+  if (numRows == 0) {
+    return;
+  }
+  let nutrients = parseHeaderRow(ingredientsTable.getRow(0));
+  if (nutrients == null) {
+    return;
+  }
+
   // Iterate over all rows except the header row
   for (let rowIndex = 1; rowIndex < numRows; rowIndex++) {
     let row = ingredientsTable.getRow(rowIndex);
-    var foodDetails = parseRow(row, bookmarkManager);
+    var foodDetails = parseRow(row, nutrients, bookmarkManager);
     if (foodDetails == null) {
       continue;
     }
@@ -34,21 +43,54 @@ export function loadCustomIngredients(document: GoogleAppsScript.Document.Docume
   }
 }
 
-function parseRow(row: GoogleAppsScript.Document.TableRow, bookmarkManager: BookmarkManager): CustomFood | null {
-  if (row.getNumCells() != 4) {
+
+function parseHeaderRow(row: GoogleAppsScript.Document.TableRow): number[] | null {
+  let numCells = row.getNumCells();
+  if (numCells <= 2) {
+    return null;
+  }
+  let nutrientIdsByDescription: {[index: string]: number} = {};
+  let nutrientNamesById : {[index: number]: string} = nutrientNames();
+  for (let key in nutrientNamesById) {
+    let nutrientId = Number(key);
+    nutrientIdsByDescription[nutrientNamesById[nutrientId]] = nutrientId;
+  }
+  let result: number[] = [];
+  for (let cellIndex = 2; cellIndex < numCells; cellIndex++) {
+    let nutrientId = nutrientIdsByDescription[row.getCell(cellIndex).getText()];
+    if (nutrientId == null) {
+      return null;
+    }
+    result.push(nutrientId);
+  }
+  return result;
+}
+
+function parseRow(row: GoogleAppsScript.Document.TableRow, nutrients: number[], bookmarkManager: BookmarkManager): CustomFood | null {
+  if (row.getNumCells() != nutrients.length + 2) {
     return null;
   }
   let bookmarkId = bookmarkManager.bookmarkIdForElement(row.getCell(0));
   if (bookmarkId == null) {
     return null;
   }  
+
   let householdServing = parseHouseholdServing(row.getCell(1).getText());
   if (householdServing == null) {
     return null;
   }
+
   // Label nutrients are per household unit, while the serving size is 100 g/mL.
   // So we convert using the scale factor below.
   let scale = 100.0 / householdServing.servingSize;
+  let foodNutrients: {nutrient: {id: number}, amount?: number}[] = [];
+  for (let i = 0; i < nutrients.length; i++) {
+    foodNutrients.push({
+      nutrient: {id: nutrients[i]},
+      amount: Number(row.getCell(i + 2).getText()) * scale,
+    });
+  }
+
   return {
     dataType: 'Custom',
     bookmarkId: bookmarkId,
@@ -56,16 +98,7 @@ function parseRow(row: GoogleAppsScript.Document.TableRow, bookmarkManager: Book
     servingSize: householdServing.servingSize,
     servingSizeUnit: householdServing.servingSizeUnit,
     householdServingFullText: householdServing.householdServingFullText,
-    foodNutrients: [
-      {
-        nutrient: {id: 1008},  // calories
-        amount: Number(row.getCell(2).getText()) * scale,
-      },
-      {
-        nutrient: {id: 1003},  // protein
-        amount: Number(row.getCell(3).getText()) * scale,
-      },
-    ],
+    foodNutrients: foodNutrients,
   };
 }
 
