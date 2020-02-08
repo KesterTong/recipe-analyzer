@@ -28,16 +28,30 @@ export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Normali
     return null;
   }
 
+  let servingEquivalentQuantities: Quantity[];
+  let ingredients: string = '';
+  let brandOwner: string = '';
+  switch (food.dataType) {
+    case 'SR Legacy':
+      servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
+      break;
+    case 'Branded':
+      servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
+      ingredients = food.ingredients || '';
+      brandOwner = food.brandOwner || '';
+      break;
+  }
+
   let servingEquivalentQuantitiesDict: {[index: string]: number} = {};
-  servingEquivalentQuantitiesFromFoodDetails(food).forEach(quantity => {
+  servingEquivalentQuantities.forEach(quantity => {
     quantity = canonicalizeQuantity(quantity);
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
 
   return {
     dataType: 'Normalized',
-    ingredients: (<BrandedFood>food).ingredients || '',
-    brandOwner: (<BrandedFood>food).brandOwner || '',
+    ingredients: ingredients,
+    brandOwner: brandOwner,
     description: food.description,
     nutrientsPerServing: nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantitiesDict,
@@ -57,15 +71,6 @@ function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: numb
     }
   }
   return result;
-}
-
-function servingEquivalentQuantitiesFromFoodDetails(foodDetails: FDCFood): Quantity[] {
-  switch (foodDetails.dataType) {
-    case 'SR Legacy':
-      return SRLegacyServingEquivalentQuantities(foodDetails);
-    case 'Branded':
-      return brandedServingEquivalentQuantities(foodDetails);
-  }
 }
 
 function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) : Quantity[] {
