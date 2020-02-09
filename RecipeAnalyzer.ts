@@ -18,7 +18,6 @@ import { IngredientDatabase } from './IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
 import { BookmarkManager } from './BookmarkManager';
 import { parseQuantity } from './core/parseQuantity';
-import { Ingredient } from './core/Food';
 import { Recipe } from "./core/Recipe";
 
 export class RecipeAnalyzer {
