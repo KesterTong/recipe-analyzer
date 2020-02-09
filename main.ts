@@ -54,7 +54,6 @@ export function addIngredient(linkUrl: string, amount: number, unit: string, des
 }
 
 export function showIngredientsSidebar() {
-  let ui = DocumentApp.getUi();
   let userInterface = HtmlService
   .createHtmlOutputFromFile('ui/ingredients')
   .setTitle('Ingredients');
