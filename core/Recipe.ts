@@ -13,7 +13,15 @@
 // limitations under the License.
 
 import { NormalizedFood } from "./NormalizedFood";
-import { Ingredient } from "./Food";
+import { Quantity } from "./Quantity";
+import { FoodLink } from "./FoodLink";
+import { Nutrients } from "./Nutrients";
+
+export interface Ingredient {
+  quantity: Quantity,
+  foodLink: FoodLink,
+  nutrients: Nutrients,
+}
 
 // Note that Ingredient (and Recipe) store their nutritional values,
 // even though these could becomputed from the ingredients.

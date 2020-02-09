@@ -23,10 +23,4 @@ export interface CustomFood extends NormalizedFood {
   dataType: 'Custom',
 }
 
-export interface Ingredient {
-  quantity: Quantity,
-  foodLink: FoodLink,
-  nutrients: Nutrients,
-}
-
 export type Food = FDCFood | CustomFood | Recipe;
