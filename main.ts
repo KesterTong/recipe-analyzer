@@ -90,14 +90,14 @@ export function getNutrientNames(): {id: number, name: string}[] {
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
   let ingredientDatabase = IngredientDatabase.build();
-  let documentAdaptor = new DocumentAdaptor(document);
+  let documentAdaptor = new DocumentAdaptor(DocumentApp, document);
   loadCustomIngredients(documentAdaptor, ingredientDatabase);
   let recipeAnalyzer = new RecipeAnalyzer(
     documentAdaptor,
     ingredientDatabase,
     PropertiesService,
     DocumentApp);
-  recipeAnalyzer.updateDocument(document);
+  recipeAnalyzer.updateDocument();
 }
 
 // An ingredient table looks like:

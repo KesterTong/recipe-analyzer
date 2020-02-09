@@ -18,13 +18,12 @@ import { IngredientDatabase } from './IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { parseQuantity } from './core/parseQuantity';
-import { Recipe } from "./core/Recipe";
 
 export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
   
   constructor(
-      private bookmarkManager: DocumentAdaptor,
+      private documentAdaptor: DocumentAdaptor,
       private fdcClient: IngredientDatabase,
       propertiesService: GoogleAppsScript.Properties.PropertiesService,
       private documentApp: GoogleAppsScript.Document.DocumentApp) {
@@ -77,75 +76,32 @@ export class RecipeAnalyzer {
     textElement.setLinkUrl(originalSize, originalSize + displayNutrients.length - 1, <any>null);
   }
 
-  updateElement(element: GoogleAppsScript.Document.ListItem): Nutrients {
-    // If numChildren != 1, skip this element as it's too complicated
-    if (element.getNumChildren() != 1) {
-      return {};
-    }
-    let childElement = element.getChild(0);
-    if (childElement.getType() != this.documentApp.ElementType.TEXT) {
-      return {};
-    }
-    let textElement = <GoogleAppsScript.Document.Text>childElement;
-    let nutrients = this.parseIngredient(textElement);
-    this.updateIngredient(textElement, nutrients, this.nutrientsToDisplay);
+  updateElement(element: GoogleAppsScript.Document.Text): Nutrients {
+    let nutrients = this.parseIngredient(element);
+    this.updateIngredient(element, nutrients, this.nutrientsToDisplay);
     return nutrients || {};
   }
 
-  updateDocument(document: GoogleAppsScript.Document.Document) {
-    enum State {
-      LOOKING_FOR_RECIPE,
-      LOOKING_FOR_TITLE,
-      INSIDE_RECIPE,
-    }
-    let state: State = State.LOOKING_FOR_RECIPE;
-    let totalElement: GoogleAppsScript.Document.ListItem | null = null;
-    let currentRecipe: Recipe | null = null;
-    let body = document.getBody();
-    for (let i = body.getNumChildren() - 1; i > 0; i--) {
-      let element = body.getChild(i);
-      // First we do a state transition to LOOKING_FOR_TITLE in the case
-      // that the current element is not a list item.  This is so we can then
-      // check if the current element is the title.
-      if (state == State.INSIDE_RECIPE && element.getType() != this.documentApp.ElementType.LIST_ITEM) {
-        this.updateTotalElement(totalElement!, currentRecipe!.nutrientsPerServing);
-        totalElement = null;
-        state = State.LOOKING_FOR_TITLE;
-      }
-  
-      let maybeBookmarkId: string | null;
-      if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkManager.bookmarkIdForElement(element))) {
-        // Don't store ingredients as we are hitting max size on "Properties"
-        currentRecipe!.ingredientsList = [];
-        currentRecipe!.description = element.asParagraph().getText();
-        this.fdcClient.addCustomFood(maybeBookmarkId, currentRecipe!);
-        currentRecipe = null;
-        state = State.LOOKING_FOR_RECIPE;
-      } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
-        totalElement = element.asListItem();
-        currentRecipe = {
+  updateDocument() {
+    this.documentAdaptor.recipes().forEach(recipeAdaptor => {
+      let nutrientsPerServing: Nutrients = {}
+      recipeAdaptor.ingredients.forEach(textElement => {
+        let nutrients = this.updateElement(textElement);
+        nutrientsPerServing = addNutrients(nutrientsPerServing, nutrients);
+      });
+      this.updateTotalElement(recipeAdaptor.totalElement, nutrientsPerServing);
+      if (recipeAdaptor.bookmarkId != null) {
+        this.fdcClient.addCustomFood(recipeAdaptor.bookmarkId, {
           dataType: 'Recipe',
           ingredients: '',
           brandOwner: '',
-          description: '',
+          description: recipeAdaptor.description || '',
           ingredientsList: [],
-          nutrientsPerServing: {},
+          nutrientsPerServing: nutrientsPerServing,
           servingEquivalentQuantities: {'serving': 1},
-        };
-        state = State.INSIDE_RECIPE;
-      } else if (state == State.INSIDE_RECIPE) {
-        var nutrients = this.updateElement(element.asListItem());
-        currentRecipe!.nutrientsPerServing = addNutrients(
-            currentRecipe!.nutrientsPerServing,
-            nutrients);
+        });
       }
-    }
-  }
-
-  isTotalElement(element: GoogleAppsScript.Document.Element): boolean {
-    return (
-      element.getType() == this.documentApp.ElementType.LIST_ITEM &&
-      (<GoogleAppsScript.Document.Paragraph>element).getText().substr(0, 5) == 'Total');
+    })
   }
 
   updateTotalElement(totalElement: GoogleAppsScript.Document.ListItem, runningTotal: Nutrients) {

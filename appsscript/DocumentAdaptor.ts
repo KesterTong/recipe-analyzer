@@ -71,13 +71,22 @@ export class IngredientsTableAdaptor {
   }
 }
 
+export interface RecipeAdaptor {
+  bookmarkId?: string;
+  description?: string;
+  totalElement: GoogleAppsScript.Document.ListItem;
+  ingredients: GoogleAppsScript.Document.Text[];
+}
+
 /**
  * Adaptor class for Apps Script Document class.
  */
 export class DocumentAdaptor {
   private bookmarkIdByText : {[index: string]: string} = {};
 
-  constructor(private document: GoogleAppsScript.Document.Document) {
+  constructor(
+    private documentApp: GoogleAppsScript.Document.DocumentApp,
+    private document: GoogleAppsScript.Document.Document) {
     this.parseBookmarks(document);
   }
 
@@ -99,6 +108,56 @@ export class DocumentAdaptor {
       return null;
     }
     return new IngredientsTableAdaptor(tables[tables.length - 1], this);
+  }
+
+  // Recipes in the document, in reverse order.
+  recipes(): RecipeAdaptor[] {
+    let result: RecipeAdaptor[] = [];
+    enum State {
+      LOOKING_FOR_RECIPE,
+      LOOKING_FOR_TITLE,
+      INSIDE_RECIPE,
+    }
+    let state: State = State.LOOKING_FOR_RECIPE;
+    let currentRecipe: RecipeAdaptor | null = null;
+    let body = this.document.getBody();
+    for (let i = body.getNumChildren() - 1; i > 0; i--) {
+      let element = body.getChild(i);
+      // First we do a state transition to LOOKING_FOR_TITLE in the case
+      // that the current element is not a list item.  This is so we can then
+      // check if the current element is the title.
+      if (state == State.INSIDE_RECIPE && element.getType() != this.documentApp.ElementType.LIST_ITEM) {
+        result.push(currentRecipe!);
+        state = State.LOOKING_FOR_TITLE;
+      }
+  
+      let maybeBookmarkId: string | null;
+      if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkIdForElement(element))) {
+        currentRecipe!.bookmarkId = maybeBookmarkId;
+        currentRecipe!.description = element.asParagraph().getText();
+        currentRecipe = null;
+        state = State.LOOKING_FOR_RECIPE;
+      } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
+        currentRecipe = {
+          totalElement: element.asListItem(),
+          ingredients: [],
+        };
+        state = State.INSIDE_RECIPE;
+      } else if (state == State.INSIDE_RECIPE) {
+        let listItem = element.asListItem();
+        // If numChildren != 1, skip this element as it's too complicated
+        if (listItem.getNumChildren() == 1 && listItem.getChild(0).getType() == this.documentApp.ElementType.TEXT) {
+          currentRecipe!.ingredients.push(listItem.getChild(0).asText())
+        }
+      }
+    }
+    return result;
+  }
+
+  isTotalElement(element: GoogleAppsScript.Document.Element): boolean {
+    return (
+      element.getType() == this.documentApp.ElementType.LIST_ITEM &&
+      (<GoogleAppsScript.Document.Paragraph>element).getText().substr(0, 5) == 'Total');
   }
 
   /**
