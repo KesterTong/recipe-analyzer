@@ -23,19 +23,18 @@ import { foodToDocument } from '../firebase/foodToDocument';
 import { FdcAdaptor } from '../appsscript/FdcAdaptor';
 
 describe('FoodDatabase', () => {
-  let mockedPropertiesService = mock<GoogleAppsScript.Properties.PropertiesService>();
-  let propertiesService = instance(mockedPropertiesService);
-
   let mockedFdcAdaptor = mock<FdcAdaptor>();
   when(mockedFdcAdaptor.getFdcFood(12345)).thenReturn(TEST_SR_LEGACY_FOOD);
   let fdcAdaptor = instance(mockedFdcAdaptor);
 
   let mockedFirebaseAdaptor = mock<FirebaseAdaptor>();
-  when(mockedFirebaseAdaptor.getDocument('documents/fdcData/11111')).thenReturn(
+  when(mockedFirebaseAdaptor.getDocument('fdcData/11111')).thenReturn(
     foodToDocument(TEST_SR_LEGACY_FOOD));
-  let firebaseAdaptor = instance(mockedFirebaseAdaptor);
+  when(mockedFirebaseAdaptor.getDocument('userData/id.abc123')).thenReturn(
+    foodToDocument(TEST_RECIPE_DETAILS));
+    let firebaseAdaptor = instance(mockedFirebaseAdaptor);
 
-  let fdcClient = new IngredientDatabase(propertiesService, fdcAdaptor, firebaseAdaptor);
+  let fdcClient = new IngredientDatabase(fdcAdaptor, firebaseAdaptor);
   it('ingredient in firebase', () => {
     expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/11111/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
   });
@@ -43,16 +42,22 @@ describe('FoodDatabase', () => {
   it('ingredient not in firebase', () => {
     expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedFirebaseAdaptor.patchDocument(
-      'documents/fdcData/12345',
+      'fdcData/12345',
       deepEqual(foodToDocument(TEST_SR_LEGACY_FOOD)))).once();
-  });
-
-  it('local', () => {
-    fdcClient.addCustomFood('id.abc123', TEST_RECIPE_DETAILS);
-    expect(fdcClient.getFoodDetails('#bookmark=id.abc123')).to.deep.equal(TEST_RECIPE_DETAILS);
   });
 
   it('local not found', () => {
     expect(fdcClient.getFoodDetails('#bookmark=id.def456')).to.equal(null);
+  });
+
+  it('local food', () => {
+    expect(fdcClient.getFoodDetails('#bookmark=id.abc123')).to.deep.equal(TEST_RECIPE_DETAILS);
+  });
+
+  it('addCustomFood', () => {
+    fdcClient.addCustomFood('id.abc123', TEST_RECIPE_DETAILS);
+    verify(mockedFirebaseAdaptor.patchDocument(
+      'userData/id.abc123',
+      deepEqual(foodToDocument(TEST_RECIPE_DETAILS)))).once();
   });
 });

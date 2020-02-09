@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Document } from '../firebase/Document';
+import { Document, ListDocumentsResponse } from '../firebase/Document';
 
 // Base URL for firebase API
 const FIRESTORE_API_URL = 'https://firestore.googleapis.com/v1';
@@ -52,8 +52,8 @@ export class FirebaseAdaptor {
    * @param documentName Name of document relative to database, i.e. starting
    *     with 'documents/'.
    */
-  getDocument(documentName: string): Document | null {    
-    let response = this.urlFetchApp.fetch(this.urlForDocument(documentName), {
+  getDocument(documentPath: string): Document | null {
+    let response = this.urlFetchApp.fetch(this.urlForDocument(documentPath), {
       method: "get",
       headers: {
         "Content-type": "application/json",
@@ -74,8 +74,8 @@ export class FirebaseAdaptor {
    *     with 'documents/'.
    * @param document The document to patch.
    */
-  patchDocument(documentName: string, document: Document) {
-    this.urlFetchApp.fetch(this.urlForDocument(documentName), {
+  patchDocument(documentPath: string, document: Document) {
+    this.urlFetchApp.fetch(this.urlForDocument(documentPath), {
       method: "patch",
       headers: {
         "Content-type": "application/json",
@@ -85,7 +85,26 @@ export class FirebaseAdaptor {
     });
   }
 
-  private urlForDocument(documentName: string): string {
-    return FIRESTORE_API_URL + '/projects/' + this.projectName + '/databases/' + DATABASE_NAME + '/' + documentName;
+  /**
+   * List documents in a collection
+   * @param collection Concatenation of parent and collectionId. 
+   */
+  listDocuments(collectionId: string): ListDocumentsResponse | null{
+    let response = this.urlFetchApp.fetch(this.urlForDocument(collectionId), {
+      method: "get",
+      headers: {
+        "Content-type": "application/json",
+        "Authorization": "Bearer " + this.scriptApp.getOAuthToken()
+      },
+      muteHttpExceptions: true,
+    });
+    if (response.getResponseCode() == 404) {
+      return null;
+    }
+    return JSON.parse(response.getContentText());
+  }
+
+  private urlForDocument(documentPath: string): string {
+    return FIRESTORE_API_URL + '/projects/' + this.projectName + '/databases/' + DATABASE_NAME + '/documents/' + documentPath;
   }
 }

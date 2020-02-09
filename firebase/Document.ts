@@ -34,3 +34,8 @@ export interface Document {
   createTime?: string,
   updateTime?: string
 }
+
+export interface ListDocumentsResponse {
+  documents: Document[],
+  nextPageToken: string,
+}

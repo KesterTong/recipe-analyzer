@@ -64,13 +64,11 @@ export function showIngredientsSidebar() {
 
 export function getSearchResults(query: string, includeBranded: boolean): FoodLink[] {
   let ingredientDatabase = IngredientDatabase.build();
-  ingredientDatabase.loadCustomFoods();
   return  ingredientDatabase.searchFoods(query, includeBranded);
 }
 
 export function getFoodDetails(url: string): NormalizedFood | null {
   let ingredientDatabase = IngredientDatabase.build();
-  ingredientDatabase.loadCustomFoods();
   let details = ingredientDatabase.getFoodDetails(url);
   if (details == null) {
     // TODO: handle this in the client
@@ -102,7 +100,6 @@ export function updateNutritionTables() {
     PropertiesService,
     DocumentApp);
   recipeAnalyzer.updateDocument(document);
-  ingredientDatabase.saveCustomFoods();
 }
 
 // An ingredient table looks like:

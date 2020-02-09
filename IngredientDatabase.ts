@@ -17,7 +17,6 @@ import { FoodLink } from './core/FoodLink';
 import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
 import { FdcAdaptor } from './appsscript/FdcAdaptor';
 import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
-import { documentNameForFDCFood } from './firebase/documentNameFDCFood';
 import { foodToDocument } from './firebase/foodToDocument';
 import { documentToFood } from './firebase/documentToFood';
 
@@ -27,30 +26,17 @@ import { documentToFood } from './firebase/documentToFood';
  * Looks up USDA Food Data Central database and stores and looks up local ingredients.
  */
 export class IngredientDatabase {
-  private customFoodsByBookmarkId: {[index: string]: Food} = {};
-
   constructor(
-      private propertiesService: GoogleAppsScript.Properties.PropertiesService,
       private fdcAdaptor: FdcAdaptor,
       private firebaseAdaptor: FirebaseAdaptor) { }
   
   static build(): IngredientDatabase {
-    return new IngredientDatabase(
-      PropertiesService, FdcAdaptor.build(), FirebaseAdaptor.build());
+    return new IngredientDatabase(FdcAdaptor.build(), FirebaseAdaptor.build());
   }
 
-  addCustomFood(bookmarkId: string, foodDetails: Food) {
-    this.customFoodsByBookmarkId[bookmarkId] = foodDetails;
-  }
-
-  saveCustomFoods() {
-    this.propertiesService.getDocumentProperties().setProperty(
-      'CUSTOM_FOODS', JSON.stringify(this.customFoodsByBookmarkId));
-  }
-
-  loadCustomFoods() {
-    let json = this.propertiesService.getDocumentProperties().getProperty('CUSTOM_FOODS');
-    this.customFoodsByBookmarkId =  json == null ? {} : JSON.parse(json);
+  addCustomFood(bookmarkId: string, food: Food) {
+    let document = foodToDocument(food);
+    this.firebaseAdaptor.patchDocument('userData/' + bookmarkId, document);
   }
 
   getFoodDetails(url: string): Food | null {
@@ -60,13 +46,21 @@ export class IngredientDatabase {
     }
     switch (foodIdentifier.foodType) {
       case 'FDC Food':
-        return this.FDCFoodDetails(foodIdentifier.fdcId);
+        return this.getFdcFood(foodIdentifier.fdcId);
       case 'Local Food':
-        return this.customFoodsByBookmarkId[foodIdentifier.bookmarkId] || null;
+        return this.getCustomFood(foodIdentifier.bookmarkId);
     }
   }
 
-  FDCFoodDetails(fdcId: number): Food | null {
+  private getCustomFood(bookmarkId: string): Food | null {
+    let document = this.firebaseAdaptor.getDocument('userData/' + bookmarkId);
+    if (document == null) {
+      return null;
+    }
+    return documentToFood(document); 
+  }
+
+  private getFdcFood(fdcId: number): Food | null {
     let cachedFood = this.getFirebaseFood(fdcId);
     if (cachedFood != null) {
       return cachedFood;
@@ -77,8 +71,7 @@ export class IngredientDatabase {
   }
 
   private getFirebaseFood(fdcId: number): Food | null {
-    let documentName = documentNameForFDCFood(fdcId);
-    let document = this.firebaseAdaptor.getDocument(documentName);
+    let document = this.firebaseAdaptor.getDocument('fdcData/' + fdcId.toString());
     if (document == null) {
       return null;
     }
@@ -86,9 +79,8 @@ export class IngredientDatabase {
   }
 
   private putFirebaseFood(fdcId: number, food: Food) {
-    let documentName = documentNameForFDCFood(fdcId);
     let document = foodToDocument(food);
-    this.firebaseAdaptor.patchDocument(documentName, document);
+    this.firebaseAdaptor.patchDocument('fdcData/' + fdcId.toString(), document);
   }
 
   searchFoods(query: string, includeBranded: boolean): FoodLink[] {
@@ -98,14 +90,16 @@ export class IngredientDatabase {
     if (localQueryResults != null) {
       localQueryResults.documents.forEach(element => {
         let food = documentToFood(element);
-        if (food == null) {
+        if (food == null || !food.description.match(query)) {
           return;
         }
+        let components = element.name!.split('/');
+        let bookmarkId = components[components.length - 1];
         result.push({
           url: generateUrl({foodType: 'Local Food', bookmarkId: bookmarkId}),
-          description: details.description,
-        });
-      }
+          description: food.description,
+        })
+      });
     }
     let queryResult = this.fdcAdaptor.searchFdcFoods(query, includeBranded);
     queryResult.foods.forEach(entry => {

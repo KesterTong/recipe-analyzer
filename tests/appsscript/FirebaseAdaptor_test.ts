@@ -16,9 +16,8 @@ import { FirebaseAdaptor } from '../../appsscript/FirebaseAdaptor';
 
 import { expect } from 'chai';
 import 'mocha';
-import { mock, instance, when, verify, deepEqual, anything } from 'ts-mockito';
+import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
 import { Document } from '../../firebase/Document';
-import { equal } from 'assert';
 
 describe('FirebaseAdaptor', () => {
   let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
@@ -72,15 +71,15 @@ describe('FirebaseAdaptor', () => {
   let firebaseAdaptor = new FirebaseAdaptor(urlFetchApp, scriptApp, propertiesService);
   describe('getDocument', () => {
     it('ok', () => {
-      expect(firebaseAdaptor.getDocument('documents/fdcData/12345')).to.deep.equal(TEST_DOCUMENT);
+      expect(firebaseAdaptor.getDocument('fdcData/12345')).to.deep.equal(TEST_DOCUMENT);
     });
     it('not found', () => {
-      expect(firebaseAdaptor.getDocument('documents/fdcData/11111')).to.deep.equal(null);
+      expect(firebaseAdaptor.getDocument('fdcData/11111')).to.deep.equal(null);
     });
   });
   describe('putDocument', () => {
     it('ok', () => {
-      firebaseAdaptor.patchDocument('documents/fdcData/23456', TEST_DOCUMENT);
+      firebaseAdaptor.patchDocument('fdcData/23456', TEST_DOCUMENT);
       verify(mockedUrlFetchApp.fetch(
         'https://firestore.googleapis.com/v1/projects/project_name/databases/(default)/documents/fdcData/23456',
         deepEqual({
