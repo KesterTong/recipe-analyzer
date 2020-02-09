@@ -93,9 +93,14 @@ export class IngredientDatabase {
 
   searchFoods(query: string, includeBranded: boolean): FoodLink[] {
     let result: FoodLink[] = [];
-    for (let bookmarkId in this.customFoodsByBookmarkId) {
-      let details = this.customFoodsByBookmarkId[bookmarkId];
-      if (details.description.match(query)) {
+
+    let localQueryResults = this.firebaseAdaptor.listDocuments('userData');
+    if (localQueryResults != null) {
+      localQueryResults.documents.forEach(element => {
+        let food = documentToFood(element);
+        if (food == null) {
+          return;
+        }
         result.push({
           url: generateUrl({foodType: 'Local Food', bookmarkId: bookmarkId}),
           description: details.description,
