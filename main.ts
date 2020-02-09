@@ -90,10 +90,10 @@ export function getNutrientNames(): {id: number, name: string}[] {
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
   let ingredientDatabase = IngredientDatabase.build();
-  let bookmarkManager = new DocumentAdaptor(document);
-  loadCustomIngredients(document, bookmarkManager, ingredientDatabase);
+  let documentAdaptor = new DocumentAdaptor(document);
+  loadCustomIngredients(documentAdaptor, ingredientDatabase);
   let recipeAnalyzer = new RecipeAnalyzer(
-    bookmarkManager,
+    documentAdaptor,
     ingredientDatabase,
     PropertiesService,
     DocumentApp);
