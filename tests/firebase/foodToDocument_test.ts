@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FDCFood";
-import { NormalizedFood } from "./NormalizedFood";
-import { Recipe } from "./Recipe";
+import { expect } from 'chai';
+import 'mocha';
+import { foodToDocument } from '../../firebase/foodToDocument';
+import { TEST_SR_LEGACY_FOOD } from '../testData';
 
-export interface CustomFood extends NormalizedFood {
-  dataType: 'Custom',
-}
-
-export type Food = FDCFood | CustomFood | Recipe;
+describe('foodToDocument', () => {
+  it('ok', () => {
+    expect(foodToDocument(TEST_SR_LEGACY_FOOD)).to.deep.equal({
+      fields: {
+        version: {stringValue: '0.1'},
+        data: {stringValue: JSON.stringify(TEST_SR_LEGACY_FOOD)},
+      }
+    });
+  });
+});

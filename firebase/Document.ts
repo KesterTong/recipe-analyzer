@@ -12,12 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FDCFood";
-import { NormalizedFood } from "./NormalizedFood";
-import { Recipe } from "./Recipe";
-
-export interface CustomFood extends NormalizedFood {
-  dataType: 'Custom',
+export interface ArrayValue {
+  values: Value[];
 }
 
-export type Food = FDCFood | CustomFood | Recipe;
+export interface Value {
+  nullValue?: null,
+  booleanValue?: boolean,
+  integerValue?: string,
+  doubleValue?: number,
+  timestampValue?: string,
+  stringValue?: string,
+  bytesValue?: string,
+  referenceValue?: string,
+  arrayValue?: ArrayValue,
+}
+
+export interface Document {
+  name?: string,
+  fields: {[index: string]: Value},
+  createTime?: string,
+  updateTime?: string
+}

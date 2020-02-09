@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FDCFood";
-import { NormalizedFood } from "./NormalizedFood";
-import { Recipe } from "./Recipe";
+// Base URL for 
+const FIRESTORE_API_URL = 'https://firestore.googleapis.com/v1beta1/';
 
-export interface CustomFood extends NormalizedFood {
-  dataType: 'Custom',
+// Firebase collection containing FDC foods.
+const FDC_FOODS_COLLECTION = 'fdcData';
+
+export function firebaseUrlForFDCFood(projectName: string, fdcId: number): string {
+  return FIRESTORE_API_URL + 'projects/' + projectName + '/databases/(default)/documents/' + FDC_FOODS_COLLECTION + '/' + fdcId.toString();
 }
-
-export type Food = FDCFood | CustomFood | Recipe;

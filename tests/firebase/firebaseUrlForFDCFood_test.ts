@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FDCFood";
-import { NormalizedFood } from "./NormalizedFood";
-import { Recipe } from "./Recipe";
+import { expect } from 'chai';
+import { firebaseUrlForFDCFood } from '../../firebase/firebaseUrlForFDCFood';
+import 'mocha';
+import { TEST_SR_LEGACY_FOOD } from '../testData';
 
-export interface CustomFood extends NormalizedFood {
-  dataType: 'Custom',
-}
-
-export type Food = FDCFood | CustomFood | Recipe;
+describe('firebaseUrlForFDCFood', () => {
+  it('ok', () => {
+    expect(firebaseUrlForFDCFood('project_name', 12345)).to.equal(
+      'https://firestore.googleapis.com/v1beta1/projects/project_name/databases/(default)/documents/fdcData/12345');
+  });
+});

@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FDCFood";
-import { NormalizedFood } from "./NormalizedFood";
-import { Recipe } from "./Recipe";
+import { Document } from './Document';
+import { Food } from "../core/Food";
 
-export interface CustomFood extends NormalizedFood {
-  dataType: 'Custom',
+export function documentToFood(document: Document): Food | null {
+  let version = document.fields.version;
+  if (version == null || version.stringValue == null || version.stringValue != '0.1') {
+    return null;
+  }
+  let data = document.fields.data;
+  if (data == null || data.stringValue == null) {
+    return null;
+  }
+  return JSON.parse(data.stringValue);
 }
-
-export type Food = FDCFood | CustomFood | Recipe;
