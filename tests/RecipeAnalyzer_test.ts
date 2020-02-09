@@ -19,7 +19,7 @@ import 'mocha';
 import { TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
 import { mock, instance, when, verify, anyString, anyNumber } from 'ts-mockito';
 import { IngredientDatabase } from '../IngredientDatabase';
-import { BookmarkManager } from '../BookmarkManager';
+import { DocumentAdaptor } from '../appsscript/DocumentAdaptor';
 
 function createListItem(text: GoogleAppsScript.Document.Text): GoogleAppsScript.Document.ListItem {
   let mockedListItem = mock<GoogleAppsScript.Document.ListItem>();
@@ -70,7 +70,7 @@ describe('updateElement', () => {
 
   it('no link', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mock<IngredientDatabase>()),
       propertiesService,
       documentApp);
@@ -89,7 +89,7 @@ describe('updateElement', () => {
   // there was no quanity unit.
   it('no link no units', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mock<IngredientDatabase>()),
       propertiesService,
       documentApp);
@@ -106,7 +106,7 @@ describe('updateElement', () => {
 
   it('no link with tabs', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mock<IngredientDatabase>()),
       propertiesService,
       documentApp);
@@ -124,7 +124,7 @@ describe('updateElement', () => {
   it('recipe not found', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
@@ -144,7 +144,7 @@ describe('updateElement', () => {
   it('recipe not found with tabs', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
@@ -164,7 +164,7 @@ describe('updateElement', () => {
   it('FDC data', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
@@ -184,7 +184,7 @@ describe('updateElement', () => {
   it('recipe', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
@@ -204,7 +204,7 @@ describe('updateElement', () => {
   it('recipe with plural', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
@@ -224,7 +224,7 @@ describe('updateElement', () => {
   it('recipe with existing output', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);
@@ -244,7 +244,7 @@ describe('updateElement', () => {
   it('recipe with trailing space', () => {
     let mockFdcClient = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
-      instance(mock<BookmarkManager>()),
+      instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
       propertiesService,
       documentApp);

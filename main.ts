@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
-import { BookmarkManager } from './BookmarkManager';
+import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { IngredientDatabase } from './IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { FoodLink } from './core/FoodLink';
@@ -90,7 +90,7 @@ export function getNutrientNames(): {id: number, name: string}[] {
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
   let ingredientDatabase = IngredientDatabase.build();
-  let bookmarkManager = new BookmarkManager(document);
+  let bookmarkManager = new DocumentAdaptor(document);
   loadCustomIngredients(document, bookmarkManager, ingredientDatabase);
   let recipeAnalyzer = new RecipeAnalyzer(
     bookmarkManager,

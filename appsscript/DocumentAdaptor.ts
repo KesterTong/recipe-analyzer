@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NormalizedFood } from "./core/NormalizedFood";
+import { NormalizedFood } from "../core/NormalizedFood";
 
-export class BookmarkManager {
+/**
+ * Adaptor class for Apps Script Document class.
+ */
+export class DocumentAdaptor {
   private bookmarkIdByText : {[index: string]: string} = {};
 
   constructor(document: GoogleAppsScript.Document.Document) {

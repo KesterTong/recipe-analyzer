@@ -16,7 +16,7 @@ import { nutrientsForQuantity } from './core/Quantity';
 import { Nutrients, addNutrients } from './core/Nutrients';
 import { IngredientDatabase } from './IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
-import { BookmarkManager } from './BookmarkManager';
+import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { parseQuantity } from './core/parseQuantity';
 import { Recipe } from "./core/Recipe";
 
@@ -24,7 +24,7 @@ export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
   
   constructor(
-      private bookmarkManager: BookmarkManager,
+      private bookmarkManager: DocumentAdaptor,
       private fdcClient: IngredientDatabase,
       propertiesService: GoogleAppsScript.Properties.PropertiesService,
       private documentApp: GoogleAppsScript.Document.DocumentApp) {
