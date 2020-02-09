@@ -18,22 +18,23 @@ import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when, verify } from 'ts-mockito';
+import { FirebaseAdaptor } from '../appsscript/FirebaseAdaptor';
 
 describe('FoodDatabase', () => {
   let mockedUserCache: GoogleAppsScript.Cache.Cache = mock<GoogleAppsScript.Cache.Cache>();
   when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
 
-  let mockedCacheService = mock<GoogleAppsScript.Cache.CacheService>();
-  when(mockedCacheService.getUserCache()).thenCall(() => instance(mockedUserCache));
-  let cacheService = instance(mockedCacheService);
-
   let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
   when(mockedScriptProperties.getProperty('USDA_API_KEY')).thenReturn('abcde');
+  when(mockedScriptProperties.getProperty('FIREBASE_PROJECT_NAME')).thenReturn('fghij');
   let scriptProperties = instance(mockedScriptProperties);
 
   let mockedPropertiesService = mock<GoogleAppsScript.Properties.PropertiesService>();
   when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
   let propertiesService = instance(mockedPropertiesService);
+
+  let mockedScriptApp = mock<GoogleAppsScript.Script.ScriptApp>();
+  let scriptApp = instance(mockedScriptApp);
 
   let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
   when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
@@ -43,7 +44,7 @@ describe('FoodDatabase', () => {
     instance(mockedHTTPResponse));
   let urlFetchApp = instance(mockedUrlFetchApp);
 
-  let fdcClient = new IngredientDatabase(urlFetchApp, cacheService, propertiesService);
+  let fdcClient = new IngredientDatabase(urlFetchApp, scriptApp, propertiesService);
   it('cached', () => {
     expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/11111/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedUserCache.put('11111', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();

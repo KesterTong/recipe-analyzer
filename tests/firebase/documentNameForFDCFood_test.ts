@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Base URL for 
-const FIRESTORE_API_URL = 'https://firestore.googleapis.com/v1beta1/';
+import { expect } from 'chai';
+import { documentNameForFDCFood } from '../../firebase/documentNameFDCFood';
+import 'mocha';
 
-// Firebase collection containing FDC foods.
-const FDC_FOODS_COLLECTION = 'fdcData';
-
-export function firebaseUrlForFDCFood(projectName: string, fdcId: number): string {
-  return FIRESTORE_API_URL + 'projects/' + projectName + '/databases/(default)/documents/' + FDC_FOODS_COLLECTION + '/' + fdcId.toString();
-}
+describe('firebaseUrlForFDCFood', () => {
+  it('ok', () => {
+    expect(documentNameForFDCFood(12345)).to.equal('documents/fdcData/12345');
+  });
+});

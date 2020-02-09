@@ -15,13 +15,10 @@
 import { Food } from './core/Food';
 import { FoodLink } from './core/FoodLink';
 import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
-import { NormalizedFood } from './core/NormalizedFood';
-import { firebaseUrlForFDCFood } from './firebase/firebaseUrlForFDCFood';
+import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
+import { documentNameForFDCFood } from './firebase/documentNameFDCFood';
 import { foodToDocument } from './firebase/foodToDocument';
 import { documentToFood } from './firebase/documentToFood';
-
-// Keys in ScriptProperties.
-const FIREBASE_PROJECT_NAME_KEY = 'FIREBASE_PROJECT_NAME';
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -49,11 +46,14 @@ interface FDCQueryResult {
  */
 export class IngredientDatabase {
   private customFoodsByBookmarkId: {[index: string]: Food} = {};
+  private firebaseAdaptor: FirebaseAdaptor;
 
   constructor(
       private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
-      private cacheService: GoogleAppsScript.Cache.CacheService,
-      private propertiesService: GoogleAppsScript.Properties.PropertiesService) {}
+      scriptApp: GoogleAppsScript.Script.ScriptApp,
+      private propertiesService: GoogleAppsScript.Properties.PropertiesService,) {
+    this.firebaseAdaptor = new FirebaseAdaptor(urlFetchApp, scriptApp, propertiesService);
+  }
 
   addCustomFood(bookmarkId: string, foodDetails: Food) {
     this.customFoodsByBookmarkId[bookmarkId] = foodDetails;
@@ -95,33 +95,18 @@ export class IngredientDatabase {
   }
 
   private getFirebaseFood(fdcId: number): Food | null {
-    let projectName = this.propertiesService.getScriptProperties().getProperty(FIREBASE_PROJECT_NAME_KEY);
-    let url = firebaseUrlForFDCFood(projectName!, fdcId);
-    let response = UrlFetchApp.fetch(url, {
-      method: "get",
-      headers: {
-        "Content-type": "application/json",
-        "Authorization": "Bearer " + ScriptApp.getOAuthToken()
-      },
-      muteHttpExceptions: true,
-    });
-    if (response.getResponseCode() == 404) {
+    let documentName = documentNameForFDCFood(fdcId);
+    let document = this.firebaseAdaptor.getDocument(documentName);
+    if (document == null) {
       return null;
     }
-    return documentToFood(JSON.parse(response.getContentText()));
+    return documentToFood(document);
   }
 
   private putFirebaseFood(fdcId: number, food: Food) {
-    let projectName = this.propertiesService.getScriptProperties().getProperty(FIREBASE_PROJECT_NAME_KEY);
-    let url = firebaseUrlForFDCFood(projectName!, fdcId);
-    UrlFetchApp.fetch(url, {
-      method: "patch",
-      headers: {
-        "Content-type": "application/json",
-        "Authorization": "Bearer " + ScriptApp.getOAuthToken()
-      },
-      payload: JSON.stringify(foodToDocument(food)),
-    });
+    let documentName = documentNameForFDCFood(fdcId);
+    let document = foodToDocument(food);
+    this.firebaseAdaptor.patchDocument(documentName, document);
   }
 
   searchFoods(query: string, includeBranded: boolean): FoodLink[] {

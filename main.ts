@@ -62,13 +62,13 @@ export function showIngredientsSidebar() {
 }
 
 export function getSearchResults(query: string, includeBranded: boolean): FoodLink[] {
-  let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, ScriptApp, PropertiesService);
   fdcClient.loadCustomFoods();
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
 export function getFoodDetails(url: string): NormalizedFood | null {
-  let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, ScriptApp, PropertiesService);
   fdcClient.loadCustomFoods();
   let details = fdcClient.getFoodDetails(url);
   if (details == null) {
@@ -92,7 +92,7 @@ export function getNutrientNames(): {id: number, name: string}[] {
 
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
-  let fdcClient = new IngredientDatabase(UrlFetchApp, CacheService, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, ScriptApp, PropertiesService);
   let bookmarkManager = new BookmarkManager(document);
   loadCustomIngredients(document, bookmarkManager, fdcClient);
   let recipeAnalyzer = new RecipeAnalyzer(
