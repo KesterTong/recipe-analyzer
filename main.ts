@@ -20,8 +20,6 @@ import { FoodLink } from './core/FoodLink';
 import { nutrientNames } from './core/Nutrients';
 import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
-import { parseUrl, FoodIdentifier } from './FoodIdentifier';
-import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -32,12 +30,13 @@ export function onOpen() {
 }
 
 export function moveCursorToBookmark(url: string) {
-  let foodIdentifier: FoodIdentifier | null = parseUrl(url);
-  if (foodIdentifier == null || foodIdentifier.foodType != 'Local Food') {
+  let prefix = '#bookmark='
+  if (!url.startsWith(prefix)) {
     return;
   }
+  let bookmarkId = url.substr(prefix.length, url.length - prefix.length);
   let document = DocumentApp.getActiveDocument()
-  let bookmark = document.getBookmark(foodIdentifier.bookmarkId);
+  let bookmark = document.getBookmark(bookmarkId);
   if (bookmark == null) {
     return;
   }

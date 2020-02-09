@@ -14,7 +14,6 @@
 
 import { Food } from './core/Food';
 import { FoodLink } from './core/FoodLink';
-import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
 import { FdcAdaptor } from './appsscript/FdcAdaptor';
 import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
 import { foodToDocument } from './firebase/foodToDocument';
@@ -40,15 +39,16 @@ export class IngredientDatabase {
   }
 
   getFoodDetails(url: string): Food | null {
-    let foodIdentifier: FoodIdentifier | null = parseUrl(url);
-    if (foodIdentifier == null) {
+    let fdcIdMatch = url.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
+    let bookmarkIdMatch = url.match('^#bookmark=(.*)');
+    if (fdcIdMatch) {
+      let fdcId = Number(fdcIdMatch[1]);
+      return this.getFdcFood(fdcId);
+    } else if (bookmarkIdMatch) {
+      let bookmarkId = bookmarkIdMatch[1];
+      return this.getCustomFood(bookmarkId);
+    } else {
       return null;
-    }
-    switch (foodIdentifier.foodType) {
-      case 'FDC Food':
-        return this.getFdcFood(foodIdentifier.fdcId);
-      case 'Local Food':
-        return this.getCustomFood(foodIdentifier.bookmarkId);
     }
   }
 
@@ -96,7 +96,7 @@ export class IngredientDatabase {
         let components = element.name!.split('/');
         let bookmarkId = components[components.length - 1];
         result.push({
-          url: generateUrl({foodType: 'Local Food', bookmarkId: bookmarkId}),
+          url: '#bookmark=' + bookmarkId,
           description: food.description,
         })
       });
@@ -104,7 +104,7 @@ export class IngredientDatabase {
     let queryResult = this.fdcAdaptor.searchFdcFoods(query, includeBranded);
     queryResult.foods.forEach(entry => {
       result.push({
-        url: generateUrl({foodType: 'FDC Food', fdcId: entry.fdcId}),
+        url: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + entry.fdcId + '/nutrients',
         description: entry.description,
       });
     });
