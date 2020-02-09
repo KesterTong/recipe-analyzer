@@ -17,13 +17,11 @@ import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 
 import { expect } from 'chai';
 import 'mocha';
-import { mock, instance, when, verify } from 'ts-mockito';
+import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
 import { FirebaseAdaptor } from '../appsscript/FirebaseAdaptor';
+import { foodToDocument } from '../firebase/foodToDocument';
 
 describe('FoodDatabase', () => {
-  let mockedUserCache: GoogleAppsScript.Cache.Cache = mock<GoogleAppsScript.Cache.Cache>();
-  when(mockedUserCache.get('11111')).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-
   let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
   when(mockedScriptProperties.getProperty('USDA_API_KEY')).thenReturn('abcde');
   when(mockedScriptProperties.getProperty('FIREBASE_PROJECT_NAME')).thenReturn('fghij');
@@ -33,9 +31,6 @@ describe('FoodDatabase', () => {
   when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
   let propertiesService = instance(mockedPropertiesService);
 
-  let mockedScriptApp = mock<GoogleAppsScript.Script.ScriptApp>();
-  let scriptApp = instance(mockedScriptApp);
-
   let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
   when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
 
@@ -44,15 +39,21 @@ describe('FoodDatabase', () => {
     instance(mockedHTTPResponse));
   let urlFetchApp = instance(mockedUrlFetchApp);
 
-  let fdcClient = new IngredientDatabase(urlFetchApp, scriptApp, propertiesService);
-  it('cached', () => {
+  let mockedFirebaseAdaptor = mock<FirebaseAdaptor>();
+  when(mockedFirebaseAdaptor.getDocument('documents/fdcData/11111')).thenReturn(
+    foodToDocument(TEST_SR_LEGACY_FOOD));
+  let firebaseAdaptor = instance(mockedFirebaseAdaptor);
+
+  let fdcClient = new IngredientDatabase(urlFetchApp, propertiesService, firebaseAdaptor);
+  it('ingredient in firebase', () => {
     expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/11111/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
-    verify(mockedUserCache.put('11111', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
   });
 
-  it('not cached', () => {
+  it('ingredient not in firebase', () => {
     expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
-    verify(mockedUserCache.put('12345', JSON.stringify(TEST_SR_LEGACY_FOOD), 21600)).once();
+    verify(mockedFirebaseAdaptor.patchDocument(
+      'documents/fdcData/12345',
+      deepEqual(foodToDocument(TEST_SR_LEGACY_FOOD)))).once();
   });
 
   it('local', () => {

@@ -21,6 +21,7 @@ import { nutrientNames } from './core/Nutrients';
 import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
 import { parseUrl, FoodIdentifier } from './FoodIdentifier';
+import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -62,13 +63,15 @@ export function showIngredientsSidebar() {
 }
 
 export function getSearchResults(query: string, includeBranded: boolean): FoodLink[] {
-  let fdcClient = new IngredientDatabase(UrlFetchApp, ScriptApp, PropertiesService);
+  let firebaseAdaptor = new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, PropertiesService, firebaseAdaptor);
   fdcClient.loadCustomFoods();
   return  fdcClient.searchFoods(query, includeBranded);
 }
 
 export function getFoodDetails(url: string): NormalizedFood | null {
-  let fdcClient = new IngredientDatabase(UrlFetchApp, ScriptApp, PropertiesService);
+  let firebaseAdaptor = new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, PropertiesService, firebaseAdaptor);
   fdcClient.loadCustomFoods();
   let details = fdcClient.getFoodDetails(url);
   if (details == null) {
@@ -92,7 +95,8 @@ export function getNutrientNames(): {id: number, name: string}[] {
 
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
-  let fdcClient = new IngredientDatabase(UrlFetchApp, ScriptApp, PropertiesService);
+  let firebaseAdaptor = new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
+  let fdcClient = new IngredientDatabase(UrlFetchApp, PropertiesService, firebaseAdaptor);
   let bookmarkManager = new BookmarkManager(document);
   loadCustomIngredients(document, bookmarkManager, fdcClient);
   let recipeAnalyzer = new RecipeAnalyzer(

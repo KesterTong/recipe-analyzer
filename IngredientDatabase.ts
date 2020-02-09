@@ -46,14 +46,11 @@ interface FDCQueryResult {
  */
 export class IngredientDatabase {
   private customFoodsByBookmarkId: {[index: string]: Food} = {};
-  private firebaseAdaptor: FirebaseAdaptor;
 
   constructor(
       private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
-      scriptApp: GoogleAppsScript.Script.ScriptApp,
-      private propertiesService: GoogleAppsScript.Properties.PropertiesService,) {
-    this.firebaseAdaptor = new FirebaseAdaptor(urlFetchApp, scriptApp, propertiesService);
-  }
+      private propertiesService: GoogleAppsScript.Properties.PropertiesService,
+      private firebaseAdaptor: FirebaseAdaptor) { }
 
   addCustomFood(bookmarkId: string, foodDetails: Food) {
     this.customFoodsByBookmarkId[bookmarkId] = foodDetails;
