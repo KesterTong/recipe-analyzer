@@ -63,17 +63,15 @@ export function showIngredientsSidebar() {
 }
 
 export function getSearchResults(query: string, includeBranded: boolean): FoodLink[] {
-  let firebaseAdaptor = new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
-  let fdcClient = new IngredientDatabase(UrlFetchApp, PropertiesService, firebaseAdaptor);
-  fdcClient.loadCustomFoods();
-  return  fdcClient.searchFoods(query, includeBranded);
+  let ingredientDatabase = IngredientDatabase.build();
+  ingredientDatabase.loadCustomFoods();
+  return  ingredientDatabase.searchFoods(query, includeBranded);
 }
 
 export function getFoodDetails(url: string): NormalizedFood | null {
-  let firebaseAdaptor = new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
-  let fdcClient = new IngredientDatabase(UrlFetchApp, PropertiesService, firebaseAdaptor);
-  fdcClient.loadCustomFoods();
-  let details = fdcClient.getFoodDetails(url);
+  let ingredientDatabase = IngredientDatabase.build();
+  ingredientDatabase.loadCustomFoods();
+  let details = ingredientDatabase.getFoodDetails(url);
   if (details == null) {
     // TODO: handle this in the client
     return null;
@@ -95,17 +93,16 @@ export function getNutrientNames(): {id: number, name: string}[] {
 
 export function updateNutritionTables() {
   let document = DocumentApp.getActiveDocument();
-  let firebaseAdaptor = new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
-  let fdcClient = new IngredientDatabase(UrlFetchApp, PropertiesService, firebaseAdaptor);
+  let ingredientDatabase = IngredientDatabase.build();
   let bookmarkManager = new BookmarkManager(document);
-  loadCustomIngredients(document, bookmarkManager, fdcClient);
+  loadCustomIngredients(document, bookmarkManager, ingredientDatabase);
   let recipeAnalyzer = new RecipeAnalyzer(
     bookmarkManager,
-    fdcClient,
+    ingredientDatabase,
     PropertiesService,
     DocumentApp);
   recipeAnalyzer.updateDocument(document);
-  fdcClient.saveCustomFoods();
+  ingredientDatabase.saveCustomFoods();
 }
 
 // An ingredient table looks like:

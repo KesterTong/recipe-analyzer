@@ -20,31 +20,22 @@ import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
 import { FirebaseAdaptor } from '../appsscript/FirebaseAdaptor';
 import { foodToDocument } from '../firebase/foodToDocument';
+import { FdcAdaptor } from '../appsscript/FdcAdaptor';
 
 describe('FoodDatabase', () => {
-  let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
-  when(mockedScriptProperties.getProperty('USDA_API_KEY')).thenReturn('abcde');
-  when(mockedScriptProperties.getProperty('FIREBASE_PROJECT_NAME')).thenReturn('fghij');
-  let scriptProperties = instance(mockedScriptProperties);
-
   let mockedPropertiesService = mock<GoogleAppsScript.Properties.PropertiesService>();
-  when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
   let propertiesService = instance(mockedPropertiesService);
 
-  let mockedHTTPResponse = mock<GoogleAppsScript.URL_Fetch.HTTPResponse>();
-  when(mockedHTTPResponse.getContentText()).thenReturn(JSON.stringify(TEST_SR_LEGACY_FOOD));
-
-  let mockedUrlFetchApp = mock<GoogleAppsScript.URL_Fetch.UrlFetchApp>();
-  when(mockedUrlFetchApp.fetch('https://api.nal.usda.gov/fdc/v1/12345?api_key=abcde')).thenReturn(
-    instance(mockedHTTPResponse));
-  let urlFetchApp = instance(mockedUrlFetchApp);
+  let mockedFdcAdaptor = mock<FdcAdaptor>();
+  when(mockedFdcAdaptor.getFdcFood(12345)).thenReturn(TEST_SR_LEGACY_FOOD);
+  let fdcAdaptor = instance(mockedFdcAdaptor);
 
   let mockedFirebaseAdaptor = mock<FirebaseAdaptor>();
   when(mockedFirebaseAdaptor.getDocument('documents/fdcData/11111')).thenReturn(
     foodToDocument(TEST_SR_LEGACY_FOOD));
   let firebaseAdaptor = instance(mockedFirebaseAdaptor);
 
-  let fdcClient = new IngredientDatabase(urlFetchApp, propertiesService, firebaseAdaptor);
+  let fdcClient = new IngredientDatabase(propertiesService, fdcAdaptor, firebaseAdaptor);
   it('ingredient in firebase', () => {
     expect(fdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/11111/nutrients')).to.deep.equal(TEST_SR_LEGACY_FOOD);
   });

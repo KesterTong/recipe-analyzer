@@ -42,6 +42,10 @@ export class FirebaseAdaptor {
     this.projectName = projectName;
   }
 
+  static build(): FirebaseAdaptor {
+    return new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
+  }
+
   /**
    * Get a document or return null if it does not exist.
    * 

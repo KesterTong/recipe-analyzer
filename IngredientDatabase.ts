@@ -15,29 +15,11 @@
 import { Food } from './core/Food';
 import { FoodLink } from './core/FoodLink';
 import { FoodIdentifier, parseUrl, generateUrl } from './FoodIdentifier';
+import { FdcAdaptor } from './appsscript/FdcAdaptor';
 import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
 import { documentNameForFDCFood } from './firebase/documentNameFDCFood';
 import { foodToDocument } from './firebase/foodToDocument';
 import { documentToFood } from './firebase/documentToFood';
-
-interface FDCQueryResult {
-  foodSearchCriteria: {
-    generalSearchInput: string,
-    pageNumber: number,
-    requireAllWords: boolean
-  },
-  totalHits: number,
-  currentPage: number,
-  totalPages: number,
-  foods: {
-    fdcId: number,
-    description: string,
-    dataType: string,
-    gtinUpc: string,
-    brandOwner: string
-    score: number
-  }[];
-}
 
 /**
  * Class to store and lookup ingredients.
@@ -48,9 +30,14 @@ export class IngredientDatabase {
   private customFoodsByBookmarkId: {[index: string]: Food} = {};
 
   constructor(
-      private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
       private propertiesService: GoogleAppsScript.Properties.PropertiesService,
+      private fdcAdaptor: FdcAdaptor,
       private firebaseAdaptor: FirebaseAdaptor) { }
+  
+  static build(): IngredientDatabase {
+    return new IngredientDatabase(
+      PropertiesService, FdcAdaptor.build(), FirebaseAdaptor.build());
+  }
 
   addCustomFood(bookmarkId: string, foodDetails: Food) {
     this.customFoodsByBookmarkId[bookmarkId] = foodDetails;
@@ -66,7 +53,6 @@ export class IngredientDatabase {
     this.customFoodsByBookmarkId =  json == null ? {} : JSON.parse(json);
   }
 
-  // TODO: handle API call failures gracefully.
   getFoodDetails(url: string): Food | null {
     let foodIdentifier: FoodIdentifier | null = parseUrl(url);
     if (foodIdentifier == null) {
@@ -85,8 +71,7 @@ export class IngredientDatabase {
     if (cachedFood != null) {
       return cachedFood;
     }
-    let url = this.fdcApiUrl(fdcId.toString(), {});
-    let food: Food = JSON.parse(this.urlFetchApp.fetch(url).getContentText());
+    let food = this.fdcAdaptor.getFdcFood(fdcId);
     this.putFirebaseFood(fdcId, food);
     return food;
   }
@@ -107,10 +92,6 @@ export class IngredientDatabase {
   }
 
   searchFoods(query: string, includeBranded: boolean): FoodLink[] {
-    let url = this.fdcApiUrl('search', {
-      generalSearchInput: encodeURIComponent(query),
-      includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
-    });
     let result: FoodLink[] = [];
     for (let bookmarkId in this.customFoodsByBookmarkId) {
       let details = this.customFoodsByBookmarkId[bookmarkId];
@@ -121,7 +102,7 @@ export class IngredientDatabase {
         });
       }
     }
-    let queryResult = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
+    let queryResult = this.fdcAdaptor.searchFdcFoods(query, includeBranded);
     queryResult.foods.forEach(entry => {
       result.push({
         url: generateUrl({foodType: 'FDC Food', fdcId: entry.fdcId}),
@@ -129,16 +110,5 @@ export class IngredientDatabase {
       });
     });
     return result;
-  }
-
-  private fdcApiUrl(resource: string, options: {[index: string]: string}): string {
-    const API_KEY = this.propertiesService.getScriptProperties().getProperty('USDA_API_KEY');
-    let url = 'https://api.nal.usda.gov/fdc/v1/';
-    url += encodeURIComponent(resource);
-    url += '?api_key=' + API_KEY;
-    Object.keys(options).forEach(key => {
-      url += '&' + key + '=' + options[key];
-    })
-    return url;
   }
 }
