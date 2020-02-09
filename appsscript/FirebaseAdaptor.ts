@@ -49,7 +49,6 @@ export class FirebaseAdaptor {
    *     with 'documents/'.
    */
   getDocument(documentName: string): Document | null {    
-    console.log(this.urlForDocument(documentName));
     let response = this.urlFetchApp.fetch(this.urlForDocument(documentName), {
       method: "get",
       headers: {
