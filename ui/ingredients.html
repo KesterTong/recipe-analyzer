@@ -111,7 +111,6 @@
           select: function(event, ui) {
             event.preventDefault();
             currentIngredientUrl = ui.item.value;
-            console.log(currentIngredientUrl);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
             .getFoodDetails(currentIngredientUrl);
