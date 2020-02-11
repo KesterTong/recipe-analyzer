@@ -1,5 +1,3 @@
-import { Quantity } from "./Quantity";
-
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +11,7 @@ import { Quantity } from "./Quantity";
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+import { Quantity } from "./Quantity";
 
 /**
  * Parse a quantity, e.g. "1 cup"
