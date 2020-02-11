@@ -12,25 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { FDCFood } from "../core/FDCFood";
-
-export interface FDCQueryResult {
-  foodSearchCriteria: {
-    generalSearchInput: string,
-    pageNumber: number,
-    requireAllWords: boolean
-  },
-  totalHits: number,
-  currentPage: number,
-  totalPages: number,
-  foods: {
-    fdcId: number,
-    description: string,
-    dataType: string,
-    gtinUpc: string,
-    brandOwner: string
-    score: number
-  }[];
-}
+import { FDCQueryResult } from "../core/FDCQueryResult";
 
 // Key in ScriptProperties for USDA API key
 const USDA_API_KEY_KEY = 'USDA_API_KEY'
