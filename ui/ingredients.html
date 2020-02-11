@@ -101,7 +101,7 @@
               response(results.map(function(entry) {
                 return {
                   label: entry.description,
-                  value: entry.url,
+                  value: entry.documentPath,
                 };
               }));
             }
@@ -111,6 +111,7 @@
           select: function(event, ui) {
             event.preventDefault();
             currentIngredientUrl = ui.item.value;
+            console.log(currentIngredientUrl);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
             .getFoodDetails(currentIngredientUrl);

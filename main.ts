@@ -30,7 +30,7 @@ export function onOpen() {
 }
 
 export function moveCursorToBookmark(url: string) {
-  let prefix = '#bookmark='
+  let prefix = 'userData/'
   if (!url.startsWith(prefix)) {
     return;
   }
@@ -65,16 +65,16 @@ export function getSearchResults(query: string): FoodLink[] {
   return  ingredientDatabase.searchFoods(query);
 }
 
-export function getFoodDetails(url: string): NormalizedFood | null {
+export function getFoodDetails(documentPath: string): NormalizedFood | null {
   let ingredientDatabase = IngredientDatabase.build();
-  let details = ingredientDatabase.getFoodDetails(url);
-  if (details == null) {
+  let food = ingredientDatabase.getFood(documentPath);
+  if (food == null) {
     // TODO: handle this in the client
     return null;
   }
   let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
   let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
-  return normalizeFood(details, nutrientsToDisplay);
+  return normalizeFood(food, nutrientsToDisplay);
 }
 
 export function getNutrientNames(): {id: number, name: string}[] {

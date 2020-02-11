@@ -108,10 +108,10 @@ describe('updateElement', () => {
   });
 
   it('recipe not found', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -122,14 +122,14 @@ describe('updateElement', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
-    verify(mockFdcClient.getFoodDetails('#bookmark=id.NOT_AN_ID')).once();
+    verify(mockIngredientDatabase.getFood('userData/id.NOT_AN_ID')).once();
   });
 
   it('recipe not found with tabs', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -140,16 +140,16 @@ describe('updateElement', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
-    verify(mockFdcClient.getFoodDetails('#bookmark=id.NOT_AN_ID')).once();
+    verify(mockIngredientDatabase.getFood('userData/id.NOT_AN_ID')).once();
   });
 
   it('FDC data', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
-    when(mockFdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients')).thenReturn(TEST_BRANDED_FOOD);
+    when(mockIngredientDatabase.getFood('fdcData/12345')).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -162,12 +162,12 @@ describe('updateElement', () => {
   });
 
   it('recipe', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
-    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -180,12 +180,12 @@ describe('updateElement', () => {
   });
 
   it('recipe with plural', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
-    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -198,12 +198,12 @@ describe('updateElement', () => {
   });
 
   it('recipe with existing output', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
-    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -216,12 +216,12 @@ describe('updateElement', () => {
   });
 
   it('recipe with trailing space', () => {
-    let mockFdcClient = mock<IngredientDatabase>();
+    let mockIngredientDatabase = mock<IngredientDatabase>();
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockFdcClient),
+      instance(mockIngredientDatabase),
       propertiesService);
-    when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 

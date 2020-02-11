@@ -40,7 +40,18 @@ export class RecipeAnalyzer {
     if (quantity == null) {
       return null;
     }
-    let foodDetails = this.fdcClient.getFoodDetails(parseResult.ingredientUrl);
+    let foodPath: string;
+    let fdcIdMatch = parseResult.ingredientUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
+    let bookmarkIdMatch = parseResult.ingredientUrl.match('^#bookmark=(.*)');
+    if (fdcIdMatch != null) {
+      foodPath = 'fdcData/' + fdcIdMatch[1];
+    } else if (bookmarkIdMatch != null) {
+      foodPath = 'userData/' + bookmarkIdMatch[1];
+    } else {
+      return null;
+    }
+
+    let foodDetails = this.fdcClient.getFood(foodPath);
     if (foodDetails == null) {
       return null;
     }
@@ -71,7 +82,7 @@ export class RecipeAnalyzer {
       });
       this.updateTotalElement(recipeAdaptor.totalElement, nutrientsPerServing);
       if (recipeAdaptor.bookmarkId != null) {
-        this.fdcClient.addCustomFood(recipeAdaptor.bookmarkId, {
+        this.fdcClient.patchFood('userData/' + recipeAdaptor.bookmarkId, {
           dataType: 'Recipe',
           ingredients: '',
           brandOwner: '',

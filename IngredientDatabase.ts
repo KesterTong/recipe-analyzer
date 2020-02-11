@@ -33,54 +33,25 @@ export class IngredientDatabase {
     return new IngredientDatabase(FdcAdaptor.build(), FirebaseAdaptor.build());
   }
 
-  addCustomFood(bookmarkId: string, food: Food) {
+  patchFood(documentPath: string, food: Food) {
     let document = foodToDocument(food);
-    this.firebaseAdaptor.patchDocument('userData/' + bookmarkId, document);
+    this.firebaseAdaptor.patchDocument(documentPath, document);
   }
 
-  getFoodDetails(url: string): Food | null {
-    let fdcIdMatch = url.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
-    let bookmarkIdMatch = url.match('^#bookmark=(.*)');
-    if (fdcIdMatch) {
-      let fdcId = Number(fdcIdMatch[1]);
-      return this.getFdcFood(fdcId);
-    } else if (bookmarkIdMatch) {
-      let bookmarkId = bookmarkIdMatch[1];
-      return this.getCustomFood(bookmarkId);
+  getFood(documentPath: string): Food | null {
+    let document = this.firebaseAdaptor.getDocument(documentPath);
+    if (document == null) {
+      let fdcIdMatch = documentPath.match('^fdcData/(.*)');
+      if (fdcIdMatch == null) {
+        return null;
+      } else {
+        let food = this.fdcAdaptor.getFdcFood(Number(fdcIdMatch[1]));
+        this.patchFood(documentPath, food);
+        return food;
+      }
     } else {
-      return null;
+      return documentToFood(document);
     }
-  }
-
-  private getCustomFood(bookmarkId: string): Food | null {
-    let document = this.firebaseAdaptor.getDocument('userData/' + bookmarkId);
-    if (document == null) {
-      return null;
-    }
-    return documentToFood(document); 
-  }
-
-  private getFdcFood(fdcId: number): Food | null {
-    let cachedFood = this.getFirebaseFood(fdcId);
-    if (cachedFood != null) {
-      return cachedFood;
-    }
-    let food = this.fdcAdaptor.getFdcFood(fdcId);
-    this.putFirebaseFood(fdcId, food);
-    return food;
-  }
-
-  private getFirebaseFood(fdcId: number): Food | null {
-    let document = this.firebaseAdaptor.getDocument('fdcData/' + fdcId.toString());
-    if (document == null) {
-      return null;
-    }
-    return documentToFood(document);
-  }
-
-  private putFirebaseFood(fdcId: number, food: Food) {
-    let document = foodToDocument(food);
-    this.firebaseAdaptor.patchDocument('fdcData/' + fdcId.toString(), document);
   }
 
   searchFoods(query: string): FoodLink[] {
@@ -93,10 +64,11 @@ export class IngredientDatabase {
         if (food == null || !food.description.match(query)) {
           return;
         }
+        // TODO: clean this up.
         let components = element.name!.split('/');
-        let bookmarkId = components[components.length - 1];
+        let documentPath = components[components.length - 2] + '/' + components[components.length - 1];
         result.push({
-          url: '#bookmark=' + bookmarkId,
+          documentPath: documentPath,
           description: food.description,
         })
       });
@@ -104,7 +76,7 @@ export class IngredientDatabase {
     let queryResult = this.fdcAdaptor.searchFdcFoods(query);
     queryResult.foods.forEach(entry => {
       result.push({
-        url: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + entry.fdcId + '/nutrients',
+        documentPath: 'fdcData/' + entry.fdcId,
         description: entry.description,
       });
     });

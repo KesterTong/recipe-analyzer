@@ -13,6 +13,7 @@
 // limitations under the License.
 
 export interface FoodLink {
-  url: string,
+  // The Firebase document path for the given food.
+  documentPath: string,
   description: string,
 }

@@ -53,7 +53,7 @@ export function loadCustomIngredients(documentAdaptor: DocumentAdaptor, fdcClien
       });
     }
 
-    fdcClient.addCustomFood(bookmarkId, {
+    fdcClient.patchFood('userData/' + bookmarkId, {
       dataType: 'Branded',
       description: description,
       servingSize: householdServing.servingSize,
