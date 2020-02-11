@@ -71,11 +71,50 @@ export class IngredientsTableAdaptor {
   }
 }
 
+/**
+ * Adaptor for a ListItem representing an ingredient or total.
+ */
+export class IngredientItemAdaptor {
+  constructor(private textElement: GoogleAppsScript.Document.Text) {
+  }
+
+  isTotalElement(): boolean {
+    let text = this.textElement.getText();
+    return text.substr(0, 5) == 'Total';
+  }
+
+  parse(): {quantityText: string, ingredientUrl: string} | null {
+    let text = this.textElement.getText();
+    let textLength = text.length;
+    let ingredientUrl = null;
+    let ingredientStart = 0;
+    while(ingredientStart < textLength && (ingredientUrl = this.textElement.getLinkUrl(ingredientStart)) == null) {
+      ingredientStart++;
+    }
+    if (ingredientUrl == null) {
+      return null;
+    }
+    return {quantityText: text.substr(0, ingredientStart), ingredientUrl: ingredientUrl};
+  }
+
+  update(nutrients: string[]) {
+    // Truncate to end of link and add nutrient info.  Appending text will extend the link
+    // if the current text ends with a link, so we explicitly set the link url to null for
+    // the appended text.
+    this.textElement.replaceText('\\t.*$', '');
+    let originalSize = this.textElement.getText().length;
+    let displayNutrients = '\t' + nutrients.join('\t');
+    this.textElement.appendText(displayNutrients);
+    // TODO: null works but might be invalid, maybe use empty string.
+    this.textElement.setLinkUrl(originalSize, originalSize + displayNutrients.length - 1, <any>null);
+  }
+}
+
 export interface RecipeAdaptor {
   bookmarkId?: string;
   description?: string;
-  totalElement: GoogleAppsScript.Document.ListItem;
-  ingredients: GoogleAppsScript.Document.Text[];
+  totalElement: IngredientItemAdaptor;
+  ingredients: IngredientItemAdaptor[];
 }
 
 /**
@@ -132,32 +171,38 @@ export class DocumentAdaptor {
       }
   
       let maybeBookmarkId: string | null;
+      let maybeIngredientItemAdatptor = this.maybeParseIngredientItem(element);
       if (state == State.LOOKING_FOR_TITLE && (maybeBookmarkId = this.bookmarkIdForElement(element))) {
         currentRecipe!.bookmarkId = maybeBookmarkId;
         currentRecipe!.description = element.asParagraph().getText();
         currentRecipe = null;
         state = State.LOOKING_FOR_RECIPE;
-      } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && this.isTotalElement(element)) {
+      } else if ((state == State.LOOKING_FOR_RECIPE || State.LOOKING_FOR_TITLE) && maybeIngredientItemAdatptor?.isTotalElement()) {
         currentRecipe = {
-          totalElement: element.asListItem(),
+          totalElement: maybeIngredientItemAdatptor,
           ingredients: [],
         };
         state = State.INSIDE_RECIPE;
-      } else if (state == State.INSIDE_RECIPE) {
-        let listItem = element.asListItem();
-        // If numChildren != 1, skip this element as it's too complicated
-        if (listItem.getNumChildren() == 1 && listItem.getChild(0).getType() == this.documentApp.ElementType.TEXT) {
-          currentRecipe!.ingredients.push(listItem.getChild(0).asText())
-        }
+      } else if (state == State.INSIDE_RECIPE && maybeIngredientItemAdatptor != null) {
+        currentRecipe!.ingredients.push(maybeIngredientItemAdatptor);
       }
     }
     return result;
   }
 
-  isTotalElement(element: GoogleAppsScript.Document.Element): boolean {
-    return (
-      element.getType() == this.documentApp.ElementType.LIST_ITEM &&
-      (<GoogleAppsScript.Document.Paragraph>element).getText().substr(0, 5) == 'Total');
+  maybeParseIngredientItem(element: GoogleAppsScript.Document.Element): IngredientItemAdaptor | null {
+    if (element.getType() != this.documentApp.ElementType.LIST_ITEM) {
+      return null;
+    }
+    let listItem = element.asListItem();
+    if (listItem.getNumChildren() != 1) {
+      return null;
+    }
+    let child = listItem.getChild(0);
+    if (child.getType() != this.documentApp.ElementType.TEXT) {
+      return null;
+    }
+    return new IngredientItemAdaptor(child.asText());
   }
 
   /**

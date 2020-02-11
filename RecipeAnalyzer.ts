@@ -16,7 +16,7 @@ import { nutrientsForQuantity } from './core/Quantity';
 import { Nutrients, addNutrients } from './core/Nutrients';
 import { IngredientDatabase } from './IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
-import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
+import { DocumentAdaptor, IngredientItemAdaptor } from './appsscript/DocumentAdaptor';
 import { parseQuantity } from './core/parseQuantity';
 
 export class RecipeAnalyzer {
@@ -32,22 +32,16 @@ export class RecipeAnalyzer {
     this.nutrientsToDisplay = json == null ? [] : JSON.parse(json);
   }
 
-  private parseIngredient(textElement: GoogleAppsScript.Document.Text): Nutrients | null {
-    let ingredientUrl = null;
-    let ingredientStart = 0;
-    let text = textElement.getText();
-    let textLength = text.length;
-    while(ingredientStart < textLength && (ingredientUrl = textElement.getLinkUrl(ingredientStart)) == null) {
-      ingredientStart++;
-    }
-    if (ingredientUrl == null) {
+  private parseIngredient(adaptor: IngredientItemAdaptor): Nutrients | null {
+    let parseResult = adaptor.parse();
+    if (parseResult == null) {
       return null;
     }
-    let quantity = parseQuantity(text.substr(0, ingredientStart));
+    let quantity = parseQuantity(parseResult.quantityText);
     if (quantity == null) {
       return null;
     }
-    let foodDetails = this.fdcClient.getFoodDetails(ingredientUrl);
+    let foodDetails = this.fdcClient.getFoodDetails(parseResult.ingredientUrl);
     if (foodDetails == null) {
       return null;
     }
@@ -58,35 +52,22 @@ export class RecipeAnalyzer {
     return nutrientsForQuantity(quantity, foodData);
   }
 
-  private updateIngredient(textElement: GoogleAppsScript.Document.Text, nutrients: Nutrients | null, nutrientsToDisplay: number[]) {
-    let displayNutrients: string;
-    if (nutrients == null) {
-      // Display '-' to indicate that no nutrient value could be computed.
-      displayNutrients = '\t-\t-';
-    } else {
-      displayNutrients = '\t' + nutrientsToDisplay.map(nutrientId => nutrients[nutrientId].toFixed(0)).join('\t');
-    }
-    // Truncate to end of link and add nutrient info.  Appending text will extend the link
-    // if the current text ends with a link, so we explicitly set the link url to null for
-    // the appended text.
-    textElement.replaceText('\\t.*$', '');
-    var originalSize = textElement.getText().length;
-    textElement.appendText(displayNutrients);
-    // TODO: null works but might be invalid, maybe use empty string.
-    textElement.setLinkUrl(originalSize, originalSize + displayNutrients.length - 1, <any>null);
+  private updateIngredient(adaptor: IngredientItemAdaptor, nutrients: Nutrients | null, nutrientsToDisplay: number[]) {
+    adaptor.update(nutrientsToDisplay.map(
+      nutrientId => nutrients == null ? '-' : nutrients[nutrientId].toFixed(0)));
   }
 
-  updateElement(element: GoogleAppsScript.Document.Text): Nutrients {
-    let nutrients = this.parseIngredient(element);
-    this.updateIngredient(element, nutrients, this.nutrientsToDisplay);
+  updateElement(adaptor: IngredientItemAdaptor): Nutrients {
+    let nutrients = this.parseIngredient(adaptor);
+    this.updateIngredient(adaptor, nutrients, this.nutrientsToDisplay);
     return nutrients || {};
   }
 
   updateDocument() {
     this.documentAdaptor.recipes().forEach(recipeAdaptor => {
       let nutrientsPerServing: Nutrients = {}
-      recipeAdaptor.ingredients.forEach(textElement => {
-        let nutrients = this.updateElement(textElement);
+      recipeAdaptor.ingredients.forEach(adaptor => {
+        let nutrients = this.updateElement(adaptor);
         nutrientsPerServing = addNutrients(nutrientsPerServing, nutrients);
       });
       this.updateTotalElement(recipeAdaptor.totalElement, nutrientsPerServing);
@@ -104,7 +85,7 @@ export class RecipeAnalyzer {
     })
   }
 
-  updateTotalElement(totalElement: GoogleAppsScript.Document.ListItem, runningTotal: Nutrients) {
-    totalElement.setText('Total\t' + this.nutrientsToDisplay.map(nutrientId => runningTotal[nutrientId].toFixed(0)).join('\t'));
+  updateTotalElement(adaptor: IngredientItemAdaptor, runningTotal: Nutrients) {
+    adaptor.update(this.nutrientsToDisplay.map(nutrientId => runningTotal[nutrientId].toFixed(0)));
   }
 }

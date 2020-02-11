@@ -19,15 +19,7 @@ import 'mocha';
 import { TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
 import { mock, instance, when, verify, anyString, anyNumber } from 'ts-mockito';
 import { IngredientDatabase } from '../IngredientDatabase';
-import { DocumentAdaptor } from '../appsscript/DocumentAdaptor';
-
-function createListItem(text: GoogleAppsScript.Document.Text): GoogleAppsScript.Document.ListItem {
-  let mockedListItem = mock<GoogleAppsScript.Document.ListItem>();
-  let listItem = instance(mockedListItem);
-  when(mockedListItem.getNumChildren()).thenReturn(1);
-  when(mockedListItem.getChild(0)).thenReturn(text);
-  return listItem;
-}
+import { DocumentAdaptor, IngredientItemAdaptor } from '../appsscript/DocumentAdaptor';
 
 function setupMockText(mockedText: GoogleAppsScript.Document.Text) {
   let asText = '';
@@ -78,7 +70,7 @@ describe('updateElement', () => {
     setupMockText(mockedText);
     let text = instance(mockedText); 
     text.appendText('10 g abcdefg');
-    var nutrients = recipeAnalyzer.updateElement(text);
+    var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
@@ -96,7 +88,7 @@ describe('updateElement', () => {
     setupMockText(mockedText);
     let text = instance(mockedText); 
     text.appendText('10 bananas');
-    var nutrients = recipeAnalyzer.updateElement(text);
+    var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 bananas\t-\t-');
     verify(mockedText.setLinkUrl(10, 13, <any>null)).once();
@@ -112,7 +104,7 @@ describe('updateElement', () => {
     setupMockText(mockedText);
     let text = instance(mockedText); 
     text.appendText('10 g abcdefg\t-\t-');
-    let nutrients = recipeAnalyzer.updateElement(text);
+    let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
@@ -130,7 +122,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('10 g abcdefg');
     text.setLinkUrl(5, 11, '#bookmark=id.NOT_AN_ID');
-    var nutrients = recipeAnalyzer.updateElement(text);
+    var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
@@ -149,7 +141,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('10 g abcdefg\t-\t-');
     text.setLinkUrl(5, 11, '#bookmark=id.NOT_AN_ID');
-    let nutrients = recipeAnalyzer.updateElement(text);
+    let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
@@ -169,7 +161,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('60 pieces Banana Chips');
     text.setLinkUrl(10, 21, 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients');
-    let nutrients = recipeAnalyzer.updateElement(text);
+    let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({1008: 1700.0, 1003: 20.0});
     expect(text.getText()).to.equal('60 pieces Banana Chips\t1700\t20');
     verify(mockedText.setLinkUrl(22, 29, <any>null)).once();
@@ -188,7 +180,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('0.5 serving My Recipe');
     text.setLinkUrl(12, 20, '#bookmark=id.ghi789');
-    let nutrients = recipeAnalyzer.updateElement(text);
+    let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({1008: 50.0, 1003: 10.0});
     expect(text.getText()).to.equal('0.5 serving My Recipe\t50\t10');
     verify(mockedText.setLinkUrl(21, 26, <any>null)).once();
@@ -207,7 +199,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('1.5 servings My Recipe');
     text.setLinkUrl(13, 21, '#bookmark=id.ghi789');
-    let nutrients = recipeAnalyzer.updateElement(text);
+    let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
@@ -226,7 +218,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('1.5 servings My Recipe\t-\t-');
     text.setLinkUrl(13, 21, '#bookmark=id.ghi789');
-    var nutrients = recipeAnalyzer.updateElement(text);
+    var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
@@ -245,7 +237,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('1 serving My Recipe \t-\t-');
     text.setLinkUrl(10, 18, '#bookmark=id.ghi789');
-    var nutrients = recipeAnalyzer.updateElement(text);
+    var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
     expect(nutrients).to.deep.equal({1008: 100.0, 1003: 20.0});
     expect(text.getText()).to.equal('1 serving My Recipe \t100\t20');
     verify(mockedText.setLinkUrl(20, 26, <any>null)).once();
