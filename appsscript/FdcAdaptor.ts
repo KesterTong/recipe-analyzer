@@ -62,10 +62,10 @@ export class FdcAdaptor {
     return JSON.parse(this.urlFetchApp.fetch(url).getContentText());  
   }
 
-  searchFdcFoods(query: string, includeBranded: boolean): FDCQueryResult {
+  searchFdcFoods(query: string): FDCQueryResult {
     let url = this.fdcApiUrl('search', {
       generalSearchInput: encodeURIComponent(query),
-      includeDataTypeList: includeBranded ? 'SR%20Legacy,Branded' : 'SR%20Legacy',
+      includeDataTypeList: 'SR%20Legacy,Branded',
     });
     // TODO: handle API call failures.
     return JSON.parse(this.urlFetchApp.fetch(url).getContentText());

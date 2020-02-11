@@ -60,9 +60,9 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-export function getSearchResults(query: string, includeBranded: boolean): FoodLink[] {
+export function getSearchResults(query: string): FoodLink[] {
   let ingredientDatabase = IngredientDatabase.build();
-  return  ingredientDatabase.searchFoods(query, includeBranded);
+  return  ingredientDatabase.searchFoods(query);
 }
 
 export function getFoodDetails(url: string): NormalizedFood | null {

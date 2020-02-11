@@ -83,7 +83,7 @@ export class IngredientDatabase {
     this.firebaseAdaptor.patchDocument('fdcData/' + fdcId.toString(), document);
   }
 
-  searchFoods(query: string, includeBranded: boolean): FoodLink[] {
+  searchFoods(query: string): FoodLink[] {
     let result: FoodLink[] = [];
 
     let localQueryResults = this.firebaseAdaptor.listDocuments('userData');
@@ -101,7 +101,7 @@ export class IngredientDatabase {
         })
       });
     }
-    let queryResult = this.fdcAdaptor.searchFdcFoods(query, includeBranded);
+    let queryResult = this.fdcAdaptor.searchFdcFoods(query);
     queryResult.foods.forEach(entry => {
       result.push({
         url: 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + entry.fdcId + '/nutrients',

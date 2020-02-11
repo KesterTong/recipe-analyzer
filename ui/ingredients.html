@@ -106,7 +106,7 @@
               }));
             }
             google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
-              request.term, true /** includeBranded */);
+              request.term);
           },
           select: function(event, ui) {
             event.preventDefault();
