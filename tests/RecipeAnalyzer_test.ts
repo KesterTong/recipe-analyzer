@@ -64,8 +64,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mock<IngredientDatabase>()),
-      propertiesService,
-      documentApp);
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -82,8 +81,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mock<IngredientDatabase>()),
-      propertiesService,
-      documentApp);
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -98,8 +96,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mock<IngredientDatabase>()),
-      propertiesService,
-      documentApp);
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -115,8 +112,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -134,8 +130,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -153,8 +148,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     when(mockFdcClient.getFoodDetails('https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients')).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -172,8 +166,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -191,8 +184,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -210,8 +202,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
@@ -229,8 +220,7 @@ describe('updateElement', () => {
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
       instance(mockFdcClient),
-      propertiesService,
-      documentApp);
+      propertiesService);
     when(mockFdcClient.getFoodDetails('#bookmark=id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);

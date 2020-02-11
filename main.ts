@@ -88,15 +88,14 @@ export function getNutrientNames(): {id: number, name: string}[] {
 }
 
 export function updateNutritionTables() {
-  let document = DocumentApp.getActiveDocument();
   let ingredientDatabase = IngredientDatabase.build();
-  let documentAdaptor = new DocumentAdaptor(DocumentApp, document);
+  let documentAdaptor = new DocumentAdaptor(
+    DocumentApp, DocumentApp.getActiveDocument());
   loadCustomIngredients(documentAdaptor, ingredientDatabase);
   let recipeAnalyzer = new RecipeAnalyzer(
     documentAdaptor,
     ingredientDatabase,
-    PropertiesService,
-    DocumentApp);
+    PropertiesService);
   recipeAnalyzer.updateDocument();
 }
 

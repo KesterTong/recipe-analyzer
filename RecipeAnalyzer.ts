@@ -25,8 +25,7 @@ export class RecipeAnalyzer {
   constructor(
       private documentAdaptor: DocumentAdaptor,
       private fdcClient: IngredientDatabase,
-      propertiesService: GoogleAppsScript.Properties.PropertiesService,
-      private documentApp: GoogleAppsScript.Document.DocumentApp) {
+      propertiesService: GoogleAppsScript.Properties.PropertiesService) {
     let json = propertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS')
     // TODO: nutrientsToDisplay == [] should be an error.
     this.nutrientsToDisplay = json == null ? [] : JSON.parse(json);
