@@ -14,10 +14,7 @@
 
 import { Food } from './Food';
 import { FoodRef, IngredientIdentifier } from './FoodRef';
-import { Firebase } from './Firebase';
-import { foodToDocument } from './foodToDocument';
-import { documentToFood } from './documentToFood';
-import { FirebaseImpl } from '../appsscript/FirebaseImpl';
+import { Firebase, Document } from './Firebase';
 import { FoodDataCentral } from './FoodDataCentral';
 
 /**
@@ -32,7 +29,7 @@ export class IngredientDatabase {
   
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
-    let document = foodToDocument(food);
+    let document = this.foodToDocument(food);
     this.firebase.patchDocument(documentPath, document);
   }
 
@@ -46,7 +43,7 @@ export class IngredientDatabase {
     } else if (document == null) {
       return null;
     } else {
-      return documentToFood(document);
+      return this.documentToFood(document);
     }
   }
 
@@ -59,13 +56,34 @@ export class IngredientDatabase {
     }
   }
 
+  private foodToDocument(food: Food): Document {
+    return {
+      fields: {
+        version: {stringValue: '0.1'},
+        data: {stringValue: JSON.stringify(food)},
+      }
+    };
+  }
+
+  private documentToFood(document: Document): Food | null {
+    let version = document.fields.version;
+    if (version == null || version.stringValue == null || version.stringValue != '0.1') {
+      return null;
+    }
+    let data = document.fields.data;
+    if (data == null || data.stringValue == null) {
+      return null;
+    }
+    return JSON.parse(data.stringValue);
+  }
+
   searchFoods(query: string): FoodRef[] {
     let result: FoodRef[] = [];
 
     let localQueryResults = this.firebase.listDocuments('userData');
     if (localQueryResults != null) {
       localQueryResults.documents.forEach(element => {
-        let food = documentToFood(element);
+        let food = this.documentToFood(element);
         if (food == null || !food.description.match(query)) {
           return;
         }

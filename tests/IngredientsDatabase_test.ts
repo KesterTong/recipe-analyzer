@@ -19,7 +19,6 @@ import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
 import { Firebase } from '../core/Firebase';
-import { foodToDocument } from '../core/foodToDocument';
 import { FoodDataCentral } from '../core/FoodDataCentral';
 
 describe('IngredientDatabase', () => {
@@ -28,11 +27,21 @@ describe('IngredientDatabase', () => {
   let fdcAdaptor = instance(mockedFdcAdaptor);
 
   let mockedFirebaseAdaptor = mock<Firebase>();
-  when(mockedFirebaseAdaptor.getDocument('fdcData/11111')).thenReturn(
-    foodToDocument(TEST_SR_LEGACY_FOOD));
-  when(mockedFirebaseAdaptor.getDocument('userData/id.abc123')).thenReturn(
-    foodToDocument(TEST_RECIPE_DETAILS));
-    let firebaseAdaptor = instance(mockedFirebaseAdaptor);
+  when(mockedFirebaseAdaptor.getDocument('fdcData/11111')).thenReturn({
+    fields: {
+      version: {stringValue: '0.1'},
+      data: {stringValue: JSON.stringify(TEST_SR_LEGACY_FOOD),
+      }
+    }
+  });
+  when(mockedFirebaseAdaptor.getDocument('userData/id.abc123')).thenReturn({
+    fields: {
+      version: {stringValue: '0.1'},
+      data: {stringValue: JSON.stringify(TEST_RECIPE_DETAILS),
+      }
+    }
+  });
+  let firebaseAdaptor = instance(mockedFirebaseAdaptor);
 
   let fdcClient = new IngredientDatabase(fdcAdaptor, firebaseAdaptor);
   it('ingredient in firebase', () => {
@@ -43,7 +52,13 @@ describe('IngredientDatabase', () => {
     expect(fdcClient.getFood({identifierType: 'FdcId', fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedFirebaseAdaptor.patchDocument(
       'fdcData/12345',
-      deepEqual(foodToDocument(TEST_SR_LEGACY_FOOD)))).once();
+      deepEqual({
+        fields: {
+          version: {stringValue: '0.1'},
+          data: {stringValue: JSON.stringify(TEST_SR_LEGACY_FOOD),
+          }
+        }
+      }))).once();
   });
 
   it('local not found', () => {
@@ -58,6 +73,12 @@ describe('IngredientDatabase', () => {
     fdcClient.patchFood({identifierType: 'BookmarkId', bookmarkId: 'id.abc123'}, TEST_RECIPE_DETAILS);
     verify(mockedFirebaseAdaptor.patchDocument(
       'userData/id.abc123',
-      deepEqual(foodToDocument(TEST_RECIPE_DETAILS)))).once();
+      deepEqual({
+        fields: {
+          version: {stringValue: '0.1'},
+          data: {stringValue: JSON.stringify(TEST_RECIPE_DETAILS),
+          }
+        }
+      }))).once();
   });
 });

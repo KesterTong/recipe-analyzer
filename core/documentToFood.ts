@@ -15,14 +15,3 @@
 import { Document } from './Firebase';
 import { Food } from "./Food";
 
-export function documentToFood(document: Document): Food | null {
-  let version = document.fields.version;
-  if (version == null || version.stringValue == null || version.stringValue != '0.1') {
-    return null;
-  }
-  let data = document.fields.data;
-  if (data == null || data.stringValue == null) {
-    return null;
-  }
-  return JSON.parse(data.stringValue);
-}
