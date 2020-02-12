@@ -39,3 +39,35 @@ export interface ListDocumentsResponse {
   documents: Document[],
   nextPageToken: string,
 }
+
+/**
+ * Interface for Firebase API
+ * 
+ * We use this instead of the standard Firebase JS API, because
+ * in Apps Script we make calls to the Firebase REST API directly.
+ */
+export interface Firebase {
+  
+  /**
+   * Get a document or return null if it does not exist.
+   * 
+   * @param documentName Name of document relative to database, i.e. starting
+   *     with 'documents/'.
+   */
+  getDocument(documentPath: string): Document | null;
+  
+  /**
+   * Insert or update a document.
+   * 
+   * @param documentName Name of document relative to database, i.e. starting
+   *     with 'documents/'.
+   * @param document The document to patch.
+   */
+  patchDocument(documentPath: string, document: Document): void;
+
+  /**
+   * List documents in a collection
+   * @param collection Concatenation of parent and collectionId. 
+   */
+  listDocuments(collectionId: string): ListDocumentsResponse | null;
+}

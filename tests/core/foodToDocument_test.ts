@@ -14,7 +14,7 @@
 
 import { expect } from 'chai';
 import 'mocha';
-import { foodToDocument } from '../../firebase/foodToDocument';
+import { foodToDocument } from '../../core/foodToDocument';
 import { TEST_SR_LEGACY_FOOD } from '../testData';
 
 describe('foodToDocument', () => {

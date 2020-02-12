@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Document } from './Document';
-import { Food } from "../core/Food";
+import { Document } from '../core/Firebase';
+import { Food } from "./Food";
 
 export function documentToFood(document: Document): Food | null {
   let version = document.fields.version;

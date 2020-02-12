@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Document, ListDocumentsResponse } from '../firebase/Document';
+import { Firebase, Document, ListDocumentsResponse } from '../core/Firebase';
 
 // Base URL for firebase API
 const FIRESTORE_API_URL = 'https://firestore.googleapis.com/v1';
@@ -26,7 +26,7 @@ const DATABASE_NAME = '(default)';
 /**
  * Adaptor class for calling Firebase from Google Apps Script.
  */
-export class FirebaseAdaptor {
+export class FirebaseImpl implements Firebase {
   private projectName: string;
 
   constructor(
@@ -42,8 +42,8 @@ export class FirebaseAdaptor {
     this.projectName = projectName;
   }
 
-  static build(): FirebaseAdaptor {
-    return new FirebaseAdaptor(UrlFetchApp, ScriptApp, PropertiesService);
+  static build(): Firebase {
+    return new FirebaseImpl(UrlFetchApp, ScriptApp, PropertiesService);
   }
 
   /**
@@ -89,7 +89,7 @@ export class FirebaseAdaptor {
    * List documents in a collection
    * @param collection Concatenation of parent and collectionId. 
    */
-  listDocuments(collectionId: string): ListDocumentsResponse | null{
+  listDocuments(collectionId: string): ListDocumentsResponse | null {
     let response = this.urlFetchApp.fetch(this.urlForDocument(collectionId), {
       method: "get",
       headers: {

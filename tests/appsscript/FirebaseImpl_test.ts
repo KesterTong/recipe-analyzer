@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FirebaseAdaptor } from '../../appsscript/FirebaseAdaptor';
+import { Document } from '../../core/Firebase';
+import { FirebaseImpl } from '../../appsscript/FirebaseImpl';
 
 import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
-import { Document } from '../../firebase/Document';
 
-describe('FirebaseAdaptor', () => {
+describe('FirebaseImpl', () => {
   let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
   when(mockedScriptProperties.getProperty('FIREBASE_PROJECT_NAME')).thenReturn('project_name');
   let scriptProperties = instance(mockedScriptProperties);
@@ -68,7 +68,7 @@ describe('FirebaseAdaptor', () => {
       }))).thenReturn(instance(mockedNotFoundHTTPResponse));
   let urlFetchApp = instance(mockedUrlFetchApp);
   
-  let firebaseAdaptor = new FirebaseAdaptor(urlFetchApp, scriptApp, propertiesService);
+  let firebaseAdaptor = new FirebaseImpl(urlFetchApp, scriptApp, propertiesService);
   describe('getDocument', () => {
     it('ok', () => {
       expect(firebaseAdaptor.getDocument('fdcData/12345')).to.deep.equal(TEST_DOCUMENT);

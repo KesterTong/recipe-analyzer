@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { expect } from 'chai';
-import { documentToFood } from '../../firebase/documentToFood';
+import { documentToFood } from '../../core/documentToFood';
 import 'mocha';
 import { TEST_SR_LEGACY_FOOD } from '../testData';
 

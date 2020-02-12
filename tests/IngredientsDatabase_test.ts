@@ -18,8 +18,8 @@ import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
-import { FirebaseAdaptor } from '../appsscript/FirebaseAdaptor';
-import { foodToDocument } from '../firebase/foodToDocument';
+import { Firebase } from '../core/Firebase';
+import { foodToDocument } from '../core/foodToDocument';
 import { FdcAdaptor } from '../appsscript/FdcAdaptor';
 
 describe('IngredientDatabase', () => {
@@ -27,7 +27,7 @@ describe('IngredientDatabase', () => {
   when(mockedFdcAdaptor.getFdcFood(12345)).thenReturn(TEST_SR_LEGACY_FOOD);
   let fdcAdaptor = instance(mockedFdcAdaptor);
 
-  let mockedFirebaseAdaptor = mock<FirebaseAdaptor>();
+  let mockedFirebaseAdaptor = mock<Firebase>();
   when(mockedFirebaseAdaptor.getDocument('fdcData/11111')).thenReturn(
     foodToDocument(TEST_SR_LEGACY_FOOD));
   when(mockedFirebaseAdaptor.getDocument('userData/id.abc123')).thenReturn(

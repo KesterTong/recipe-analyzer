@@ -15,10 +15,10 @@
 import { Food } from './core/Food';
 import { FoodRef, IngredientIdentifier } from './core/FoodRef';
 import { FdcAdaptor } from './appsscript/FdcAdaptor';
-import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
-import { foodToDocument } from './firebase/foodToDocument';
-import { documentToFood } from './firebase/documentToFood';
-import { IngredientsTableAdaptor } from './appsscript/DocumentAdaptor';
+import { Firebase } from './core/Firebase';
+import { foodToDocument } from './core/foodToDocument';
+import { documentToFood } from './core/documentToFood';
+import { FirebaseImpl } from './appsscript/FirebaseImpl';
 
 /**
  * Class to store and lookup ingredients.
@@ -28,21 +28,21 @@ import { IngredientsTableAdaptor } from './appsscript/DocumentAdaptor';
 export class IngredientDatabase {
   constructor(
       private fdcAdaptor: FdcAdaptor,
-      private firebaseAdaptor: FirebaseAdaptor) { }
+      private firebase: Firebase) { }
   
   static build(): IngredientDatabase {
-    return new IngredientDatabase(FdcAdaptor.build(), FirebaseAdaptor.build());
+    return new IngredientDatabase(FdcAdaptor.build(), FirebaseImpl.build());
   }
 
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
     let document = foodToDocument(food);
-    this.firebaseAdaptor.patchDocument(documentPath, document);
+    this.firebase.patchDocument(documentPath, document);
   }
 
   getFood(ingredientIdentifier: IngredientIdentifier): Food | null {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
-    let document = this.firebaseAdaptor.getDocument(documentPath);
+    let document = this.firebase.getDocument(documentPath);
     if (document == null && ingredientIdentifier.identifierType == 'FdcId') {
       let food = this.fdcAdaptor.getFdcFood(ingredientIdentifier.fdcId);
       this.patchFood(ingredientIdentifier, food);
@@ -66,7 +66,7 @@ export class IngredientDatabase {
   searchFoods(query: string): FoodRef[] {
     let result: FoodRef[] = [];
 
-    let localQueryResults = this.firebaseAdaptor.listDocuments('userData');
+    let localQueryResults = this.firebase.listDocuments('userData');
     if (localQueryResults != null) {
       localQueryResults.documents.forEach(element => {
         let food = documentToFood(element);
