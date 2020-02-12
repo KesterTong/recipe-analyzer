@@ -56,7 +56,7 @@
           $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
         })
       }
-      let currentIngredientUrl = null;
+      let currentIngredientIdentifier = null;
       let currentDetails = null;
 
       function handleQuantityChange() {
@@ -72,13 +72,15 @@
       $('#unit').on('change', handleQuantityChange);
 
       $('#more-details').on('click', function(event) {
-        if (currentIngredientUrl == null) {
-          return;
+        switch(currentIngredientIdentifier.identifierType) {
+          case 'BookmarkId':
+            google.script.run.moveCursorToBookmark(currentIngredientIdentifier.bookmarkId);
+          case 'FdcId':
+            window.open(
+              'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' +
+              currentIngredientIdentifier.fdcId.toString() + '/nutrients',
+              '_blank');
         }
-        if (currentIngredientUrl.substr(0, 1) == '#') {
-          return google.script.run.moveCursorToBookmark(currentIngredientUrl);
-        }
-        window.open(currentIngredientUrl, '_blank');
       });
 
       function handleFoodDetails(details) {
@@ -101,7 +103,7 @@
               response(results.map(function(entry) {
                 return {
                   label: entry.description,
-                  value: entry.documentPath,
+                  value: JSON.stringify(entry.identifier),
                 };
               }));
             }
@@ -110,10 +112,10 @@
           },
           select: function(event, ui) {
             event.preventDefault();
-            currentIngredientUrl = ui.item.value;
+            currentIngredientIdentifier = JSON.parse(ui.item.value);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
-            .getFoodDetails(currentIngredientUrl);
+            .getFoodDetails(currentIngredientIdentifier);
           },
         });
         $('#description').focus();
@@ -129,7 +131,7 @@
           // TODO: parse this server side.
           let amount = Number($('#amount').val());
           let unit = $('#unit').val()
-          google.script.run.addIngredient(currentIngredientUrl, amount, unit, description);
+          google.script.run.addIngredient(currentIngredientIdentifier, amount, unit, description);
         }
       })
     </script>

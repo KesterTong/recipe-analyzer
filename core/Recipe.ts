@@ -14,12 +14,12 @@
 
 import { NormalizedFood } from "./NormalizedFood";
 import { Quantity } from "./Quantity";
-import { FoodLink } from "./FoodLink";
+import { FoodRef } from "./FoodRef";
 import { Nutrients } from "./Nutrients";
 
 export interface Ingredient {
   quantity: Quantity,
-  foodLink: FoodLink,
+  foodLink: FoodRef,
   nutrients: Nutrients,
 }
 

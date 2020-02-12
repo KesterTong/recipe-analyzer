@@ -16,7 +16,7 @@ import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { IngredientDatabase } from './IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
-import { FoodLink } from './core/FoodLink';
+import { FoodRef, IngredientIdentifier } from './core/FoodRef';
 import { nutrientNames } from './core/Nutrients';
 import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
@@ -29,12 +29,7 @@ export function onOpen() {
       .addToUi();
 }
 
-export function moveCursorToBookmark(url: string) {
-  let prefix = 'userData/'
-  if (!url.startsWith(prefix)) {
-    return;
-  }
-  let bookmarkId = url.substr(prefix.length, url.length - prefix.length);
+export function moveCursorToBookmark(bookmarkId: string) {
   let document = DocumentApp.getActiveDocument()
   let bookmark = document.getBookmark(bookmarkId);
   if (bookmark == null) {
@@ -43,12 +38,21 @@ export function moveCursorToBookmark(url: string) {
   document.setCursor(bookmark.getPosition());
 }
 
-export function addIngredient(linkUrl: string, amount: number, unit: string, description: string) {
+export function addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string) {
   let unitString = amount.toString() + ' ' + unit + ' ';
   let fullText = unitString + description
   let document = DocumentApp.getActiveDocument();
   let cursor = document.getCursor();
   let text = cursor.insertText(fullText);
+  let linkUrl: string;
+  switch (ingredientIdentifier.identifierType) {
+    case 'BookmarkId':
+      linkUrl = '#bookmark=' + ingredientIdentifier.bookmarkId;
+      break;
+    case 'FdcId':
+      linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + ingredientIdentifier.fdcId.toString() + '/nutrients';
+      break;
+  }
   text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
   document.setCursor(document.newPosition(text, fullText.length));
 }
@@ -60,14 +64,14 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-export function getSearchResults(query: string): FoodLink[] {
+export function getSearchResults(query: string): FoodRef[] {
   let ingredientDatabase = IngredientDatabase.build();
   return  ingredientDatabase.searchFoods(query);
 }
 
-export function getFoodDetails(documentPath: string): NormalizedFood | null {
+export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
   let ingredientDatabase = IngredientDatabase.build();
-  let food = ingredientDatabase.getFood(documentPath);
+  let food = ingredientDatabase.getFood(ingredientIdentifier);
   if (food == null) {
     // TODO: handle this in the client
     return null;

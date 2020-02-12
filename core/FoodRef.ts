@@ -12,8 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface FoodLink {
+interface Bookmark {
+  identifierType: 'BookmarkId',
+  bookmarkId: string,
+}
+
+export interface FdcId {
+  identifierType: 'FdcId',
+  fdcId: number,
+}
+
+export type IngredientIdentifier = Bookmark | FdcId;
+
+export interface FoodRef {
   // The Firebase document path for the given food.
-  documentPath: string,
+  identifier: IngredientIdentifier,
   description: string,
 }

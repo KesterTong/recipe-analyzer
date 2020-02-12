@@ -18,6 +18,7 @@ import { IngredientDatabase } from './IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
 import { DocumentAdaptor, IngredientItemAdaptor } from './appsscript/DocumentAdaptor';
 import { parseQuantity } from './core/parseQuantity';
+import { IngredientIdentifier } from './core/FoodRef';
 
 export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
@@ -40,18 +41,24 @@ export class RecipeAnalyzer {
     if (quantity == null) {
       return null;
     }
-    let foodPath: string;
+    let ingredientIdentifier: IngredientIdentifier;
     let fdcIdMatch = parseResult.ingredientUrl.match('^https://(?:[^/]*)(?:[^\\d]*)(\\d*)');
     let bookmarkIdMatch = parseResult.ingredientUrl.match('^#bookmark=(.*)');
     if (fdcIdMatch != null) {
-      foodPath = 'fdcData/' + fdcIdMatch[1];
+      ingredientIdentifier = {
+        identifierType: 'FdcId',
+        fdcId: Number(fdcIdMatch[1]),
+      }
     } else if (bookmarkIdMatch != null) {
-      foodPath = 'userData/' + bookmarkIdMatch[1];
+      ingredientIdentifier = {
+        identifierType: 'BookmarkId',
+        bookmarkId: bookmarkIdMatch[1],
+      }
     } else {
       return null;
     }
 
-    let foodDetails = this.fdcClient.getFood(foodPath);
+    let foodDetails = this.fdcClient.getFood(ingredientIdentifier);
     if (foodDetails == null) {
       return null;
     }
@@ -82,7 +89,10 @@ export class RecipeAnalyzer {
       });
       this.updateTotalElement(recipeAdaptor.totalElement, nutrientsPerServing);
       if (recipeAdaptor.bookmarkId != null) {
-        this.fdcClient.patchFood('userData/' + recipeAdaptor.bookmarkId, {
+        this.fdcClient.patchFood({
+          identifierType: 'BookmarkId',
+          bookmarkId: recipeAdaptor.bookmarkId,
+        }, {
           dataType: 'Recipe',
           ingredients: '',
           brandOwner: '',

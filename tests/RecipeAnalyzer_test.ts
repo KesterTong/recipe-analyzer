@@ -17,7 +17,7 @@ import { RecipeAnalyzer } from '../RecipeAnalyzer';
 import { expect } from 'chai';
 import 'mocha';
 import { TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
-import { mock, instance, when, verify, anyString, anyNumber } from 'ts-mockito';
+import { mock, instance, when, verify, anyString, anyNumber, deepEqual } from 'ts-mockito';
 import { IngredientDatabase } from '../IngredientDatabase';
 import { DocumentAdaptor, IngredientItemAdaptor } from '../appsscript/DocumentAdaptor';
 
@@ -122,7 +122,10 @@ describe('updateElement', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
-    verify(mockIngredientDatabase.getFood('userData/id.NOT_AN_ID')).once();
+    verify(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.NOT_AN_ID'
+    }))).once();
   });
 
   it('recipe not found with tabs', () => {
@@ -140,7 +143,10 @@ describe('updateElement', () => {
     expect(nutrients).to.deep.equal({});
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
-    verify(mockIngredientDatabase.getFood('userData/id.NOT_AN_ID')).once();
+    verify(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.NOT_AN_ID'
+    }))).once();
   });
 
   it('FDC data', () => {
@@ -149,7 +155,10 @@ describe('updateElement', () => {
       instance(mock<DocumentAdaptor>()),
       instance(mockIngredientDatabase),
       propertiesService);
-    when(mockIngredientDatabase.getFood('fdcData/12345')).thenReturn(TEST_BRANDED_FOOD);
+    when(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'FdcId',
+      fdcId: 12345
+    }))).thenReturn(TEST_BRANDED_FOOD);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -167,7 +176,10 @@ describe('updateElement', () => {
       instance(mock<DocumentAdaptor>()),
       instance(mockIngredientDatabase),
       propertiesService);
-    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.ghi789',
+    }))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -185,7 +197,10 @@ describe('updateElement', () => {
       instance(mock<DocumentAdaptor>()),
       instance(mockIngredientDatabase),
       propertiesService);
-    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.ghi789',
+    }))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -203,7 +218,10 @@ describe('updateElement', () => {
       instance(mock<DocumentAdaptor>()),
       instance(mockIngredientDatabase),
       propertiesService);
-    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.ghi789',
+    }))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -221,7 +239,10 @@ describe('updateElement', () => {
       instance(mock<DocumentAdaptor>()),
       instance(mockIngredientDatabase),
       propertiesService);
-    when(mockIngredientDatabase.getFood('userData/id.ghi789')).thenReturn(TEST_RECIPE_DETAILS);
+    when(mockIngredientDatabase.getFood(deepEqual({
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.ghi789',
+    }))).thenReturn(TEST_RECIPE_DETAILS);
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 

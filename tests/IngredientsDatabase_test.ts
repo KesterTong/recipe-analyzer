@@ -36,26 +36,26 @@ describe('IngredientDatabase', () => {
 
   let fdcClient = new IngredientDatabase(fdcAdaptor, firebaseAdaptor);
   it('ingredient in firebase', () => {
-    expect(fdcClient.getFood('fdcData/11111')).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFood({identifierType: 'FdcId', fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);
   });
 
   it('ingredient not in firebase', () => {
-    expect(fdcClient.getFood('fdcData/12345')).to.deep.equal(TEST_SR_LEGACY_FOOD);
+    expect(fdcClient.getFood({identifierType: 'FdcId', fdcId: 12345})).to.deep.equal(TEST_SR_LEGACY_FOOD);
     verify(mockedFirebaseAdaptor.patchDocument(
       'fdcData/12345',
       deepEqual(foodToDocument(TEST_SR_LEGACY_FOOD)))).once();
   });
 
   it('local not found', () => {
-    expect(fdcClient.getFood('userData/id.def456')).to.equal(null);
+    expect(fdcClient.getFood({identifierType: 'BookmarkId', bookmarkId: 'id.def456'})).to.equal(null);
   });
 
   it('local food', () => {
-    expect(fdcClient.getFood('userData/id.abc123')).to.deep.equal(TEST_RECIPE_DETAILS);
+    expect(fdcClient.getFood({identifierType: 'BookmarkId', bookmarkId: 'id.abc123'})).to.deep.equal(TEST_RECIPE_DETAILS);
   });
 
   it('addCustomFood', () => {
-    fdcClient.patchFood('userData/id.abc123', TEST_RECIPE_DETAILS);
+    fdcClient.patchFood({identifierType: 'BookmarkId', bookmarkId: 'id.abc123'}, TEST_RECIPE_DETAILS);
     verify(mockedFirebaseAdaptor.patchDocument(
       'userData/id.abc123',
       deepEqual(foodToDocument(TEST_RECIPE_DETAILS)))).once();

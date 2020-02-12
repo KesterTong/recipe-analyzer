@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import { Food } from './core/Food';
-import { FoodLink } from './core/FoodLink';
+import { FoodRef, IngredientIdentifier } from './core/FoodRef';
 import { FdcAdaptor } from './appsscript/FdcAdaptor';
 import { FirebaseAdaptor } from './appsscript/FirebaseAdaptor';
 import { foodToDocument } from './firebase/foodToDocument';
 import { documentToFood } from './firebase/documentToFood';
+import { IngredientsTableAdaptor } from './appsscript/DocumentAdaptor';
 
 /**
  * Class to store and lookup ingredients.
@@ -33,29 +34,37 @@ export class IngredientDatabase {
     return new IngredientDatabase(FdcAdaptor.build(), FirebaseAdaptor.build());
   }
 
-  patchFood(documentPath: string, food: Food) {
+  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
+    let documentPath = this.documentPathForIngredient(ingredientIdentifier);
     let document = foodToDocument(food);
     this.firebaseAdaptor.patchDocument(documentPath, document);
   }
 
-  getFood(documentPath: string): Food | null {
+  getFood(ingredientIdentifier: IngredientIdentifier): Food | null {
+    let documentPath = this.documentPathForIngredient(ingredientIdentifier);
     let document = this.firebaseAdaptor.getDocument(documentPath);
-    if (document == null) {
-      let fdcIdMatch = documentPath.match('^fdcData/(.*)');
-      if (fdcIdMatch == null) {
-        return null;
-      } else {
-        let food = this.fdcAdaptor.getFdcFood(Number(fdcIdMatch[1]));
-        this.patchFood(documentPath, food);
-        return food;
-      }
+    if (document == null && ingredientIdentifier.identifierType == 'FdcId') {
+      let food = this.fdcAdaptor.getFdcFood(ingredientIdentifier.fdcId);
+      this.patchFood(ingredientIdentifier, food);
+      return food;
+    } else if (document == null) {
+      return null;
     } else {
       return documentToFood(document);
     }
   }
 
-  searchFoods(query: string): FoodLink[] {
-    let result: FoodLink[] = [];
+  private documentPathForIngredient(ingredientIdentifier: IngredientIdentifier): string {
+    switch (ingredientIdentifier.identifierType) {
+      case 'BookmarkId':
+        return 'userData/' + ingredientIdentifier.bookmarkId;
+      case 'FdcId':
+        return 'fdcData/' + ingredientIdentifier.fdcId.toString()
+    }
+  }
+
+  searchFoods(query: string): FoodRef[] {
+    let result: FoodRef[] = [];
 
     let localQueryResults = this.firebaseAdaptor.listDocuments('userData');
     if (localQueryResults != null) {
@@ -64,11 +73,10 @@ export class IngredientDatabase {
         if (food == null || !food.description.match(query)) {
           return;
         }
-        // TODO: clean this up.
         let components = element.name!.split('/');
-        let documentPath = components[components.length - 2] + '/' + components[components.length - 1];
+        let bookmarkId = components[components.length - 1];
         result.push({
-          documentPath: documentPath,
+          identifier: {identifierType: 'BookmarkId', bookmarkId:  bookmarkId},
           description: food.description,
         })
       });
@@ -76,7 +84,7 @@ export class IngredientDatabase {
     let queryResult = this.fdcAdaptor.searchFdcFoods(query);
     queryResult.foods.forEach(entry => {
       result.push({
-        documentPath: 'fdcData/' + entry.fdcId,
+        identifier: {identifierType: 'FdcId', fdcId: entry.fdcId},
         description: entry.description,
       });
     });
