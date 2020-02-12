@@ -17,7 +17,7 @@ import { TEST_SR_LEGACY_FOOD } from '../testData';
 import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when } from 'ts-mockito';
-import { FdcAdaptor } from '../../appsscript/FdcAdaptor';
+import { FoodDataCentralImpl } from '../../appsscript/FoodDataCentralImpl';
 
 describe('FdcAdaptor', () => {
   let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
@@ -36,7 +36,7 @@ describe('FdcAdaptor', () => {
     instance(mockedHTTPResponse));
   let urlFetchApp = instance(mockedUrlFetchApp);
 
-  let fdcAdaptor = new FdcAdaptor(urlFetchApp, propertiesService);
+  let fdcAdaptor = new FoodDataCentralImpl(urlFetchApp, propertiesService);
   describe('getFdcFood', () => {
     it('ok', () => {
       expect(fdcAdaptor.getFdcFood(12345)).to.deep.equal(TEST_SR_LEGACY_FOOD);

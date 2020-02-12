@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Document } from '../core/Firebase';
+import { Document } from './Firebase';
 import { Food } from "./Food";
 
 export function documentToFood(document: Document): Food | null {

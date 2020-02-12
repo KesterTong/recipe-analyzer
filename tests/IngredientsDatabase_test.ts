@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IngredientDatabase } from '../IngredientDatabase';
+import { IngredientDatabase } from '../core/IngredientDatabase';
 import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 
 import { expect } from 'chai';
@@ -20,10 +20,10 @@ import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
 import { Firebase } from '../core/Firebase';
 import { foodToDocument } from '../core/foodToDocument';
-import { FdcAdaptor } from '../appsscript/FdcAdaptor';
+import { FoodDataCentral } from '../core/FoodDataCentral';
 
 describe('IngredientDatabase', () => {
-  let mockedFdcAdaptor = mock<FdcAdaptor>();
+  let mockedFdcAdaptor = mock<FoodDataCentral>();
   when(mockedFdcAdaptor.getFdcFood(12345)).thenReturn(TEST_SR_LEGACY_FOOD);
   let fdcAdaptor = instance(mockedFdcAdaptor);
 

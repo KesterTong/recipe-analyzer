@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { NormalizedFood } from '../core/NormalizedFood';
-import { FDCFood } from '../core/FDCFood';
+import { FDCFood } from '../core/FoodDataCentral';
 
 export const TEST_SR_LEGACY_FOOD: FDCFood = {
   description: 'Bananas',

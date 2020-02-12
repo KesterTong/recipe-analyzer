@@ -47,3 +47,27 @@ export interface SRLegacyFood {
 }
 
 export type FDCFood = BrandedFood | SRLegacyFood;
+
+export interface FDCQueryResult {
+  foodSearchCriteria: {
+    generalSearchInput: string,
+    pageNumber: number,
+    requireAllWords: boolean
+  },
+  totalHits: number,
+  currentPage: number,
+  totalPages: number,
+  foods: {
+    fdcId: number,
+    description: string,
+    dataType: string,
+    gtinUpc: string,
+    brandOwner: string
+    score: number
+  }[];
+}
+
+export interface FoodDataCentral {
+  getFdcFood(fdcId: number): FDCFood;
+  searchFdcFoods(query: string): FDCQueryResult;
+}

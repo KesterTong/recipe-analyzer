@@ -14,7 +14,7 @@
 
 import { nutrientsForQuantity } from './core/Quantity';
 import { Nutrients, addNutrients } from './core/Nutrients';
-import { IngredientDatabase } from './IngredientDatabase';
+import { IngredientDatabase } from './core/IngredientDatabase';
 import { normalizeFood } from './core/normalizeFood';
 import { DocumentAdaptor, IngredientItemAdaptor } from './appsscript/DocumentAdaptor';
 import { parseQuantity } from './core/parseQuantity';

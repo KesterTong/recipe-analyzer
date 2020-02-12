@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FDCFood";
+import { FDCFood } from "./FoodDataCentral";
 import { NormalizedFood } from "./NormalizedFood";
 import { Recipe } from "./Recipe";
 

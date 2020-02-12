@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food } from './core/Food';
-import { FoodRef, IngredientIdentifier } from './core/FoodRef';
-import { FdcAdaptor } from './appsscript/FdcAdaptor';
-import { Firebase } from './core/Firebase';
-import { foodToDocument } from './core/foodToDocument';
-import { documentToFood } from './core/documentToFood';
-import { FirebaseImpl } from './appsscript/FirebaseImpl';
+import { Food } from './Food';
+import { FoodRef, IngredientIdentifier } from './FoodRef';
+import { Firebase } from './Firebase';
+import { foodToDocument } from './foodToDocument';
+import { documentToFood } from './documentToFood';
+import { FirebaseImpl } from '../appsscript/FirebaseImpl';
+import { FoodDataCentral } from './FoodDataCentral';
 
 /**
  * Class to store and lookup ingredients.
@@ -27,13 +27,9 @@ import { FirebaseImpl } from './appsscript/FirebaseImpl';
  */
 export class IngredientDatabase {
   constructor(
-      private fdcAdaptor: FdcAdaptor,
+      private fdc: FoodDataCentral,
       private firebase: Firebase) { }
   
-  static build(): IngredientDatabase {
-    return new IngredientDatabase(FdcAdaptor.build(), FirebaseImpl.build());
-  }
-
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
     let document = foodToDocument(food);
@@ -44,7 +40,7 @@ export class IngredientDatabase {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
     let document = this.firebase.getDocument(documentPath);
     if (document == null && ingredientIdentifier.identifierType == 'FdcId') {
-      let food = this.fdcAdaptor.getFdcFood(ingredientIdentifier.fdcId);
+      let food = this.fdc.getFdcFood(ingredientIdentifier.fdcId);
       this.patchFood(ingredientIdentifier, food);
       return food;
     } else if (document == null) {
@@ -81,7 +77,7 @@ export class IngredientDatabase {
         })
       });
     }
-    let queryResult = this.fdcAdaptor.searchFdcFoods(query);
+    let queryResult = this.fdc.searchFdcFoods(query);
     queryResult.foods.forEach(entry => {
       result.push({
         identifier: {identifierType: 'FdcId', fdcId: entry.fdcId},

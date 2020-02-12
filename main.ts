@@ -14,12 +14,14 @@
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
-import { IngredientDatabase } from './IngredientDatabase';
+import { IngredientDatabase } from './core/IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
 import { FoodRef, IngredientIdentifier } from './core/FoodRef';
 import { nutrientNames } from './core/Nutrients';
 import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
+import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
+import { FirebaseImpl } from './appsscript/FirebaseImpl';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -64,13 +66,19 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
+
+function makeIngredientDatabase(): IngredientDatabase {
+  return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
+}
+
+
 export function getSearchResults(query: string): FoodRef[] {
-  let ingredientDatabase = IngredientDatabase.build();
+  let ingredientDatabase = makeIngredientDatabase();
   return  ingredientDatabase.searchFoods(query);
 }
 
 export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
-  let ingredientDatabase = IngredientDatabase.build();
+  let ingredientDatabase = makeIngredientDatabase();
   let food = ingredientDatabase.getFood(ingredientIdentifier);
   if (food == null) {
     // TODO: handle this in the client
@@ -92,7 +100,7 @@ export function getNutrientNames(): {id: number, name: string}[] {
 }
 
 export function updateNutritionTables() {
-  let ingredientDatabase = IngredientDatabase.build();
+  let ingredientDatabase = makeIngredientDatabase();
   let documentAdaptor = new DocumentAdaptor(
     DocumentApp, DocumentApp.getActiveDocument());
   loadCustomIngredients(documentAdaptor, ingredientDatabase);

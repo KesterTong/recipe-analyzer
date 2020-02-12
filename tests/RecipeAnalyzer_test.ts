@@ -18,7 +18,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { TEST_RECIPE_DETAILS, TEST_BRANDED_FOOD } from './testData';
 import { mock, instance, when, verify, anyString, anyNumber, deepEqual } from 'ts-mockito';
-import { IngredientDatabase } from '../IngredientDatabase';
+import { IngredientDatabase } from '../core/IngredientDatabase';
 import { DocumentAdaptor, IngredientItemAdaptor } from '../appsscript/DocumentAdaptor';
 
 function setupMockText(mockedText: GoogleAppsScript.Document.Text) {

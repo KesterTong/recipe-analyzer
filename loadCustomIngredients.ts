@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IngredientDatabase } from "./IngredientDatabase";
+import { IngredientDatabase } from "./core/IngredientDatabase";
 import { DocumentAdaptor } from "./appsscript/DocumentAdaptor";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
 import { nutrientNames } from "./core/Nutrients";
