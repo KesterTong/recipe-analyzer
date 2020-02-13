@@ -74,12 +74,14 @@
       $('#more-details').on('click', function(event) {
         switch(currentIngredientIdentifier.identifierType) {
           case 'BookmarkId':
-            google.script.run.moveCursorToBookmark(currentIngredientIdentifier.bookmarkId);
+            google.script.run.showCustomIngredientSidebar(currentIngredientIdentifier.bookmarkId);
+            break;
           case 'FdcId':
             window.open(
               'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' +
               currentIngredientIdentifier.fdcId.toString() + '/nutrients',
               '_blank');
+            break;
         }
       });
 
@@ -115,7 +117,7 @@
             currentIngredientIdentifier = JSON.parse(ui.item.value);
             google.script.run
             .withSuccessHandler(handleFoodDetails)
-            .getFoodDetails(currentIngredientIdentifier);
+            .getNormalizedFoodDetails(currentIngredientIdentifier);
           },
         });
         $('#description').focus();

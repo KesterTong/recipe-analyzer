@@ -22,6 +22,7 @@ import { normalizeFood } from './core/normalizeFood';
 import { NormalizedFood } from './core/NormalizedFood';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { FirebaseImpl } from './appsscript/FirebaseImpl';
+import { Food } from './core/Food';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -66,6 +67,13 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
+export function showCustomIngredientSidebar(bookmarkId: string) {
+  let template = HtmlService.createTemplateFromFile('ui/custom_ingredient');
+  template.bookmarkId = bookmarkId;
+  let userInterface = template.evaluate().setTitle('Custom Ingredient');
+  DocumentApp.getUi().showSidebar(userInterface);
+}
+
 
 function makeIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
@@ -77,9 +85,14 @@ export function getSearchResults(query: string): FoodRef[] {
   return  ingredientDatabase.searchFoods(query);
 }
 
-export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
+export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): Food | null {
   let ingredientDatabase = makeIngredientDatabase();
-  let food = ingredientDatabase.getFood(ingredientIdentifier);
+  return ingredientDatabase.getFood(ingredientIdentifier);
+}
+
+
+export function getNormalizedFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
+  let food = getFoodDetails(ingredientIdentifier);
   if (food == null) {
     // TODO: handle this in the client
     return null;
