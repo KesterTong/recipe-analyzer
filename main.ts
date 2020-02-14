@@ -74,11 +74,9 @@ export function showCustomIngredientSidebar(bookmarkId: string) {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-
 function makeIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }
-
 
 export function getSearchResults(query: string): FoodRef[] {
   let ingredientDatabase = makeIngredientDatabase();
@@ -90,6 +88,10 @@ export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): Food
   return ingredientDatabase.getFood(ingredientIdentifier);
 }
 
+export function patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
+  let ingredientDatabase = makeIngredientDatabase();
+  return ingredientDatabase.patchFood(ingredientIdentifier, food);
+}
 
 export function getNormalizedFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
   let food = getFoodDetails(ingredientIdentifier);
