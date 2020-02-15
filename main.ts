@@ -74,27 +74,24 @@ export function showCustomIngredientSidebar(bookmarkId: string) {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-function makeIngredientDatabase(): IngredientDatabase {
+function newIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }
 
 export function getSearchResults(query: string): FoodRef[] {
-  let ingredientDatabase = makeIngredientDatabase();
-  return  ingredientDatabase.searchFoods(query);
+  return  newIngredientDatabase().searchFoods(query);
 }
 
 export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): Food | null {
-  let ingredientDatabase = makeIngredientDatabase();
-  return ingredientDatabase.getFood(ingredientIdentifier);
+  return newIngredientDatabase().getFood(ingredientIdentifier);
 }
 
 export function patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
-  let ingredientDatabase = makeIngredientDatabase();
-  return ingredientDatabase.patchFood(ingredientIdentifier, food);
+  return newIngredientDatabase().patchFood(ingredientIdentifier, food);
 }
 
 export function getNormalizedFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
-  let food = getFoodDetails(ingredientIdentifier);
+  let food = newIngredientDatabase().getFood(ingredientIdentifier);
   if (food == null) {
     // TODO: handle this in the client
     return null;
@@ -115,7 +112,7 @@ export function getNutrientNames(): {id: number, name: string}[] {
 }
 
 export function updateNutritionTables() {
-  let ingredientDatabase = makeIngredientDatabase();
+  let ingredientDatabase = newIngredientDatabase();
   let documentAdaptor = new DocumentAdaptor(
     DocumentApp, DocumentApp.getActiveDocument());
   loadCustomIngredients(documentAdaptor, ingredientDatabase);
