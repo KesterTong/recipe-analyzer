@@ -27,15 +27,19 @@
   },
   "devDependencies": {
     "@types/chai": "^4.2.7",
+    "@types/jquery": "^3.3.32",
+    "@types/jqueryui": "^1.12.10",
     "@types/mocha": "^5.2.7",
     "@types/node": "^13.1.7",
     "chai": "^4.2.0",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "^3.2.0",
     "mocha": "^7.0.0",
     "ts-loader": "^6.2.1",
     "ts-mockito": "^2.5.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
-    "webpack": "^4.41.5",
+    "webpack": "^4.41.6",
     "webpack-cli": "^3.3.10"
   }
 }

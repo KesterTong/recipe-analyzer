@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <style>
+      .block .form-group {
+        width: 100%;
+      }
+      input, select {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <form>
+        <div class="block form-group">
+          <label for="description">Description</label>
+          <input id="description" type="text" name="description">
+        </div>
+        <div class="block form-group">
+          <label for="amount">Amount</label>
+          <input type="text" id="amount" name="amount">
+        </div>
+        <div class="block form-group">
+          <label for="unit">Unit</label>
+          <select id="unit" name="unit">
+            <option>grams</option>
+            <option>mL</option>
+          </select>
+        </div>
+        <div class="block">
+          <b>Brand: </b>
+          <span id="brand"></span>
+        </div>
+        <div class="block">
+          <b>Ingredients: </b>
+          <span id="ingredients"></span>
+        </div>
+        <div class="block" id="button-bar">
+          <button class="action" id="insert-ingredient">Insert ingredient</button>
+          <button id="more-details">Details</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>
