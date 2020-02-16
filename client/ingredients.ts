@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { nameForNutrient } from '../core/Nutrients';
-import { searchFoods, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood } from './script_functions';
+import { searchFoods, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood, patchFood } from './script_functions';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 
@@ -37,6 +37,30 @@ $('#more-details').on('click', function(event) {
         '_blank');
       break;
   }
+});
+$('#new-ingredient').on('click', function(event) {
+  let bookmarkId = Date.now().toString();
+  getNutrientsToDisplay(null).then(nutrientsToDisplay => {
+    return patchFood({
+      ingredientIdentifier: {
+        identifierType: 'BookmarkId',
+        bookmarkId: bookmarkId,
+      },
+      food: {
+        dataType: 'Branded',
+        servingSize: 100,
+        servingSizeUnit: 'g',
+        householdServingFullText: '1 serving',
+        description: 'New custom food',
+        foodNutrients: nutrientsToDisplay.map(id => ({
+          nutrient: {id: id},
+          amount: 0,
+        })),
+      },
+    })
+  }).then(() => {
+    showCustomIngredientSidebar(bookmarkId);
+  });
 });
 
 function handleFood(food: Food | null, nutrientsToDisplay: number[] | null) {
