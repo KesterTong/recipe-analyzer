@@ -40,12 +40,12 @@ $('#save').click(function(event) {
     householdServingFullText: <string>$('#household-serving-full-text').val(),
     foodNutrients: foodNutrients,
   };
-  patchFood({
+  patchFood([{
         identifierType: 'BookmarkId',
         bookmarkId: (<any>window)['bookmarkId'],
-      }, food);
+      }, food]);
 });
-getFoodDetails({
+getFoodDetails([{
   identifierType: 'BookmarkId',
   bookmarkId: (<any>window)['bookmarkId'],
-}).then(handleFoodDetails);
+}]).then(handleFoodDetails);
