@@ -16,13 +16,8 @@ import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { IngredientDatabase } from './core/IngredientDatabase';
 import { loadCustomIngredients } from './loadCustomIngredients';
-import { FoodRef, IngredientIdentifier } from './core/FoodRef';
-import { nutrientNames } from './core/Nutrients';
-import { normalizeFood } from './core/normalizeFood';
-import { NormalizedFood } from './core/NormalizedFood';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { FirebaseImpl } from './appsscript/FirebaseImpl';
-import { Food } from './core/Food';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -32,34 +27,6 @@ export function onOpen() {
       .addToUi();
 }
 
-export function moveCursorToBookmark(bookmarkId: string) {
-  let document = DocumentApp.getActiveDocument()
-  let bookmark = document.getBookmark(bookmarkId);
-  if (bookmark == null) {
-    return;
-  }
-  document.setCursor(bookmark.getPosition());
-}
-
-export function addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string) {
-  let unitString = amount.toString() + ' ' + unit + ' ';
-  let fullText = unitString + description
-  let document = DocumentApp.getActiveDocument();
-  let cursor = document.getCursor();
-  let text = cursor.insertText(fullText);
-  let linkUrl: string;
-  switch (ingredientIdentifier.identifierType) {
-    case 'BookmarkId':
-      linkUrl = '#bookmark=' + ingredientIdentifier.bookmarkId;
-      break;
-    case 'FdcId':
-      linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + ingredientIdentifier.fdcId.toString() + '/nutrients';
-      break;
-  }
-  text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
-  document.setCursor(document.newPosition(text, fullText.length));
-}
-
 export function showIngredientsSidebar() {
   let userInterface = HtmlService
   .createHtmlOutputFromFile('ui/ingredients')
@@ -67,48 +34,8 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-export function showCustomIngredientSidebar(bookmarkId: string) {
-  let template = HtmlService.createTemplateFromFile('ui/custom_ingredient');
-  template.bookmarkId = bookmarkId;
-  let userInterface = template.evaluate().setTitle('Custom Ingredient');
-  DocumentApp.getUi().showSidebar(userInterface);
-}
-
 function newIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
-}
-
-export function getSearchResults(query: string): FoodRef[] {
-  return  newIngredientDatabase().searchFoods(query);
-}
-
-export function getFoodDetails(ingredientIdentifier: IngredientIdentifier): Food | null {
-  return newIngredientDatabase().getFood(ingredientIdentifier);
-}
-
-export function patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
-  return newIngredientDatabase().patchFood(ingredientIdentifier, food);
-}
-
-export function getNormalizedFoodDetails(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
-  let food = newIngredientDatabase().getFood(ingredientIdentifier);
-  if (food == null) {
-    // TODO: handle this in the client
-    return null;
-  }
-  let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
-  let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
-  return normalizeFood(food, nutrientsToDisplay);
-}
-
-export function getNutrientNames(): {id: number, name: string}[] {
-  let namesById = nutrientNames();
-  let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
-  let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
-  return nutrientsToDisplay.map(id => ({
-    id: id,
-    name: namesById[id],
-  }));
 }
 
 export function updateNutritionTables() {

@@ -1,5 +1,7 @@
 import * as $ from 'jquery';
 import { BrandedFood } from '../core/FoodDataCentral';
+import { patchFood, getFoodDetails } from './script_functions';
+import { Food } from '../core/Food';
 
 const google = (<any>window)['google'];
 
@@ -30,23 +32,20 @@ $('#save').click(function(event) {
       amount: 100.0 * Number($(this).val()) / servingSize,
     };
   }).toArray();
-  let food = {
+  let food: Food = {
     dataType: 'Branded',
-    description: $('#description').val(),
+    description: <string>$('#description').val(),
     servingSize: servingSize,
-    servingSizeUnit: $('#serving-size-unit').val(),
-    householdServingFullText: $('#household-serving-full-text').val(),
+    servingSizeUnit: <string>$('#serving-size-unit').val(),
+    householdServingFullText: <string>$('#household-serving-full-text').val(),
     foodNutrients: foodNutrients,
   };
-  google.script.run
-      .patchFood({
+  patchFood({
         identifierType: 'BookmarkId',
         bookmarkId: (<any>window)['bookmarkId'],
       }, food);
 });
-google.script.run
-      .withSuccessHandler(handleFoodDetails)
-      .getFoodDetails({
-        identifierType: 'BookmarkId',
-        bookmarkId: (<any>window)['bookmarkId'],
-      });
+getFoodDetails({
+  identifierType: 'BookmarkId',
+  bookmarkId: (<any>window)['bookmarkId'],
+}).then(handleFoodDetails);

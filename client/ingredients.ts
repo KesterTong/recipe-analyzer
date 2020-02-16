@@ -1,6 +1,7 @@
 import * as $ from 'jquery';
 import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
+import { getSearchResults, addIngredient, getNutrientNames, getNormalizedFoodDetails, showCustomIngredientSidebar } from './script_functions';
 
 const google = (<any>window)['google'];
 
@@ -31,7 +32,7 @@ $('#more-details').on('click', function(event) {
   let ingredientIdentifier = currentIngredientIdentifier!;
   switch(ingredientIdentifier.identifierType) {
     case 'BookmarkId':
-      google.script.run.showCustomIngredientSidebar(ingredientIdentifier.bookmarkId);
+      showCustomIngredientSidebar(ingredientIdentifier.bookmarkId);
       break;
     case 'FdcId':
       window.open(
@@ -58,38 +59,33 @@ function handleFoodDetails(details: NormalizedFood) {
 window.onload = function() {
   $('#description').autocomplete({
     source: function(request: any, response: any) {
-      function handleSearchResults(results: FoodRef[]) {
+      getSearchResults(request.term).then(results => {
         response(results.map(function(entry) {
           return {
             label: entry.description,
             value: JSON.stringify(entry.identifier),
           };
         }));
-      }
-      google.script.run.withSuccessHandler(handleSearchResults).getSearchResults(
-        request.term);
+      });
     },
     select: function(event, ui) {
       event.preventDefault();
       currentIngredientIdentifier = JSON.parse(ui.item.value);
-      google.script.run
-      .withSuccessHandler(handleFoodDetails)
-      .getNormalizedFoodDetails(currentIngredientIdentifier);
+      console.log(currentIngredientIdentifier)
+      getNormalizedFoodDetails(currentIngredientIdentifier!).then(handleFoodDetails);
     },
   });
   $('#description').focus();
-  google.script.run
-  .withSuccessHandler(handleNutrientNames)
-  .getNutrientNames();
+  getNutrientNames().then(handleNutrientNames);
 };
 document.getElementById('insert-ingredient')!.addEventListener('click', function(event) {
   if (currentDetails != null) {
     // Fetch description from text input so that user can override description
     // when inserting ingredient.
-    let description = $('#description').val();
+    let description = <string>$('#description').val();
     // TODO: parse this server side.
     let amount = Number($('#amount').val());
-    let unit = $('#unit').val()
-    google.script.run.addIngredient(currentIngredientIdentifier, amount, unit, description);
+    let unit = <string>$('#unit').val()
+    addIngredient(currentIngredientIdentifier!, amount, unit, description);
   }
 })
