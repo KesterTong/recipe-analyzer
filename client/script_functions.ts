@@ -22,11 +22,10 @@
  */
 
 import { getSearchResultsImpl, showCustomIngredientSidebarImpl, getFoodDetailsImpl, patchFoodImpl, getNormalizedFoodDetailsImpl, moveCursorToBookmarkImpl, addIngredientImpl, getNutrientNamesImpl } from "../script_functions";
-const google = (<any>window)['google'];
 
 function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) => Promise<U> {
   return (args: T) => new Promise<U>((resolve, reject) => {
-    google.script.run
+    (<any>window).script.run
     .withSuccessHandler(resolve)
     .withFailureHandler(reject)
     [funcName](args);
