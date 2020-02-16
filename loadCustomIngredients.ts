@@ -15,7 +15,7 @@
 import { IngredientDatabase } from "./core/IngredientDatabase";
 import { DocumentAdaptor } from "./appsscript/DocumentAdaptor";
 import { parseHouseholdServing } from "./core/parseHouseholdServing";
-import { nutrientNames } from "./core/Nutrients";
+import { nameForNutrient, idForNutrient } from "./core/Nutrients";
 
 export function loadCustomIngredients(documentAdaptor: DocumentAdaptor, fdcClient: IngredientDatabase) {
   let ingredientsTable = documentAdaptor.getCustomIngredientsTable();
@@ -26,7 +26,7 @@ export function loadCustomIngredients(documentAdaptor: DocumentAdaptor, fdcClien
   if (nutrientsColumnNames == null) {
     return;
   }
-  let nutrients = getNutrientIds(nutrientsColumnNames);
+  let nutrients = nutrientsColumnNames.map(idForNutrient);
 
   // Iterate over all rows except the header row
   ingredientsTable.ingredientRows().forEach(ingredientsTableRowAdaptor => {
@@ -48,7 +48,7 @@ export function loadCustomIngredients(documentAdaptor: DocumentAdaptor, fdcClien
     let foodNutrients: {nutrient: {id: number}, amount?: number}[] = [];
     for (let i = 0; i < nutrients.length; i++) {
       foodNutrients.push({
-        nutrient: {id: nutrients[i]},
+        nutrient: {id: nutrients[i]!},
         amount: nutrientsPerHouseholdServing[i] * scale,
       });
     }
@@ -65,14 +65,4 @@ export function loadCustomIngredients(documentAdaptor: DocumentAdaptor, fdcClien
       foodNutrients: foodNutrients,
     });
   });
-}
-
-function getNutrientIds(nutrientsColumnNames: string[]): number[] {
-  let nutrientIdsByDescription: {[index: string]: number} = {};
-  let nutrientNamesById : {[index: number]: string} = nutrientNames();
-  for (let key in nutrientNamesById) {
-    let nutrientId = Number(key);
-    nutrientIdsByDescription[nutrientNamesById[nutrientId]] = nutrientId;
-  }
-  return nutrientsColumnNames.map(name => nutrientIdsByDescription[name]);
 }

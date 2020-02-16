@@ -21,11 +21,20 @@
  * For convenience we expose these as promises.
  */
 
-import { getSearchResultsImpl, showCustomIngredientSidebarImpl, getFoodImpl, patchFoodImpl, getNormalizedFoodDetailsImpl, moveCursorToBookmarkImpl, addIngredientImpl, getNutrientNamesImpl } from "../script_functions";
+import {
+  getSearchResultsImpl,
+  showCustomIngredientSidebarImpl,
+  getFoodImpl,
+  patchFoodImpl,
+  getNormalizedFoodDetailsImpl,
+  moveCursorToBookmarkImpl,
+  addIngredientImpl,
+  getNutrientsToDisplayImpl
+} from "../script_functions";
 
 function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) => Promise<U> {
   return (args: T) => new Promise<U>((resolve, reject) => {
-    (<any>window).script.run
+    (<any>window).google.script.run
     .withSuccessHandler(resolve)
     .withFailureHandler(reject)
     [funcName](args);
@@ -44,5 +53,5 @@ export const moveCursorToBookmark = wrapAsPromise(
   moveCursorToBookmarkImpl, 'moveCursorToBookmarkImpl');
 export const addIngredient = wrapAsPromise(
   addIngredientImpl, 'addIngredientImpl');
-export const getNutrientNames = wrapAsPromise(
-  getNutrientNamesImpl, 'getNutrientNamesImpl');
+export const getNutrientsToDisplay = wrapAsPromise(
+  getNutrientsToDisplayImpl, 'getNutrientsToDisplayImpl');

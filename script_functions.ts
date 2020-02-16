@@ -22,7 +22,6 @@ import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { normalizeFood } from './core/normalizeFood';
 import { Food } from './core/Food';
 import { NormalizedFood } from './core/NormalizedFood';
-import { nutrientNames } from './core/Nutrients';
 
 export function getSearchResultsImpl(query: string): FoodRef[] {
   return newIngredientDatabase().searchFoods(query);
@@ -86,12 +85,7 @@ export function addIngredientImpl(arg: {ingredientIdentifier: IngredientIdentifi
   document.setCursor(document.newPosition(text, fullText.length));
 }
 
-export function getNutrientNamesImpl(arg: null): {id: number, name: string}[] {
-  let namesById = nutrientNames();
+export function getNutrientsToDisplayImpl(arg: null): number[] {
   let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
-  let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
-  return nutrientsToDisplay.map(id => ({
-    id: id,
-    name: namesById[id],
-  }));
+  return json == null ? [] : JSON.parse(json);
 }

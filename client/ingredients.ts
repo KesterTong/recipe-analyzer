@@ -1,17 +1,11 @@
 import * as $ from 'jquery';
-import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
+import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
-import { getSearchResults, addIngredient, getNutrientNames, getNormalizedFoodDetails, showCustomIngredientSidebar } from './script_functions';
+import { nameForNutrient } from '../core/Nutrients';
+import { getSearchResults, addIngredient, getNutrientsToDisplay, getNormalizedFoodDetails, showCustomIngredientSidebar } from './script_functions';
 
 const google = (<any>window)['google'];
 
-function handleNutrientNames(nutrientNames: {id: number, name: string}[]) {
-  nutrientNames.forEach(function(name) {
-    let label = $('<b></b>').text(name.name + ': ');
-    let amount = $('<span></span>', {id: 'nutrient-' + name.id});
-    $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
-  })
-}
 let currentIngredientIdentifier: IngredientIdentifier | null = null;
 let currentDetails: NormalizedFood | null = null;
 
@@ -75,7 +69,13 @@ window.onload = function() {
     },
   });
   $('#description').focus();
-  getNutrientNames(null).then(handleNutrientNames);
+  getNutrientsToDisplay(null).then(nutrientsToDisplay => {
+    nutrientsToDisplay.forEach(id => {
+      let label = $('<b></b>').text(nameForNutrient(id)! + ': ');
+      let amount = $('<span></span>', {id: 'nutrient-' + id});
+      $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
+    })
+  });
 };
 document.getElementById('insert-ingredient')!.addEventListener('click', function(event) {
   if (currentDetails != null) {
