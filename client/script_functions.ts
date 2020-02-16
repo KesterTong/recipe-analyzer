@@ -24,23 +24,31 @@
 import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
 import { NormalizedFood } from "../core/NormalizedFood";
+import { getSearchResultsImpl, showCustomIngredientSidebarImpl, getFoodDetailsImpl, patchFoodImpl, getNormalizedFoodDetailsImpl, moveCursorToBookmarkImpl, addIngredientImpl, getNutrientNamesImpl } from "../script_functions";
 const google = (<any>window)['google'];
 
-function wrapAsPromise<T, U>(funcName: string): (args: T) => Promise<U> {
+function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) => Promise<U> {
   return (args: T) => new Promise<U>((resolve, reject) => {
     google.script.run
     .withSuccessHandler(resolve)
     .withFailureHandler(reject)
-    [funcName]
-    .apply(null, args);
+    [funcName](args);
   });
 }
 
-export const getSearchResults = wrapAsPromise<[string], FoodRef[]>('getSearchResultsImpl');
-export const showCustomIngredientSidebar = wrapAsPromise<[string], void>('showCustomIngredientSidebarImpl');
-export const getFoodDetails = wrapAsPromise<[IngredientIdentifier], Food | null>('getFoodDetailsImpl');
-export const patchFood = wrapAsPromise<[IngredientIdentifier, Food], void>('patchFoodImpl');
-export const getNormalizedFoodDetails = wrapAsPromise<[IngredientIdentifier], NormalizedFood | null>('getNormalizedFoodDetailsImpl');
-export const moveCursorToBookmark = wrapAsPromise<[string], void>('moveCursorToBookmarkImpl');
-export const addIngredient = wrapAsPromise<[IngredientIdentifier, number, string, string], void>('addIngredientImpl');
-export const getNutrientNames = wrapAsPromise<[], {id: number, name: string}[]>('getNutrientNamesImpl');
+export const getSearchResults = wrapAsPromise(
+  getSearchResultsImpl, 'getSearchResultsImpl');
+export const showCustomIngredientSidebar = wrapAsPromise(
+  showCustomIngredientSidebarImpl, 'showCustomIngredientSidebarImpl');
+export const getFoodDetails = wrapAsPromise(
+  getFoodDetailsImpl, 'getFoodDetailsImpl');
+export const patchFood = wrapAsPromise(
+  patchFoodImpl, 'patchFoodImpl');
+export const getNormalizedFoodDetails = wrapAsPromise(
+  getNormalizedFoodDetailsImpl, 'getNormalizedFoodDetailsImpl');
+export const moveCursorToBookmark = wrapAsPromise(
+  moveCursorToBookmarkImpl, 'moveCursorToBookmarkImpl');
+export const addIngredient = wrapAsPromise(
+  addIngredientImpl, 'addIngredientImpl');
+export const getNutrientNames = wrapAsPromise(
+  getNutrientNamesImpl, 'getNutrientNamesImpl');

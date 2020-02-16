@@ -43,8 +43,8 @@ export function getFoodDetailsImpl(ingredientIdentifier: IngredientIdentifier): 
   return newIngredientDatabase().getFood(ingredientIdentifier);
 }
 
-export function patchFoodImpl(ingredientIdentifier: IngredientIdentifier, food: Food) {
-  return newIngredientDatabase().patchFood(ingredientIdentifier, food);
+export function patchFoodImpl(arg: {ingredientIdentifier: IngredientIdentifier, food: Food}) {
+  return newIngredientDatabase().patchFood(arg.ingredientIdentifier, arg.food);
 }
 
 export function getNormalizedFoodDetailsImpl(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
@@ -67,26 +67,26 @@ export function moveCursorToBookmarkImpl(bookmarkId: string) {
   document.setCursor(bookmark.getPosition());
 }
 
-export function addIngredientImpl(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string) {
-  let unitString = amount.toString() + ' ' + unit + ' ';
-  let fullText = unitString + description
+export function addIngredientImpl(arg: {ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string}) {
+  let unitString = arg.amount.toString() + ' ' + arg.unit + ' ';
+  let fullText = unitString + arg.description
   let document = DocumentApp.getActiveDocument();
   let cursor = document.getCursor();
   let text = cursor.insertText(fullText);
   let linkUrl: string;
-  switch (ingredientIdentifier.identifierType) {
+  switch (arg.ingredientIdentifier.identifierType) {
     case 'BookmarkId':
-      linkUrl = '#bookmark=' + ingredientIdentifier.bookmarkId;
+      linkUrl = '#bookmark=' + arg.ingredientIdentifier.bookmarkId;
       break;
     case 'FdcId':
-      linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + ingredientIdentifier.fdcId.toString() + '/nutrients';
+      linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + arg.ingredientIdentifier.fdcId.toString() + '/nutrients';
       break;
   }
   text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
   document.setCursor(document.newPosition(text, fullText.length));
 }
 
-export function getNutrientNamesImpl(): {id: number, name: string}[] {
+export function getNutrientNamesImpl(arg: null): {id: number, name: string}[] {
   let namesById = nutrientNames();
   let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
   let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
