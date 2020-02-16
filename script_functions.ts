@@ -46,17 +46,6 @@ export function getFoodImpl(ingredientIdentifier: IngredientIdentifier): Food | 
   return newIngredientDatabase().getFood(ingredientIdentifier);
 }
 
-export function getNormalizedFoodDetailsImpl(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {
-  let food = newIngredientDatabase().getFood(ingredientIdentifier);
-  if (food == null) {
-    // TODO: handle this in the client
-    return null;
-  }
-  let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
-  let nutrientsToDisplay: number[] = json == null ? [] : JSON.parse(json);
-  return normalizeFood(food, nutrientsToDisplay);
-}
-
 export function moveCursorToBookmarkImpl(bookmarkId: string) {
   let document = DocumentApp.getActiveDocument()
   let bookmark = document.getBookmark(bookmarkId);

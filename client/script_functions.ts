@@ -26,7 +26,6 @@ import {
   showCustomIngredientSidebarImpl,
   getFoodImpl,
   patchFoodImpl,
-  getNormalizedFoodDetailsImpl,
   moveCursorToBookmarkImpl,
   addIngredientImpl,
   getNutrientsToDisplayImpl
@@ -47,8 +46,6 @@ export const showCustomIngredientSidebar = wrapAsPromise(
   showCustomIngredientSidebarImpl, 'showCustomIngredientSidebarImpl');
 export const patchFood = wrapAsPromise(patchFoodImpl, 'patchFoodImpl');
 export const getFood = wrapAsPromise(getFoodImpl, 'getFoodImpl');
-export const getNormalizedFoodDetails = wrapAsPromise(
-  getNormalizedFoodDetailsImpl, 'getNormalizedFoodDetailsImpl');
 export const moveCursorToBookmark = wrapAsPromise(
   moveCursorToBookmarkImpl, 'moveCursorToBookmarkImpl');
 export const addIngredient = wrapAsPromise(

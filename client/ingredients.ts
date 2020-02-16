@@ -2,15 +2,17 @@ import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { nameForNutrient } from '../core/Nutrients';
-import { getSearchResults, addIngredient, getNutrientsToDisplay, getNormalizedFoodDetails, showCustomIngredientSidebar } from './script_functions';
+import { getSearchResults, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood } from './script_functions';
+import { Food } from '../core/Food';
+import { normalizeFood } from '../core/normalizeFood';
 
 const google = (<any>window)['google'];
 
 let currentIngredientIdentifier: IngredientIdentifier | null = null;
-let currentDetails: NormalizedFood | null = null;
+let currentFood: NormalizedFood | null = null;
 
 function handleQuantityChange() {
-  let food = currentDetails!;
+  let food = currentFood!;
   let unit = <string>$('#unit').val();
   // TODO: do this computation server side.
   let servings = Number($('#amount').val()) / food.servingEquivalentQuantities[unit];
@@ -37,13 +39,14 @@ $('#more-details').on('click', function(event) {
   }
 });
 
-function handleFoodDetails(details: NormalizedFood) {
-  currentDetails = details;
-  $('#description').val(details.description);
-  $('#brand').text(details.brandOwner || '');
-  $('#ingredients').text(details.ingredients || '');
+function handleFood(food: Food | null, nutrientsToDisplay: number[] | null) {
+  let normalizedFood = normalizeFood(food!, nutrientsToDisplay!)!;
+  currentFood = normalizedFood;
+  $('#description').val(normalizedFood.description);
+  $('#brand').text(normalizedFood.brandOwner || '');
+  $('#ingredients').text(normalizedFood.ingredients || '');
   $('#unit').empty()
-  for (let unit in details.servingEquivalentQuantities) {
+  for (let unit in normalizedFood.servingEquivalentQuantities) {
     $('#unit').append($('<option></option>').text(unit));
   }
   $('#unit').val('g');
@@ -51,6 +54,14 @@ function handleFoodDetails(details: NormalizedFood) {
   handleQuantityChange();
 }
 window.onload = function() {
+  let nutrientsToDisplayPromise = getNutrientsToDisplay(null)
+  nutrientsToDisplayPromise.then(nutrientsToDisplay => {
+    nutrientsToDisplay.forEach(id => {
+      let label = $('<b></b>').text(nameForNutrient(id)! + ': ');
+      let amount = $('<span></span>', {id: 'nutrient-' + id});
+      $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
+    })
+  });
   $('#description').autocomplete({
     source: function(request: any, response: any) {
       getSearchResults(request.term).then(results => {
@@ -65,20 +76,16 @@ window.onload = function() {
     select: function(event, ui) {
       event.preventDefault();
       currentIngredientIdentifier = JSON.parse(ui.item.value);
-      getNormalizedFoodDetails(currentIngredientIdentifier!).then(handleFoodDetails);
+      Promise.all([
+        getFood(currentIngredientIdentifier!),
+        nutrientsToDisplayPromise]).then(args =>
+          handleFood(args[0], args[1]));
     },
   });
   $('#description').focus();
-  getNutrientsToDisplay(null).then(nutrientsToDisplay => {
-    nutrientsToDisplay.forEach(id => {
-      let label = $('<b></b>').text(nameForNutrient(id)! + ': ');
-      let amount = $('<span></span>', {id: 'nutrient-' + id});
-      $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
-    })
-  });
 };
 document.getElementById('insert-ingredient')!.addEventListener('click', function(event) {
-  if (currentDetails != null) {
+  if (currentFood != null) {
     // Fetch description from text input so that user can override description
     // when inserting ingredient.
     let description = <string>$('#description').val();
