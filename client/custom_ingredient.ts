@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 import { BrandedFood } from '../core/FoodDataCentral';
 import { patchFood, getFood } from './script_functions';
 import { Food } from '../core/Food';
+import { nameForNutrient } from '../core/Nutrients';
 
 const google = (<any>window)['google'];
 
@@ -12,7 +13,8 @@ function handleFoodDetails(details: BrandedFood) {
   $('#household-serving-full-text').val(details?.householdServingFullText || '');
   details.foodNutrients.forEach(function(foodNutrient) {
     let name = 'nutrient-' + foodNutrient.nutrient.id.toString();
-    let label = $('<label></label>', {for: name}).text(name);
+    let description = nameForNutrient(foodNutrient.nutrient.id);
+    let label = $('<label></label>', {for: name}).text(description!);
     let amount = $('<input></input>', {
       id: name,
       name: name,
