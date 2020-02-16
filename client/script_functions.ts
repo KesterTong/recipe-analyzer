@@ -21,9 +21,6 @@
  * For convenience we expose these as promises.
  */
 
-import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
-import { Food } from "../core/Food";
-import { NormalizedFood } from "../core/NormalizedFood";
 import { getSearchResultsImpl, showCustomIngredientSidebarImpl, getFoodDetailsImpl, patchFoodImpl, getNormalizedFoodDetailsImpl, moveCursorToBookmarkImpl, addIngredientImpl, getNutrientNamesImpl } from "../script_functions";
 const google = (<any>window)['google'];
 
