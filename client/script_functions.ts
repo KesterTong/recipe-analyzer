@@ -22,10 +22,10 @@
  */
 
 import {
-  getSearchResultsImpl,
   showCustomIngredientSidebarImpl,
-  getFoodImpl,
   patchFoodImpl,
+  getFoodImpl,
+  searchFoodsImpl,
   moveCursorToBookmarkImpl,
   addIngredientImpl,
   getNutrientsToDisplayImpl
@@ -40,12 +40,11 @@ function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) =
   });
 }
 
-export const getSearchResults = wrapAsPromise(
-  getSearchResultsImpl, 'getSearchResultsImpl');
 export const showCustomIngredientSidebar = wrapAsPromise(
   showCustomIngredientSidebarImpl, 'showCustomIngredientSidebarImpl');
 export const patchFood = wrapAsPromise(patchFoodImpl, 'patchFoodImpl');
 export const getFood = wrapAsPromise(getFoodImpl, 'getFoodImpl');
+export const searchFoods = wrapAsPromise(searchFoodsImpl, 'searchFoodsImpl');
 export const moveCursorToBookmark = wrapAsPromise(
   moveCursorToBookmarkImpl, 'moveCursorToBookmarkImpl');
 export const addIngredient = wrapAsPromise(

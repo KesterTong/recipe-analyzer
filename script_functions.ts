@@ -19,13 +19,7 @@ import { IngredientDatabase } from './core/IngredientDatabase';
 import { FoodRef, IngredientIdentifier } from './core/FoodRef';
 import { FirebaseImpl } from './appsscript/FirebaseImpl';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
-import { normalizeFood } from './core/normalizeFood';
 import { Food } from './core/Food';
-import { NormalizedFood } from './core/NormalizedFood';
-
-export function getSearchResultsImpl(query: string): FoodRef[] {
-  return newIngredientDatabase().searchFoods(query);
-};
 
 export function showCustomIngredientSidebarImpl(bookmarkId: string) {
   let template = HtmlService.createTemplateFromFile('ui/custom_ingredient');
@@ -45,6 +39,10 @@ export function patchFoodImpl(arg: {ingredientIdentifier: IngredientIdentifier, 
 export function getFoodImpl(ingredientIdentifier: IngredientIdentifier): Food | null {
   return newIngredientDatabase().getFood(ingredientIdentifier);
 }
+
+export function searchFoodsImpl(query: string): FoodRef[] {
+  return newIngredientDatabase().searchFoods(query);
+};
 
 export function moveCursorToBookmarkImpl(bookmarkId: string) {
   let document = DocumentApp.getActiveDocument()

@@ -2,7 +2,7 @@ import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { nameForNutrient } from '../core/Nutrients';
-import { getSearchResults, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood } from './script_functions';
+import { searchFoods, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood } from './script_functions';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 
@@ -64,7 +64,7 @@ window.onload = function() {
   });
   $('#description').autocomplete({
     source: function(request: any, response: any) {
-      getSearchResults(request.term).then(results => {
+      searchFoods(request.term).then(results => {
         response(results.map(function(entry) {
           return {
             label: entry.description,
