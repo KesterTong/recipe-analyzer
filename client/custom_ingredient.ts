@@ -1,6 +1,6 @@
 import * as $ from 'jquery';
 import { BrandedFood } from '../core/FoodDataCentral';
-import { patchFood, getFoodDetails } from './script_functions';
+import { patchFood, getFood } from './script_functions';
 import { Food } from '../core/Food';
 
 const google = (<any>window)['google'];
@@ -48,7 +48,7 @@ $('#save').click(function(event) {
     food: food,
   });
 });
-getFoodDetails({
+getFood({
   identifierType: 'BookmarkId',
   bookmarkId: (<any>window)['bookmarkId'],
 }).then(handleFoodDetails);

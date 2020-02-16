@@ -39,12 +39,12 @@ function newIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }
 
-export function getFoodDetailsImpl(ingredientIdentifier: IngredientIdentifier): Food | null {
-  return newIngredientDatabase().getFood(ingredientIdentifier);
-}
-
 export function patchFoodImpl(arg: {ingredientIdentifier: IngredientIdentifier, food: Food}) {
   return newIngredientDatabase().patchFood(arg.ingredientIdentifier, arg.food);
+}
+
+export function getFoodImpl(ingredientIdentifier: IngredientIdentifier): Food | null {
+  return newIngredientDatabase().getFood(ingredientIdentifier);
 }
 
 export function getNormalizedFoodDetailsImpl(ingredientIdentifier: IngredientIdentifier): NormalizedFood | null {

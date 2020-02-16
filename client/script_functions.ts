@@ -21,7 +21,7 @@
  * For convenience we expose these as promises.
  */
 
-import { getSearchResultsImpl, showCustomIngredientSidebarImpl, getFoodDetailsImpl, patchFoodImpl, getNormalizedFoodDetailsImpl, moveCursorToBookmarkImpl, addIngredientImpl, getNutrientNamesImpl } from "../script_functions";
+import { getSearchResultsImpl, showCustomIngredientSidebarImpl, getFoodImpl, patchFoodImpl, getNormalizedFoodDetailsImpl, moveCursorToBookmarkImpl, addIngredientImpl, getNutrientNamesImpl } from "../script_functions";
 
 function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) => Promise<U> {
   return (args: T) => new Promise<U>((resolve, reject) => {
@@ -36,10 +36,8 @@ export const getSearchResults = wrapAsPromise(
   getSearchResultsImpl, 'getSearchResultsImpl');
 export const showCustomIngredientSidebar = wrapAsPromise(
   showCustomIngredientSidebarImpl, 'showCustomIngredientSidebarImpl');
-export const getFoodDetails = wrapAsPromise(
-  getFoodDetailsImpl, 'getFoodDetailsImpl');
-export const patchFood = wrapAsPromise(
-  patchFoodImpl, 'patchFoodImpl');
+export const patchFood = wrapAsPromise(patchFoodImpl, 'patchFoodImpl');
+export const getFood = wrapAsPromise(getFoodImpl, 'getFoodImpl');
 export const getNormalizedFoodDetails = wrapAsPromise(
   getNormalizedFoodDetailsImpl, 'getNormalizedFoodDetailsImpl');
 export const moveCursorToBookmark = wrapAsPromise(
