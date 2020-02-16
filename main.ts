@@ -15,7 +15,6 @@
 import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { IngredientDatabase } from './core/IngredientDatabase';
-import { loadCustomIngredients } from './loadCustomIngredients';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { FirebaseImpl } from './appsscript/FirebaseImpl';
 
@@ -39,13 +38,9 @@ function newIngredientDatabase(): IngredientDatabase {
 }
 
 export function updateNutritionTables() {
-  let ingredientDatabase = newIngredientDatabase();
-  let documentAdaptor = new DocumentAdaptor(
-    DocumentApp, DocumentApp.getActiveDocument());
-  loadCustomIngredients(documentAdaptor, ingredientDatabase);
   let recipeAnalyzer = new RecipeAnalyzer(
-    documentAdaptor,
-    ingredientDatabase,
+    new DocumentAdaptor(DocumentApp, DocumentApp.getActiveDocument()),
+    newIngredientDatabase(),
     PropertiesService);
   recipeAnalyzer.updateDocument();
 }

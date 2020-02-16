@@ -12,65 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export class IngredientsTableRowAdaptor {
-  constructor (private row: GoogleAppsScript.Document.TableRow, private documentAdaptor: DocumentAdaptor) {}
-
-  bookmarkId(): string | null {
-    return this.documentAdaptor.bookmarkIdForElement(this.row.getCell(0));
-  }
-
-  description(): string {
-    return this.row.getCell(0).getText();
-  }
-
-  householdServingStr(): string {
-    return this.row.getCell(1).getText();
-  }
-
-  nutrientValues(): number[] {
-    let result: number[] = [];
-    let numCells = this.row.getNumCells();
-    for (let cellIndex = 2; cellIndex < numCells; cellIndex++) {
-      result.push(Number(this.row.getCell(cellIndex).getText()));
-    }
-    return result;
-  }
-}
-
-export class IngredientsTableAdaptor {
-  constructor (private table: GoogleAppsScript.Document.Table, private documentAdaptor: DocumentAdaptor) {}
-
-  nutrientNames(): string[] | null {
-    if (this.table.getNumRows() < 1) {
-      return null;
-    }
-    let headerRow = this.table.getRow(0);
-    let numCells = headerRow.getNumCells();
-    if (numCells <= 2) {
-      return null;
-    }
-    let result: string[] = [];
-    for (let cellIndex = 2; cellIndex < numCells; cellIndex++) {
-      result.push(headerRow.getCell(cellIndex).getText());
-    }
-    return result;
-  }
-
-  // Return adaptors for non-header Rows.
-  ingredientRows(): IngredientsTableRowAdaptor[] {
-    let numRows = this.table.getNumRows();
-    let result: IngredientsTableRowAdaptor[] = [];
-    for (let rowIndex = 1; rowIndex < numRows; rowIndex++) {
-      let row = this.table.getRow(rowIndex);
-      if (row.getNumCells() < 2) {
-        continue;
-      }
-      result.push(new IngredientsTableRowAdaptor(this.table.getRow(rowIndex), this.documentAdaptor));
-    }
-    return result;
-  }
-}
-
 /**
  * Adaptor for a ListItem representing an ingredient or total.
  */
@@ -136,17 +77,6 @@ export class DocumentAdaptor {
         this.bookmarkIdByText[text] = bookmark.getId();
       }
     });
-  }
-  
-  /**
-   * Returns the table of custom ingredients in this doc.
-   */
-  getCustomIngredientsTable(): IngredientsTableAdaptor | null {
-    let tables = this.document.getBody().getTables();
-    if (tables.length == 0) {
-      return null;
-    }
-    return new IngredientsTableAdaptor(tables[tables.length - 1], this);
   }
 
   // Recipes in the document, in reverse order.
