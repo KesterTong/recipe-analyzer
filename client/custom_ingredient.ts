@@ -39,7 +39,10 @@ function handleFoodDetails(details: Food | null, bookmarkId: string) {
   }
 
   let li = $('<li></li>');
-  li.append($('<a></a>', {href: '#' + bookmarkId}).text(details.description));
+  li.append($('<a></a>', {
+    id: elementId('a', bookmarkId),
+    href: '#' + elementId('tab', bookmarkId),
+  }).text(details.description));
   let tabs = $('#tabs').tabs();
   tabs.find('.ui-tabs-nav').append(li);
 
@@ -65,14 +68,19 @@ function handleFoodDetails(details: Food | null, bookmarkId: string) {
   })
   form.append(fields);
   
-  let buttonBar = $('<div></div>', {class: 'block', id: elementId('button-bar', bookmarkId)});
-  let saveButton = $('<button>Save</button>', {class: 'action', id: 'save'})
+  let saveButton = $('<button>Save</button>', {class: 'action'})
   saveButton.click((event) => { saveFood(bookmarkId, nutrientIds); });
-  buttonBar.append(saveButton);
-  buttonBar.append($('<button>Cancel</button>', {id: 'cancel'}));
+  let closeButton = $('<button>Cancel</button>', {id: 'cancel'});
+  closeButton.click((event) => {
+    $("#" +  elementId('a', bookmarkId)).remove();
+    $("#" +  elementId('tab', bookmarkId)).remove();
+    tabs.tabs('refresh');
+  });
+  let buttonBar = $('<div></div>', {class: 'block', id: elementId('button-bar', bookmarkId)});
+  buttonBar.append([saveButton, closeButton]);
   form.append(buttonBar);
 
-  tabs.append($('<div></div>', {id: bookmarkId}).append(form));
+  tabs.append($('<div></div>', {id: elementId('tab', bookmarkId)}).append(form));
   tabs.tabs('refresh');
 }
 
