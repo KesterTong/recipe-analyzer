@@ -1,6 +1,7 @@
 import * as $ from 'jquery';
-import { patchFood, getFood } from './script_functions';
+import { patchFood, getFood, getNutrientInfo } from './script_functions';
 import { Food } from '../core/Food';
+import { NutrientInfo } from '../core/Nutrients';
 
 function elementId(name: string, bookmarkId: string) {
   return name + '-' + bookmarkId.replace('.', '-');
@@ -32,10 +33,14 @@ function createSelectField(name: string, description: string, initalValue: strin
     $('<select><option>g</option><option>ml</option></select>'));
 }
 
-function handleFoodDetails(details: Food | null, bookmarkId: string) {
-  if (details == null || details.dataType != 'Branded') {
+function handleFoodDetails(details: Food | null, bookmarkId: string, nutrientInfos: NutrientInfo[] | null) {
+  if (details == null || details.dataType != 'Branded' || nutrientInfos == null) {
     return;
   }
+  let nutrientNameById: {[index: number]: string} = {};
+  nutrientInfos.forEach(nutrientInfo => {
+    nutrientNameById[nutrientInfo.id] = nutrientInfo.name;
+  })
 
   let li = $('<li></li>');
   li.append($('<a></a>', {
@@ -59,7 +64,7 @@ function handleFoodDetails(details: Food | null, bookmarkId: string) {
   details.foodNutrients.forEach(function(foodNutrient) {
     let id = foodNutrient.nutrient.id;
     // TODO: use nutrient description
-    let description = 'nutrient ' + id;
+    let description = nutrientNameById[id];
     fields.push(createTextField(
       'nutrient-' + id.toString(),
       description,
@@ -108,8 +113,12 @@ function saveFood(bookmarkId: string, nutrientIds: number[]) {
 }
 
 export function addDetailsTab(bookmarkId: string) {
-  getFood({
+  let getFoodPromise = getFood({
     identifierType: 'BookmarkId',
     bookmarkId: bookmarkId,
-  }).then(details => handleFoodDetails(details, bookmarkId));
+  });
+  let nutrientInfoPromise = getNutrientInfo(null);
+  Promise.all([getFoodPromise, nutrientInfoPromise]).then(args =>
+    handleFoodDetails(args[0], bookmarkId, args[1])
+  );
 }
