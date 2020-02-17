@@ -20,6 +20,7 @@ import { FoodRef, IngredientIdentifier } from './core/FoodRef';
 import { FirebaseImpl } from './appsscript/FirebaseImpl';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { Food } from './core/Food';
+import { NutrientInfo } from './core/Nutrients';
 
 export function showCustomIngredientSidebarImpl(bookmarkId: string) {
   let template = HtmlService.createTemplateFromFile('ui/custom_ingredient');
@@ -30,6 +31,10 @@ export function showCustomIngredientSidebarImpl(bookmarkId: string) {
 
 function newIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
+}
+
+export function getNutrientInfoImpl(arg: null): NutrientInfo[] {
+  return newIngredientDatabase().getNutrientInfo();
 }
 
 export function patchFoodImpl(arg: {ingredientIdentifier: IngredientIdentifier, food: Food}) {
@@ -43,15 +48,6 @@ export function getFoodImpl(ingredientIdentifier: IngredientIdentifier): Food | 
 export function searchFoodsImpl(query: string): FoodRef[] {
   return newIngredientDatabase().searchFoods(query);
 };
-
-export function moveCursorToBookmarkImpl(bookmarkId: string) {
-  let document = DocumentApp.getActiveDocument()
-  let bookmark = document.getBookmark(bookmarkId);
-  if (bookmark == null) {
-    return;
-  }
-  document.setCursor(bookmark.getPosition());
-}
 
 export function addIngredientImpl(arg: {ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string}) {
   let unitString = arg.amount.toString() + ' ' + arg.unit + ' ';
@@ -70,9 +66,4 @@ export function addIngredientImpl(arg: {ingredientIdentifier: IngredientIdentifi
   }
   text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
   document.setCursor(document.newPosition(text, fullText.length));
-}
-
-export function getNutrientsToDisplayImpl(arg: null): number[] {
-  let json = PropertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS');
-  return json == null ? [] : JSON.parse(json);
 }

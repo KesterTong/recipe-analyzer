@@ -40,8 +40,7 @@ function newIngredientDatabase(): IngredientDatabase {
 export function updateNutritionTables() {
   let recipeAnalyzer = new RecipeAnalyzer(
     new DocumentAdaptor(DocumentApp, DocumentApp.getActiveDocument()),
-    newIngredientDatabase(),
-    PropertiesService);
+    newIngredientDatabase());
   recipeAnalyzer.updateDocument();
 }
 

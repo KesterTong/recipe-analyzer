@@ -1,7 +1,6 @@
 import * as $ from 'jquery';
 import { patchFood, getFood } from './script_functions';
 import { Food } from '../core/Food';
-import { nameForNutrient } from '../core/Nutrients';
 
 function elementId(name: string, bookmarkId: string) {
   return name + '-' + bookmarkId.replace('.', '-');
@@ -59,7 +58,8 @@ function handleFoodDetails(details: Food | null, bookmarkId: string) {
   let nutrientIds = details.foodNutrients.map(foodNutrient => foodNutrient.nutrient.id);
   details.foodNutrients.forEach(function(foodNutrient) {
     let id = foodNutrient.nutrient.id;
-    let description = nameForNutrient(id) || '';
+    // TODO: use nutrient description
+    let description = 'nutrient ' + id;
     fields.push(createTextField(
       'nutrient-' + id.toString(),
       description,

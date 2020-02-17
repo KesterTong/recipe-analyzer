@@ -25,11 +25,11 @@ export class RecipeAnalyzer {
   
   constructor(
       private documentAdaptor: DocumentAdaptor,
-      private fdcClient: IngredientDatabase,
-      propertiesService: GoogleAppsScript.Properties.PropertiesService) {
-    let json = propertiesService.getScriptProperties().getProperty('DISPLAY_NUTRIENTS')
-    // TODO: nutrientsToDisplay == [] should be an error.
-    this.nutrientsToDisplay = json == null ? [] : JSON.parse(json);
+      private ingredientDatabase: IngredientDatabase) {
+    this.nutrientsToDisplay = ingredientDatabase
+    .getNutrientInfo()
+    .filter(nutrientInfo => nutrientInfo.display)
+    .map(nutrientInfo => nutrientInfo.id);  
   }
 
   private parseIngredient(adaptor: IngredientItemAdaptor): Nutrients | null {
@@ -58,7 +58,7 @@ export class RecipeAnalyzer {
       return null;
     }
 
-    let foodDetails = this.fdcClient.getFood(ingredientIdentifier);
+    let foodDetails = this.ingredientDatabase.getFood(ingredientIdentifier);
     if (foodDetails == null) {
       return null;
     }
@@ -89,7 +89,7 @@ export class RecipeAnalyzer {
       });
       this.updateTotalElement(recipeAdaptor.totalElement, nutrientsPerServing);
       if (recipeAdaptor.bookmarkId != null) {
-        this.fdcClient.patchFood({
+        this.ingredientDatabase.patchFood({
           identifierType: 'BookmarkId',
           bookmarkId: recipeAdaptor.bookmarkId,
         }, {

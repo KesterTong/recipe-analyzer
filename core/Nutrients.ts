@@ -17,29 +17,11 @@ export interface Nutrients {
   [index: number]: number;
 }
 
-// NOTE the typescript -> appscript conversion doesn't work with
-// exporting of constants so we expose this via `nameForNutrient`.
-const NUTRIENT_NAME_BY_ID: {[index: number]: string} = {
-  1003: 'Protein (g)',
-  1004: 'Fat (g)',
-  1005: 'Carbohydrate (g)',
-  1008: 'Energy (kcal)',
-};
-
-export function nameForNutrient(id: number): string | null {
-  return NUTRIENT_NAME_BY_ID[id] || null;
-};
-
-export function idForNutrient(name: string): number | null {
-  for (let idAsStr in NUTRIENT_NAME_BY_ID) {
-    let id: number = Number(idAsStr);
-    let currentName = NUTRIENT_NAME_BY_ID[id];
-    if (currentName == name) {
-      return id;
-    }
-  }
-  return null;
-};
+export interface NutrientInfo {
+  id: number,
+  name: string,
+  display: boolean,
+}
 
 export function scaleNutrients(nutrients: Nutrients, scale: number): Nutrients {
   let result: Nutrients = {};

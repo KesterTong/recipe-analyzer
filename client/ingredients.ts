@@ -1,11 +1,11 @@
 import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
-import { nameForNutrient } from '../core/Nutrients';
-import { searchFoods, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood, patchFood } from './script_functions';
+import { showCustomIngredientSidebar, getNutrientInfo, getFood, patchFood, searchFoods, addIngredient } from './script_functions';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 import { addDetailsTab } from './custom_ingredient';
+import { NutrientInfo } from '../core/Nutrients';
 
 let currentIngredientIdentifier: IngredientIdentifier | null = null;
 let currentFood: NormalizedFood | null = null;
@@ -39,7 +39,7 @@ $('#more-details').on('click', function(event) {
 });
 $('#new-ingredient').on('click', function(event) {
   let bookmarkId = Date.now().toString();
-  getNutrientsToDisplay(null).then(nutrientsToDisplay => {
+  getNutrientInfo(null).then(nutrientInfos => {
     return patchFood({
       ingredientIdentifier: {
         identifierType: 'BookmarkId',
@@ -51,8 +51,8 @@ $('#new-ingredient').on('click', function(event) {
         servingSizeUnit: 'g',
         householdServingFullText: '1 serving',
         description: 'New custom food',
-        foodNutrients: nutrientsToDisplay.map(id => ({
-          nutrient: {id: id},
+        foodNutrients: nutrientInfos.map(nutrientInfo => ({
+          nutrient: {id: nutrientInfo.id},
           amount: 0,
         })),
       },
@@ -62,8 +62,8 @@ $('#new-ingredient').on('click', function(event) {
   });
 });
 
-function handleFood(food: Food | null, nutrientsToDisplay: number[] | null) {
-  let normalizedFood = normalizeFood(food!, nutrientsToDisplay!)!;
+function handleFood(food: Food | null, nutrientInfos: NutrientInfo[] | null) {
+  let normalizedFood = normalizeFood(food!, nutrientInfos!.map(nutrientInfo => nutrientInfo.id))!;
   currentFood = normalizedFood;
   $('#description').val(normalizedFood.description);
   $('#brand').text(normalizedFood.brandOwner || '');
@@ -77,11 +77,11 @@ function handleFood(food: Food | null, nutrientsToDisplay: number[] | null) {
   handleQuantityChange();
 }
 window.onload = function() {
-  let nutrientsToDisplayPromise = getNutrientsToDisplay(null)
-  nutrientsToDisplayPromise.then(nutrientsToDisplay => {
-    nutrientsToDisplay.forEach(id => {
-      let label = $('<b></b>').text(nameForNutrient(id)! + ': ');
-      let amount = $('<span></span>', {id: 'nutrient-' + id});
+  let nutrientInfoPromise = getNutrientInfo(null);
+  nutrientInfoPromise.then(nutrientInfos => {
+    nutrientInfos.forEach(nutrientInfo => {
+      let label = $('<b></b>').text(nutrientInfo.name + ': ');
+      let amount = $('<span></span>', {id: 'nutrient-' + nutrientInfo.id});
       $('#button-bar').before($('<div></div>', {class: 'block'}).append([label, amount]));
     })
   });
@@ -101,7 +101,7 @@ window.onload = function() {
       currentIngredientIdentifier = JSON.parse(ui.item.value);
       Promise.all([
         getFood(currentIngredientIdentifier!),
-        nutrientsToDisplayPromise]).then(args =>
+        nutrientInfoPromise]).then(args =>
           handleFood(args[0], args[1]));
     },
   });

@@ -51,20 +51,18 @@ function setupMockText(mockedText: GoogleAppsScript.Document.Text) {
 }
 
 describe('updateElement', () => {
-  let mockedScriptProperties = mock<GoogleAppsScript.Properties.Properties>();
-  when(mockedScriptProperties.getProperty('DISPLAY_NUTRIENTS')).thenReturn('[1008, 1003]');
-  let scriptProperties = instance(mockedScriptProperties);
-
-  let mockedPropertiesService = mock<GoogleAppsScript.Properties.PropertiesService>();
-  when(mockedPropertiesService.getScriptProperties()).thenReturn(scriptProperties);
-  let propertiesService = instance(mockedPropertiesService);
   let documentApp = instance(mock<GoogleAppsScript.Document.DocumentApp>());
 
   it('no link', () => {
+    let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mock<IngredientDatabase>()),
-      propertiesService);
+      instance(mockIngredientDatabase));
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -78,10 +76,15 @@ describe('updateElement', () => {
   // Regression test for old parsing logic that would error out when
   // there was no quanity unit.
   it('no link no units', () => {
+    let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mock<IngredientDatabase>()),
-      propertiesService);
+      instance(mockIngredientDatabase));
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -93,10 +96,15 @@ describe('updateElement', () => {
   });
 
   it('no link with tabs', () => {
+    let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mock<IngredientDatabase>()),
-      propertiesService);
+      instance(mockIngredientDatabase));
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -109,10 +117,14 @@ describe('updateElement', () => {
 
   it('recipe not found', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -130,10 +142,14 @@ describe('updateElement', () => {
 
   it('recipe not found with tabs', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     let mockedText = mock<GoogleAppsScript.Document.Text>();
     setupMockText(mockedText);
     let text = instance(mockedText); 
@@ -151,10 +167,14 @@ describe('updateElement', () => {
 
   it('FDC data', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     when(mockIngredientDatabase.getFood(deepEqual({
       identifierType: 'FdcId',
       fdcId: 12345
@@ -172,10 +192,14 @@ describe('updateElement', () => {
 
   it('recipe', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     when(mockIngredientDatabase.getFood(deepEqual({
       identifierType: 'BookmarkId',
       bookmarkId: 'id.ghi789',
@@ -193,10 +217,14 @@ describe('updateElement', () => {
 
   it('recipe with plural', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     when(mockIngredientDatabase.getFood(deepEqual({
       identifierType: 'BookmarkId',
       bookmarkId: 'id.ghi789',
@@ -214,10 +242,14 @@ describe('updateElement', () => {
 
   it('recipe with existing output', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     when(mockIngredientDatabase.getFood(deepEqual({
       identifierType: 'BookmarkId',
       bookmarkId: 'id.ghi789',
@@ -235,10 +267,14 @@ describe('updateElement', () => {
 
   it('recipe with trailing space', () => {
     let mockIngredientDatabase = mock<IngredientDatabase>();
+    when(mockIngredientDatabase.getNutrientInfo()).thenReturn([
+      {id: 1008, name: 'unused', display: true},
+      {id: 1003, name: 'unused', display: true},
+      {id: 999, name: 'unused', display: false},
+    ])
     let recipeAnalyzer = new RecipeAnalyzer(
       instance(mock<DocumentAdaptor>()),
-      instance(mockIngredientDatabase),
-      propertiesService);
+      instance(mockIngredientDatabase));
     when(mockIngredientDatabase.getFood(deepEqual({
       identifierType: 'BookmarkId',
       bookmarkId: 'id.ghi789',

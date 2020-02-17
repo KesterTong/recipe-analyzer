@@ -23,12 +23,11 @@
 
 import {
   showCustomIngredientSidebarImpl,
+  getNutrientInfoImpl,
   patchFoodImpl,
   getFoodImpl,
   searchFoodsImpl,
-  moveCursorToBookmarkImpl,
   addIngredientImpl,
-  getNutrientsToDisplayImpl
 } from "../script_functions";
 
 function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) => Promise<U> {
@@ -42,12 +41,9 @@ function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) =
 
 export const showCustomIngredientSidebar = wrapAsPromise(
   showCustomIngredientSidebarImpl, 'showCustomIngredientSidebarImpl');
+export const getNutrientInfo = wrapAsPromise(getNutrientInfoImpl, 'getNutrientInfoImpl');
 export const patchFood = wrapAsPromise(patchFoodImpl, 'patchFoodImpl');
 export const getFood = wrapAsPromise(getFoodImpl, 'getFoodImpl');
 export const searchFoods = wrapAsPromise(searchFoodsImpl, 'searchFoodsImpl');
-export const moveCursorToBookmark = wrapAsPromise(
-  moveCursorToBookmarkImpl, 'moveCursorToBookmarkImpl');
 export const addIngredient = wrapAsPromise(
   addIngredientImpl, 'addIngredientImpl');
-export const getNutrientsToDisplay = wrapAsPromise(
-  getNutrientsToDisplayImpl, 'getNutrientsToDisplayImpl');

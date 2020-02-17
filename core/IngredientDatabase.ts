@@ -16,6 +16,7 @@ import { Food } from './Food';
 import { FoodRef, IngredientIdentifier } from './FoodRef';
 import { Firebase, Document } from './Firebase';
 import { FoodDataCentral } from './FoodDataCentral';
+import { NutrientInfo } from './Nutrients';
 
 /**
  * Class to store and lookup ingredients.
@@ -26,6 +27,12 @@ export class IngredientDatabase {
   constructor(
       private fdc: FoodDataCentral,
       private firebase: Firebase) { }
+
+  getNutrientInfo(): NutrientInfo[] {
+    let document = this.firebase.getDocument('settings/nutrients');
+    // TODO: handle null.
+    return JSON.parse(document!.fields['value'].stringValue!);
+  }
   
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food) {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
