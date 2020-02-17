@@ -5,8 +5,7 @@ import { nameForNutrient } from '../core/Nutrients';
 import { searchFoods, addIngredient, getNutrientsToDisplay, showCustomIngredientSidebar, getFood, patchFood } from './script_functions';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
-
-const google = (<any>window)['google'];
+import { addDetailsTab } from './custom_ingredient';
 
 let currentIngredientIdentifier: IngredientIdentifier | null = null;
 let currentFood: NormalizedFood | null = null;
@@ -28,7 +27,7 @@ $('#more-details').on('click', function(event) {
   let ingredientIdentifier = currentIngredientIdentifier!;
   switch(ingredientIdentifier.identifierType) {
     case 'BookmarkId':
-      showCustomIngredientSidebar(ingredientIdentifier.bookmarkId);
+      addDetailsTab(ingredientIdentifier.bookmarkId);
       break;
     case 'FdcId':
       window.open(
@@ -124,3 +123,6 @@ document.getElementById('insert-ingredient')!.addEventListener('click', function
     });
   }
 })
+$( function() {
+  $( "#tabs" ).tabs();
+} );
