@@ -22,13 +22,6 @@ import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { Food } from './core/Food';
 import { NutrientInfo } from './core/Nutrients';
 
-export function showCustomIngredientSidebarImpl(bookmarkId: string) {
-  let template = HtmlService.createTemplateFromFile('ui/custom_ingredient');
-  template.bookmarkId = bookmarkId;
-  let userInterface = template.evaluate().setTitle('Custom Ingredient');
-  DocumentApp.getUi().showSidebar(userInterface);
-}
-
 function newIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }

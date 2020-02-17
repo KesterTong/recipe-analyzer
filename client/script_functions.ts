@@ -22,7 +22,6 @@
  */
 
 import {
-  showCustomIngredientSidebarImpl,
   getNutrientInfoImpl,
   patchFoodImpl,
   getFoodImpl,
@@ -39,8 +38,6 @@ function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) =
   });
 }
 
-export const showCustomIngredientSidebar = wrapAsPromise(
-  showCustomIngredientSidebarImpl, 'showCustomIngredientSidebarImpl');
 export const getNutrientInfo = wrapAsPromise(getNutrientInfoImpl, 'getNutrientInfoImpl');
 export const patchFood = wrapAsPromise(patchFoodImpl, 'patchFoodImpl');
 export const getFood = wrapAsPromise(getFoodImpl, 'getFoodImpl');

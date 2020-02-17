@@ -1,7 +1,7 @@
 import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
-import { showCustomIngredientSidebar, getNutrientInfo, getFood, patchFood, searchFoods, addIngredient } from './script_functions';
+import { getNutrientInfo, getFood, patchFood, searchFoods, addIngredient } from './script_functions';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 import { addDetailsTab } from './custom_ingredient';
@@ -58,7 +58,7 @@ $('#new-ingredient').on('click', function(event) {
       },
     })
   }).then(() => {
-    showCustomIngredientSidebar(bookmarkId);
+    addDetailsTab(bookmarkId);
   });
 });
 
