@@ -3,5 +3,5 @@ node_modules/**
 public/**
 index.ts
 webpack.config.js
-**/*.bundle.js
+**/*bundle.js
 client/**
