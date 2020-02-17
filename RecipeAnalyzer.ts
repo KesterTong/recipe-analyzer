@@ -19,6 +19,7 @@ import { normalizeFood } from './core/normalizeFood';
 import { DocumentAdaptor, IngredientItemAdaptor } from './appsscript/DocumentAdaptor';
 import { parseQuantity } from './core/parseQuantity';
 import { IngredientIdentifier } from './core/FoodRef';
+import { Ingredient } from './core/Recipe';
 
 export class RecipeAnalyzer {
   private nutrientsToDisplay: number[];
@@ -32,7 +33,7 @@ export class RecipeAnalyzer {
     .map(nutrientInfo => nutrientInfo.id);  
   }
 
-  private parseIngredient(adaptor: IngredientItemAdaptor): Nutrients | null {
+  private parseIngredient(adaptor: IngredientItemAdaptor): Ingredient | null {
     let parseResult = adaptor.parse();
     if (parseResult == null) {
       return null;
@@ -66,7 +67,18 @@ export class RecipeAnalyzer {
     if (foodData == null) {
       return null;
     }
-    return nutrientsForQuantity(quantity, foodData);
+    let nutrients = nutrientsForQuantity(quantity, foodData);
+    if (nutrients == null) {
+      return null;
+    }
+    return {
+      quantity: quantity,
+      foodLink: {
+        identifier: ingredientIdentifier,
+        description: foodDetails.description,
+      },
+      nutrients: nutrients,
+    }
   }
 
   private updateIngredient(adaptor: IngredientItemAdaptor, nutrients: Nutrients | null, nutrientsToDisplay: number[]) {
@@ -74,18 +86,22 @@ export class RecipeAnalyzer {
       nutrientId => nutrients == null ? '-' : nutrients[nutrientId].toFixed(0)));
   }
 
-  updateElement(adaptor: IngredientItemAdaptor): Nutrients {
-    let nutrients = this.parseIngredient(adaptor);
-    this.updateIngredient(adaptor, nutrients, this.nutrientsToDisplay);
-    return nutrients || {};
+  updateElement(adaptor: IngredientItemAdaptor): Ingredient | null {
+    let ingredient = this.parseIngredient(adaptor);
+    this.updateIngredient(adaptor, ingredient?.nutrients || null, this.nutrientsToDisplay);
+    return ingredient;
   }
 
   updateDocument() {
     this.documentAdaptor.recipes().forEach(recipeAdaptor => {
       let nutrientsPerServing: Nutrients = {}
+      let ingredientsList: Ingredient[] = []
       recipeAdaptor.ingredients.forEach(adaptor => {
-        let nutrients = this.updateElement(adaptor);
-        nutrientsPerServing = addNutrients(nutrientsPerServing, nutrients);
+        let ingredient = this.updateElement(adaptor);
+        if (ingredient != null) {
+          nutrientsPerServing = addNutrients(nutrientsPerServing, ingredient.nutrients);
+          ingredientsList.push(ingredient);
+        }
       });
       this.updateTotalElement(recipeAdaptor.totalElement, nutrientsPerServing);
       if (recipeAdaptor.bookmarkId != null) {

@@ -68,7 +68,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('10 g abcdefg');
     var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({});
+    expect(nutrients).to.equal(null);
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
   });
@@ -90,7 +90,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('10 bananas');
     var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({});
+    expect(nutrients).to.equal(null);
     expect(text.getText()).to.equal('10 bananas\t-\t-');
     verify(mockedText.setLinkUrl(10, 13, <any>null)).once();
   });
@@ -110,7 +110,7 @@ describe('updateElement', () => {
     let text = instance(mockedText); 
     text.appendText('10 g abcdefg\t-\t-');
     let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({});
+    expect(nutrients).to.equal(null);
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
   });
@@ -131,7 +131,7 @@ describe('updateElement', () => {
     text.appendText('10 g abcdefg');
     text.setLinkUrl(5, 11, '#bookmark=id.NOT_AN_ID');
     var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({});
+    expect(nutrients).to.equal(null);
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
     verify(mockIngredientDatabase.getFood(deepEqual({
@@ -156,7 +156,7 @@ describe('updateElement', () => {
     text.appendText('10 g abcdefg\t-\t-');
     text.setLinkUrl(5, 11, '#bookmark=id.NOT_AN_ID');
     let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({});
+    expect(nutrients).to.equal(null);
     expect(text.getText()).to.equal('10 g abcdefg\t-\t-');
     verify(mockedText.setLinkUrl(12, 15, <any>null)).once();
     verify(mockIngredientDatabase.getFood(deepEqual({
@@ -185,7 +185,23 @@ describe('updateElement', () => {
     text.appendText('60 pieces Banana Chips');
     text.setLinkUrl(10, 21, 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/12345/nutrients');
     let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({1008: 1700.0, 1003: 20.0});
+    expect(nutrients).to.deep.equal({
+      foodLink: {
+        description: "Plantain Chips",
+        identifier: {
+          identifierType: "FdcId",
+          fdcId: 12345,
+        },
+      },
+      nutrients: {
+        1003: 20,
+        1008: 1700,
+      },
+      quantity: {
+        amount: 60,
+        unit: "pieces",
+      }
+    });
     expect(text.getText()).to.equal('60 pieces Banana Chips\t1700\t20');
     verify(mockedText.setLinkUrl(22, 29, <any>null)).once();
   });
@@ -210,7 +226,23 @@ describe('updateElement', () => {
     text.appendText('0.5 serving My Recipe');
     text.setLinkUrl(12, 20, '#bookmark=id.ghi789');
     let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({1008: 50.0, 1003: 10.0});
+    expect(nutrients).to.deep.equal({
+      foodLink: {
+        description: "My Recipe",
+        identifier: {
+          identifierType: 'BookmarkId',
+          bookmarkId: "id.ghi789",
+        },
+      },
+      nutrients: {
+        1008: 50.0,
+        1003: 10.0
+      },
+      quantity: {
+        amount: 0.5,
+        unit: "serving",
+      }
+    });
     expect(text.getText()).to.equal('0.5 serving My Recipe\t50\t10');
     verify(mockedText.setLinkUrl(21, 26, <any>null)).once();
   });
@@ -235,7 +267,23 @@ describe('updateElement', () => {
     text.appendText('1.5 servings My Recipe');
     text.setLinkUrl(13, 21, '#bookmark=id.ghi789');
     let nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
+    expect(nutrients).to.deep.equal({
+      foodLink: {
+        description: "My Recipe",
+        identifier: {
+          identifierType: 'BookmarkId',
+          bookmarkId: "id.ghi789",
+        },
+      },
+      nutrients: {
+        1008: 150.0,
+        1003: 30.0
+      },
+      quantity: {
+        amount: 1.5,
+        unit: "servings",
+      }
+    });
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
   });
@@ -260,7 +308,23 @@ describe('updateElement', () => {
     text.appendText('1.5 servings My Recipe\t-\t-');
     text.setLinkUrl(13, 21, '#bookmark=id.ghi789');
     var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({1008: 150.0, 1003: 30.0});
+    expect(nutrients).to.deep.equal({
+      foodLink: {
+        description: "My Recipe",
+        identifier: {
+          identifierType: 'BookmarkId',
+          bookmarkId: "id.ghi789",
+        },
+      },
+      nutrients: {
+        1008: 150.0,
+        1003: 30.0
+      },
+      quantity: {
+        amount: 1.5,
+        unit: "servings",
+      }
+    });
     expect(text.getText()).to.equal('1.5 servings My Recipe\t150\t30');
     verify(mockedText.setLinkUrl(22, 28, <any>null)).once();
   });
@@ -285,7 +349,23 @@ describe('updateElement', () => {
     text.appendText('1 serving My Recipe \t-\t-');
     text.setLinkUrl(10, 18, '#bookmark=id.ghi789');
     var nutrients = recipeAnalyzer.updateElement(new IngredientItemAdaptor(text));
-    expect(nutrients).to.deep.equal({1008: 100.0, 1003: 20.0});
+    expect(nutrients).to.deep.equal({
+      foodLink: {
+        description: "My Recipe",
+        identifier: {
+          identifierType: 'BookmarkId',
+          bookmarkId: "id.ghi789",
+        },
+      },
+      nutrients: {
+        1008: 100.0,
+        1003: 20.0
+      },
+      quantity: {
+        amount: 1,
+        unit: "serving",
+      }
+    });
     expect(text.getText()).to.equal('1 serving My Recipe \t100\t20');
     verify(mockedText.setLinkUrl(20, 26, <any>null)).once();
   });
