@@ -22,25 +22,26 @@
  */
 
 import {
-  getNutrientInfoImpl,
-  patchFoodImpl,
-  getFoodImpl,
-  searchFoodsImpl,
-  addIngredientImpl,
+  GetNutrientInfo,
+  GetFood,
+  PatchFood,
+  SearchFoods,
+  AddIngredient,
+  ScriptFunction,
 } from "../script_functions";
 
-function wrapAsPromise<T, U>(func: (arg: T) => U, funcName: string): (args: T) => Promise<U> {
-  return (args: T) => new Promise<U>((resolve, reject) => {
+function wrapServerFunction<T, U>(serverFunction: ScriptFunction<T, U>): (arg: T) => Promise<U> {
+  console.log(serverFunction.name);
+  return (arg: T) => new Promise<U>((resolve, reject) => {
     (<any>window).google.script.run
-    .withSuccessHandler(resolve)
+    .withSuccessHandler((x: U) => { console.log(x); resolve(x); })
     .withFailureHandler(reject)
-    [funcName](args);
+    .dispatch(serverFunction.name(), arg);
   });
 }
 
-export const getNutrientInfo = wrapAsPromise(getNutrientInfoImpl, 'getNutrientInfoImpl');
-export const patchFood = wrapAsPromise(patchFoodImpl, 'patchFoodImpl');
-export const getFood = wrapAsPromise(getFoodImpl, 'getFoodImpl');
-export const searchFoods = wrapAsPromise(searchFoodsImpl, 'searchFoodsImpl');
-export const addIngredient = wrapAsPromise(
-  addIngredientImpl, 'addIngredientImpl');
+export const getNutrientInfo = wrapServerFunction(new GetNutrientInfo());
+export const getFood = wrapServerFunction(new GetFood());
+export const patchFood = wrapServerFunction(new PatchFood);
+export const searchFoods = wrapServerFunction(new SearchFoods());
+export const addIngredient = wrapServerFunction(new AddIngredient());
