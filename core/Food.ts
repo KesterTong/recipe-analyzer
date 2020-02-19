@@ -16,8 +16,4 @@ import { FDCFood } from "./FoodDataCentral";
 import { NormalizedFood } from "./NormalizedFood";
 import { Recipe } from "./Recipe";
 
-export interface CustomFood extends NormalizedFood {
-  dataType: 'Custom',
-}
-
-export type Food = FDCFood | CustomFood | Recipe;
+export type Food = FDCFood | Recipe;

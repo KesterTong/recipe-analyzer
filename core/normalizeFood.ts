@@ -20,7 +20,7 @@ import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
 
 export function normalizeFood(food: Food, nutrientsToDisplay: number[]): NormalizedFood | null {
-  if (food.dataType == 'Custom' || food.dataType == 'Recipe') {
+  if (food.dataType == 'Recipe') {
     return food;
   }
   let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientsToDisplay);
