@@ -117,13 +117,12 @@ function saveFood(bookmarkId: string, nutrientIds: number[]) {
     householdServingFullText: <string>getFieldValue('household-serving-full-text', bookmarkId),
     foodNutrients: foodNutrients,
   };
-  getClientIngredientDatabase().patchFood({
-    ingredientIdentifier: {
+  getClientIngredientDatabase().patchFood(
+    {
         identifierType: 'BookmarkId',
         bookmarkId: bookmarkId,
     },
-    food: food,
-  });
+    food);
 }
 
 export function addDetailsTab(bookmarkId: string) {
@@ -131,7 +130,7 @@ export function addDetailsTab(bookmarkId: string) {
     identifierType: 'BookmarkId',
     bookmarkId: bookmarkId,
   });
-  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo(null);
+  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo();
   Promise.all([getFoodPromise, nutrientInfoPromise]).then(args =>
     handleFoodDetails(args[0], bookmarkId, args[1])
   );

@@ -33,35 +33,37 @@ import { main } from "./ingredients";
 import { setClientIngredientDatabase, ClientIngredientDatabase } from "./ClientIngredientDatabase";
 import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
+import { NutrientInfo } from "../core/Nutrients";
+
+
+function runServerFunction<T, U, F extends ScriptFunction<T, U>>(serverFunction: F, args: T): Promise<U> {
+  return runServerFunctionImpl(serverFunction, args);
+}
+
+function runServerFunctionImpl(serverFunction: ScriptFunctionBase, args: any): Promise<any> {
+  return new Promise<any>((resolve, reject) => {
+    (<any>window).google.script.run
+    .withSuccessHandler(resolve)
+    .withFailureHandler(reject)
+    .dispatch(serverFunction.name(), args);
+  });
+}
 
 class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
-  getNutrientInfo(arg: null): Promise<import("../core/Nutrients").NutrientInfo[]> {
-    return this.runServerFunction(new GetNutrientInfo(), arg);
+  getNutrientInfo(): Promise<NutrientInfo[]> {
+    return runServerFunction(new GetNutrientInfo(), []);
   }
-  getFood(arg: IngredientIdentifier): Promise<Food | null> {
-    return this.runServerFunction(new GetFood(), arg);
+  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
+    return runServerFunction(new GetFood(), [ingredientIdentifier]);
   }
-  patchFood(arg: { ingredientIdentifier: IngredientIdentifier; food: Food; }): Promise<void> {
-    return this.runServerFunction(new PatchFood(), arg);
+  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
+    return runServerFunction(new PatchFood(), [ingredientIdentifier, food]);
   }
-  searchFoods(arg: string): Promise<FoodRef[]> {
-    return this.runServerFunction(new SearchFoods(), arg);
+  searchFoods(query: string): Promise<FoodRef[]> {
+    return runServerFunction(new SearchFoods(), [query]);
   }
-  addIngredient(arg: { ingredientIdentifier: IngredientIdentifier; amount: number; unit: string; description: string; }): Promise<void> {
-    return this.runServerFunction(new AddIngredient(), arg);
-  }
-
-  private runServerFunction<T, U>(serverFunction: ScriptFunction<T, U>, arg: T): Promise<U> {
-    return this.runServerFunctionImpl(serverFunction, arg);
-  }
-
-  private runServerFunctionImpl(serverFunction: ScriptFunctionBase, arg: any): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      (<any>window).google.script.run
-      .withSuccessHandler(resolve)
-      .withFailureHandler(reject)
-      .dispatch(serverFunction.name(), arg);
-    });
+  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
+    return runServerFunction(new AddIngredient(), [ingredientIdentifier, amount, unit, description]);
   }
 }
 

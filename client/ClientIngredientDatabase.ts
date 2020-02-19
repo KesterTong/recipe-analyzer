@@ -21,11 +21,11 @@ import { Food } from "../core/Food";
  * Apps Script UI and also in a standalone web app.
  */
 export interface ClientIngredientDatabase {
-  getNutrientInfo(arg: null): Promise<NutrientInfo[]>;
-  getFood(arg: IngredientIdentifier): Promise<Food | null>,
-  patchFood(arg: {ingredientIdentifier: IngredientIdentifier, food: Food}): Promise<void>,
+  getNutrientInfo(): Promise<NutrientInfo[]>;
+  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null>,
+  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void>,
   searchFoods(arg: string): Promise<FoodRef[]>,
-  addIngredient(arg: {ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string}): Promise<void>,
+  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void>,
 }
 
 let globalClientIngredientDatabase: ClientIngredientDatabase | null  = null;

@@ -16,7 +16,6 @@ import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { getClientIngredientDatabase } from './ClientIngredientDatabase';
-import { ClientIngredientDatabase } from "./ClientIngredientDatabase";
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 import { addDetailsTab } from './custom_ingredient';
@@ -54,13 +53,13 @@ $('#more-details').on('click', function(event) {
 });
 $('#new-ingredient').on('click', function(event) {
   let bookmarkId = Date.now().toString();
-  getClientIngredientDatabase().getNutrientInfo(null).then(nutrientInfos => {
-    return getClientIngredientDatabase().patchFood({
-      ingredientIdentifier: {
+  getClientIngredientDatabase().getNutrientInfo().then(nutrientInfos => {
+    return getClientIngredientDatabase().patchFood(
+      {
         identifierType: 'BookmarkId',
         bookmarkId: bookmarkId,
       },
-      food: {
+      {
         dataType: 'Branded',
         servingSize: 100,
         servingSizeUnit: 'g',
@@ -70,8 +69,7 @@ $('#new-ingredient').on('click', function(event) {
           nutrient: {id: nutrientInfo.id},
           amount: 0,
         })),
-      },
-    })
+      });
   }).then(() => {
     addDetailsTab(bookmarkId);
   });
@@ -92,7 +90,7 @@ function handleFood(food: Food | null, nutrientInfos: NutrientInfo[] | null) {
   handleQuantityChange();
 }
 export function main() {
-  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo(null);
+  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo();
   nutrientInfoPromise.then(nutrientInfos => {
     nutrientInfos.forEach(nutrientInfo => {
       let label = $('<b></b>').text(nutrientInfo.name + ': ');
@@ -130,12 +128,7 @@ document.getElementById('insert-ingredient')!.addEventListener('click', function
     // TODO: parse this server side.
     let amount = Number($('#amount').val());
     let unit = <string>$('#unit').val()
-    getClientIngredientDatabase().addIngredient({
-      ingredientIdentifier: currentIngredientIdentifier!,
-      amount: amount,
-      unit: unit,
-      description: description
-    });
+    getClientIngredientDatabase().addIngredient(currentIngredientIdentifier!, amount, unit, description);
   }
 })
 $( function() {
