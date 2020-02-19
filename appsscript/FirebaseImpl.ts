@@ -58,7 +58,7 @@ export class FirebaseImpl {
   constructor(
       private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp,
       private scriptApp: GoogleAppsScript.Script.ScriptApp,
-      propertiesService: GoogleAppsScript.Properties.PropertiesService,) {
+      propertiesService: GoogleAppsScript.Properties.PropertiesService) {
     let projectName = propertiesService.getScriptProperties().getProperty(
       FIREBASE_PROJECT_NAME_KEY);
     if (projectName == null) {

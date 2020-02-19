@@ -12,15 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IngredientDatabase } from '../../core/IngredientDatabase';
-
 import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from '../testData';
 
 import { expect } from 'chai';
 import 'mocha';
-import { mock, instance, when, verify, deepEqual, capture } from 'ts-mockito';
-import { FirebaseImpl, Document } from '../../appsscript/FirebaseImpl';
-import { FoodDataCentralImpl } from '../../appsscript/FoodDataCentralImpl';
+import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
 import { IngredientDatabaseImpl } from '../../appsscript/IngredientDatabaseImpl';
 
 describe('IngredientDatabaseImpl', () => {
@@ -106,9 +102,7 @@ describe('IngredientDatabaseImpl', () => {
   when(mockedScriptApp.getOAuthToken()).thenReturn('oauth_token');
   let scriptApp = instance(mockedScriptApp);
   
-  let fdcClient = new IngredientDatabaseImpl(
-    new FoodDataCentralImpl(urlFetchApp, propertiesService), 
-    new FirebaseImpl(urlFetchApp, scriptApp, propertiesService));
+  let fdcClient = new IngredientDatabaseImpl(urlFetchApp, scriptApp, propertiesService);
 
   it('ingredient in firebase', () => {
     expect(fdcClient.getFood({identifierType: 'FdcId', fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);

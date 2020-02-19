@@ -20,9 +20,17 @@ import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
 import { Food } from '../core/Food';
 
 export class IngredientDatabaseImpl implements IngredientDatabase {
+  private fdc: FoodDataCentralImpl;
+  private firebase: FirebaseImpl;
+  
   constructor(
-      private fdc: FoodDataCentralImpl,
-      private firebase: FirebaseImpl) { }
+      urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp = UrlFetchApp,
+      scriptApp: GoogleAppsScript.Script.ScriptApp = ScriptApp,
+      propertiesService: GoogleAppsScript.Properties.PropertiesService = PropertiesService) {
+    this.fdc = new FoodDataCentralImpl(urlFetchApp, propertiesService);
+    this.firebase = new FirebaseImpl(urlFetchApp, scriptApp, propertiesService);
+  }
+
 
   getNutrientInfo(): NutrientInfo[] {
     let document = this.firebase.getDocument('settings/nutrients');
