@@ -13,21 +13,29 @@
 // limitations under the License.
 
 import { IngredientDatabase } from '../core/IngredientDatabase';
-import { FoodDataCentralImpl } from './FoodDataCentralImpl';
 import { FirebaseImpl, Document } from './FirebaseImpl';
 import { NutrientInfo } from '../core/Nutrients';
 import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
 import { Food } from '../core/Food';
+import { getFdcFoodUrl, searchFdcFoods, FDCQueryResult } from '../core/FoodDataCentral';
+
+// Key in ScriptProperties for FDC API key
+const FDC_API_KEY_KEY = 'USDA_API_KEY'
 
 export class IngredientDatabaseImpl implements IngredientDatabase {
-  private fdc: FoodDataCentralImpl;
+  private fdcApiKey: string;
   private firebase: FirebaseImpl;
   
   constructor(
-      urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp = UrlFetchApp,
+      private urlFetchApp: GoogleAppsScript.URL_Fetch.UrlFetchApp = UrlFetchApp,
       scriptApp: GoogleAppsScript.Script.ScriptApp = ScriptApp,
       propertiesService: GoogleAppsScript.Properties.PropertiesService = PropertiesService) {
-    this.fdc = new FoodDataCentralImpl(urlFetchApp, propertiesService);
+    let fdcApiKey = propertiesService.getScriptProperties().getProperty(FDC_API_KEY_KEY);
+    if (fdcApiKey == null) {
+      throw Error(
+        'The script property ' + FDC_API_KEY_KEY + ' was not set.');
+    }
+    this.fdcApiKey = fdcApiKey;
     this.firebase = new FirebaseImpl(urlFetchApp, scriptApp, propertiesService);
   }
 
@@ -48,7 +56,8 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
     let documentPath = this.documentPathForIngredient(ingredientIdentifier);
     let document = this.firebase.getDocument(documentPath);
     if (document == null && ingredientIdentifier.identifierType == 'FdcId') {
-      let food = this.fdc.getFdcFood(ingredientIdentifier.fdcId);
+      let url = getFdcFoodUrl(ingredientIdentifier.fdcId, this.fdcApiKey)
+      let food = JSON.parse(this.urlFetchApp.fetch(url).getContentText());
       this.patchFood(ingredientIdentifier, food);
       return food;
     } else if (document == null) {
@@ -106,7 +115,8 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
         })
       });
     }
-    let queryResult = this.fdc.searchFdcFoods(query);
+    let url = searchFdcFoods(query, this.fdcApiKey)
+    let queryResult = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
     queryResult.foods.forEach(entry => {
       result.push({
         identifier: {identifierType: 'FdcId', fdcId: entry.fdcId},

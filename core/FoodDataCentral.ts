@@ -46,4 +46,42 @@ export interface SRLegacyFood {
   }[],
 }
 
+export interface FDCQueryResult {
+  foodSearchCriteria: {
+    generalSearchInput: string,
+    pageNumber: number,
+    requireAllWords: boolean
+  },
+  totalHits: number,
+  currentPage: number,
+  totalPages: number,
+  foods: {
+    fdcId: number,
+    description: string,
+    dataType: string,
+    gtinUpc: string,
+    brandOwner: string
+    score: number
+  }[];
+}
+
+export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
+  return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
+}
+
+export function searchFdcFoods(query: string, fdcApiKey: string): string {
+  return fdcApiUrl('search', fdcApiKey, {
+    generalSearchInput: encodeURIComponent(query),
+    includeDataTypeList: 'SR%20Legacy,Branded',
+  });
+}
+
+function fdcApiUrl(resource: string, fdcApiKey: string, options: {[index: string]: string}): string {
+  let url = 'https://api.nal.usda.gov/fdc/v1/' + encodeURIComponent(resource) + '?api_key=' + fdcApiKey;
+  Object.keys(options).forEach(key => {
+    url += '&' + key + '=' + options[key];
+  })
+  return url;
+}
+
 export type FDCFood = BrandedFood | SRLegacyFood;
