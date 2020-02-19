@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 module.exports = {
-  entry: './client/ingredients.ts',
+  entry: './client/apps_script_main.ts',
   module: {
     rules: [
       {

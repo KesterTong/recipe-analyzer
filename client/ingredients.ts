@@ -1,7 +1,22 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
-import { getNutrientInfo, getFood, patchFood, searchFoods, addIngredient } from './script_functions';
+import { getClientIngredientDatabase } from './ClientIngredientDatabase';
+import { ClientIngredientDatabase } from "./ClientIngredientDatabase";
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 import { addDetailsTab } from './custom_ingredient';
@@ -39,8 +54,8 @@ $('#more-details').on('click', function(event) {
 });
 $('#new-ingredient').on('click', function(event) {
   let bookmarkId = Date.now().toString();
-  getNutrientInfo(null).then(nutrientInfos => {
-    return patchFood({
+  getClientIngredientDatabase().getNutrientInfo(null).then(nutrientInfos => {
+    return getClientIngredientDatabase().patchFood({
       ingredientIdentifier: {
         identifierType: 'BookmarkId',
         bookmarkId: bookmarkId,
@@ -76,8 +91,8 @@ function handleFood(food: Food | null, nutrientInfos: NutrientInfo[] | null) {
   $('#amount').val(100);
   handleQuantityChange();
 }
-window.onload = function() {
-  let nutrientInfoPromise = getNutrientInfo(null);
+export function main() {
+  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo(null);
   nutrientInfoPromise.then(nutrientInfos => {
     nutrientInfos.forEach(nutrientInfo => {
       let label = $('<b></b>').text(nutrientInfo.name + ': ');
@@ -87,7 +102,7 @@ window.onload = function() {
   });
   $('#description').autocomplete({
     source: function(request: any, response: any) {
-      searchFoods(request.term).then(results => {
+      getClientIngredientDatabase().searchFoods(request.term).then(results => {
         response(results.map(function(entry) {
           return {
             label: entry.description,
@@ -100,7 +115,7 @@ window.onload = function() {
       event.preventDefault();
       currentIngredientIdentifier = JSON.parse(ui.item.value);
       Promise.all([
-        getFood(currentIngredientIdentifier!),
+        getClientIngredientDatabase().getFood(currentIngredientIdentifier!),
         nutrientInfoPromise]).then(args =>
           handleFood(args[0], args[1]));
     },
@@ -115,7 +130,7 @@ document.getElementById('insert-ingredient')!.addEventListener('click', function
     // TODO: parse this server side.
     let amount = Number($('#amount').val());
     let unit = <string>$('#unit').val()
-    addIngredient({
+    getClientIngredientDatabase().addIngredient({
       ingredientIdentifier: currentIngredientIdentifier!,
       amount: amount,
       unit: unit,

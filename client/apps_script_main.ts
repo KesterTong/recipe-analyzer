@@ -20,7 +20,6 @@
  * 
  * For convenience we expose these as promises.
  */
-
 import {
   GetNutrientInfo,
   GetFood,
@@ -29,6 +28,8 @@ import {
   AddIngredient,
   ScriptFunction,
 } from "../script_functions";
+import { main } from "./ingredients";
+import { setClientIngredientDatabase } from "./ClientIngredientDatabase";
 
 function wrapServerFunction<T, U>(serverFunction: ScriptFunction<T, U>): (arg: T) => Promise<U> {
   console.log(serverFunction.name);
@@ -40,8 +41,14 @@ function wrapServerFunction<T, U>(serverFunction: ScriptFunction<T, U>): (arg: T
   });
 }
 
-export const getNutrientInfo = wrapServerFunction(new GetNutrientInfo());
-export const getFood = wrapServerFunction(new GetFood());
-export const patchFood = wrapServerFunction(new PatchFood);
-export const searchFoods = wrapServerFunction(new SearchFoods());
-export const addIngredient = wrapServerFunction(new AddIngredient());
+setClientIngredientDatabase({
+  getNutrientInfo: wrapServerFunction(new GetNutrientInfo()),
+  getFood: wrapServerFunction(new GetFood()),
+  patchFood: wrapServerFunction(new PatchFood),
+  searchFoods: wrapServerFunction(new SearchFoods()),
+  addIngredient: wrapServerFunction(new AddIngredient()),
+});
+/**
+ * Main entrypoint for AppsScript UI.
+ */
+$(main);
