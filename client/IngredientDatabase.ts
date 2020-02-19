@@ -17,10 +17,10 @@ import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
 
 /**
- * Interface that allows us to implement the same functionality in the
- * Apps Script UI and also in a standalone web app.
+ * Note that unlike the Apps Script version, this interface returns
+ * promises from its methods.
  */
-export interface ClientIngredientDatabase {
+export interface IngredientDatabase {
   getNutrientInfo(): Promise<NutrientInfo[]>;
   getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null>,
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void>,
@@ -28,12 +28,12 @@ export interface ClientIngredientDatabase {
   addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void>,
 }
 
-let globalClientIngredientDatabase: ClientIngredientDatabase | null  = null;
+let globalIngredientDatabase: IngredientDatabase | null  = null;
 
-export function setClientIngredientDatabase(clientIngredientDatabase: ClientIngredientDatabase) {
-  globalClientIngredientDatabase = clientIngredientDatabase;
+export function setIngredientDatabase(ingredientDatabase: IngredientDatabase) {
+  globalIngredientDatabase = ingredientDatabase;
 }
 
-export function getClientIngredientDatabase(): ClientIngredientDatabase {
-  return globalClientIngredientDatabase!;
+export function getIngredientDatabase(): IngredientDatabase {
+  return globalIngredientDatabase!;
 }

@@ -15,7 +15,7 @@
 import * as $ from 'jquery';
 import { Food } from '../core/Food';
 import { NutrientInfo } from '../core/Nutrients';
-import { getClientIngredientDatabase } from './ClientIngredientDatabase';
+import { getIngredientDatabase } from './IngredientDatabase';
 
 function elementId(name: string, bookmarkId: string) {
   return name + '-' + bookmarkId.replace('.', '-');
@@ -117,7 +117,7 @@ function saveFood(bookmarkId: string, nutrientIds: number[]) {
     householdServingFullText: <string>getFieldValue('household-serving-full-text', bookmarkId),
     foodNutrients: foodNutrients,
   };
-  getClientIngredientDatabase().patchFood(
+  getIngredientDatabase().patchFood(
     {
         identifierType: 'BookmarkId',
         bookmarkId: bookmarkId,
@@ -126,11 +126,11 @@ function saveFood(bookmarkId: string, nutrientIds: number[]) {
 }
 
 export function addDetailsTab(bookmarkId: string) {
-  let getFoodPromise = getClientIngredientDatabase().getFood({
+  let getFoodPromise = getIngredientDatabase().getFood({
     identifierType: 'BookmarkId',
     bookmarkId: bookmarkId,
   });
-  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo();
+  let nutrientInfoPromise = getIngredientDatabase().getNutrientInfo();
   Promise.all([getFoodPromise, nutrientInfoPromise]).then(args =>
     handleFoodDetails(args[0], bookmarkId, args[1])
   );

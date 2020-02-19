@@ -18,10 +18,8 @@ import * as firebaseui from "firebaseui";
 
 import { firebaseConfig } from './firebase_config';
 import { main } from "./ingredients";
-import { setClientIngredientDatabase, ClientIngredientDatabase } from "./ClientIngredientDatabase";
-import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
-import { Food } from "../core/Food";
-import { NutrientInfo } from "../core/Nutrients";
+import { setIngredientDatabase } from "./IngredientDatabase";
+import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -48,45 +46,6 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
-  getNutrientInfo(): Promise<NutrientInfo[]> {
-    let settings = firebase.firestore().collection('settings')
-    let nutrients = settings.doc('nutrients').get();
-    return nutrients.then(documentData => JSON.parse(documentData.data()?.value));
-  } 
-  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
-    switch (ingredientIdentifier.identifierType) {
-      case 'BookmarkId':
-        return firebase.firestore()
-        .collection('userData')
-        .doc(ingredientIdentifier.bookmarkId)
-        .get()
-        .then(documentData => <Food>JSON.parse(documentData.data()?.data));
-      case 'FdcId':
-        throw new Error("Method not implemented.");
-    }
-  }
-  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  searchFoods(query: string): Promise<FoodRef[]> {
-    let customFoods =  firebase.firestore().collection('userData').get();
-    return customFoods.then(documentData => {
-      return documentData.docs
-      .map(document => ({
-        id: document.id,
-        food: <Food>JSON.parse(document.data().data),
-      }))
-      .filter(data => data.food.description.match(query))
-      .map(data => ({
-        identifier: {identifierType: 'BookmarkId', bookmarkId:  data.id},
-        description: data.food.description,
-      }));
-    });
-  }
-  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-}
 
-setClientIngredientDatabase(new ClientIngredientDatabaseImpl());
+
+setIngredientDatabase(new IngredientDatabaseImpl());

@@ -15,7 +15,7 @@
 import * as $ from 'jquery';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { NormalizedFood } from '../core/NormalizedFood';
-import { getClientIngredientDatabase } from './ClientIngredientDatabase';
+import { getIngredientDatabase } from './IngredientDatabase';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 import { addDetailsTab } from './custom_ingredient';
@@ -49,7 +49,7 @@ function handleFood(food: Food | null, nutrientInfos: NutrientInfo[] | null) {
   handleQuantityChange();
 }
 export function main() {
-  let nutrientInfoPromise = getClientIngredientDatabase().getNutrientInfo();
+  let nutrientInfoPromise = getIngredientDatabase().getNutrientInfo();
   nutrientInfoPromise.then(nutrientInfos => {
     nutrientInfos.forEach(nutrientInfo => {
       let label = $('<b></b>').text(nutrientInfo.name + ': ');
@@ -59,7 +59,7 @@ export function main() {
   });
   $('#description').autocomplete({
     source: function(request: any, response: any) {
-      getClientIngredientDatabase().searchFoods(request.term).then(results => {
+      getIngredientDatabase().searchFoods(request.term).then(results => {
         response(results.map(function(entry) {
           return {
             label: entry.description,
@@ -72,7 +72,7 @@ export function main() {
       event.preventDefault();
       currentIngredientIdentifier = JSON.parse(ui.item.value);
       Promise.all([
-        getClientIngredientDatabase().getFood(currentIngredientIdentifier!),
+        getIngredientDatabase().getFood(currentIngredientIdentifier!),
         nutrientInfoPromise]).then(args =>
           handleFood(args[0], args[1]));
     },
@@ -96,8 +96,8 @@ export function main() {
   });
   $('#new-ingredient').on('click', function(event) {
     let bookmarkId = Date.now().toString();
-    getClientIngredientDatabase().getNutrientInfo().then(nutrientInfos => {
-      return getClientIngredientDatabase().patchFood(
+    getIngredientDatabase().getNutrientInfo().then(nutrientInfos => {
+      return getIngredientDatabase().patchFood(
         {
           identifierType: 'BookmarkId',
           bookmarkId: bookmarkId,
@@ -125,7 +125,7 @@ export function main() {
       // TODO: parse this server side.
       let amount = Number($('#amount').val());
       let unit = <string>$('#unit').val()
-      getClientIngredientDatabase().addIngredient(currentIngredientIdentifier!, amount, unit, description);
+      getIngredientDatabase().addIngredient(currentIngredientIdentifier!, amount, unit, description);
     }
   });
   $('#description').focus();

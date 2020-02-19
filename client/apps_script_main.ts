@@ -22,7 +22,7 @@
  */
 import { ScriptFunctionCall } from "../script_functions";
 import { main } from "./ingredients";
-import { setClientIngredientDatabase, ClientIngredientDatabase } from "./ClientIngredientDatabase";
+import { setIngredientDatabase, IngredientDatabase } from "./IngredientDatabase";
 import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
 import { NutrientInfo } from "../core/Nutrients";
@@ -37,7 +37,7 @@ function runServerFunctionImpl(scriptFunctionCall: any) {
   (<any>window).google.script.run.withSuccessHandler(callback).dispatch(scriptFunctionCall);
 }
 
-class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
+class ClientIngredientDatabaseImpl implements IngredientDatabase {
   getNutrientInfo(): Promise<NutrientInfo[]> {
     return new Promise(resolve => runServerFunction({
       name: 'GetNutrientInfo',
@@ -83,7 +83,7 @@ class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
   }
 }
 
-setClientIngredientDatabase(new ClientIngredientDatabaseImpl());
+setIngredientDatabase(new ClientIngredientDatabaseImpl());
 /**
  * Main entrypoint for AppsScript UI.
  */
