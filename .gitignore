@@ -6,7 +6,7 @@ package-lock.json
 # deployment configs
 .clasp.json
 .firebaserc
-client/firebase_config.ts
+client/config.ts
 
 # misc
 .DS_Store

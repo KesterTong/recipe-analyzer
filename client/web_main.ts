@@ -16,7 +16,7 @@
 import * as firebase from "firebase";
 import * as firebaseui from "firebaseui";
 
-import { firebaseConfig } from './firebase_config';
+import { firebaseConfig } from './config';
 import { main } from "./ingredients";
 import { setIngredientDatabase } from "./IngredientDatabase";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";

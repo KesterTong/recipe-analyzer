@@ -69,7 +69,7 @@ export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
 }
 
-export function searchFdcFoods(query: string, fdcApiKey: string): string {
+export function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
   return fdcApiUrl('search', fdcApiKey, {
     generalSearchInput: encodeURIComponent(query),
     includeDataTypeList: 'SR%20Legacy,Branded',

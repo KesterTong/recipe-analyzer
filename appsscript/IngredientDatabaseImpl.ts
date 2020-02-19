@@ -17,7 +17,7 @@ import { FirebaseImpl, Document } from './FirebaseImpl';
 import { NutrientInfo } from '../core/Nutrients';
 import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
 import { Food } from '../core/Food';
-import { getFdcFoodUrl, searchFdcFoods, FDCQueryResult } from '../core/FoodDataCentral';
+import { getFdcFoodUrl, searchFdcFoodsUrl, FDCQueryResult } from '../core/FoodDataCentral';
 
 // Key in ScriptProperties for FDC API key
 const FDC_API_KEY_KEY = 'USDA_API_KEY'
@@ -115,7 +115,7 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
         })
       });
     }
-    let url = searchFdcFoods(query, this.fdcApiKey)
+    let url = searchFdcFoodsUrl(query, this.fdcApiKey)
     let queryResult = <FDCQueryResult>JSON.parse(this.urlFetchApp.fetch(url).getContentText());
     queryResult.foods.forEach(entry => {
       result.push({
