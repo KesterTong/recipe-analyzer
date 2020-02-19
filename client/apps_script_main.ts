@@ -21,13 +21,12 @@
  * For convenience we expose these as promises.
  */
 import {
-  GetNutrientInfo,
-  GetFood,
-  PatchFood,
-  SearchFoods,
-  AddIngredient,
-  ScriptFunction,
-  ScriptFunctionBase,
+  GetNutrientInfoCall,
+  GetFoodCall,
+  PatchFoodCall,
+  SearchFoodsCall,
+  AddIngredientCall,
+  ScriptFunctionCall
 } from "../script_functions";
 import { main } from "./ingredients";
 import { setClientIngredientDatabase, ClientIngredientDatabase } from "./ClientIngredientDatabase";
@@ -35,35 +34,59 @@ import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
 import { NutrientInfo } from "../core/Nutrients";
 
-
-function runServerFunction<T, U, F extends ScriptFunction<T, U>>(serverFunction: F, args: T): Promise<U> {
-  return runServerFunctionImpl(serverFunction, args);
+function runServerFunction(scriptFunctionCall: ScriptFunctionCall) {
+  return runServerFunctionImpl(scriptFunctionCall);
 }
 
-function runServerFunctionImpl(serverFunction: ScriptFunctionBase, args: any): Promise<any> {
-  return new Promise<any>((resolve, reject) => {
-    (<any>window).google.script.run
-    .withSuccessHandler(resolve)
-    .withFailureHandler(reject)
-    .dispatch(serverFunction.name(), args);
-  });
+function runServerFunctionImpl(scriptFunctionCall: any) {
+  let callback = scriptFunctionCall.callback;
+  scriptFunctionCall.callback = null;
+  (<any>window).google.script.run.withSuccessHandler(callback).dispatch(scriptFunctionCall);
 }
 
 class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
-  getNutrientInfo(...args: []): Promise<NutrientInfo[]> {
-    return runServerFunction(new GetNutrientInfo(), args);
+  getNutrientInfo(): Promise<NutrientInfo[]> {
+    return new Promise(resolve => runServerFunction({
+      name: 'GetNutrientInfo',
+      callback: resolve,
+    }));
   }
-  getFood(...args: [IngredientIdentifier]): Promise<Food | null> {
-    return runServerFunction(new GetFood(), args);
+
+  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
+    return new Promise(resolve => runServerFunction({
+      name: 'GetFood',
+      ingredientIdentifier: ingredientIdentifier,
+      callback: resolve,
+    }));
   }
-  patchFood(...args: [IngredientIdentifier, Food]): Promise<void> {
-    return runServerFunction(new PatchFood(), args);
+
+  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
+    return new Promise(resolve => runServerFunction({
+      name: 'PatchFood',
+      ingredientIdentifier: ingredientIdentifier,
+      food: food,
+      callback: resolve,
+    }));
   }
-  searchFoods(...args: [string]): Promise<FoodRef[]> {
-    return runServerFunction(new SearchFoods(), args);
+
+  searchFoods(query: string): Promise<FoodRef[]> {
+    return new Promise(resolve => runServerFunction({
+      name: 'SearchFoods',
+      query: query,
+      callback: resolve,
+    }));
   }
-  addIngredient(...args: [IngredientIdentifier, number, string, string]): Promise<void> {
-    return runServerFunction(new AddIngredient(), args);
+
+  addIngredient(
+    ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
+    return new Promise(resolve => runServerFunction({
+      name: 'AddIngredient',
+      ingredientIdentifier: ingredientIdentifier,
+      amount: amount,
+      unit: unit,
+      description: description,
+      callback: resolve,
+    }));  
   }
 }
 

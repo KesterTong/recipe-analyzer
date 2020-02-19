@@ -22,82 +22,98 @@ import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { Food } from './core/Food';
 import { NutrientInfo } from './core/Nutrients';
 
-export interface ScriptFunctionBase { 
-  name(): string,
-  impl(args: any): any,
+export interface GetNutrientInfoCall {
+  name: 'GetNutrientInfo',
+  callback: (arg: NutrientInfo[]) => void,
 }
 
-export interface ScriptFunction<T, U> extends ScriptFunctionBase { 
-  name(): string,
-  impl(args: T): U,
-};
+export interface GetFoodCall {
+  name: 'GetFood',
+  ingredientIdentifier: IngredientIdentifier,
+  callback: (arg: Food | null) => void,
+}
+
+export interface PatchFoodCall {
+  name: 'PatchFood',
+  ingredientIdentifier: IngredientIdentifier,
+  food: Food,
+  callback: (arg: void) => void,
+}
+
+export interface SearchFoodsCall {
+  name: 'SearchFoods',
+  query: string,
+  callback: (arg: FoodRef[]) => void,
+}
+
+export interface AddIngredientCall {
+  name: 'AddIngredient',
+  ingredientIdentifier: IngredientIdentifier,
+  amount: number,
+  unit: string,
+  description: string,
+  callback: (arg: void) => void,
+}
+
+export type ScriptFunctionCall = (
+  GetNutrientInfoCall |
+  GetFoodCall |
+  PatchFoodCall |
+  SearchFoodsCall |
+  AddIngredientCall);
 
 function newIngredientDatabase(): IngredientDatabase {
   return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }
 
-export class GetNutrientInfo implements ScriptFunction<[], NutrientInfo[]> {
-  name() { return 'GetNutrientInfo'; }
-  impl(args: []) { return newIngredientDatabase().getNutrientInfo(); }
+function addIngredient(
+  ingredientIdentifier: IngredientIdentifier,
+  amount: number, unit: string, description: string) {
+  let unitString = amount.toString() + ' ' + unit + ' ';
+  let fullText = unitString + description
+  let document = DocumentApp.getActiveDocument();
+  let cursor = document.getCursor();
+  let text = cursor.insertText(fullText);
+  let linkUrl: string;
+  switch (ingredientIdentifier.identifierType) {
+    case 'BookmarkId':
+      linkUrl = '#bookmark=' + ingredientIdentifier.bookmarkId;
+      break;
+    case 'FdcId':
+      linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + ingredientIdentifier.fdcId.toString() + '/nutrients';
+      break;
+  }
+  text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
+  document.setCursor(document.newPosition(text, fullText.length));
 }
 
-export class GetFood implements ScriptFunction<[IngredientIdentifier], Food | null> {
-  name() { return 'GetFood'; }
-  impl(args: [IngredientIdentifier]): Food | null {
-    return newIngredientDatabase().getFood(args[0]);
+export function dispatch(scriptFunctionCall: ScriptFunctionCall): any {
+  let result: any;
+  scriptFunctionCall.callback = (x: any) => {result = x;}
+  switch (scriptFunctionCall.name) {
+    case 'GetNutrientInfo':
+      scriptFunctionCall.callback(newIngredientDatabase().getNutrientInfo());
+      break;
+    case 'GetFood':
+      scriptFunctionCall.callback(newIngredientDatabase().getFood(
+        scriptFunctionCall.ingredientIdentifier));
+      break;
+    case 'PatchFood':
+      scriptFunctionCall.callback(newIngredientDatabase().patchFood(
+        scriptFunctionCall.ingredientIdentifier,
+        scriptFunctionCall.food));
+      break;
+    case 'SearchFoods':
+      scriptFunctionCall.callback(newIngredientDatabase().searchFoods(
+        scriptFunctionCall.query));
+      break;
+    case 'AddIngredient':
+      scriptFunctionCall.callback(addIngredient(
+        scriptFunctionCall.ingredientIdentifier,
+        scriptFunctionCall.amount,
+        scriptFunctionCall.unit,
+        scriptFunctionCall.description));
+      break;
   }
-}
-
-export class PatchFood implements ScriptFunction<[IngredientIdentifier, Food], void> {
-  name() { return 'PatchFood'; }
-  impl(args: [IngredientIdentifier, Food]) {
-    return newIngredientDatabase().patchFood(args[0], args[1]);
-  }
-}
-
-export class SearchFoods implements ScriptFunction<[string], FoodRef[]> {
-  name() { return 'SearchFoods'; }
-  impl(args: [string]) { return newIngredientDatabase().searchFoods(args[0]); }
-}
-
-export class AddIngredient implements ScriptFunction<[IngredientIdentifier, number, string, string], void> {
-  name() { return 'AddIngredient'; }
-  impl(args: [IngredientIdentifier, number, string, string]) {
-    return this.addIngredient.apply(this, args);
-  }
-  private addIngredient(
-    ingredientIdentifier: IngredientIdentifier,
-    amount: number, unit: string, description: string) {
-    let unitString = amount.toString() + ' ' + unit + ' ';
-    let fullText = unitString + description
-    let document = DocumentApp.getActiveDocument();
-    let cursor = document.getCursor();
-    let text = cursor.insertText(fullText);
-    let linkUrl: string;
-    switch (ingredientIdentifier.identifierType) {
-      case 'BookmarkId':
-        linkUrl = '#bookmark=' + ingredientIdentifier.bookmarkId;
-        break;
-      case 'FdcId':
-        linkUrl = 'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' + ingredientIdentifier.fdcId.toString() + '/nutrients';
-        break;
-    }
-    text.setLinkUrl(unitString.length, fullText.length - 1, linkUrl);
-    document.setCursor(document.newPosition(text, fullText.length));
-  }
-}
-
-export function dispatch(name: string, arg: any): any {
-  let scriptFunctions: ScriptFunctionBase[] = [
-    new GetNutrientInfo(),
-    new GetFood(),
-    new PatchFood(),
-    new SearchFoods(),
-    new AddIngredient(),
-  ];
-  for (let i = 0; i < scriptFunctions.length; i++) {
-    if (name == scriptFunctions[i].name()) {
-      return scriptFunctions[i].impl(arg);
-    }
-  }
+  return result;
 }
