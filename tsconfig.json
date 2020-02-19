@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
-    "noImplicitAny": true,
-    "strictNullChecks": true,
+    "strict": true,
     "target": "es5",
     "allowJs": true
   }
