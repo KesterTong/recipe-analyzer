@@ -11,15 +11,34 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodDataCentral, FDCFood, FDCQueryResult } from "../core/FoodDataCentral";
+import { FDCFood } from "../core/FoodDataCentral";
 
 // Key in ScriptProperties for USDA API key
 const USDA_API_KEY_KEY = 'USDA_API_KEY'
 
+export interface FDCQueryResult {
+  foodSearchCriteria: {
+    generalSearchInput: string,
+    pageNumber: number,
+    requireAllWords: boolean
+  },
+  totalHits: number,
+  currentPage: number,
+  totalPages: number,
+  foods: {
+    fdcId: number,
+    description: string,
+    dataType: string,
+    gtinUpc: string,
+    brandOwner: string
+    score: number
+  }[];
+}
+
 /**
  * Adaptor class for calling FoodDataCentral API from Google Apps Script.
  */
-export class FoodDataCentralImpl implements FoodDataCentral {
+export class FoodDataCentralImpl {
   private usdaApiKey: string;
 
   constructor(

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Firebase, Document, ListDocumentsResponse } from '../core/Firebase';
-
 // Base URL for firebase API
 const FIRESTORE_API_URL = 'https://firestore.googleapis.com/v1';
 
@@ -23,10 +21,38 @@ const FIREBASE_PROJECT_NAME_KEY = 'FIREBASE_PROJECT_NAME';
 // Database used for all collections (we assume default database is used).
 const DATABASE_NAME = '(default)';
 
+export interface ArrayValue {
+  values: Value[];
+}
+
+export interface Value {
+  nullValue?: null,
+  booleanValue?: boolean,
+  integerValue?: string,
+  doubleValue?: number,
+  timestampValue?: string,
+  stringValue?: string,
+  bytesValue?: string,
+  referenceValue?: string,
+  arrayValue?: ArrayValue,
+}
+
+export interface Document {
+  name?: string,
+  fields: {[index: string]: Value},
+  createTime?: string,
+  updateTime?: string
+}
+
+export interface ListDocumentsResponse {
+  documents: Document[],
+  nextPageToken: string,
+}
+
 /**
  * Adaptor class for calling Firebase from Google Apps Script.
  */
-export class FirebaseImpl implements Firebase {
+export class FirebaseImpl {
   private projectName: string;
 
   constructor(
@@ -42,7 +68,7 @@ export class FirebaseImpl implements Firebase {
     this.projectName = projectName;
   }
 
-  static build(): Firebase {
+  static build(): FirebaseImpl {
     return new FirebaseImpl(UrlFetchApp, ScriptApp, PropertiesService);
   }
 

@@ -21,6 +21,7 @@ import { FirebaseImpl } from './appsscript/FirebaseImpl';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { Food } from './core/Food';
 import { NutrientInfo } from './core/Nutrients';
+import { IngredientDatabaseImpl } from './appsscript/IngredientDatabaseImpl';
 
 export interface GetNutrientInfoCall {
   name: 'GetNutrientInfo',
@@ -63,7 +64,7 @@ export type ScriptFunctionCall = (
   AddIngredientCall);
 
 function newIngredientDatabase(): IngredientDatabase {
-  return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
+  return new IngredientDatabaseImpl(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }
 
 function addIngredient(

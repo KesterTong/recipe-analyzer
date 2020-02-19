@@ -18,15 +18,16 @@ import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
 import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
-import { Firebase } from '../core/Firebase';
-import { FoodDataCentral } from '../core/FoodDataCentral';
+import { FirebaseImpl } from '../appsscript/FirebaseImpl';
+import { FoodDataCentralImpl } from '../appsscript/FoodDataCentralImpl';
+import { IngredientDatabaseImpl } from '../appsscript/IngredientDatabaseImpl';
 
 describe('IngredientDatabase', () => {
-  let mockedFdcAdaptor = mock<FoodDataCentral>();
+  let mockedFdcAdaptor = mock<FoodDataCentralImpl>();
   when(mockedFdcAdaptor.getFdcFood(12345)).thenReturn(TEST_SR_LEGACY_FOOD);
   let fdcAdaptor = instance(mockedFdcAdaptor);
 
-  let mockedFirebaseAdaptor = mock<Firebase>();
+  let mockedFirebaseAdaptor = mock<FirebaseImpl>();
   when(mockedFirebaseAdaptor.getDocument('fdcData/11111')).thenReturn({
     fields: {
       version: {stringValue: '0.1'},
@@ -43,7 +44,7 @@ describe('IngredientDatabase', () => {
   });
   let firebaseAdaptor = instance(mockedFirebaseAdaptor);
 
-  let fdcClient = new IngredientDatabase(fdcAdaptor, firebaseAdaptor);
+  let fdcClient = new IngredientDatabaseImpl(fdcAdaptor, firebaseAdaptor);
   it('ingredient in firebase', () => {
     expect(fdcClient.getFood({identifierType: 'FdcId', fdcId: 11111})).to.deep.equal(TEST_SR_LEGACY_FOOD);
   });

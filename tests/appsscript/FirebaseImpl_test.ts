@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Document } from '../../core/Firebase';
-import { FirebaseImpl } from '../../appsscript/FirebaseImpl';
+import { FirebaseImpl, Document } from '../../appsscript/FirebaseImpl';
 
 import { expect } from 'chai';
 import 'mocha';

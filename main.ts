@@ -14,9 +14,10 @@
 
 import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
-import { IngredientDatabase } from './core/IngredientDatabase';
+import { IngredientDatabaseImpl } from './appsscript/IngredientDatabaseImpl';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { FirebaseImpl } from './appsscript/FirebaseImpl';
+import { IngredientDatabase } from './core/IngredientDatabase';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
@@ -34,7 +35,7 @@ export function showIngredientsSidebar() {
 }
 
 function newIngredientDatabase(): IngredientDatabase {
-  return new IngredientDatabase(FoodDataCentralImpl.build(), FirebaseImpl.build());
+  return new IngredientDatabaseImpl(FoodDataCentralImpl.build(), FirebaseImpl.build());
 }
 
 export function updateNutritionTables() {
