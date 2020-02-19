@@ -27,27 +27,45 @@ import {
   SearchFoods,
   AddIngredient,
   ScriptFunction,
+  ScriptFunctionBase,
 } from "../script_functions";
 import { main } from "./ingredients";
-import { setClientIngredientDatabase } from "./ClientIngredientDatabase";
+import { setClientIngredientDatabase, ClientIngredientDatabase } from "./ClientIngredientDatabase";
+import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
+import { Food } from "../core/Food";
 
-function wrapServerFunction<T, U>(serverFunction: ScriptFunction<T, U>): (arg: T) => Promise<U> {
-  console.log(serverFunction.name);
-  return (arg: T) => new Promise<U>((resolve, reject) => {
-    (<any>window).google.script.run
-    .withSuccessHandler((x: U) => { console.log(x); resolve(x); })
-    .withFailureHandler(reject)
-    .dispatch(serverFunction.name(), arg);
-  });
+class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
+  getNutrientInfo(arg: null): Promise<import("../core/Nutrients").NutrientInfo[]> {
+    return this.runServerFunction(new GetNutrientInfo(), arg);
+  }
+  getFood(arg: IngredientIdentifier): Promise<Food | null> {
+    return this.runServerFunction(new GetFood(), arg);
+  }
+  patchFood(arg: { ingredientIdentifier: IngredientIdentifier; food: Food; }): Promise<void> {
+    return this.runServerFunction(new PatchFood(), arg);
+  }
+  searchFoods(arg: string): Promise<FoodRef[]> {
+    return this.runServerFunction(new SearchFoods(), arg);
+  }
+  addIngredient(arg: { ingredientIdentifier: IngredientIdentifier; amount: number; unit: string; description: string; }): Promise<void> {
+    return this.runServerFunction(new AddIngredient(), arg);
+  }
+
+  private runServerFunction<T, U>(serverFunction: ScriptFunction<T, U>, arg: T): Promise<U> {
+    return this.runServerFunctionImpl(serverFunction, arg);
+  }
+
+  private runServerFunctionImpl(serverFunction: ScriptFunctionBase, arg: any): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      (<any>window).google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject)
+      .dispatch(serverFunction.name(), arg);
+    });
+  }
 }
 
-setClientIngredientDatabase({
-  getNutrientInfo: wrapServerFunction(new GetNutrientInfo()),
-  getFood: wrapServerFunction(new GetFood()),
-  patchFood: wrapServerFunction(new PatchFood),
-  searchFoods: wrapServerFunction(new SearchFoods()),
-  addIngredient: wrapServerFunction(new AddIngredient()),
-});
+setClientIngredientDatabase(new ClientIngredientDatabaseImpl());
 /**
  * Main entrypoint for AppsScript UI.
  */

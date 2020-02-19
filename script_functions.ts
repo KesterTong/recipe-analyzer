@@ -21,9 +21,8 @@ import { FirebaseImpl } from './appsscript/FirebaseImpl';
 import { FoodDataCentralImpl } from './appsscript/FoodDataCentralImpl';
 import { Food } from './core/Food';
 import { NutrientInfo } from './core/Nutrients';
-import { Script } from 'vm';
 
-interface ScriptFunctionBase { 
+export interface ScriptFunctionBase { 
   name(): string,
   impl(t: any): any,
 }
