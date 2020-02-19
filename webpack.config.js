@@ -3,7 +3,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 module.exports = {
-  entry: './client/apps_script_main.ts',
+  entry: {
+    apps_script: './client/apps_script_main.ts',
+    web: './client/web_main.ts',
+  },
   module: {
     rules: [
       {
@@ -17,17 +20,20 @@ module.exports = {
     extensions: ['.ts', '.js' ],
   },
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'ui'),
   },
   externals: {
-    jquery: 'jQuery'
+    jquery: 'jQuery',
+    firebase: 'firebase',
+    firebaseui: 'firebaseui',
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: 'templates/ingredients.html',
       filename: 'ingredients.html',
       inlineSource: '.(js|css)$', // embed all javascript and css inline
+      chunks: ['apps_script']
     }),
     new HtmlWebpackInlineSourcePlugin(),
   ],

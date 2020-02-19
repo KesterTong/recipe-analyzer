@@ -23,6 +23,8 @@
   "homepage": "https://github.com/KesterTong/recipe-analyzer#readme",
   "dependencies": {
     "@types/google-apps-script": "^1.0.9",
+    "firebase": "^7.8.2",
+    "firebaseui": "^4.4.0",
     "googleapis": "^47.0.0"
   },
   "devDependencies": {
