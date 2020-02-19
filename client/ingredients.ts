@@ -34,47 +34,6 @@ function handleQuantityChange() {
     $('#nutrient-' + id).text(value);
   }
 }
-$('#amount').on('keyup', handleQuantityChange);
-$('#unit').on('change', handleQuantityChange);
-
-$('#more-details').on('click', function(event) {
-  let ingredientIdentifier = currentIngredientIdentifier!;
-  switch(ingredientIdentifier.identifierType) {
-    case 'BookmarkId':
-      addDetailsTab(ingredientIdentifier.bookmarkId);
-      break;
-    case 'FdcId':
-      window.open(
-        'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' +
-        ingredientIdentifier.fdcId.toString() + '/nutrients',
-        '_blank');
-      break;
-  }
-});
-$('#new-ingredient').on('click', function(event) {
-  let bookmarkId = Date.now().toString();
-  getClientIngredientDatabase().getNutrientInfo().then(nutrientInfos => {
-    return getClientIngredientDatabase().patchFood(
-      {
-        identifierType: 'BookmarkId',
-        bookmarkId: bookmarkId,
-      },
-      {
-        dataType: 'Branded',
-        servingSize: 100,
-        servingSizeUnit: 'g',
-        householdServingFullText: '1 serving',
-        description: 'New custom food',
-        foodNutrients: nutrientInfos.map(nutrientInfo => ({
-          nutrient: {id: nutrientInfo.id},
-          amount: 0,
-        })),
-      });
-  }).then(() => {
-    addDetailsTab(bookmarkId);
-  });
-});
-
 function handleFood(food: Food | null, nutrientInfos: NutrientInfo[] | null) {
   let normalizedFood = normalizeFood(food!, nutrientInfos!.map(nutrientInfo => nutrientInfo.id))!;
   currentFood = normalizedFood;
@@ -118,19 +77,57 @@ export function main() {
           handleFood(args[0], args[1]));
     },
   });
+
+  $('#amount').on('keyup', handleQuantityChange);
+  $('#unit').on('change', handleQuantityChange);
+  $('#more-details').on('click', function(event) {
+    let ingredientIdentifier = currentIngredientIdentifier!;
+    switch(ingredientIdentifier.identifierType) {
+      case 'BookmarkId':
+        addDetailsTab(ingredientIdentifier.bookmarkId);
+        break;
+      case 'FdcId':
+        window.open(
+          'https://fdc.nal.usda.gov/fdc-app.html#/food-details/' +
+          ingredientIdentifier.fdcId.toString() + '/nutrients',
+          '_blank');
+        break;
+    }
+  });
+  $('#new-ingredient').on('click', function(event) {
+    let bookmarkId = Date.now().toString();
+    getClientIngredientDatabase().getNutrientInfo().then(nutrientInfos => {
+      return getClientIngredientDatabase().patchFood(
+        {
+          identifierType: 'BookmarkId',
+          bookmarkId: bookmarkId,
+        },
+        {
+          dataType: 'Branded',
+          servingSize: 100,
+          servingSizeUnit: 'g',
+          householdServingFullText: '1 serving',
+          description: 'New custom food',
+          foodNutrients: nutrientInfos.map(nutrientInfo => ({
+            nutrient: {id: nutrientInfo.id},
+            amount: 0,
+          })),
+        });
+    }).then(() => {
+      addDetailsTab(bookmarkId);
+    });
+  });
+  $('#insert-ingredient').click(event => {
+    if (currentFood != null) {
+      // Fetch description from text input so that user can override description
+      // when inserting ingredient.
+      let description = <string>$('#description').val();
+      // TODO: parse this server side.
+      let amount = Number($('#amount').val());
+      let unit = <string>$('#unit').val()
+      getClientIngredientDatabase().addIngredient(currentIngredientIdentifier!, amount, unit, description);
+    }
+  });
   $('#description').focus();
-};
-document.getElementById('insert-ingredient')!.addEventListener('click', function(event) {
-  if (currentFood != null) {
-    // Fetch description from text input so that user can override description
-    // when inserting ingredient.
-    let description = <string>$('#description').val();
-    // TODO: parse this server side.
-    let amount = Number($('#amount').val());
-    let unit = <string>$('#unit').val()
-    getClientIngredientDatabase().addIngredient(currentIngredientIdentifier!, amount, unit, description);
-  }
-})
-$( function() {
   $( "#tabs" ).tabs();
-} );
+};
