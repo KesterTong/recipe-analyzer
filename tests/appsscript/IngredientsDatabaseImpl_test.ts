@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IngredientDatabase } from '../core/IngredientDatabase';
-import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from './testData';
+import { IngredientDatabase } from '../../core/IngredientDatabase';
+import { TEST_SR_LEGACY_FOOD, TEST_RECIPE_DETAILS } from '../testData';
 
 import { expect } from 'chai';
 import 'mocha';
 import { mock, instance, when, verify, deepEqual } from 'ts-mockito';
-import { FirebaseImpl } from '../appsscript/FirebaseImpl';
-import { FoodDataCentralImpl } from '../appsscript/FoodDataCentralImpl';
-import { IngredientDatabaseImpl } from '../appsscript/IngredientDatabaseImpl';
+import { FirebaseImpl } from '../../appsscript/FirebaseImpl';
+import { FoodDataCentralImpl } from '../../appsscript/FoodDataCentralImpl';
+import { IngredientDatabaseImpl } from '../../appsscript/IngredientDatabaseImpl';
 
-describe('IngredientDatabase', () => {
+describe('IngredientDatabaseImpl', () => {
   let mockedFdcAdaptor = mock<FoodDataCentralImpl>();
   when(mockedFdcAdaptor.getFdcFood(12345)).thenReturn(TEST_SR_LEGACY_FOOD);
   let fdcAdaptor = instance(mockedFdcAdaptor);
