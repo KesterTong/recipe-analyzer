@@ -24,7 +24,7 @@ export interface ClientIngredientDatabase {
   getNutrientInfo(): Promise<NutrientInfo[]>;
   getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null>,
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void>,
-  searchFoods(arg: string): Promise<FoodRef[]>,
+  searchFoods(query: string): Promise<FoodRef[]>,
   addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void>,
 }
 

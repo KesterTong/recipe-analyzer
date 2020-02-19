@@ -63,13 +63,34 @@ class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
     return nutrients.then(documentData => JSON.parse(documentData.data()?.value));
   } 
   getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
-    throw new Error("Method not implemented.");
+    switch (ingredientIdentifier.identifierType) {
+      case 'BookmarkId':
+        return firebase.firestore()
+        .collection('userData')
+        .doc(ingredientIdentifier.bookmarkId)
+        .get()
+        .then(documentData => <Food>JSON.parse(documentData.data()?.data));
+      case 'FdcId':
+        throw new Error("Method not implemented.");
+    }
   }
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  searchFoods(arg: string): Promise<FoodRef[]> {
-    throw new Error("Method not implemented.");
+  searchFoods(query: string): Promise<FoodRef[]> {
+    let customFoods =  firebase.firestore().collection('userData').get();
+    return customFoods.then(documentData => {
+      return documentData.docs
+      .map(document => ({
+        id: document.id,
+        food: <Food>JSON.parse(document.data().data),
+      }))
+      .filter(data => data.food.description.match(query))
+      .map(data => ({
+        identifier: {identifierType: 'BookmarkId', bookmarkId:  data.id},
+        description: data.food.description,
+      }));
+    });
   }
   addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
     throw new Error("Method not implemented.");
@@ -80,6 +101,4 @@ setClientIngredientDatabase(new ClientIngredientDatabaseImpl());
 /**
  * Main entrypoint for AppsScript UI.
  */
-$(main);
-
 $(main);
