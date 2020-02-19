@@ -129,4 +129,5 @@ export function main() {
     }
   });
   $('#description').focus();
+  $( "#tabs" ).tabs();
 };
