@@ -50,20 +50,20 @@ function runServerFunctionImpl(serverFunction: ScriptFunctionBase, args: any): P
 }
 
 class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
-  getNutrientInfo(): Promise<NutrientInfo[]> {
-    return runServerFunction(new GetNutrientInfo(), []);
+  getNutrientInfo(...args: []): Promise<NutrientInfo[]> {
+    return runServerFunction(new GetNutrientInfo(), args);
   }
-  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
-    return runServerFunction(new GetFood(), [ingredientIdentifier]);
+  getFood(...args: [IngredientIdentifier]): Promise<Food | null> {
+    return runServerFunction(new GetFood(), args);
   }
-  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
-    return runServerFunction(new PatchFood(), [ingredientIdentifier, food]);
+  patchFood(...args: [IngredientIdentifier, Food]): Promise<void> {
+    return runServerFunction(new PatchFood(), args);
   }
-  searchFoods(query: string): Promise<FoodRef[]> {
-    return runServerFunction(new SearchFoods(), [query]);
+  searchFoods(...args: [string]): Promise<FoodRef[]> {
+    return runServerFunction(new SearchFoods(), args);
   }
-  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
-    return runServerFunction(new AddIngredient(), [ingredientIdentifier, amount, unit, description]);
+  addIngredient(...args: [IngredientIdentifier, number, string, string]): Promise<void> {
+    return runServerFunction(new AddIngredient(), args);
   }
 }
 

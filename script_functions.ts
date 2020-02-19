@@ -63,7 +63,7 @@ export class SearchFoods implements ScriptFunction<[string], FoodRef[]> {
 export class AddIngredient implements ScriptFunction<[IngredientIdentifier, number, string, string], void> {
   name() { return 'AddIngredient'; }
   impl(args: [IngredientIdentifier, number, string, string]) {
-    return this.addIngredient(args[0], args[1], args[2], args[3]);
+    return this.addIngredient.apply(this, args);
   }
   private addIngredient(
     ingredientIdentifier: IngredientIdentifier,
