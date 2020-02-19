@@ -15,7 +15,6 @@
 import { RecipeAnalyzer } from './RecipeAnalyzer';
 import { DocumentAdaptor } from './appsscript/DocumentAdaptor';
 import { IngredientDatabaseImpl } from './appsscript/IngredientDatabaseImpl';
-import { IngredientDatabase } from './core/IngredientDatabase';
 
 export function onOpen() {
   let ui = DocumentApp.getUi();
