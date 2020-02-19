@@ -20,14 +20,7 @@
  * 
  * For convenience we expose these as promises.
  */
-import {
-  GetNutrientInfoCall,
-  GetFoodCall,
-  PatchFoodCall,
-  SearchFoodsCall,
-  AddIngredientCall,
-  ScriptFunctionCall
-} from "../script_functions";
+import { ScriptFunctionCall } from "../script_functions";
 import { main } from "./ingredients";
 import { setClientIngredientDatabase, ClientIngredientDatabase } from "./ClientIngredientDatabase";
 import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
