@@ -31,15 +31,7 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    console.log(user);
-    // User is signed in.
-    var displayName = user.displayName;
-    var email = user.email;
-    var emailVerified = user.emailVerified;
-    var photoURL = user.photoURL;
-    var isAnonymous = user.isAnonymous;
-    var uid = user.uid;
-    var providerData = user.providerData;
+    main();
   } else {
     // User is signed out.
     ui.start('#firebaseui-auth-container', {
@@ -98,7 +90,3 @@ class ClientIngredientDatabaseImpl implements ClientIngredientDatabase {
 }
 
 setClientIngredientDatabase(new ClientIngredientDatabaseImpl());
-/**
- * Main entrypoint for AppsScript UI.
- */
-$(main);
