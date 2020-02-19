@@ -61,10 +61,6 @@ export type ScriptFunctionCall = (
   SearchFoodsCall |
   AddIngredientCall);
 
-function newIngredientDatabase(): IngredientDatabase {
-  return new IngredientDatabaseImpl();
-}
-
 function addIngredient(
   ingredientIdentifier: IngredientIdentifier,
   amount: number, unit: string, description: string) {
@@ -91,19 +87,19 @@ export function dispatch(scriptFunctionCall: ScriptFunctionCall): any {
   scriptFunctionCall.callback = (x: any) => {result = x;}
   switch (scriptFunctionCall.name) {
     case 'GetNutrientInfo':
-      scriptFunctionCall.callback(newIngredientDatabase().getNutrientInfo());
+      scriptFunctionCall.callback((new IngredientDatabaseImpl()).getNutrientInfo());
       break;
     case 'GetFood':
-      scriptFunctionCall.callback(newIngredientDatabase().getFood(
+      scriptFunctionCall.callback((new IngredientDatabaseImpl()).getFood(
         scriptFunctionCall.ingredientIdentifier));
       break;
     case 'PatchFood':
-      scriptFunctionCall.callback(newIngredientDatabase().patchFood(
+      scriptFunctionCall.callback((new IngredientDatabaseImpl()).patchFood(
         scriptFunctionCall.ingredientIdentifier,
         scriptFunctionCall.food));
       break;
     case 'SearchFoods':
-      scriptFunctionCall.callback(newIngredientDatabase().searchFoods(
+      scriptFunctionCall.callback((new IngredientDatabaseImpl()).searchFoods(
         scriptFunctionCall.query));
       break;
     case 'AddIngredient':

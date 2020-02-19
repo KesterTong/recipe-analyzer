@@ -32,14 +32,10 @@ export function showIngredientsSidebar() {
   DocumentApp.getUi().showSidebar(userInterface);
 }
 
-function newIngredientDatabase(): IngredientDatabase {
-  return new IngredientDatabaseImpl();
-}
-
 export function updateNutritionTables() {
   let recipeAnalyzer = new RecipeAnalyzer(
     new DocumentAdaptor(DocumentApp, DocumentApp.getActiveDocument()),
-    newIngredientDatabase());
+    new IngredientDatabaseImpl());
   recipeAnalyzer.updateDocument();
 }
 
