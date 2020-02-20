@@ -18,7 +18,7 @@ import { Card, ListGroup, Form, Table, Navbar, Container } from 'react-bootstrap
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { IngredientIdentifier } from '../core/FoodRef';
-import { IngredientDatabase } from './IngredientDatabase';
+import { IngredientDatabase } from '../core/IngredientDatabase';
 import { Food } from '../core/Food';
 import { NutrientInfo } from '../core/Nutrients';
 import { SRLegacyFood, BrandedFood } from '../core/FoodDataCentral';

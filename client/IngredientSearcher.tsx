@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { IngredientIdentifier } from '../core/FoodRef';
-import { IngredientDatabase } from './IngredientDatabase';
+import { IngredientDatabase } from '../core/IngredientDatabase';
 
 interface IngredientSearcherProps {
   onChange: (foodIdentifier: IngredientIdentifier | null) => void;

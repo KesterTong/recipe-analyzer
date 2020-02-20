@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import { FDCFood } from "./FoodDataCentral";
-import { NormalizedFood } from "./NormalizedFood";
 import { Recipe } from "./Recipe";
 
 export type Food = FDCFood | Recipe;

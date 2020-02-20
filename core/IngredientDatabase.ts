@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food } from './Food';
-import { FoodRef, IngredientIdentifier } from './FoodRef';
-import { NutrientInfo } from './Nutrients';
+import { NutrientInfo } from "./Nutrients";
+import { IngredientIdentifier, FoodRef } from "./FoodRef";
+import { Food } from "./Food";
 
 /**
- * Class to store and lookup ingredients.
- * 
- * Looks up USDA Food Data Central database and stores and looks up local ingredients.
+ * Note that unlike the Apps Script version, this interface returns
+ * promises from its methods.
  */
 export interface IngredientDatabase {
-  getNutrientInfo(): NutrientInfo[];
-  getFood(ingredientIdentifier: IngredientIdentifier): Food | null;
-  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): void;
-  searchFoods(query: string): FoodRef[];
+  getNutrientInfo(): Promise<NutrientInfo[]>;
+  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null>,
+  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void>,
+  searchFoods(query: string): Promise<FoodRef[]>,
+  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void>,
 }

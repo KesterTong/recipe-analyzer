@@ -21,7 +21,7 @@ import { NormalizedFood } from './NormalizedFood';
 
 export function normalizeFood(food: Food, nutrientsToDisplay: number[]): NormalizedFood | null {
   if (food.dataType == 'Recipe') {
-    return food;
+    return null;
   }
   let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientsToDisplay);
   if (nutrientsPerServing == null) {
