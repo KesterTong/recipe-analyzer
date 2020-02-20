@@ -4,15 +4,12 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 
 module.exports = {
   mode: "production",
-
   // Enable sourcemaps for debugging webpack's output.
   devtool: "source-map",
-
   resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: [".ts", ".tsx"]
   },
-
   module: {
       rules: [
           {
@@ -32,13 +29,7 @@ module.exports = {
           }
       ]
   },
-
-
-
-  entry: {
-    //apps_script: './client/apps_script_main.ts',
-    web: './client/web_main.tsx',
-  },
+  entry: './client/web_main.tsx',
   output: {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'ui'),
@@ -53,11 +44,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'templates/ingredients.html',
-      filename: 'ingredients.html',
-      inlineSource: '.(js|css)$', // embed all javascript and css inline
-      chunks: ['apps_script']
+      template: 'templates/web_app.html',
+      filename: 'web_app.html',
     }),
-    new HtmlWebpackInlineSourcePlugin(),
   ],
 };
