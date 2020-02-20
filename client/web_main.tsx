@@ -17,7 +17,6 @@ import * as firebase from "firebase";
 import * as firebaseui from "firebaseui";
 
 import { firebaseConfig } from './config';
-import { setIngredientDatabase, getIngredientDatabase } from "./IngredientDatabase";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { IngredientBrowser } from './IngredientBrowser';
 import ReactDOM = require("react-dom");
@@ -31,8 +30,9 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    getIngredientDatabase().getNutrientInfo().then(nutrientInfos =>
-      ReactDOM.render(<IngredientBrowser nutrientInfos={nutrientInfos}/>, document.getElementById('root'))
+    let ingredientDatabase = new IngredientDatabaseImpl();
+    ingredientDatabase.getNutrientInfo().then(nutrientInfos =>
+      ReactDOM.render(<IngredientBrowser ingredientDatabase={ingredientDatabase} nutrientInfos={nutrientInfos}/>, document.getElementById('root'))
     );
   } else {
     // User is signed out.
@@ -49,7 +49,3 @@ firebase.auth().onAuthStateChanged(function(user) {
     });
   }
 });
-
-
-
-setIngredientDatabase(new IngredientDatabaseImpl());

@@ -27,13 +27,3 @@ export interface IngredientDatabase {
   searchFoods(query: string): Promise<FoodRef[]>,
   addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void>,
 }
-
-let globalIngredientDatabase: IngredientDatabase | null  = null;
-
-export function setIngredientDatabase(ingredientDatabase: IngredientDatabase) {
-  globalIngredientDatabase = ingredientDatabase;
-}
-
-export function getIngredientDatabase(): IngredientDatabase {
-  return globalIngredientDatabase!;
-}

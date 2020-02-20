@@ -2,11 +2,14 @@ import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { IngredientIdentifier } from '../core/FoodRef';
-import { getIngredientDatabase } from './IngredientDatabase';
+import { IngredientDatabase } from './IngredientDatabase';
 
-export class IngredientSearcher extends React.Component<{
+interface IngredientSearcherProps {
   onChange: (foodIdentifier: IngredientIdentifier | null) => void;
-}> {
+  ingredientDatabase: IngredientDatabase;
+}
+
+export class IngredientSearcher extends React.Component<IngredientSearcherProps> {
   state = {
     isLoading: false,
     options: [],
@@ -24,7 +27,7 @@ export class IngredientSearcher extends React.Component<{
 
   _handleSearch = (query: string) => {
     this.setState({ isLoading: true });
-    getIngredientDatabase().searchFoods(query).then(foodRefs => {
+    this.props.ingredientDatabase.searchFoods(query).then(foodRefs => {
       this.setState({
         isLoading: false,
         options: foodRefs.map(foodRef => ({

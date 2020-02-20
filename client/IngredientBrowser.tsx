@@ -18,9 +18,8 @@ import { Card, ListGroup, Form, Table, Navbar, Container } from 'react-bootstrap
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { IngredientIdentifier } from '../core/FoodRef';
-import { getIngredientDatabase } from './IngredientDatabase';
+import { IngredientDatabase } from './IngredientDatabase';
 import { Food } from '../core/Food';
-import { normalizeFood } from '../core/normalizeFood';
 import { NutrientInfo } from '../core/Nutrients';
 import { SRLegacyFood, BrandedFood } from '../core/FoodDataCentral';
 import { Recipe } from '../core/Recipe';
@@ -73,12 +72,16 @@ export const SRLegacyFoodViewer: React.SFC<{food: SRLegacyFood, nutrientInfos: N
   </React.Fragment>;
 }
 
+interface IngredientBrowserProps {
+  nutrientInfos: NutrientInfo[],
+  ingredientDatabase: IngredientDatabase,
+};
 
 interface IngredientBrowserState {
   food: Food | null,
 };
 
-export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientInfo[]}, IngredientBrowserState> {
+export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
 
   state: IngredientBrowserState = {food: null};
 
@@ -100,7 +103,7 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
     }
     return <React.Fragment>
       <Navbar bg="light" expand="lg">
-        <Form inline><IngredientSearcher onChange={this._handleSelection}/></Form>
+        <Form inline><IngredientSearcher onChange={this._handleSelection} ingredientDatabase={this.props.ingredientDatabase}/></Form>
       </Navbar>
       <Container>
         { contents }
@@ -110,7 +113,7 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
 
   _handleSelection = (selected: IngredientIdentifier | null) => {
     if (selected) {
-      getIngredientDatabase().getFood(selected).then(food =>
+      this.props.ingredientDatabase.getFood(selected).then(food =>
         this.setState({food}))
     }
   }
