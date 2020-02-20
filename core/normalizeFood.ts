@@ -19,15 +19,11 @@ import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
 
-export function normalizeFood(food: Food, nutrientsToDisplay: number[]): NormalizedFood | null {
+export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Promise<NormalizedFood> {
   if (food.dataType == 'Recipe') {
-    return null;
+    return Promise.reject('not implemented');
   }
   let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientsToDisplay);
-  if (nutrientsPerServing == null) {
-    return null;
-  }
-
   let servingEquivalentQuantities: Quantity[];
   switch (food.dataType) {
     case 'SR Legacy':
@@ -44,11 +40,11 @@ export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Normali
     servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
   });
 
-  return {
+  return Promise.resolve({
     description: food.description,
     nutrientsPerServing: nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantitiesDict,
-  };
+  });
 }
 
 function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {

@@ -18,12 +18,16 @@ import { TEST_SR_LEGACY_FOOD, TEST_SR_LEGACY_FOOD_DATA, TEST_BRANDED_FOOD, TEST_
 import { expect } from 'chai';
 import 'mocha';
 
-describe('foodDetailsToFoodData', () => {
-  it('SR legacy food', () => {
-    expect(normalizeFood(TEST_SR_LEGACY_FOOD, [1008, 1003])).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+describe('normalizeFood', () => {
+  it('SR Legacy', () => {
+    return normalizeFood(TEST_SR_LEGACY_FOOD, [1008, 1003]).then(result => {
+      expect(result).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+    });
   });
 
-  it('branded food', () => {
-    expect(normalizeFood(TEST_BRANDED_FOOD, [1008, 1003])).to.deep.equal(TEST_BRANDED_FOOD_DATA);
+  it('Branded', () => {
+    return normalizeFood(TEST_BRANDED_FOOD, [1008, 1003]).then(result => {
+      expect(result).to.deep.equal(TEST_BRANDED_FOOD_DATA);
+    });
   });
 });

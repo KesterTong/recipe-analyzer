@@ -17,6 +17,7 @@ import { Food } from '../core/Food';
 import { NutrientInfo } from '../core/Nutrients';
 import { normalizeFood } from '../core/normalizeFood';
 import { Form, Table } from 'react-bootstrap';
+import { NormalizedFood } from '../core/NormalizedFood';
 
 
 function getQuantities(food: Food): {description: string, servings: number}[] {
@@ -43,6 +44,7 @@ function getQuantities(food: Food): {description: string, servings: number}[] {
 
 interface NutrientsViewProps {
   food: Food,
+  normalizedFood: NormalizedFood,
   nutrientInfos: NutrientInfo[],
 }
 
@@ -51,7 +53,7 @@ export class NutrientsViewer extends React.Component<NutrientsViewProps, {select
   
   render () {
     let nutrients = [1008, 1003];
-    let normalized = normalizeFood(this.props.food, nutrients)!;
+    let normalized = this.props.normalizedFood;
     let quantities = getQuantities(this.props.food);
     let scale = quantities[this.state.selectedQuantity].servings;
     return (
