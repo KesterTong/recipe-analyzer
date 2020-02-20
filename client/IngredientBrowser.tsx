@@ -14,7 +14,7 @@
 
 import * as React from 'react';
 
-import { Card, ListGroup, Form, Table } from 'react-bootstrap';
+import { Card, ListGroup, Form, Table, Navbar, Container } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { IngredientIdentifier } from '../core/FoodRef';
@@ -47,112 +47,107 @@ function getQuantities(food: Food): {description: string, servings: number}[] {
 
 interface NutrientsViewProps {
   food: Food,
-  selectedQuantity: number,
-  quantities: {description: string, servings: number}[],
-  onChange: (event: React.FormEvent) => void,
   nutrientInfos: NutrientInfo[],
 }
 
-const NutrientsView: React.SFC<NutrientsViewProps> = (props) => {
-  let nutrients = [1008, 1003];
-  let normalized = normalizeFood(props.food, nutrients)!;
-  return (
-    <React.Fragment>
-      <Form.Control as="select" value={props.quantities[props.selectedQuantity].description} onChange={props.onChange}>
-        { props.quantities.map(quantity => <option>{quantity.description}</option>) }
-      </Form.Control>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Nutrient</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-          props.nutrientInfos.map(nutrientInfo => (
-            <tr>
-            <td>{nutrientInfo.name}</td>
-            <td>{normalized.nutrientsPerServing[nutrientInfo.id] * props.quantities[props.selectedQuantity].servings}</td>
-            </tr>
-          ))
-          }
-        </tbody>
-      </Table>
-    </React.Fragment>
-  );
-}
-
-interface IngredientBrowserState {
-  food: Food | null,
-  selectedQuantity: number,
-  quantities: {description: string, servings: number}[],
-}
-
-export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientInfo[]}, IngredientBrowserState> {
-
-  state: IngredientBrowserState = {food: null, selectedQuantity: 0, quantities: []};
-
-  render() {
-    let food = this.state.food;
-    let items = [
-      <ListGroup.Item><IngredientSearcher onChange={this._handleSelection}/></ListGroup.Item>,
-    ];
-    if (food != null) {
-      items.push(<ListGroup.Item><p><b>Description:</b> {food.description}</p></ListGroup.Item>);
-      if (food.dataType == 'Branded') {
-        if (food.brandOwner) {
-          items.push(<ListGroup.Item><p><b>Brand:</b> {food.brandOwner}</p></ListGroup.Item>);
-        }
-        if (food.ingredients) {
-          items.push(<ListGroup.Item><p><b>Ingredients:</b> {food.ingredients}</p></ListGroup.Item>);
-        }
-      } else if (food.dataType == 'Recipe') {
-        let ingredients = food.ingredientsList.map(ingredient => {
-          return <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.foodLink.description}</li>;
-        });
-        items.push(<ListGroup.Item><p><b>Ingredients:</b></p><ul>{ingredients}</ul></ListGroup.Item>);
-      }
-      items.push(
-        <ListGroup.Item>
-          <NutrientsView 
-          food={food}
-          selectedQuantity={this.state.selectedQuantity}
-          quantities={this.state.quantities}
-          onChange={this._handleQuantityChange}
-          nutrientInfos={this.props.nutrientInfos}
-          />
-        </ListGroup.Item>);
-    }
+class NutrientsView extends React.Component<NutrientsViewProps, {selectedQuantity: number}>{
+  state = {selectedQuantity: 0};
+  
+  render () {
+    let nutrients = [1008, 1003];
+    let normalized = normalizeFood(this.props.food, nutrients)!;
+    let quantities = getQuantities(this.props.food);
+    let scale = quantities[this.state.selectedQuantity].servings;
     return (
-      <Card>
-        <ListGroup variant="flush">
-          {items}
-        </ListGroup>
-      </Card>
+      <React.Fragment>
+        <Form.Control as="select" value={quantities[this.state.selectedQuantity].description} onChange={this._handleQuantityChange}>
+          { quantities.map(quantity => <option>{quantity.description}</option>) }
+        </Form.Control>
+        <p>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>Nutrient</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+            this.props.nutrientInfos.map(nutrientInfo => (
+              <tr>
+              <td>{nutrientInfo.name}</td>
+              <td>{normalized.nutrientsPerServing[nutrientInfo.id] * scale}</td>
+              </tr>
+            ))
+            }
+          </tbody>
+        </Table>
+        </p>
+      </React.Fragment>
     );
   }
+
 
   _handleQuantityChange = (event: React.FormEvent) => {
     if (event.target instanceof HTMLSelectElement) {
       let value = event.target.value;
-      this.state.quantities.forEach((quantity, index) => {
+      getQuantities(this.props.food).forEach((quantity, index) => {
         if (quantity.description == value) {
           this.setState({selectedQuantity: index})
         }
       })
     }
   }
+}
+
+
+
+interface IngredientBrowserState {
+  food: Food | null,
+};
+
+export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientInfo[]}, IngredientBrowserState> {
+
+  state: IngredientBrowserState = {food: null};
+
+  render() {
+    let food = this.state.food;
+    let items = [];
+    if (food != null) {
+      if (food.dataType == 'Branded') {
+        if (food.ingredients) {
+          items.push(<React.Fragment><h2>Ingredients</h2>{food.ingredients}</React.Fragment>);
+        }
+      } else if (food.dataType == 'Recipe') {
+        let ingredients = food.ingredientsList.map(ingredient => {
+          return <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.foodLink.description}</li>;
+        });
+        items.push(<React.Fragment><h2>Ingredients</h2><ul>{ingredients}</ul></React.Fragment>);
+      }
+    }
+    return <React.Fragment>
+      <Navbar bg="light" expand="lg">
+        <Form inline><IngredientSearcher onChange={this._handleSelection}/></Form>
+      </Navbar>
+      <Container>
+      {food ? <h1>{food.description} {food.dataType == 'Branded' && food.brandOwner ? <em>({food.brandOwner})</em> : null } </h1> : null}
+      {items}
+      {food ? <React.Fragment>
+        <h2>Nutrients</h2>
+          <NutrientsView 
+          food={food}
+          nutrientInfos={this.props.nutrientInfos}
+          key={food.description} // TODO: us food id
+          />
+          </React.Fragment> : null }
+        </Container>
+    </React.Fragment>;
+  }
 
   _handleSelection = (selected: IngredientIdentifier | null) => {
     if (selected) {
-      getIngredientDatabase().getFood(selected).then(food => {
-        this.setState({
-          food,
-          quantities: food ? getQuantities(food): [],
-          selectedQuantity: 0,
-        });
-      })
+      getIngredientDatabase().getFood(selected).then(food =>
+        this.setState({food}))
     }
   }
   
