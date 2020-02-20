@@ -48,6 +48,7 @@ function createSelectField(name: string, description: string, initalValue: strin
 }
 
 function handleFoodDetails(details: Food | null, bookmarkId: string, nutrientInfos: NutrientInfo[] | null) {
+  console.log('got here')
   if (details == null || details.dataType != 'Branded' || nutrientInfos == null) {
     return;
   }

@@ -26,26 +26,51 @@ let currentFood: NormalizedFood | null = null;
 
 function handleQuantityChange() {
   let food = currentFood!;
-  let unit = <string>$('#unit').val();
   // TODO: do this computation server side.
-  let servings = Number($('#amount').val()) / food.servingEquivalentQuantities[unit];
+  let servings = Number($('#quantity').val());
   for (let id in food.nutrientsPerServing) {
     let value = servings * food.nutrientsPerServing[id];
     $('#nutrient-' + id).text(value);
   }
 }
 function handleFood(food: Food | null, nutrientInfos: NutrientInfo[] | null) {
-  let normalizedFood = normalizeFood(food!, nutrientInfos!.map(nutrientInfo => nutrientInfo.id))!;
-  currentFood = normalizedFood;
-  $('#description').val(normalizedFood.description);
-  $('#brand').text(normalizedFood.brandOwner || '');
-  $('#ingredients').text(normalizedFood.ingredients || '');
-  $('#unit').empty()
-  for (let unit in normalizedFood.servingEquivalentQuantities) {
-    $('#unit').append($('<option></option>').text(unit));
+  if (food == null || nutrientInfos == null) {
+    return;
   }
-  $('#unit').val('g');
-  $('#amount').val(100);
+  currentFood = normalizeFood(food, nutrientInfos.map(nutrientInfo => nutrientInfo.id));
+  let brand: string | undefined;
+  let ingredients: string | undefined;
+  $('#description').val(food.description);
+  $('#quantity').empty()
+  switch (food!.dataType) {
+    case 'Recipe':
+      $('#quantity').append($('<option></option>', {value: 1}).text('1 serving'));
+      break;
+    case 'Branded':
+      brand = food.brandOwner;
+      ingredients = food.ingredients;
+      $('#quantity').append($('<option></option>', {value: 1}).text('100 ' + food.servingSizeUnit));
+      $('#quantity').append($('<option></option>', {value: food.servingSize / 100}).text(food.householdServingFullText || ''));
+      break;
+    case 'SR Legacy':
+      $('#quantity').append($('<option></option>', {value: 1}).text('100 g'));
+      food.foodPortions.forEach(portion => {
+        let portionText = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
+        let servings = portion.gramWeight / 100;
+        $('#quantity').append($('<option></option>', {value: servings}).text(portionText));
+      });
+      break;
+  }
+  if (brand) {
+    $('#brand').text(brand).parent().show();
+  } else {
+    $('#brand').parent().hide();
+  }
+  if (ingredients) {
+    $('#ingredients').text(ingredients).parent().show();
+  } else {
+    $('#ingredients').parent().hide();
+  }
   handleQuantityChange();
 }
 export function main() {
@@ -77,9 +102,7 @@ export function main() {
           handleFood(args[0], args[1]));
     },
   });
-
-  $('#amount').on('keyup', handleQuantityChange);
-  $('#unit').on('change', handleQuantityChange);
+  $('#quantity').on('change', handleQuantityChange);
   $('#more-details').on('click', function(event) {
     let ingredientIdentifier = currentIngredientIdentifier!;
     switch(ingredientIdentifier.identifierType) {
@@ -116,17 +139,6 @@ export function main() {
     }).then(() => {
       addDetailsTab(bookmarkId);
     });
-  });
-  $('#insert-ingredient').click(event => {
-    if (currentFood != null) {
-      // Fetch description from text input so that user can override description
-      // when inserting ingredient.
-      let description = <string>$('#description').val();
-      // TODO: parse this server side.
-      let amount = Number($('#amount').val());
-      let unit = <string>$('#unit').val()
-      getIngredientDatabase().addIngredient(currentIngredientIdentifier!, amount, unit, description);
-    }
   });
   $('#description').focus();
   $( "#tabs" ).tabs();
