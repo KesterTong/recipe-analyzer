@@ -22,6 +22,4 @@ export interface NormalizedFood {
   servingEquivalentQuantities: {
     [index: string]: number;
   };
-  ingredients: string,
-  brandOwner: string,
 }

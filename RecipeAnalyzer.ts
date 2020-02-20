@@ -110,8 +110,6 @@ export class RecipeAnalyzer {
           bookmarkId: recipeAdaptor.bookmarkId,
         }, {
           dataType: 'Recipe',
-          ingredients: '',
-          brandOwner: '',
           description: recipeAdaptor.description || '',
           ingredientsList: [],
           nutrientsPerServing: nutrientsPerServing,

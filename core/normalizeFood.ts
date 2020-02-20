@@ -29,16 +29,12 @@ export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Normali
   }
 
   let servingEquivalentQuantities: Quantity[];
-  let ingredients: string = '';
-  let brandOwner: string = '';
   switch (food.dataType) {
     case 'SR Legacy':
       servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
       break;
     case 'Branded':
       servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
-      ingredients = food.ingredients || '';
-      brandOwner = food.brandOwner || '';
       break;
   }
 
@@ -49,8 +45,6 @@ export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Normali
   });
 
   return {
-    ingredients: ingredients,
-    brandOwner: brandOwner,
     description: food.description,
     nutrientsPerServing: nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantitiesDict,

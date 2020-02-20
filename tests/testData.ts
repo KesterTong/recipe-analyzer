@@ -37,8 +37,6 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
 };
 
 export const TEST_SR_LEGACY_FOOD_DATA: NormalizedFood = {
-  brandOwner: '',
-  ingredients: '',
   description: 'Bananas',
   nutrientsPerServing: {1008: 123, 1003: 10},
   servingEquivalentQuantities: {
@@ -64,8 +62,6 @@ export const TEST_BRANDED_FOOD: FDCFood = {
 };
 
 export const TEST_BRANDED_FOOD_DATA: NormalizedFood = {
-  brandOwner: '',
-  ingredients: '',
   description: 'Plantain Chips',
   nutrientsPerServing: {1008: 425, 1003: 5},
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
