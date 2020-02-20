@@ -96,9 +96,10 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
   render() {
     let food = this.state.food;
     let items = [
-      <ListGroup.Item><IngredientSearcher onChange={this._handleSelection}/></ListGroup.Item>
+      <ListGroup.Item><IngredientSearcher onChange={this._handleSelection}/></ListGroup.Item>,
     ];
     if (food != null) {
+      items.push(<ListGroup.Item><p><b>Description:</b> {food.description}</p></ListGroup.Item>);
       if (food.dataType == 'Branded') {
         if (food.brandOwner) {
           items.push(<ListGroup.Item><p><b>Brand:</b> {food.brandOwner}</p></ListGroup.Item>);
@@ -106,6 +107,11 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
         if (food.ingredients) {
           items.push(<ListGroup.Item><p><b>Ingredients:</b> {food.ingredients}</p></ListGroup.Item>);
         }
+      } else if (food.dataType == 'Recipe') {
+        let ingredients = food.ingredientsList.map(ingredient => {
+          return <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.foodLink.description}</li>;
+        });
+        items.push(<ListGroup.Item><p><b>Ingredients:</b></p><ul>{ingredients}</ul></ListGroup.Item>);
       }
       items.push(
         <ListGroup.Item>
