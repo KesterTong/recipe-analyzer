@@ -31,7 +31,7 @@ module.exports = {
   },
   entry: './client/web_main.tsx',
   output: {
-    filename: '[name].bundle.js',
+    filename: 'bundle.js',
     path: path.resolve(__dirname, 'ui'),
   },
   externals: {
