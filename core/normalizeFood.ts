@@ -18,32 +18,35 @@ import { FDCFood, SRLegacyFood, HouseholdServing } from './FoodDataCentral';
 import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
+import { IngredientDatabase } from './IngredientDatabase';
 
-export function normalizeFood(food: Food, nutrientsToDisplay: number[]): Promise<NormalizedFood> {
+export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase): Promise<NormalizedFood> {
   if (food.dataType == 'Recipe') {
     return Promise.reject('not implemented');
   }
-  let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientsToDisplay);
-  let servingEquivalentQuantities: Quantity[];
-  switch (food.dataType) {
-    case 'SR Legacy':
-      servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
-      break;
-    case 'Branded':
-      servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
-      break;
-  }
+  return ingredientDatabase.getNutrientInfo().then(nutrientInfo => {
+    let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientInfo.map(info => info.id));
+    let servingEquivalentQuantities: Quantity[];
+    switch (food.dataType) {
+      case 'SR Legacy':
+        servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
+        break;
+      case 'Branded':
+        servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
+        break;
+    }
 
-  let servingEquivalentQuantitiesDict: {[index: string]: number} = {};
-  servingEquivalentQuantities.forEach(quantity => {
-    quantity = canonicalizeQuantity(quantity);
-    servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
-  });
+    let servingEquivalentQuantitiesDict: {[index: string]: number} = {};
+    servingEquivalentQuantities.forEach(quantity => {
+      quantity = canonicalizeQuantity(quantity);
+      servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
+    });
 
-  return Promise.resolve({
-    description: food.description,
-    nutrientsPerServing: nutrientsPerServing,
-    servingEquivalentQuantities: servingEquivalentQuantitiesDict,
+    return Promise.resolve({
+      description: food.description,
+      nutrientsPerServing: nutrientsPerServing,
+      servingEquivalentQuantities: servingEquivalentQuantitiesDict,
+    });
   });
 }
 

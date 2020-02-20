@@ -124,7 +124,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
         if (food == null) {
           this.setState({food: null, normalizedFood: null});
         } else {
-          normalizeFood(food, this.props.nutrientInfos.map(nutrientInfo => nutrientInfo.id)).then(normalizedFood => {
+          normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood => {
             this.setState({food, normalizedFood})
           })
         }
