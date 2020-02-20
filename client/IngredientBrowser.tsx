@@ -22,6 +22,8 @@ import { getIngredientDatabase } from './IngredientDatabase';
 import { Food } from '../core/Food';
 import { normalizeFood } from '../core/normalizeFood';
 import { NutrientInfo } from '../core/Nutrients';
+import { SRLegacyFood, BrandedFood } from '../core/FoodDataCentral';
+import { Recipe } from '../core/Recipe';
 
 function getQuantities(food: Food): {description: string, servings: number}[] {
   switch (food.dataType) {
@@ -100,6 +102,51 @@ class NutrientsView extends React.Component<NutrientsViewProps, {selectedQuantit
   }
 }
 
+export const RecipeViewer: React.SFC<{food: Recipe, nutrientInfos: NutrientInfo[]}> = (props) => {
+  let food = props.food;
+  return <React.Fragment>
+    <h1>{food.description}</h1>
+    <h2>Ingredients</h2>
+    <ul>
+      {
+        food.ingredientsList.map(ingredient =>
+          <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.foodLink.description}</li>
+        )
+      }
+    </ul>
+    <h2>Nutrients</h2>
+    <NutrientsView 
+        food={food}
+        nutrientInfos={props.nutrientInfos}
+        key={food.description} />
+  </React.Fragment>;
+}
+
+export const BrandedFoodViewer: React.SFC<{food: BrandedFood, nutrientInfos: NutrientInfo[]}> = (props) => {
+  let food = props.food;
+  return <React.Fragment>
+    <h1>{food.description} <em>{food.brandOwner ? '(' + food.brandOwner + ')' : ''}</em></h1>
+    { food.ingredients ? <React.Fragment><h2>Ingredients</h2>{food.ingredients}</React.Fragment> : null }
+    <h2>Nutrients</h2>
+    <NutrientsView 
+        food={food}
+        nutrientInfos={props.nutrientInfos}
+        key={food.description} />
+  </React.Fragment>;
+}
+
+export const SRLegacyFoodViewer: React.SFC<{food: SRLegacyFood, nutrientInfos: NutrientInfo[]}> = (props) => {
+  let food = props.food;
+  // TODO new id instead of description for key.
+  return <React.Fragment>
+    <h1>{food.description}</h1>
+    <h2>Nutrients</h2>
+    <NutrientsView 
+        food={food}
+        nutrientInfos={props.nutrientInfos}
+        key={food.description} />
+  </React.Fragment>;
+}
 
 
 interface IngredientBrowserState {
@@ -112,17 +159,18 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
 
   render() {
     let food = this.state.food;
-    let items = [];
+    let contents = null;
     if (food != null) {
-      if (food.dataType == 'Branded') {
-        if (food.ingredients) {
-          items.push(<React.Fragment><h2>Ingredients</h2>{food.ingredients}</React.Fragment>);
-        }
-      } else if (food.dataType == 'Recipe') {
-        let ingredients = food.ingredientsList.map(ingredient => {
-          return <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.foodLink.description}</li>;
-        });
-        items.push(<React.Fragment><h2>Ingredients</h2><ul>{ingredients}</ul></React.Fragment>);
+      switch (food.dataType) {
+        case 'Branded':
+          contents = <BrandedFoodViewer food={food} nutrientInfos={this.props.nutrientInfos}/>
+          break;
+        case 'SR Legacy':
+          contents = <SRLegacyFoodViewer food={food} nutrientInfos={this.props.nutrientInfos}/>
+          break;
+        case 'Recipe':
+          contents = <RecipeViewer food={food} nutrientInfos={this.props.nutrientInfos}/>
+          break;
       }
     }
     return <React.Fragment>
@@ -130,17 +178,8 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
         <Form inline><IngredientSearcher onChange={this._handleSelection}/></Form>
       </Navbar>
       <Container>
-      {food ? <h1>{food.description} {food.dataType == 'Branded' && food.brandOwner ? <em>({food.brandOwner})</em> : null } </h1> : null}
-      {items}
-      {food ? <React.Fragment>
-        <h2>Nutrients</h2>
-          <NutrientsView 
-          food={food}
-          nutrientInfos={this.props.nutrientInfos}
-          key={food.description} // TODO: us food id
-          />
-          </React.Fragment> : null }
-        </Container>
+        { contents }
+      </Container>
     </React.Fragment>;
   }
 
@@ -150,5 +189,4 @@ export class IngredientBrowser extends React.Component<{nutrientInfos: NutrientI
         this.setState({food}))
     }
   }
-  
 }
