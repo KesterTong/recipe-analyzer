@@ -48,6 +48,7 @@ module.exports = {
     firebaseui: 'firebaseui',
     react: "React",
     "react-dom": "ReactDOM",
+    "react-bootstrap": "ReactBootstrap",
     "react-bootstrap-typeahead": "ReactBootstrapTypeahead",
   },
   plugins: [
