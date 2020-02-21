@@ -25,7 +25,6 @@ export interface FdcId {
 export type IngredientIdentifier = Bookmark | FdcId;
 
 export interface FoodRef {
-  // The Firebase document path for the given food.
   identifier: IngredientIdentifier,
   description: string,
 }

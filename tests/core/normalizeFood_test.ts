@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { normalizeFood } from '../../core/normalizeFood';
-import { TEST_SR_LEGACY_FOOD, TEST_SR_LEGACY_FOOD_DATA, TEST_BRANDED_FOOD, TEST_BRANDED_FOOD_DATA } from '../testData';
+import { TEST_SR_LEGACY_FOOD, TEST_SR_LEGACY_FOOD_NORMALIZED, TEST_BRANDED_FOOD, TEST_BRANDED_FOOD_NORMALIZED, TEST_RECIPE, TEST_RECIPE_NORMALIZED } from '../testData';
 
 import { expect } from 'chai';
 import 'mocha';
@@ -27,7 +27,7 @@ class FakeIngredientDatabase implements IngredientDatabase {
     return Promise.resolve([{name: '', display: true, id: 1008}, {name: '', display: true, id: 1003}]);
   }
   getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
-    throw new Error("Method not implemented.");
+    return Promise.resolve(TEST_BRANDED_FOOD);
   }
   patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
     throw new Error("Method not implemented.");
@@ -44,13 +44,19 @@ describe('normalizeFood', () => {
   
   it('SR Legacy', () => {
     return normalizeFood(TEST_SR_LEGACY_FOOD, new FakeIngredientDatabase()).then(result => {
-      expect(result).to.deep.equal(TEST_SR_LEGACY_FOOD_DATA);
+      expect(result).to.deep.equal(TEST_SR_LEGACY_FOOD_NORMALIZED);
     });
   });
 
   it('Branded', () => {
     return normalizeFood(TEST_BRANDED_FOOD, new FakeIngredientDatabase()).then(result => {
-      expect(result).to.deep.equal(TEST_BRANDED_FOOD_DATA);
+      expect(result).to.deep.equal(TEST_BRANDED_FOOD_NORMALIZED);
+    });
+  });
+
+  it('Recipe', () => {
+    return normalizeFood(TEST_RECIPE, new FakeIngredientDatabase()).then(result => {
+      expect(result).to.deep.equal(TEST_RECIPE_NORMALIZED);
     });
   });
 });

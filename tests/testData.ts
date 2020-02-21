@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import { NormalizedFood } from '../core/NormalizedFood';
-import { FDCFood } from '../core/FoodDataCentral';
+import { Food } from '../core/Food';
 
-export const TEST_SR_LEGACY_FOOD: FDCFood = {
+export const TEST_SR_LEGACY_FOOD: Food = {
   description: 'Bananas',
   dataType: 'SR Legacy',
   foodNutrients: [{
@@ -36,7 +36,7 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
   }]
 };
 
-export const TEST_SR_LEGACY_FOOD_DATA: NormalizedFood = {
+export const TEST_SR_LEGACY_FOOD_NORMALIZED: NormalizedFood = {
   description: 'Bananas',
   nutrientsPerServing: {1008: 123, 1003: 10},
   servingEquivalentQuantities: {
@@ -46,7 +46,7 @@ export const TEST_SR_LEGACY_FOOD_DATA: NormalizedFood = {
   },
 };
 
-export const TEST_BRANDED_FOOD: FDCFood = {
+export const TEST_BRANDED_FOOD: Food = {
   description: 'Plantain Chips',
   dataType: 'Branded',
   foodNutrients: [{
@@ -61,23 +61,29 @@ export const TEST_BRANDED_FOOD: FDCFood = {
   householdServingFullText: '6 pieces',
 };
 
-export const TEST_BRANDED_FOOD_DATA: NormalizedFood = {
+export const TEST_BRANDED_FOOD_NORMALIZED: NormalizedFood = {
   description: 'Plantain Chips',
   nutrientsPerServing: {1008: 425, 1003: 5},
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
 };
 
-export const TEST_RECIPE_DETAILS: FDCFood = {
-  dataType: 'Branded',
+export const TEST_RECIPE: Food = {
+  dataType: 'Recipe',
   description: 'My Recipe',
-  foodNutrients: [{
-    nutrient: {id: 1008},
-    amount: 100.0
-  }, {
-    nutrient: {id: 1003},
-    amount: 20.0
+  ingredientsList: [{
+    quantity: {
+      amount: 7.5,
+      unit: 'piece'
+    },
+    ingredientIdentifier: {
+      identifierType: 'BookmarkId',
+      bookmarkId: 'id.abc123',
+    }
   }],
-  servingSize: 100,
-  servingSizeUnit: 'g',
-  householdServingFullText: '1 serving',
+};
+
+export const TEST_RECIPE_NORMALIZED: NormalizedFood = {
+  description: 'My Recipe',
+  nutrientsPerServing: {1008: 212.5, 1003: 2.5},
+  servingEquivalentQuantities: {'serving': 1.0},
 };

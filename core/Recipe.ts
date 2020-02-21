@@ -14,13 +14,12 @@
 
 import { NormalizedFood } from "./NormalizedFood";
 import { Quantity } from "./Quantity";
-import { FoodRef } from "./FoodRef";
+import { IngredientIdentifier } from "./FoodRef";
 import { Nutrients } from "./Nutrients";
 
 export interface Ingredient {
   quantity: Quantity,
-  foodLink: FoodRef,
-  nutrients: Nutrients,
+  ingredientIdentifier: IngredientIdentifier,
 }
 
 // Note that Ingredient (and Recipe) store their nutritional values,

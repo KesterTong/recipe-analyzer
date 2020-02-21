@@ -12,42 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity, canonicalizeQuantity } from './Quantity';
-import { Nutrients } from "./Nutrients";
+import { Quantity, canonicalizeQuantity, nutrientsForQuantity } from './Quantity';
+import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
 import { FDCFood, SRLegacyFood, HouseholdServing } from './FoodDataCentral';
 import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
 import { IngredientDatabase } from './IngredientDatabase';
+import { IngredientIdentifier } from './FoodRef';
+import { Recipe } from './Recipe';
 
 export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase): Promise<NormalizedFood> {
-  if (food.dataType == 'Recipe') {
-    return Promise.reject('not implemented');
-  }
   return ingredientDatabase.getNutrientInfo().then(nutrientInfo => {
-    let nutrientsPerServing = nutrientsFromFoodDetails(food, nutrientInfo.map(info => info.id));
-    let servingEquivalentQuantities: Quantity[];
     switch (food.dataType) {
       case 'SR Legacy':
-        servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
-        break;
       case 'Branded':
-        servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
-        break;
+        return nutrientsFromFoodDetails(food, nutrientInfo.map(info => info.id));
+      case 'Recipe':
+        return nutrientsForRecipe(food, ingredientDatabase);
     }
+  }).then(nutrientsPerServing => ({
+    description: food.description,
+    nutrientsPerServing: nutrientsPerServing,
+    servingEquivalentQuantities: servingEquivalentQuantities(food),
+  }));
+}
 
-    let servingEquivalentQuantitiesDict: {[index: string]: number} = {};
-    servingEquivalentQuantities.forEach(quantity => {
-      quantity = canonicalizeQuantity(quantity);
-      servingEquivalentQuantitiesDict[quantity.unit] = quantity.amount;
-    });
-
-    return Promise.resolve({
-      description: food.description,
-      nutrientsPerServing: nutrientsPerServing,
-      servingEquivalentQuantities: servingEquivalentQuantitiesDict,
-    });
-  });
+function nutrientsForRecipe(food: Recipe, ingredientDatabase: IngredientDatabase): Promise<Nutrients> {
+  return Promise.all(food.ingredientsList.map(ingredient =>
+    ingredientDatabase
+    .getFood(ingredient.ingredientIdentifier)
+    .then(subFood => normalizeFood(subFood!, ingredientDatabase))
+    .then(normalizedSubFood => nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!)
+  ))
+  .then(nutrients => {
+    console.log(nutrients)
+    let result = <Nutrients>{};
+    nutrients.forEach(nutrient => {
+      result = addNutrients(result, nutrient);
+    })
+    return result;
+  })
 }
 
 function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {
@@ -64,6 +69,28 @@ function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: numb
   }
   return result;
 }
+
+function servingEquivalentQuantities(food: Food): {[index: string]: number} {
+  let servingEquivalentQuantities: Quantity[];
+  switch (food.dataType) {
+    case 'SR Legacy':
+      servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
+      break;
+    case 'Branded':
+      servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
+      break;
+    case 'Recipe':
+      servingEquivalentQuantities = [{amount: 1, unit: 'serving'}];
+      break;
+  }
+  let result: {[index: string]: number} = {};
+  servingEquivalentQuantities.forEach(quantity => {
+    quantity = canonicalizeQuantity(quantity);
+    result[quantity.unit] = quantity.amount;
+  });
+  return result;
+}
+
 
 function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) : Quantity[] {
   // A serving is 100g for SR Legacy data.
