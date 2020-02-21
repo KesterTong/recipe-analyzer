@@ -52,7 +52,6 @@ export class NutrientsViewer extends React.Component<NutrientsViewProps, {select
   state = {selectedQuantity: 0};
   
   render () {
-    let nutrients = [1008, 1003];
     let normalized = this.props.normalizedFood;
     let quantities = getQuantities(this.props.food);
     let scale = quantities[this.state.selectedQuantity].servings;
@@ -65,19 +64,13 @@ export class NutrientsViewer extends React.Component<NutrientsViewProps, {select
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Nutrient</th>
-              <th>Value</th>
+              {this.props.nutrientInfos.map(nutrientInfo => <th>{nutrientInfo.name}</th>)}
             </tr>
           </thead>
           <tbody>
-            {
-            this.props.nutrientInfos.map(nutrientInfo => (
-              <tr>
-              <td>{nutrientInfo.name}</td>
-              <td>{normalized.nutrientsPerServing[nutrientInfo.id] * scale}</td>
-              </tr>
-            ))
-            }
+            <tr>
+              {this.props.nutrientInfos.map(nutrientInfo => <td>{normalized.nutrientsPerServing[nutrientInfo.id] * scale}</td>)}
+            </tr>
           </tbody>
         </Table>
         </p>
