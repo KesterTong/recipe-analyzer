@@ -31,6 +31,18 @@ interface BrandedFoodViewerProps {
 
 export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
   let food = props.food;
+  let nutrientNamesById: {[index: number]: string} = {};
+  props.nutrientInfos.forEach(nutrientInfo => {
+    nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
+  })
+  const _updateNutrient = (event: React.ChangeEvent<HTMLInputElement>, index: Number) => {
+    props.onChange({
+      ...food,
+      foodNutrients: food.foodNutrients.map((nutrient, i) => {
+        return i == index ? { ...nutrient, amount: Number(event.target.value)} : nutrient;
+      }),
+    });
+  };
   if (props.editMode) {
     return <React.Fragment>
       <Form>
@@ -52,7 +64,6 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
           <Form.Group as={Col} controlId="formServingSize">
             <Form.Label>Serving Size</Form.Label>
             <Form.Control
-              type="number"
               value={food.servingSize.toString()}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {props.onChange({...food, servingSize: Number(event.target.value)})}}
               />
@@ -60,13 +71,23 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
           <Form.Group as={Col} controlId="formServingSizeUnits">
             <Form.Label>Units</Form.Label>
             <Form.Control
-              as="select" value={food.servingSizeUnit}
+              as="select"
+              value={food.servingSizeUnit}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {props.onChange({...food, servingSizeUnit: event.target.value})}}>
               <option>ml</option>
               <option>g</option>
             </Form.Control>
           </Form.Group>
         </Form.Row>
+        { props.food.foodNutrients.map((nutrient, index) => (
+          <Form.Group controlId={"form" + nutrientNamesById[nutrient.nutrient.id]}>
+            <Form.Label>{nutrientNamesById[nutrient.nutrient.id]}</Form.Label>
+            <Form.Control
+              value={nutrient.amount?.toString()}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => _updateNutrient(event, index)}
+              />
+          </Form.Group>
+        )) }
       </Form>
     </React.Fragment>;
   } else {
