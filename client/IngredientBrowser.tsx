@@ -21,11 +21,12 @@ import { IngredientIdentifier } from '../core/FoodRef';
 import { IngredientDatabase } from '../core/IngredientDatabase';
 import { Food } from '../core/Food';
 import { NutrientInfo } from '../core/Nutrients';
-import { SRLegacyFood, BrandedFood } from '../core/FoodDataCentral';
+import { SRLegacyFood } from '../core/FoodDataCentral';
 import { Recipe } from '../core/Recipe';
 import { NutrientsViewer } from './NutrientsViewer';
 import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
+import { BrandedFoodViewer } from './BrandedFoodViewer';
 
 
 export const RecipeViewer: React.SFC<{food: Recipe, normalizedFood: NormalizedFood, nutrientInfos: NutrientInfo[]}> = (props) => {
@@ -42,20 +43,6 @@ export const RecipeViewer: React.SFC<{food: Recipe, normalizedFood: NormalizedFo
     </ul>
     <h2>Nutrients</h2>
     <NutrientsViewer
-        food={food}
-        normalizedFood={props.normalizedFood}
-        nutrientInfos={props.nutrientInfos}
-        key={food.description} />
-  </React.Fragment>;
-}
-
-export const BrandedFoodViewer: React.SFC<{food: BrandedFood, normalizedFood: NormalizedFood, nutrientInfos: NutrientInfo[]}> = (props) => {
-  let food = props.food;
-  return <React.Fragment>
-    <h1>{food.description} <em>{food.brandOwner ? '(' + food.brandOwner + ')' : ''}</em></h1>
-    { food.ingredients ? <React.Fragment><h2>Ingredients</h2>{food.ingredients}</React.Fragment> : null }
-    <h2>Nutrients</h2>
-    <NutrientsViewer 
         food={food}
         normalizedFood={props.normalizedFood}
         nutrientInfos={props.nutrientInfos}
@@ -100,7 +87,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     if (food != null && normalizedFood != null) {
       switch (food.dataType) {
         case 'Branded':
-          contents = <BrandedFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos}/>
+          contents = <BrandedFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode}/>
           break;
         case 'SR Legacy':
           contents = <SRLegacyFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos}/>

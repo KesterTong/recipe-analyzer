@@ -29,7 +29,7 @@ function getQuantities(food: Food): {description: string, servings: number}[] {
         description: '100 ' + food.servingSizeUnit,
         servings: 1,
       }, {
-        description: food.householdServingFullText!,
+        description: food.householdServingFullText! + ' (' + food.servingSize + ' ' + food.servingSizeUnit + ')',
         servings: food.servingSize / 100
       }];
     case 'SR Legacy':
