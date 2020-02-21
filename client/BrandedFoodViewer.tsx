@@ -36,7 +36,6 @@ export class BrandedFoodViewer extends React.Component<BrandedFoodViewerProps, B
     let food = this.state;
     if (this.props.editMode) {
       return <React.Fragment>
-        <h1>{food.description} <em>{food.brandOwner ? '(' + food.brandOwner + ')' : ''}</em></h1>
         <Form>
           <Form.Group controlId="formDescription">
               <Form.Label>Description</Form.Label>
