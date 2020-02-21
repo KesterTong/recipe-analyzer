@@ -14,7 +14,7 @@
 
 import * as React from 'react';
 
-import { Card, ListGroup, Form, Table, Navbar, Container } from 'react-bootstrap';
+import { Form, Button, Navbar, Container } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { IngredientIdentifier } from '../core/FoodRef';
@@ -85,11 +85,13 @@ interface IngredientBrowserProps {
 interface IngredientBrowserState {
   food: Food | null;
   normalizedFood: NormalizedFood | null;
+  editable: boolean;
+  editMode: boolean;
 };
 
 export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
 
-  state: IngredientBrowserState = {food: null, normalizedFood: null};
+  state: IngredientBrowserState = {food: null, normalizedFood: null, editable: false, editMode: false};
 
   render() {
     let food = this.state.food;
@@ -110,7 +112,12 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     }
     return <React.Fragment>
       <Navbar bg="light" expand="lg">
-        <Form inline><IngredientSearcher onChange={this._handleSelection} ingredientDatabase={this.props.ingredientDatabase}/></Form>
+        <Form inline>
+          <IngredientSearcher onChange={this._handleSelection} ingredientDatabase={this.props.ingredientDatabase}/>
+          <Button disabled={!this.state.editable} onClick={() => this.setState({editMode: !this.state.editMode})}>
+            {this.state.editMode ? 'Done' : 'Edit'}
+          </Button>
+        </Form>
       </Navbar>
       <Container>
         { contents }
@@ -122,11 +129,15 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     if (selected) {
       this.props.ingredientDatabase.getFood(selected).then(food => {
         if (food == null) {
-          this.setState({food: null, normalizedFood: null});
+          this.setState({food: null, normalizedFood: null, editable: false, editMode: false});
         } else {
-          normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood => {
-            this.setState({food, normalizedFood})
-          })
+          normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
+            this.setState({
+              food,
+              normalizedFood,
+              editable:selected.identifierType == 'BookmarkId',
+              editMode: false,
+            }));
         }
       });
     }
