@@ -26,11 +26,11 @@ function getQuantities(food: Food): {description: string, servings: number}[] {
       return [{description: '1 serving', servings: 1}];
     case 'Branded':
       return [{
-        description: '100 ' + food.servingSizeUnit,
-        servings: 1,
-      }, {
         description: food.householdServingFullText! + ' (' + food.servingSize + ' ' + food.servingSizeUnit + ')',
         servings: food.servingSize / 100
+      }, {
+        description: '100 ' + food.servingSizeUnit,
+        servings: 1,
       }];
     case 'SR Legacy':
       let result = [{description: '100 g', servings: 1}];
