@@ -91,7 +91,6 @@ function servingEquivalentQuantities(food: Food): {[index: string]: number} {
   return result;
 }
 
-
 function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) : Quantity[] {
   // A serving is 100g for SR Legacy data.
   var servingEquivalentQuantities: Quantity[] = [{
