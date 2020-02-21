@@ -3,9 +3,10 @@ import * as React from 'react';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { IngredientIdentifier } from '../core/FoodRef';
 import { IngredientDatabase } from '../core/IngredientDatabase';
+import { Action } from './actions';
 
 interface IngredientSearcherProps {
-  onChange: (foodIdentifier: IngredientIdentifier | null) => void;
+  dispatch(action: Action): void;
   ingredientDatabase: IngredientDatabase;
 }
 
@@ -22,7 +23,10 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
   }
 
   _handleChange = (selection: any) => {
-    this.props.onChange(selection.length ? selection[0].value : null);
+    this.props.dispatch({
+      actionType: 'SelectFood',
+      ingredientIdentifier: selection.length ? selection[0].value : null,
+    });
   };
 
   _handleSearch = (query: string) => {

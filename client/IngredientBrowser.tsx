@@ -27,6 +27,7 @@ import { NutrientsViewer, NutrientsViewProps } from './NutrientsViewer';
 import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
+import { Action } from './actions';
 
 function getQuantities(food: Food): {description: string, servings: number}[] {
   switch (food.dataType) {
@@ -94,6 +95,12 @@ interface IngredientBrowserState {
   editMode: boolean;
 };
 
+export const EditButton: React.SFC<{dispatch: (action: Action) => void, editable: boolean, editMode: boolean}> = (props) => {
+  return <Button disabled={!props.editable} onClick={() => props.dispatch({actionType: 'ToggleEditMode'})}>
+    {props.editMode ? 'Done' : 'Edit'}
+  </Button>;
+}
+
 export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
 
   state: IngredientBrowserState = {
@@ -124,16 +131,25 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     return <React.Fragment>
       <Navbar bg="light" expand="lg">
         <Form inline>
-          <IngredientSearcher onChange={this._handleSelection} ingredientDatabase={this.props.ingredientDatabase}/>
-          <Button disabled={!this.state.editable} onClick={() => this._toggleEditMode()}>
-            {this.state.editMode ? 'Done' : 'Edit'}
-          </Button>
+          <IngredientSearcher dispatch={this._dispatch} ingredientDatabase={this.props.ingredientDatabase}/>
+          <EditButton editable={this.state.editable} editMode={this.state.editMode} dispatch={this._dispatch}/>
         </Form>
       </Navbar>
       <Container>
         { contents }
       </Container>
     </React.Fragment>;
+  }
+
+  _dispatch = (action: Action) => {
+    switch (action.actionType) {
+      case 'ToggleEditMode':
+        this._toggleEditMode()
+        break;
+      case 'SelectFood':
+        this._handleSelection(action.ingredientIdentifier);
+        break;
+    }
   }
 
   _toggleEditMode = () => {
