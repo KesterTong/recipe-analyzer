@@ -71,6 +71,7 @@ interface IngredientBrowserProps {
 
 interface IngredientBrowserState {
   food: Food | null;
+  ingredientIdentifier: IngredientIdentifier | null;
   normalizedFood: NormalizedFood | null;
   editable: boolean;
   editMode: boolean;
@@ -78,7 +79,13 @@ interface IngredientBrowserState {
 
 export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
 
-  state: IngredientBrowserState = {food: null, normalizedFood: null, editable: false, editMode: false};
+  state: IngredientBrowserState = {
+    ingredientIdentifier: null,
+    food: null,
+    normalizedFood: null,
+    editable: false,
+    editMode: false
+  };
 
   render() {
     let food = this.state.food;
@@ -87,7 +94,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     if (food != null && normalizedFood != null) {
       switch (food.dataType) {
         case 'Branded':
-          contents = <BrandedFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode}/>
+          contents = <BrandedFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode} onChange={(food: Food) => this.setState({food})}/>
           break;
         case 'SR Legacy':
           contents = <SRLegacyFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos}/>
@@ -101,7 +108,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
       <Navbar bg="light" expand="lg">
         <Form inline>
           <IngredientSearcher onChange={this._handleSelection} ingredientDatabase={this.props.ingredientDatabase}/>
-          <Button disabled={!this.state.editable} onClick={() => this.setState({editMode: !this.state.editMode})}>
+          <Button disabled={!this.state.editable} onClick={() => this._toggleEditMode()}>
             {this.state.editMode ? 'Done' : 'Edit'}
           </Button>
         </Form>
@@ -112,17 +119,25 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     </React.Fragment>;
   }
 
-  _handleSelection = (selected: IngredientIdentifier | null) => {
-    if (selected) {
-      this.props.ingredientDatabase.getFood(selected).then(food => {
+  _toggleEditMode = () => {
+    if (this.state.editMode) {
+      this.props.ingredientDatabase.patchFood(this.state.ingredientIdentifier!, this.state.food!);
+    }
+    this.setState({editMode: !this.state.editMode});
+  }
+
+  _handleSelection = (ingredientIdentifier: IngredientIdentifier | null) => {
+    if (ingredientIdentifier) {
+      this.props.ingredientDatabase.getFood(ingredientIdentifier).then(food => {
         if (food == null) {
-          this.setState({food: null, normalizedFood: null, editable: false, editMode: false});
+          this.setState({ingredientIdentifier, food: null, normalizedFood: null, editable: false, editMode: false});
         } else {
           normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
             this.setState({
+              ingredientIdentifier,
               food,
               normalizedFood,
-              editable:selected.identifierType == 'BookmarkId',
+              editable:ingredientIdentifier.identifierType == 'BookmarkId',
               editMode: false,
             }));
         }
