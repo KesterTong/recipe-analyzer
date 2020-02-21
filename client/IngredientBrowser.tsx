@@ -23,13 +23,34 @@ import { Food } from '../core/Food';
 import { NutrientInfo } from '../core/Nutrients';
 import { SRLegacyFood } from '../core/FoodDataCentral';
 import { Recipe } from '../core/Recipe';
-import { NutrientsViewer } from './NutrientsViewer';
+import { NutrientsViewer, NutrientsViewProps } from './NutrientsViewer';
 import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 
+function getQuantities(food: Food): {description: string, servings: number}[] {
+  switch (food.dataType) {
+    case 'Recipe':
+      return [{description: '1 serving', servings: 1}];
+    case 'Branded':
+      return [{
+        description: food.householdServingFullText! + ' (' + food.servingSize + ' ' + food.servingSizeUnit + ')',
+        servings: food.servingSize / 100
+      }, {
+        description: '100 ' + food.servingSizeUnit,
+        servings: 1,
+      }];
+    case 'SR Legacy':
+      let result = [{description: '100 g', servings: 1}];
+      food.foodPortions.forEach(portion => {
+        let description = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
+        result.push({description, servings: portion.gramWeight / 100});
+      });
+      return result;
+  }
+}
 
-export const RecipeViewer: React.SFC<{food: Recipe, normalizedFood: NormalizedFood, nutrientInfos: NutrientInfo[]}> = (props) => {
+export const RecipeViewer: React.SFC<{food: Recipe, nutrientsViewProps: NutrientsViewProps, nutrientInfos: NutrientInfo[]}> = (props) => {
   let food = props.food;
   return <React.Fragment>
     <h1>{food.description}</h1>
@@ -43,23 +64,19 @@ export const RecipeViewer: React.SFC<{food: Recipe, normalizedFood: NormalizedFo
     </ul>
     <h2>Nutrients</h2>
     <NutrientsViewer
-        food={food}
-        normalizedFood={props.normalizedFood}
-        nutrientInfos={props.nutrientInfos}
+        {...props.nutrientsViewProps}
         key={food.description} />
   </React.Fragment>;
 }
 
-export const SRLegacyFoodViewer: React.SFC<{food: SRLegacyFood, normalizedFood: NormalizedFood, nutrientInfos: NutrientInfo[]}> = (props) => {
+export const SRLegacyFoodViewer: React.SFC<{food: SRLegacyFood, nutrientsViewProps: NutrientsViewProps, nutrientInfos: NutrientInfo[]}> = (props) => {
   let food = props.food;
   // TODO new id instead of description for key.
   return <React.Fragment>
     <h1>{food.description}</h1>
     <h2>Nutrients</h2>
     <NutrientsViewer 
-        food={food}
-        normalizedFood={props.normalizedFood}
-        nutrientInfos={props.nutrientInfos}
+        {...props.nutrientsViewProps}
         key={food.description} />
   </React.Fragment>;
 }
@@ -72,7 +89,7 @@ interface IngredientBrowserProps {
 interface IngredientBrowserState {
   food: Food | null;
   ingredientIdentifier: IngredientIdentifier | null;
-  normalizedFood: NormalizedFood | null;
+  nutrientsViewProps: NutrientsViewProps | null;
   editable: boolean;
   editMode: boolean;
 };
@@ -82,25 +99,25 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
   state: IngredientBrowserState = {
     ingredientIdentifier: null,
     food: null,
-    normalizedFood: null,
+    nutrientsViewProps: null,
     editable: false,
     editMode: false
   };
 
   render() {
     let food = this.state.food;
-    let normalizedFood = this.state.normalizedFood;
+    let nutrientsViewProps = this.state.nutrientsViewProps;
     let contents = null;
-    if (food != null && normalizedFood != null) {
+    if (food != null && nutrientsViewProps != null) {
       switch (food.dataType) {
         case 'Branded':
-          contents = <BrandedFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode} onChange={(food: Food) => this.setState({food})}/>
+          contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode} onChange={(food: Food) => this.setState({food})}/>
           break;
         case 'SR Legacy':
-          contents = <SRLegacyFoodViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos}/>
+          contents = <SRLegacyFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos}/>
           break;
         case 'Recipe':
-          contents = <RecipeViewer food={food} normalizedFood={normalizedFood} nutrientInfos={this.props.nutrientInfos}/>
+          contents = <RecipeViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos}/>
           break;
       }
     }
@@ -130,13 +147,17 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     if (ingredientIdentifier) {
       this.props.ingredientDatabase.getFood(ingredientIdentifier).then(food => {
         if (food == null) {
-          this.setState({ingredientIdentifier, food: null, normalizedFood: null, editable: false, editMode: false});
+          this.setState({ingredientIdentifier, food: null, nutrientsViewProps: null, editable: false, editMode: false});
         } else {
           normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
             this.setState({
               ingredientIdentifier,
               food,
-              normalizedFood,
+              nutrientsViewProps: {
+                nutrientsPerServing: normalizedFood.nutrientsPerServing,
+                nutrientInfos: this.props.nutrientInfos,
+                quantities: getQuantities(food),
+              },
               editable:ingredientIdentifier.identifierType == 'BookmarkId',
               editMode: false,
             }));
