@@ -22,4 +22,32 @@ export interface SelectFood {
   ingredientIdentifier: IngredientIdentifier | null,
 }
 
-export type Action = ToggleEditMode | SelectFood;
+export interface UpdateDescription {
+  actionType: 'UpdateDescription',
+  description: string,
+}
+
+export interface UpdateServingSize {
+  actionType: 'UpdateServingSize',
+  servingSize: number,
+}
+
+export interface UpdateServingSizeUnit {
+  actionType: 'UpdateServingSizeUnit',
+  servingSizeUnit: string,
+}
+
+export interface UpdateHouseholdUnit {
+  actionType: 'UpdateHouseholdUnit',
+  householdUnit: string,
+}
+
+export interface UpdateNutrientValue {
+  actionType: 'UpdateNutrientValue',
+  nutrientId: number,
+  value: number,
+}
+
+export type Action = (
+  ToggleEditMode | SelectFood | UpdateDescription | UpdateServingSize |
+  UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue);

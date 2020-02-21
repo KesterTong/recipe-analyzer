@@ -118,7 +118,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     if (food != null && nutrientsViewProps != null) {
       switch (food.dataType) {
         case 'Branded':
-          contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode} onChange={(food: Food) => this.setState({food})}/>
+          contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode} dispatch={this._dispatch}/>
           break;
         case 'SR Legacy':
           contents = <SRLegacyFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos}/>
@@ -148,6 +148,33 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
         break;
       case 'SelectFood':
         this._handleSelection(action.ingredientIdentifier);
+        break;
+      case 'UpdateDescription':
+        if (this.state.food && this.state.food.dataType == 'Branded') {
+          this.setState({...this.state, food: {...this.state.food, description: action.description}});
+        }
+        break;
+      case 'UpdateServingSize':
+        if (this.state.food && this.state.food.dataType == 'Branded') {
+          this.setState({...this.state, food: {...this.state.food, servingSize: action.servingSize}});
+        }
+        break;
+      case 'UpdateServingSizeUnit':
+        if (this.state.food && this.state.food.dataType == 'Branded') {
+          this.setState({...this.state, food: {...this.state.food, servingSizeUnit: action.servingSizeUnit}});
+        }
+        break;
+      case 'UpdateHouseholdUnit':
+        if (this.state.food && this.state.food.dataType == 'Branded') {
+          this.setState({...this.state, food: {...this.state.food, householdServingFullText: action.householdUnit}});
+        }
+        break;
+      case 'UpdateNutrientValue':
+        if (this.state.food && this.state.food.dataType == 'Branded') {
+          let foodNutrients = this.state.food.foodNutrients.map(nutrient =>
+            nutrient.nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
+          this.setState({...this.state, food: {...this.state.food, foodNutrients}});
+        }
         break;
     }
   }
