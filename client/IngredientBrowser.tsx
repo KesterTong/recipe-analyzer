@@ -36,7 +36,7 @@ export const RecipeViewer: React.SFC<{food: Recipe, normalizedFood: NormalizedFo
     <ul>
       {
         food.ingredientsList.map(ingredient =>
-          <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.foodLink.description}</li>
+          <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.ingredientIdentifier.identifierType}</li>
         )
       }
     </ul>
