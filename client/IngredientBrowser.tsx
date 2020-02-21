@@ -87,12 +87,20 @@ interface IngredientBrowserProps {
   ingredientDatabase: IngredientDatabase;
 };
 
+interface NonEditable {
+  editable: false
+}
+
+interface Editable {
+  editable: true
+  editMode: boolean
+}
+
 interface IngredientBrowserState {
   food: Food | null;
   ingredientIdentifier: IngredientIdentifier | null;
   nutrientsViewProps: NutrientsViewProps | null;
-  editable: boolean;
-  editMode: boolean;
+  editState: Editable | NonEditable;
 };
 
 export const EditButton: React.SFC<{dispatch: (action: Action) => void, editable: boolean, editMode: boolean}> = (props) => {
@@ -107,18 +115,19 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     ingredientIdentifier: null,
     food: null,
     nutrientsViewProps: null,
-    editable: false,
-    editMode: false
+    editState: {editable: false },
   };
 
   render() {
     let food = this.state.food;
     let nutrientsViewProps = this.state.nutrientsViewProps;
     let contents = null;
+    let editable = this.state.editState.editable;
+    let editMode = this.state.editState.editable && this.state.editState.editMode;
     if (food != null && nutrientsViewProps != null) {
       switch (food.dataType) {
         case 'Branded':
-          contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={this.state.editMode} dispatch={this._dispatch}/>
+          contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={editMode} dispatch={this._dispatch}/>
           break;
         case 'SR Legacy':
           contents = <SRLegacyFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos}/>
@@ -132,7 +141,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
       <Navbar bg="light" expand="lg">
         <Form inline>
           <IngredientSearcher dispatch={this._dispatch} ingredientDatabase={this.props.ingredientDatabase}/>
-          <EditButton editable={this.state.editable} editMode={this.state.editMode} dispatch={this._dispatch}/>
+          <EditButton editable={editable} editMode={editMode} dispatch={this._dispatch}/>
         </Form>
       </Navbar>
       <Container>
@@ -180,17 +189,20 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
   }
 
   _toggleEditMode = () => {
-    if (this.state.editMode) {
+    if (!this.state.editState.editable) {
+      return;
+    }
+    if (this.state.editState.editMode) {
       this.props.ingredientDatabase.patchFood(this.state.ingredientIdentifier!, this.state.food!);
     }
-    this.setState({editMode: !this.state.editMode});
+    this.setState({editState: {editable: true, editMode: !this.state.editState.editMode}});
   }
 
   _handleSelection = (ingredientIdentifier: IngredientIdentifier | null) => {
     if (ingredientIdentifier) {
       this.props.ingredientDatabase.getFood(ingredientIdentifier).then(food => {
         if (food == null) {
-          this.setState({ingredientIdentifier, food: null, nutrientsViewProps: null, editable: false, editMode: false});
+          this.setState({ingredientIdentifier, food: null, nutrientsViewProps: null, editState: {editable: false}});
         } else {
           normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
             this.setState({
@@ -201,8 +213,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
                 nutrientInfos: this.props.nutrientInfos,
                 quantities: getQuantities(food),
               },
-              editable:ingredientIdentifier.identifierType == 'BookmarkId',
-              editMode: false,
+              editState: ingredientIdentifier.identifierType == 'BookmarkId' ? {editable: true, editMode: false} : {editable: false},
             }));
         }
       });
