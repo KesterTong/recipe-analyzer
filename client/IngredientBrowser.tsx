@@ -154,7 +154,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
         this._toggleEditMode()
         break;
       case 'SelectFood':
-        this._handleSelection(action.ingredientIdentifier);
+        this._selectFood(action.ingredientIdentifier);
         break;
       case 'UpdateDescription':
         if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
@@ -199,7 +199,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
     this.setState({state: 'FoodSelected', editState: {editable: true, editMode: !this.state.editState.editMode}});
   }
 
-  _handleSelection = (ingredientIdentifier: IngredientIdentifier | null) => {
+  _selectFood = (ingredientIdentifier: IngredientIdentifier | null) => {
     if (ingredientIdentifier == null) {
       this.setState({state: 'NoFoodSelected'});
       return;
