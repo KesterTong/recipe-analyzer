@@ -187,10 +187,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
   }
 
   _toggleEditMode = () => {
-    if (this.state.state != 'FoodSelected') {
-      return;
-    }
-    if (!this.state.editState.editable) {
+    if (this.state.state != 'FoodSelected' || !this.state.editState.editable) {
       return;
     }
     if (this.state.editState.editMode) {
