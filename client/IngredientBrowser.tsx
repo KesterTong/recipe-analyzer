@@ -88,43 +88,59 @@ interface IngredientBrowserProps {
 };
 
 interface NonEditable {
-  editable: false
+  editable: false;
 }
 
 interface Editable {
-  editable: true
-  editMode: boolean
+  editable: true;
+  editMode: boolean;
 }
 
-interface IngredientBrowserState {
-  food: Food | null;
-  ingredientIdentifier: IngredientIdentifier | null;
-  nutrientsViewProps: NutrientsViewProps | null;
-  editState: Editable | NonEditable;
-};
+type EditState = NonEditable | Editable;
 
-export const EditButton: React.SFC<{dispatch: (action: Action) => void, editable: boolean, editMode: boolean}> = (props) => {
-  return <Button disabled={!props.editable} onClick={() => props.dispatch({actionType: 'ToggleEditMode'})}>
-    {props.editMode ? 'Done' : 'Edit'}
+interface NoFoodSelected {
+  state: 'NoFoodSelected';
+}
+
+interface FoodSelectedWaiting {
+  state: 'FoodSelectedWaiting';
+  ingredientIdentifier: IngredientIdentifier,
+}
+
+interface FoodSelectedNotFound {
+  state: 'FoodSelectedNotFound';
+  ingredientIdentifier: IngredientIdentifier,
+}
+
+interface FoodSelected {
+  state: 'FoodSelected';
+  ingredientIdentifier: IngredientIdentifier;
+  food: Food;
+  nutrientsViewProps: NutrientsViewProps;
+  editState: EditState;
+}
+
+type IngredientBrowserState = NoFoodSelected | FoodSelectedWaiting | FoodSelectedNotFound | FoodSelected;
+
+export const EditButton: React.SFC<{dispatch: (action: Action) => void, editState: EditState}> = (props) => {
+  return <Button disabled={!props.editState.editable} onClick={() => props.dispatch({actionType: 'ToggleEditMode'})}>
+    {props.editState.editable ? (props.editState.editMode ? 'Done' : 'Edit') : 'Edit'}
   </Button>;
 }
 
 export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
 
-  state: IngredientBrowserState = {
-    ingredientIdentifier: null,
-    food: null,
-    nutrientsViewProps: null,
-    editState: {editable: false },
-  };
+  state: IngredientBrowserState = {state: 'NoFoodSelected'};
 
   render() {
-    let food = this.state.food;
-    let nutrientsViewProps = this.state.nutrientsViewProps;
     let contents = null;
-    let editable = this.state.editState.editable;
-    let editMode = this.state.editState.editable && this.state.editState.editMode;
-    if (food != null && nutrientsViewProps != null) {
+    let editState: EditState = {editable: false};
+
+    if (this.state.state == 'FoodSelected') {
+      let food = this.state.food;
+      let nutrientsViewProps = this.state.nutrientsViewProps;
+      editState = this.state.editState;
+      let editMode = editState.editable && editState.editMode;
       switch (food.dataType) {
         case 'Branded':
           contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={editMode} dispatch={this._dispatch}/>
@@ -141,7 +157,7 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
       <Navbar bg="light" expand="lg">
         <Form inline>
           <IngredientSearcher dispatch={this._dispatch} ingredientDatabase={this.props.ingredientDatabase}/>
-          <EditButton editable={editable} editMode={editMode} dispatch={this._dispatch}/>
+          <EditButton editState={editState} dispatch={this._dispatch}/>
         </Form>
       </Navbar>
       <Container>
@@ -159,27 +175,27 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
         this._handleSelection(action.ingredientIdentifier);
         break;
       case 'UpdateDescription':
-        if (this.state.food && this.state.food.dataType == 'Branded') {
+        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
           this.setState({...this.state, food: {...this.state.food, description: action.description}});
         }
         break;
       case 'UpdateServingSize':
-        if (this.state.food && this.state.food.dataType == 'Branded') {
+        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
           this.setState({...this.state, food: {...this.state.food, servingSize: action.servingSize}});
         }
         break;
       case 'UpdateServingSizeUnit':
-        if (this.state.food && this.state.food.dataType == 'Branded') {
+        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
           this.setState({...this.state, food: {...this.state.food, servingSizeUnit: action.servingSizeUnit}});
         }
         break;
       case 'UpdateHouseholdUnit':
-        if (this.state.food && this.state.food.dataType == 'Branded') {
+        if (this.state.state == 'FoodSelected'&& this.state.food.dataType == 'Branded') {
           this.setState({...this.state, food: {...this.state.food, householdServingFullText: action.householdUnit}});
         }
         break;
       case 'UpdateNutrientValue':
-        if (this.state.food && this.state.food.dataType == 'Branded') {
+        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
           let foodNutrients = this.state.food.foodNutrients.map(nutrient =>
             nutrient.nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
           this.setState({...this.state, food: {...this.state.food, foodNutrients}});
@@ -189,34 +205,40 @@ export class IngredientBrowser extends React.Component<IngredientBrowserProps, I
   }
 
   _toggleEditMode = () => {
+    if (this.state.state != 'FoodSelected') {
+      return;
+    }
     if (!this.state.editState.editable) {
       return;
     }
     if (this.state.editState.editMode) {
       this.props.ingredientDatabase.patchFood(this.state.ingredientIdentifier!, this.state.food!);
     }
-    this.setState({editState: {editable: true, editMode: !this.state.editState.editMode}});
+    this.setState({state: 'FoodSelected', editState: {editable: true, editMode: !this.state.editState.editMode}});
   }
 
   _handleSelection = (ingredientIdentifier: IngredientIdentifier | null) => {
-    if (ingredientIdentifier) {
-      this.props.ingredientDatabase.getFood(ingredientIdentifier).then(food => {
-        if (food == null) {
-          this.setState({ingredientIdentifier, food: null, nutrientsViewProps: null, editState: {editable: false}});
-        } else {
-          normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
-            this.setState({
-              ingredientIdentifier,
-              food,
-              nutrientsViewProps: {
-                nutrientsPerServing: normalizedFood.nutrientsPerServing,
-                nutrientInfos: this.props.nutrientInfos,
-                quantities: getQuantities(food),
-              },
-              editState: ingredientIdentifier.identifierType == 'BookmarkId' ? {editable: true, editMode: false} : {editable: false},
-            }));
-        }
-      });
+    if (ingredientIdentifier == null) {
+      this.setState({state: 'NoFoodSelected'});
+      return;
     }
+    this.props.ingredientDatabase.getFood(ingredientIdentifier).then(food => {
+      if (food == null) {
+        this.setState({state: 'FoodSelectedNotFound'});
+        return;
+      }
+      normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
+        this.setState({
+          state: 'FoodSelected',
+          ingredientIdentifier,
+          food,
+          nutrientsViewProps: {
+            nutrientsPerServing: normalizedFood.nutrientsPerServing,
+            nutrientInfos: this.props.nutrientInfos,
+            quantities: getQuantities(food),
+          },
+          editState: ingredientIdentifier.identifierType == 'BookmarkId' ? {editable: true, editMode: false} : {editable: false},
+        }));
+    });
   }
 }
