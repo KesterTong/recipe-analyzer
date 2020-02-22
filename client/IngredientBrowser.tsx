@@ -14,7 +14,7 @@
 
 import * as React from 'react';
 
-import { Form, Button, Navbar, Container } from 'react-bootstrap';
+import { Form, Navbar, Container } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { IngredientIdentifier } from '../core/FoodRef';
@@ -28,6 +28,7 @@ import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { Action } from './actions';
+import { EditButton, EditState } from './EditButton';
 
 function getQuantities(food: Food): {description: string, servings: number}[] {
   switch (food.dataType) {
@@ -87,17 +88,6 @@ interface IngredientBrowserProps {
   ingredientDatabase: IngredientDatabase;
 };
 
-interface NonEditable {
-  editable: false;
-}
-
-interface Editable {
-  editable: true;
-  editMode: boolean;
-}
-
-type EditState = NonEditable | Editable;
-
 interface NoFoodSelected {
   state: 'NoFoodSelected';
 }
@@ -121,12 +111,6 @@ interface FoodSelected {
 }
 
 type IngredientBrowserState = NoFoodSelected | FoodSelectedWaiting | FoodSelectedNotFound | FoodSelected;
-
-export const EditButton: React.SFC<{dispatch: (action: Action) => void, editState: EditState}> = (props) => {
-  return <Button disabled={!props.editState.editable} onClick={() => props.dispatch({actionType: 'ToggleEditMode'})}>
-    {props.editState.editable ? (props.editState.editMode ? 'Done' : 'Edit') : 'Edit'}
-  </Button>;
-}
 
 export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
 
