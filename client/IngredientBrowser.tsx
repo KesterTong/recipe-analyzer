@@ -65,9 +65,7 @@ export const RecipeViewer: React.SFC<{food: Recipe, nutrientsViewProps: Nutrient
       }
     </ul>
     <h2>Nutrients</h2>
-    <NutrientsViewer
-        {...props.nutrientsViewProps}
-        key={food.description} />
+    <NutrientsViewer {...props.nutrientsViewProps} key={food.description} />
   </React.Fragment>;
 }
 
