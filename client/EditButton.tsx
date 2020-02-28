@@ -14,20 +14,25 @@
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import { Action } from './actions';
+import { RootState, EditState } from './RootState';
+import { connect } from 'react-redux';
 
-interface NonEditable {
-  editable: false;
-}
-
-interface Editable {
-  editable: true;
-  editMode: boolean;
-}
-
-export type EditState = NonEditable | Editable;
-
-export const EditButton: React.SFC<{dispatch: (action: Action) => void, editState: EditState}> = (props) => {
-  return <Button disabled={!props.editState.editable} onClick={() => props.dispatch({actionType: 'ToggleEditMode'})}>
+const EditButtonView: React.SFC<{toggleEditState: () => void, editState: EditState}> = (props) => {
+  return <Button disabled={!props.editState.editable} onClick={props.toggleEditState}>
     {props.editState.editable ? (props.editState.editMode ? 'Done' : 'Edit') : 'Edit'}
   </Button>;
 }
+
+function mapStateToProps(state: RootState) {
+ return {
+   editState: state.editState,
+ }
+}
+
+function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
+  return {
+    toggleEditState: () => dispatch({type: 'ToggleEditMode'}),
+  }
+}
+
+export const EditButton = connect(mapStateToProps, mapDispatchToProps)(EditButtonView);

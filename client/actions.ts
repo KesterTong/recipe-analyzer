@@ -12,42 +12,74 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { IngredientIdentifier } from "../core/FoodRef";
+import { Dispatch } from "react";
+import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
+import { Food } from "../core/Food";
+import { normalizeFood } from "../core/normalizeFood";
+import { NormalizedFood } from "../core/NormalizedFood";
 
 export interface ToggleEditMode {
-  actionType: 'ToggleEditMode',
+  type: 'ToggleEditMode',
 }
 
 export interface SelectFood {
-  actionType: 'SelectFood',
+  type: 'SelectFood',
   ingredientIdentifier: IngredientIdentifier | null,
 }
 
+export interface SetFood {
+  type: 'SetFood',
+  food: Food | null,
+}
+
+export interface SetNormalizedFood {
+  type: 'SetNormalizedFood',
+  normalizedFood: NormalizedFood | null,
+}
+
 export interface UpdateDescription {
-  actionType: 'UpdateDescription',
+  type: 'UpdateDescription',
   description: string,
 }
 
 export interface UpdateServingSize {
-  actionType: 'UpdateServingSize',
+  type: 'UpdateServingSize',
   servingSize: number,
 }
 
 export interface UpdateServingSizeUnit {
-  actionType: 'UpdateServingSizeUnit',
+  type: 'UpdateServingSizeUnit',
   servingSizeUnit: string,
 }
 
 export interface UpdateHouseholdUnit {
-  actionType: 'UpdateHouseholdUnit',
+  type: 'UpdateHouseholdUnit',
   householdUnit: string,
 }
 
 export interface UpdateNutrientValue {
-  actionType: 'UpdateNutrientValue',
+  type: 'UpdateNutrientValue',
   nutrientId: number,
   value: number,
 }
 
 export type Action = (
-  ToggleEditMode | SelectFood | UpdateDescription | UpdateServingSize |
+  ToggleEditMode | SelectFood | SetFood | SetNormalizedFood | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue);
+
+export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: IngredientIdentifier | null) {
+  dispatch({type: 'SelectFood', ingredientIdentifier: ingredientIdentifier});
+  if (ingredientIdentifier == null) {
+    return;
+  }
+  let ingredientDatabase = new IngredientDatabaseImpl()
+  ingredientDatabase.getFood(ingredientIdentifier).then(food => {
+    dispatch({type: 'SetFood', food: food})
+    if (food == null) {
+      return;
+    }
+    normalizeFood(food, ingredientDatabase).then(normalizedFood => {
+      dispatch({type: 'SetNormalizedFood', normalizedFood: normalizedFood})
+    });
+  });
+}

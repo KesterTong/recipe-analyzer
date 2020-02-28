@@ -42,7 +42,7 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               value={food.description}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({actionType: 'UpdateDescription', description: event.target.value})}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({type: 'UpdateDescription', description: event.target.value})}
               />
         </Form.Group>
         <Form.Row>
@@ -50,14 +50,14 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
             <Form.Label>Household Units</Form.Label>
             <Form.Control
               value={food.householdServingFullText!}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({actionType: 'UpdateHouseholdUnit', householdUnit: event.target.value})}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({type: 'UpdateHouseholdUnit', householdUnit: event.target.value})}
               />
           </Form.Group>
           <Form.Group as={Col} controlId="formServingSize">
             <Form.Label>Serving Size</Form.Label>
             <Form.Control
               value={food.servingSize.toString()}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({actionType: 'UpdateServingSize', servingSize: Number(event.target.value)})}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({type: 'UpdateServingSize', servingSize: Number(event.target.value)})}
               />
           </Form.Group>
           <Form.Group as={Col} controlId="formServingSizeUnits">
@@ -65,7 +65,7 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
             <Form.Control
               as="select"
               value={food.servingSizeUnit}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({actionType: 'UpdateServingSizeUnit', servingSizeUnit: event.target.value})}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({type: 'UpdateServingSizeUnit', servingSizeUnit: event.target.value})}
               >
               <option>ml</option>
               <option>g</option>
@@ -77,7 +77,7 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
             <Form.Label>{nutrientNamesById[nutrient.nutrient.id]}</Form.Label>
             <Form.Control
               value={nutrient.amount?.toString()}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({actionType: 'UpdateNutrientValue', nutrientId: nutrient.nutrient.id, value: Number(event.target.value)})}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.dispatch({type: 'UpdateNutrientValue', nutrientId: nutrient.nutrient.id, value: Number(event.target.value)})}
               />
           </Form.Group>
         )) }

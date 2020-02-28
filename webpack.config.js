@@ -38,6 +38,8 @@ module.exports = {
     firebase: 'firebase',
     firebaseui: 'firebaseui',
     react: "React",
+    "redux": "Redux",
+    "react-redux": "ReactRedux",
     "react-dom": "ReactDOM",
     "react-bootstrap": "ReactBootstrap",
     "react-bootstrap-typeahead": "ReactBootstrapTypeahead",

@@ -21,6 +21,8 @@ import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { IngredientBrowser } from './IngredientBrowser';
 import ReactDOM = require("react-dom");
 import React = require("react");
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -32,7 +34,9 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     let ingredientDatabase = new IngredientDatabaseImpl();
     ingredientDatabase.getNutrientInfo().then(nutrientInfos =>
-      ReactDOM.render(<IngredientBrowser ingredientDatabase={ingredientDatabase} nutrientInfos={nutrientInfos}/>, document.getElementById('root'))
+      ReactDOM.render(<Provider store={store}>
+        <IngredientBrowser/>
+      </Provider>, document.getElementById('root'))
     );
   } else {
     // User is signed out.

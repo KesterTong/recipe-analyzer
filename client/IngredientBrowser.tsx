@@ -28,7 +28,10 @@ import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { Action } from './actions';
-import { EditButton, EditState } from './EditButton';
+import { EditButton } from './EditButton';
+import { RootState } from './RootState';
+import { connect } from 'react-redux';
+import { store } from './store';
 
 function getQuantities(food: Food): {description: string, servings: number}[] {
   switch (food.dataType) {
@@ -82,142 +85,46 @@ export const SRLegacyFoodViewer: React.SFC<{food: SRLegacyFood, nutrientsViewPro
 }
 
 interface IngredientBrowserProps {
-  nutrientInfos: NutrientInfo[];
-  ingredientDatabase: IngredientDatabase;
+  food: Food | null;
 };
 
-interface NoFoodSelected {
-  state: 'NoFoodSelected';
+const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
+  let contents = null;
+  let food = props.food;
+  contents = JSON.stringify(food);
+
+  // if (food) {
+  //   switch (food.dataType) {
+  //     case 'Branded':
+  //       contents = <BrandedFoodViewer/>
+  //       break;
+  //     case 'SR Legacy':
+  //       contents = <SRLegacyFoodViewer/>
+  //       break;
+  //     case 'Recipe':
+  //       contents = <RecipeViewer/>
+  //       break;
+  //   }
+  // }
+  return <React.Fragment>
+    <Navbar bg="light" expand="lg">
+      <Form inline>
+        <IngredientSearcher/>
+        <EditButton/>
+      </Form>
+    </Navbar>
+    <Container>
+      { contents }
+    </Container>
+  </React.Fragment>;
 }
 
-interface FoodSelectedWaiting {
-  state: 'FoodSelectedWaiting';
-  ingredientIdentifier: IngredientIdentifier,
+function mapStateToProps(state: RootState) {
+  return {food: state.food}
 }
 
-interface FoodSelectedNotFound {
-  state: 'FoodSelectedNotFound';
-  ingredientIdentifier: IngredientIdentifier,
+function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
+  return {}
 }
 
-interface FoodSelected {
-  state: 'FoodSelected';
-  ingredientIdentifier: IngredientIdentifier;
-  food: Food;
-  nutrientsViewProps: NutrientsViewProps;
-  editState: EditState;
-}
-
-type IngredientBrowserState = NoFoodSelected | FoodSelectedWaiting | FoodSelectedNotFound | FoodSelected;
-
-export class IngredientBrowser extends React.Component<IngredientBrowserProps, IngredientBrowserState> {
-
-  state: IngredientBrowserState = {state: 'NoFoodSelected'};
-
-  render() {
-    let contents = null;
-    let editState: EditState = {editable: false};
-
-    if (this.state.state == 'FoodSelected') {
-      let food = this.state.food;
-      let nutrientsViewProps = this.state.nutrientsViewProps;
-      editState = this.state.editState;
-      let editMode = editState.editable && editState.editMode;
-      switch (food.dataType) {
-        case 'Branded':
-          contents = <BrandedFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos} editMode={editMode} dispatch={this._dispatch}/>
-          break;
-        case 'SR Legacy':
-          contents = <SRLegacyFoodViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos}/>
-          break;
-        case 'Recipe':
-          contents = <RecipeViewer food={food} nutrientsViewProps={nutrientsViewProps} nutrientInfos={this.props.nutrientInfos}/>
-          break;
-      }
-    }
-    return <React.Fragment>
-      <Navbar bg="light" expand="lg">
-        <Form inline>
-          <IngredientSearcher dispatch={this._dispatch} ingredientDatabase={this.props.ingredientDatabase}/>
-          <EditButton editState={editState} dispatch={this._dispatch}/>
-        </Form>
-      </Navbar>
-      <Container>
-        { contents }
-      </Container>
-    </React.Fragment>;
-  }
-
-  _dispatch = (action: Action) => {
-    switch (action.actionType) {
-      case 'ToggleEditMode':
-        this._toggleEditMode()
-        break;
-      case 'SelectFood':
-        this._selectFood(action.ingredientIdentifier);
-        break;
-      case 'UpdateDescription':
-        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
-          this.setState({...this.state, food: {...this.state.food, description: action.description}});
-        }
-        break;
-      case 'UpdateServingSize':
-        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
-          this.setState({...this.state, food: {...this.state.food, servingSize: action.servingSize}});
-        }
-        break;
-      case 'UpdateServingSizeUnit':
-        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
-          this.setState({...this.state, food: {...this.state.food, servingSizeUnit: action.servingSizeUnit}});
-        }
-        break;
-      case 'UpdateHouseholdUnit':
-        if (this.state.state == 'FoodSelected'&& this.state.food.dataType == 'Branded') {
-          this.setState({...this.state, food: {...this.state.food, householdServingFullText: action.householdUnit}});
-        }
-        break;
-      case 'UpdateNutrientValue':
-        if (this.state.state == 'FoodSelected' && this.state.food.dataType == 'Branded') {
-          let foodNutrients = this.state.food.foodNutrients.map(nutrient =>
-            nutrient.nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
-          this.setState({...this.state, food: {...this.state.food, foodNutrients}});
-        }
-        break;
-    }
-  }
-
-  _toggleEditMode = () => {
-    if (this.state.state != 'FoodSelected' || !this.state.editState.editable) {
-      return;
-    }
-    if (this.state.editState.editMode) {
-      this.props.ingredientDatabase.patchFood(this.state.ingredientIdentifier!, this.state.food!);
-    }
-    this.setState({state: 'FoodSelected', editState: {editable: true, editMode: !this.state.editState.editMode}});
-  }
-
-  _selectFood = (ingredientIdentifier: IngredientIdentifier | null) => {
-    if (ingredientIdentifier == null) {
-      this.setState({state: 'NoFoodSelected'});
-      return;
-    }
-    this.props.ingredientDatabase.getFood(ingredientIdentifier).then(food => {
-      if (food == null) {
-        this.setState({state: 'FoodSelectedNotFound'});
-        return;
-      }
-      normalizeFood(food, this.props.ingredientDatabase).then(normalizedFood =>
-        this.setState({
-          state: 'FoodSelected',
-          ingredientIdentifier,
-          food,
-          nutrientsViewProps: {
-            nutrientsPerServing: normalizedFood.nutrientsPerServing,
-            nutrientInfos: this.props.nutrientInfos,
-            quantities: getQuantities(food),
-          },
-          editState: ingredientIdentifier.identifierType == 'BookmarkId' ? {editable: true, editMode: false} : {editable: false},
-        }));
-    });
-  }
-}
+export const IngredientBrowser = connect(mapStateToProps, mapDispatchToProps)(IngredientBrowserView);
