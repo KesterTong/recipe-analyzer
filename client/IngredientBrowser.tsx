@@ -32,6 +32,7 @@ import { EditButton } from './EditButton';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 import { store } from './store';
+import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 
 function getQuantities(food: Food): {description: string, servings: number}[] {
   switch (food.dataType) {
@@ -72,17 +73,6 @@ export const RecipeViewer: React.SFC<{food: Recipe, nutrientsViewProps: Nutrient
   </React.Fragment>;
 }
 
-export const SRLegacyFoodViewer: React.SFC<{food: SRLegacyFood, nutrientsViewProps: NutrientsViewProps, nutrientInfos: NutrientInfo[]}> = (props) => {
-  let food = props.food;
-  // TODO new id instead of description for key.
-  return <React.Fragment>
-    <h1>{food.description}</h1>
-    <h2>Nutrients</h2>
-    <NutrientsViewer 
-        {...props.nutrientsViewProps}
-        key={food.description} />
-  </React.Fragment>;
-}
 
 interface IngredientBrowserProps {
   food: Food | null;
@@ -91,21 +81,20 @@ interface IngredientBrowserProps {
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   let contents = null;
   let food = props.food;
-  contents = JSON.stringify(food);
 
-  // if (food) {
-  //   switch (food.dataType) {
-  //     case 'Branded':
-  //       contents = <BrandedFoodViewer/>
-  //       break;
-  //     case 'SR Legacy':
-  //       contents = <SRLegacyFoodViewer/>
-  //       break;
-  //     case 'Recipe':
-  //       contents = <RecipeViewer/>
-  //       break;
-  //   }
-  // }
+  if (food) {
+    switch (food.dataType) {
+      case 'Branded':
+        contents = JSON.stringify(food);  //contents = <BrandedFoodViewer/>
+        break;
+      case 'SR Legacy':
+        contents = <SRLegacyFoodViewer/>
+        break;
+      case 'Recipe':
+        contents = JSON.stringify(food);  // contents = <RecipeViewer/>
+        break;
+    }
+  }
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
