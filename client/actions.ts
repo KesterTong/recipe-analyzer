@@ -17,9 +17,15 @@ import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
 import { normalizeFood } from "../core/normalizeFood";
 import { NormalizedFood } from "../core/NormalizedFood";
+import { NutrientInfo } from "../core/Nutrients";
 
 export interface ToggleEditMode {
   type: 'ToggleEditMode',
+}
+
+export interface SetNutrientInfos {
+  type: 'SetNutrientInfos',
+  nutrientInfos: NutrientInfo[],
 }
 
 export interface SelectFood {
@@ -63,9 +69,14 @@ export interface UpdateNutrientValue {
   value: number,
 }
 
+export interface SetSelectedQuantity {
+  type: 'SetSelectedQuantity',
+  index: number,
+}
+
 export type Action = (
-  ToggleEditMode | SelectFood | SetFood | SetNormalizedFood | UpdateDescription | UpdateServingSize |
-  UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue);
+  ToggleEditMode | SetNutrientInfos | SelectFood | SetFood | SetNormalizedFood | UpdateDescription | UpdateServingSize |
+  UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
 export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: IngredientIdentifier | null) {
   dispatch({type: 'SelectFood', ingredientIdentifier: ingredientIdentifier});

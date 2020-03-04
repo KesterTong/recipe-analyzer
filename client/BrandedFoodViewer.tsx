@@ -18,14 +18,13 @@ import { Form, Col } from 'react-bootstrap';
 
 import { BrandedFood } from "../core/FoodDataCentral";
 import { NutrientInfo } from "../core/Nutrients";
-import { NutrientsViewer, NutrientsViewProps } from "./NutrientsViewer";
+import { NutrientsViewer } from "./NutrientsViewer";
 import { Action } from './actions';
 
 interface BrandedFoodViewerProps {
   food: BrandedFood;
   nutrientInfos: NutrientInfo[];
   editMode: boolean;
-  nutrientsViewProps: NutrientsViewProps;
   dispatch(action: Action): void;
 }
 
@@ -88,9 +87,7 @@ export const BrandedFoodViewer: React.SFC<BrandedFoodViewerProps> = (props) => {
       <h1>{food.description} <em>{food.brandOwner ? '(' + food.brandOwner + ')' : ''}</em></h1>
       { food.ingredients ? <React.Fragment><h2>Ingredients</h2>{food.ingredients}</React.Fragment> : null }
       <h2>Nutrients</h2>
-      <NutrientsViewer 
-          {...props.nutrientsViewProps}
-          key={food.description} />
+      <NutrientsViewer/>
     </React.Fragment>;
   }
 }

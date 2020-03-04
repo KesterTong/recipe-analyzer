@@ -33,11 +33,11 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     let ingredientDatabase = new IngredientDatabaseImpl();
-    ingredientDatabase.getNutrientInfo().then(nutrientInfos =>
-      ReactDOM.render(<Provider store={store}>
-        <IngredientBrowser/>
-      </Provider>, document.getElementById('root'))
-    );
+    ingredientDatabase.getNutrientInfo().then(nutrientInfos => 
+      store.dispatch({type: 'SetNutrientInfos', nutrientInfos}));
+    ReactDOM.render(<Provider store={store}>
+      <IngredientBrowser/>
+    </Provider>, document.getElementById('root'));
   } else {
     // User is signed out.
     ui.start('#firebaseui-auth-container', {

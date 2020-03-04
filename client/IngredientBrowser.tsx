@@ -23,7 +23,6 @@ import { Food } from '../core/Food';
 import { NutrientInfo } from '../core/Nutrients';
 import { SRLegacyFood } from '../core/FoodDataCentral';
 import { Recipe } from '../core/Recipe';
-import { NutrientsViewer, NutrientsViewProps } from './NutrientsViewer';
 import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
@@ -34,29 +33,7 @@ import { connect } from 'react-redux';
 import { store } from './store';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 
-function getQuantities(food: Food): {description: string, servings: number}[] {
-  switch (food.dataType) {
-    case 'Recipe':
-      return [{description: '1 serving', servings: 1}];
-    case 'Branded':
-      return [{
-        description: food.householdServingFullText! + ' (' + food.servingSize + ' ' + food.servingSizeUnit + ')',
-        servings: food.servingSize / 100
-      }, {
-        description: '100 ' + food.servingSizeUnit,
-        servings: 1,
-      }];
-    case 'SR Legacy':
-      let result = [{description: '100 g', servings: 1}];
-      food.foodPortions.forEach(portion => {
-        let description = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
-        result.push({description, servings: portion.gramWeight / 100});
-      });
-      return result;
-  }
-}
-
-export const RecipeViewer: React.SFC<{food: Recipe, nutrientsViewProps: NutrientsViewProps, nutrientInfos: NutrientInfo[]}> = (props) => {
+export const RecipeViewer: React.SFC<{food: Recipe, nutrientInfos: NutrientInfo[]}> = (props) => {
   let food = props.food;
   return <React.Fragment>
     <h1>{food.description}</h1>
@@ -69,7 +46,6 @@ export const RecipeViewer: React.SFC<{food: Recipe, nutrientsViewProps: Nutrient
       }
     </ul>
     <h2>Nutrients</h2>
-    <NutrientsViewer {...props.nutrientsViewProps} key={food.description} />
   </React.Fragment>;
 }
 

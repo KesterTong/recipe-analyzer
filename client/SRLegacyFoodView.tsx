@@ -23,6 +23,7 @@ const SRLegacyFoodViewerView: React.SFC<{food: SRLegacyFood}> = (props) => {
   return <React.Fragment>
     <h1>{food.description}</h1>
     <h2>Nutrients</h2>
+    <NutrientsViewer/>
   </React.Fragment>;
 }
 

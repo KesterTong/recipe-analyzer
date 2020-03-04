@@ -16,7 +16,6 @@ import { NutrientInfo } from "../core/Nutrients";
 import { IngredientDatabase } from "../core/IngredientDatabase";
 import { IngredientIdentifier } from "../core/FoodRef";
 import { Food } from "../core/Food";
-import { NutrientsViewProps } from "./NutrientsViewer";
 import { NormalizedFood } from "../core/NormalizedFood";
 
 
@@ -37,4 +36,5 @@ export interface RootState {
   normalizedFood: NormalizedFood | null;
   editState: EditState;
   nutrientInfos: NutrientInfo[] | null;
+  selectedQuantity: number;
 }

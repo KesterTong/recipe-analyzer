@@ -14,9 +14,7 @@
 
 import { Action } from "./actions";
 import { RootState } from "./RootState";
-import { IngredientIdentifier } from "../core/FoodRef";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
-import { normalizeFood } from "../core/normalizeFood";
 
 function _toggleEditMode(state: RootState): RootState {
   if (!state.editState.editable) {
@@ -37,6 +35,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       normalizedFood: null,
       nutrientInfos: null,
       editState: {editable: false}, 
+      selectedQuantity: 0,
     };
   }
   switch (action.type) {
@@ -49,7 +48,9 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         food: null,
         normalizedFood: null,
         editState: {editable: false},
-      }
+      };
+    case 'SetNutrientInfos':
+      return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
       return {
         ...state,
@@ -88,5 +89,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         return {...state, food: {...state.food, foodNutrients}};
       }
       return state;
+    case 'SetSelectedQuantity':
+      return {...state, selectedQuantity: action.index};
   }
 }
