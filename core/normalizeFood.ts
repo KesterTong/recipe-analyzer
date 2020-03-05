@@ -55,7 +55,7 @@ function nutrientsForRecipe(food: Recipe, ingredientDatabase: IngredientDatabase
   })
 }
 
-function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {
+export function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {
   let result: Nutrients = {};
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
     var foodNutrient = foodDetails.foodNutrients[i];

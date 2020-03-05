@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NutrientInfo } from "../core/Nutrients";
+import { NutrientInfo, Nutrients } from "../core/Nutrients";
 import { IngredientDatabase } from "../core/IngredientDatabase";
 import { IngredientIdentifier } from "../core/FoodRef";
 import { Food } from "../core/Food";
@@ -33,7 +33,12 @@ export type EditState = NonEditable | Editable;
 export interface RootState {
   ingredientIdentifier: IngredientIdentifier | null;
   food: Food | null;
-  normalizedFood: NormalizedFood | null;
+  // By definition, branded foods store their nutrients per
+  // 100 g/ml.  However when entering label data, the nutrients
+  // are per household serving.  Therefore, we use this as
+  // the source of truth while editing a branded food, and update
+  // `food` on changes.
+  // brandedFoodNutrientsPerServing: Nutrients | null;
   editState: EditState;
   nutrientInfos: NutrientInfo[] | null;
   selectedQuantity: number;

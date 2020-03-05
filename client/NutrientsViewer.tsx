@@ -17,6 +17,8 @@ import { Form, Table } from 'react-bootstrap';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 import { Action } from './actions';
+import { Nutrients } from '../core/Nutrients';
+import { nutrientsFromFoodDetails } from '../core/normalizeFood';
 
 interface NutrientsViewProps {
   nutrientNames: string[],
@@ -52,7 +54,7 @@ const NutrientsViewerView: React.SFC<NutrientsViewProps> = (props) => {
 
 function mapStateToProps(state: RootState) {
   let food = state.food;
-  if (food == null || state.nutrientInfos == null || state.normalizedFood == null) {
+  if (food == null || state.nutrientInfos == null) {
     return {
       nutrientNames: [],
       nutrientValues: [],
@@ -61,9 +63,12 @@ function mapStateToProps(state: RootState) {
     };
   }
   let quantities: {description: string, servings: number}[];
+  let nutrientsPerServing: Nutrients;
   switch (food.dataType) {
     case 'Recipe':
       quantities = [{description: '1 serving', servings: 1}];
+      // TODO: store nutrients per serving in separate part of state.
+      nutrientsPerServing = {};
       break;
     case 'Branded':
       quantities = [{
@@ -73,6 +78,7 @@ function mapStateToProps(state: RootState) {
         description: '100 ' + food.servingSizeUnit,
         servings: 1,
       }];
+      nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientInfos.map(nutrientInfo => nutrientInfo.id));
       break;
     case 'SR Legacy':
       quantities = [{description: '100 g', servings: 1}];
@@ -80,10 +86,10 @@ function mapStateToProps(state: RootState) {
         let description = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
         quantities.push({description, servings: portion.gramWeight / 100});
       });
+      nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientInfos.map(nutrientInfo => nutrientInfo.id));
       break;
   }
   let scale = quantities[state.selectedQuantity].servings;
-  let nutrientsPerServing = state.normalizedFood!.nutrientsPerServing;
   return {
     nutrientNames: state.nutrientInfos.map(nutrientInfo => nutrientInfo.name),
     nutrientValues: state.nutrientInfos.map(nutrientInfo => nutrientsPerServing[nutrientInfo.id] * scale),

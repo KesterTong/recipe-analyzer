@@ -32,7 +32,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     return {
       ingredientIdentifier: null,
       food: null,
-      normalizedFood: null,
       nutrientInfos: null,
       editState: {editable: false}, 
       selectedQuantity: 0,
@@ -46,7 +45,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         ...state,
         ingredientIdentifier: action.ingredientIdentifier,
         food: null,
-        normalizedFood: null,
         editState: {editable: false},
         selectedQuantity: 0,  // Reset selected quantity.
       };
@@ -60,7 +58,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'SetNormalizedFood':
       return {
         ...state,
-        normalizedFood: action.normalizedFood,
         editState: state.ingredientIdentifier!.identifierType == 'BookmarkId' ? {editable: true, editMode: false} : {editable: false},
       }
     case 'UpdateDescription':
