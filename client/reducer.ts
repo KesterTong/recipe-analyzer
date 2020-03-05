@@ -48,6 +48,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         food: null,
         normalizedFood: null,
         editState: {editable: false},
+        selectedQuantity: 0,  // Reset selected quantity.
       };
     case 'SetNutrientInfos':
       return {...state, nutrientInfos: action.nutrientInfos};
