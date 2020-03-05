@@ -14,7 +14,5 @@
 
 import { createStore } from "redux";
 import { reducer } from "./reducer";
-import { RootState } from "./RootState";
-import { Action } from "./actions";
 
 export const store = createStore(reducer);
