@@ -29,6 +29,7 @@ import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 
 interface IngredientBrowserProps {
   food: Food | null;
+  editable: boolean;
   editMode: boolean;
 };
 
@@ -65,7 +66,8 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 function mapStateToProps(state: RootState) {
   return {
     food: state.food,
-    editMode: state.editState.editable ? state.editState.editMode : false,
+    editable: state.ingredientIdentifier!.identifierType == 'BookmarkId',
+    editMode: state.editMode,
   }
 }
 

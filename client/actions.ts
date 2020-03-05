@@ -38,11 +38,6 @@ export interface SetFood {
   food: Food | null,
 }
 
-export interface SetNormalizedFood {
-  type: 'SetNormalizedFood',
-  normalizedFood: NormalizedFood | null,
-}
-
 export interface UpdateDescription {
   type: 'UpdateDescription',
   description: string,
@@ -75,7 +70,7 @@ export interface SetSelectedQuantity {
 }
 
 export type Action = (
-  ToggleEditMode | SetNutrientInfos | SelectFood | SetFood | SetNormalizedFood | UpdateDescription | UpdateServingSize |
+  ToggleEditMode | SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
 export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: IngredientIdentifier | null) {
@@ -84,13 +79,7 @@ export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: Ing
     return;
   }
   let ingredientDatabase = new IngredientDatabaseImpl()
-  ingredientDatabase.getFood(ingredientIdentifier).then(food => {
-    dispatch({type: 'SetFood', food: food})
-    if (food == null) {
-      return;
-    }
-    normalizeFood(food, ingredientDatabase).then(normalizedFood => {
-      dispatch({type: 'SetNormalizedFood', normalizedFood: normalizedFood})
-    });
-  });
+  ingredientDatabase
+  .getFood(ingredientIdentifier)
+  .then(food => dispatch({type: 'SetFood', food: food}));
 }

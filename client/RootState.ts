@@ -18,18 +18,6 @@ import { IngredientIdentifier } from "../core/FoodRef";
 import { Food } from "../core/Food";
 import { NormalizedFood } from "../core/NormalizedFood";
 
-
-interface NonEditable {
-  editable: false;
-}
-
-interface Editable {
-  editable: true;
-  editMode: boolean;
-}
-
-export type EditState = NonEditable | Editable;
-
 export interface RootState {
   ingredientIdentifier: IngredientIdentifier | null;
   food: Food | null;
@@ -39,7 +27,7 @@ export interface RootState {
   // the source of truth while editing a branded food, and update
   // `food` on changes.
   // brandedFoodNutrientsPerServing: Nutrients | null;
-  editState: EditState;
+  editMode: boolean;
   nutrientInfos: NutrientInfo[] | null;
   selectedQuantity: number;
 }

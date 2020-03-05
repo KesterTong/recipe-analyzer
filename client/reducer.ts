@@ -17,14 +17,11 @@ import { RootState } from "./RootState";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 
 function _toggleEditMode(state: RootState): RootState {
-  if (!state.editState.editable) {
-    return state;
-  }
-  if (state.editState.editMode) {
+  if (state.editMode) {
     // TODO: move this to the action creator, dispatch is supposed to be pure.
     new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food!);
   }
-  return {...state, editState: {editable: true, editMode: !state.editState.editMode}};
+  return {...state, editMode: !state.editMode};
 }
 
 export function reducer(state: RootState | undefined, action: Action): RootState {
@@ -33,7 +30,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       ingredientIdentifier: null,
       food: null,
       nutrientInfos: null,
-      editState: {editable: false}, 
+      editMode: false,
       selectedQuantity: 0,
     };
   }
@@ -45,7 +42,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         ...state,
         ingredientIdentifier: action.ingredientIdentifier,
         food: null,
-        editState: {editable: false},
+        editMode: false,
         selectedQuantity: 0,  // Reset selected quantity.
       };
     case 'SetNutrientInfos':
@@ -55,11 +52,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         ...state,
         food: action.food,
       };
-    case 'SetNormalizedFood':
-      return {
-        ...state,
-        editState: state.ingredientIdentifier!.identifierType == 'BookmarkId' ? {editable: true, editMode: false} : {editable: false},
-      }
     case 'UpdateDescription':
       if (state.food && state.food.dataType == 'Branded') {
         return {...state, food: {...state.food, description: action.description}};
