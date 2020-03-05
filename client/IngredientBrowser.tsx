@@ -17,39 +17,15 @@ import * as React from 'react';
 import { Form, Navbar, Container } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
-import { IngredientIdentifier } from '../core/FoodRef';
-import { IngredientDatabase } from '../core/IngredientDatabase';
 import { Food } from '../core/Food';
-import { NutrientInfo } from '../core/Nutrients';
-import { SRLegacyFood } from '../core/FoodDataCentral';
-import { Recipe } from '../core/Recipe';
-import { normalizeFood } from '../core/normalizeFood';
-import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
+import { RecipeViewer } from './RecipeViewer';
 import { Action } from './actions';
 import { EditButton } from './EditButton';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
-import { store } from './store';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
-
-export const RecipeViewer: React.SFC<{food: Recipe, nutrientInfos: NutrientInfo[]}> = (props) => {
-  let food = props.food;
-  return <React.Fragment>
-    <h1>{food.description}</h1>
-    <h2>Ingredients</h2>
-    <ul>
-      {
-        food.ingredientsList.map(ingredient =>
-          <li>{ingredient.quantity.amount.toString()} {ingredient.quantity.unit} {ingredient.ingredientIdentifier.identifierType}</li>
-        )
-      }
-    </ul>
-    <h2>Nutrients</h2>
-  </React.Fragment>;
-}
-
 
 interface IngredientBrowserProps {
   food: Food | null;
@@ -69,7 +45,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
         contents = <SRLegacyFoodViewer/>
         break;
       case 'Recipe':
-        contents = JSON.stringify(food);  // contents = <RecipeViewer/>
+        contents = <RecipeViewer/>
         break;
     }
   }
