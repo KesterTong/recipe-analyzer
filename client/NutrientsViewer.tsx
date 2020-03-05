@@ -13,12 +13,10 @@
 // limitations under the License.
 
 import * as React from 'react';
-import { NutrientInfo, Nutrients } from '../core/Nutrients';
 import { Form, Table } from 'react-bootstrap';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 import { Action } from './actions';
-import { timingSafeEqual } from 'crypto';
 
 interface NutrientsViewProps {
   nutrientNames: string[],

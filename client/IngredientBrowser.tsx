@@ -26,6 +26,7 @@ import { Recipe } from '../core/Recipe';
 import { normalizeFood } from '../core/normalizeFood';
 import { NormalizedFood } from '../core/NormalizedFood';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
+import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action } from './actions';
 import { EditButton } from './EditButton';
 import { RootState } from './RootState';
@@ -52,6 +53,7 @@ export const RecipeViewer: React.SFC<{food: Recipe, nutrientInfos: NutrientInfo[
 
 interface IngredientBrowserProps {
   food: Food | null;
+  editMode: boolean;
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
@@ -61,7 +63,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   if (food) {
     switch (food.dataType) {
       case 'Branded':
-        contents = JSON.stringify(food);  //contents = <BrandedFoodViewer/>
+        contents = props.editMode ? <BrandedFoodEditor/> : <BrandedFoodViewer/>
         break;
       case 'SR Legacy':
         contents = <SRLegacyFoodViewer/>
@@ -85,7 +87,10 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  return {food: state.food}
+  return {
+    food: state.food,
+    editMode: state.editState.editable ? state.editState.editMode : false,
+  }
 }
 
 function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
