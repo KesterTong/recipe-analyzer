@@ -14,18 +14,25 @@
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import { Action } from './actions';
-import { RootState, EditState } from './RootState';
+import { RootState } from './RootState';
 import { connect } from 'react-redux';
 
-const EditButtonView: React.SFC<{toggleEditState: () => void, editState: EditState}> = (props) => {
-  return <Button disabled={!props.editState.editable} onClick={props.toggleEditState}>
-    {props.editState.editable ? (props.editState.editMode ? 'Done' : 'Edit') : 'Edit'}
+interface EditButtonProps {
+  editable: boolean,
+  editMode: boolean,
+  toggleEditState: () => void,
+};
+
+const EditButtonView: React.SFC<EditButtonProps> = (props) => {
+  return <Button disabled={!props.editable} onClick={props.toggleEditState}>
+    {props.editMode ? 'Done' : 'Edit'}
   </Button>;
 }
 
 function mapStateToProps(state: RootState) {
  return {
-   editState: state.editState,
+   editable: state.ingredientIdentifier?.identifierType == 'BookmarkId',
+   editMode: state.editMode,
  }
 }
 
