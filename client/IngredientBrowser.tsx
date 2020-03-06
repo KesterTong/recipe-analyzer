@@ -20,12 +20,12 @@ import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { RecipeViewer } from './RecipeViewer';
 import { Action } from './actions';
 import { EditButtonContainer } from './EditButtonContainer';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
+import { RecipeViewerContainer } from './RecipeViewerContainer';
 
 interface IngredientBrowserProps {
   food: Food | null;
@@ -45,7 +45,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
         contents = <SRLegacyFoodViewer/>
         break;
       case 'Recipe':
-        contents = <RecipeViewer/>
+        contents = <RecipeViewerContainer/>
         break;
     }
   }
