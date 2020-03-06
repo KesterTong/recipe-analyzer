@@ -14,13 +14,8 @@
 
 import * as React from 'react';
 import { Form, Table } from 'react-bootstrap';
-import { RootState } from './RootState';
-import { connect } from 'react-redux';
-import { Action } from './actions';
-import { Nutrients } from '../core/Nutrients';
-import { nutrientsFromFoodDetails } from '../core/normalizeFood';
 
-interface NutrientsViewProps {
+export interface NutrientsViewProps {
   nutrientNames: string[],
   nutrientValues: number[],
   quantities: string[],
@@ -28,7 +23,7 @@ interface NutrientsViewProps {
   selectQuantity: (event: React.FormEvent) => void,
 }
 
-const NutrientsViewerView: React.SFC<NutrientsViewProps> = (props) => {
+export const NutrientsViewer: React.SFC<NutrientsViewProps> = (props) => {
   return (
     <React.Fragment>
       <Form.Control as="select" value={props.selectedQuantity.toString()} onChange={props.selectQuantity}>
@@ -51,64 +46,3 @@ const NutrientsViewerView: React.SFC<NutrientsViewProps> = (props) => {
     </React.Fragment>
   );
 }
-
-function mapStateToProps(state: RootState) {
-  let food = state.food;
-  if (food == null || state.nutrientInfos == null) {
-    return {
-      nutrientNames: [],
-      nutrientValues: [],
-      quantities: ['-'],
-      selectedQuantity: 0,
-    };
-  }
-  let quantities: {description: string, servings: number}[];
-  let nutrientsPerServing: Nutrients;
-  switch (food.dataType) {
-    case 'Recipe':
-      quantities = [{description: '1 serving', servings: 1}];
-      // TODO: store nutrients per serving in separate part of state.
-      nutrientsPerServing = {};
-      break;
-    case 'Branded':
-      quantities = [{
-        description: food.householdServingFullText! + ' (' + food.servingSize + ' ' + food.servingSizeUnit + ')',
-        servings: food.servingSize / 100
-      }, {
-        description: '100 ' + food.servingSizeUnit,
-        servings: 1,
-      }];
-      nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientInfos.map(nutrientInfo => nutrientInfo.id));
-      break;
-    case 'SR Legacy':
-      quantities = [{description: '100 g', servings: 1}];
-      food.foodPortions.forEach(portion => {
-        let description = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
-        quantities.push({description, servings: portion.gramWeight / 100});
-      });
-      nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientInfos.map(nutrientInfo => nutrientInfo.id));
-      break;
-  }
-  let scale = quantities[state.selectedQuantity].servings;
-  return {
-    nutrientNames: state.nutrientInfos.map(nutrientInfo => nutrientInfo.name),
-    nutrientValues: state.nutrientInfos.map(nutrientInfo => nutrientsPerServing[nutrientInfo.id] * scale),
-    quantities: quantities.map(quantity => quantity.description),
-    selectedQuantity: state.selectedQuantity,
-  };
-}
-
-function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-  return {
-    selectQuantity: (event: React.FormEvent) => {
-      if (event.target instanceof HTMLSelectElement) {
-        dispatch({
-          type: 'SetSelectedQuantity',
-          index: Number(event.target.value),
-        });
-      }
-    }
-  };
-}
-
-export const NutrientsViewer = connect(mapStateToProps, mapDispatchToProps)(NutrientsViewerView);

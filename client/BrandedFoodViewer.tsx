@@ -15,7 +15,7 @@
 import * as React from 'react';
 
 import { BrandedFood } from "../core/FoodDataCentral";
-import { NutrientsViewer } from "./NutrientsViewer";
+import { NutrientsViewerContainer } from "./NutrientsViewerContainer";
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 
@@ -24,7 +24,7 @@ export const BrandedFoodViewerView: React.SFC<BrandedFood> = (props) => {
     <h1>{props.description} <em>{props.brandOwner ? '(' + props.brandOwner + ')' : ''}</em></h1>
     { props.ingredients ? <React.Fragment><h2>Ingredients</h2>{props.ingredients}</React.Fragment> : null }
     <h2>Nutrients</h2>
-    <NutrientsViewer/>
+    <NutrientsViewerContainer/>
   </React.Fragment>;
 }
 

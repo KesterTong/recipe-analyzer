@@ -13,7 +13,7 @@
 // limitations under the License.
 import { SRLegacyFood } from "../core/FoodDataCentral";
 import { RootState } from "./RootState";
-import { NutrientsViewer } from "./NutrientsViewer";
+import { NutrientsViewerContainer } from "./NutrientsViewerContainer";
 import { connect } from "react-redux";
 import * as React from 'react';
 
@@ -23,7 +23,7 @@ const SRLegacyFoodViewerView: React.SFC<{food: SRLegacyFood}> = (props) => {
   return <React.Fragment>
     <h1>{food.description}</h1>
     <h2>Nutrients</h2>
-    <NutrientsViewer/>
+    <NutrientsViewerContainer/>
   </React.Fragment>;
 }
 
