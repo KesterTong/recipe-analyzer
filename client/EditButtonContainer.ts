@@ -11,17 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import * as React from 'react';
-import { Button } from 'react-bootstrap';
+import { Action } from './actions';
+import { RootState } from './RootState';
+import { connect } from 'react-redux';
 
-export interface EditButtonProps {
-  editable: boolean,
-  editMode: boolean,
-  toggleEditState: () => void,
-};
+import { EditButton } from './EditButton';
 
-export const EditButton: React.SFC<EditButtonProps> = (props) => {
-  return <Button disabled={!props.editable} onClick={props.toggleEditState}>
-    {props.editMode ? 'Done' : 'Edit'}
-  </Button>;
-}
+function mapStateToProps(state: RootState) {
+  return {
+    editable: state.ingredientIdentifier?.identifierType == 'BookmarkId',
+    editMode: state.editMode,
+  }
+ }
+ 
+ function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
+   return {
+     toggleEditState: () => dispatch({type: 'ToggleEditMode'}),
+   }
+ }
+ 
+ export const EditButtonContainer = connect(mapStateToProps, mapDispatchToProps)(EditButton);

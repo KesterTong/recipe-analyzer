@@ -22,7 +22,7 @@ import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { RecipeViewer } from './RecipeViewer';
 import { Action } from './actions';
-import { EditButton } from './EditButton';
+import { EditButtonContainer } from './EditButtonContainer';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
@@ -53,7 +53,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
     <Navbar bg="light" expand="lg">
       <Form inline>
         <IngredientSearcher/>
-        <EditButton/>
+        <EditButtonContainer/>
       </Form>
     </Navbar>
     <Container>
