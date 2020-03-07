@@ -14,7 +14,7 @@
 
 import * as React from 'react';
 
-import { Form, Navbar, Container } from 'react-bootstrap';
+import { Form, Navbar, Container, Spinner } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
@@ -40,21 +40,24 @@ interface IngredientBrowserProps {
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
-  let contents = null;
+  let contents: React.ReactElement | null = null;
   let food = props.food;
 
   if (food) {
     switch (food.dataType) {
       case 'Branded':
-        contents = props.editMode ? <BrandedFoodEditor/> : <BrandedFoodViewer/>
+        contents = props.editMode ? <BrandedFoodEditor/> : <BrandedFoodViewer/>;
         break;
       case 'SR Legacy':
-        contents = <SRLegacyFoodViewer/>
+        contents = <SRLegacyFoodViewer/>;
         break;
       case 'Recipe':
-        contents = <RecipeViewerContainer/>
+        contents = <RecipeViewerContainer/>;
         break;
       case 'Loading': 
+        contents = <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
         break;
     }
   }
