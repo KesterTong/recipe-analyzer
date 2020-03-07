@@ -74,17 +74,19 @@ export type Action = (
   ToggleEditMode | SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
-export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: IngredientIdentifier, description: string) {
-  dispatch({
-    type: 'SelectFood',
-    ingredientIdentifier: ingredientIdentifier,
-    description: description,
-  });
-  if (ingredientIdentifier == null) {
-    return;
-  }
-  let ingredientDatabase = new IngredientDatabaseImpl()
-  ingredientDatabase
-  .getFood(ingredientIdentifier)
-  .then(food => dispatch({type: 'SetFood', food: food}));
+export function selectFood(ingredientIdentifier: IngredientIdentifier, description: string) {
+  return (dispatch: Dispatch<Action>) => {
+    dispatch({
+      type: 'SelectFood',
+      ingredientIdentifier: ingredientIdentifier,
+      description: description,
+    });
+    if (ingredientIdentifier == null) {
+      return Promise.resolve();
+    }
+    let ingredientDatabase = new IngredientDatabaseImpl()
+    return ingredientDatabase
+    .getFood(ingredientIdentifier)
+    .then(food => dispatch({type: 'SetFood', food: food}));
+  } 
 }

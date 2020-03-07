@@ -23,11 +23,13 @@ import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action, selectFood } from './actions';
 import { EditButtonContainer } from './EditButtonContainer';
 import { RootState, LoadingFood } from './RootState';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeViewerContainer } from './RecipeViewerContainer';
 import { FoodRef, IngredientIdentifier } from '../core/FoodRef';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
+import { ThunkDispatch } from 'redux-thunk';
 
 interface IngredientBrowserProps {
   food: Food | LoadingFood | null;
@@ -75,14 +77,14 @@ function mapStateToProps(state: RootState) {
     food: state.food,
     editMode: state.editMode,
     selected: identifier ? {description: state.food?.description || '', identifier} : null,
+    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
   }
 }
 
-function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-  return {
-    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
-    selectFood: (ingredientIdentifier: IngredientIdentifier, description: string) => selectFood(dispatch, ingredientIdentifier, description),
-  }
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+  return bindActionCreators({
+    selectFood,
+  }, dispatch);
 }
 
 export const IngredientBrowser = connect(mapStateToProps, mapDispatchToProps)(IngredientBrowserView);

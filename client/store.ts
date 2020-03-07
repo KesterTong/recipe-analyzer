@@ -12,7 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
+import thunk, { ThunkDispatch } from 'redux-thunk';
 import { reducer } from "./reducer";
+import { Action } from "./actions";
+import { RootState } from "./RootState";
 
-export const store = createStore(reducer);
+export const store = createStore<RootState, Action, any, any>(
+  reducer, applyMiddleware<ThunkDispatch<RootState, any, Action>, RootState>(thunk));
