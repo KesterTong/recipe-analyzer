@@ -8,7 +8,7 @@ import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { connect } from 'react-redux';
 
 interface IngredientSearcherProps {
-  selected: {label: string, value: IngredientIdentifier}[],
+  selected: FoodRef | null;
   selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
 }
 
@@ -19,10 +19,14 @@ export class IngredientSearcherView extends React.Component<IngredientSearcherPr
   };
 
   render() {
+    let selected: {label: string, value: any}[] = [];
+    if (this.props.selected) {
+      selected = [{label: this.props.selected.description, value: this.props.selected.identifier}];
+    }
     return (<React.Fragment>
       <AsyncTypeahead
         {...this.state}
-        selected={this.props.selected}
+        selected={selected}
         filterBy={x => true}
         onChange={(selected: any) => {
           if(selected.length) {
@@ -49,12 +53,9 @@ export class IngredientSearcherView extends React.Component<IngredientSearcherPr
 }
 
 function mapStateToProps(state: RootState) {
-  let ingredientIdentifier = state.ingredientIdentifier;
+  let identifier = state.ingredientIdentifier;
   return {
-    selected: ingredientIdentifier ? [{
-      label: state.food?.description || '',
-      value: ingredientIdentifier,
-    }] : [],
+    selected: identifier ? {description: state.food?.description || '', identifier} : null,
   };
 }
 
