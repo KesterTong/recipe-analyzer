@@ -75,7 +75,7 @@ export type Action = (
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
 export function selectFood(ingredientIdentifier: IngredientIdentifier, description: string) {
-  return (dispatch: Dispatch<Action>) => {
+  return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: 'SelectFood',
       ingredientIdentifier: ingredientIdentifier,
@@ -85,8 +85,7 @@ export function selectFood(ingredientIdentifier: IngredientIdentifier, descripti
       return Promise.resolve();
     }
     let ingredientDatabase = new IngredientDatabaseImpl()
-    return ingredientDatabase
-    .getFood(ingredientIdentifier)
-    .then(food => dispatch({type: 'SetFood', food: food}));
+    const food = await ingredientDatabase.getFood(ingredientIdentifier);
+    return dispatch({ type: 'SetFood', food: food });
   } 
 }
