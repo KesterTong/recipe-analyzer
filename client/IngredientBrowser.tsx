@@ -20,16 +20,19 @@ import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { Action } from './actions';
+import { Action, selectFood } from './actions';
 import { EditButtonContainer } from './EditButtonContainer';
 import { RootState, LoadingFood } from './RootState';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeViewerContainer } from './RecipeViewerContainer';
+import { FoodRef, IngredientIdentifier } from '../core/FoodRef';
 
 interface IngredientBrowserProps {
   food: Food | LoadingFood | null;
   editMode: boolean;
+  selected: FoodRef | null;
+  selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
@@ -54,7 +57,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
-        <IngredientSearcher/>
+        <IngredientSearcher selected={props.selected} selectFood={props.selectFood}/>
         <EditButtonContainer/>
       </Form>
     </Navbar>
@@ -65,14 +68,18 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
+  let identifier = state.ingredientIdentifier;
   return {
     food: state.food,
     editMode: state.editMode,
+    selected: identifier ? {description: state.food?.description || '', identifier} : null,
   }
 }
 
 function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-  return {}
+  return {
+    selectFood: (ingredientIdentifier: IngredientIdentifier, description: string) => selectFood(dispatch, ingredientIdentifier, description),
+  }
 }
 
 export const IngredientBrowser = connect(mapStateToProps, mapDispatchToProps)(IngredientBrowserView);

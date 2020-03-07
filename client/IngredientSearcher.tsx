@@ -7,12 +7,12 @@ import { RootState } from './RootState';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { connect } from 'react-redux';
 
-interface IngredientSearcherProps {
+export interface IngredientSearcherProps {
   selected: FoodRef | null;
   selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
 }
 
-export class IngredientSearcherView extends React.Component<IngredientSearcherProps> {
+export class IngredientSearcher extends React.Component<IngredientSearcherProps> {
   state = {
     isLoading: false,
     options: [],
@@ -51,18 +51,3 @@ export class IngredientSearcherView extends React.Component<IngredientSearcherPr
     });
   };
 }
-
-function mapStateToProps(state: RootState) {
-  let identifier = state.ingredientIdentifier;
-  return {
-    selected: identifier ? {description: state.food?.description || '', identifier} : null,
-  };
-}
-
-function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-  return {
-    selectFood: (ingredientIdentifier: IngredientIdentifier, description: string) => selectFood(dispatch, ingredientIdentifier, description),
-  };
-}
-
-export const IngredientSearcher = connect(mapStateToProps, mapDispatchToProps)(IngredientSearcherView);
