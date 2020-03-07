@@ -17,11 +17,11 @@ import { Button } from 'react-bootstrap';
 export interface EditButtonProps {
   editable: boolean,
   editMode: boolean,
-  toggleEditState: () => void,
+  toggleEditMode: () => void,
 };
 
 export const EditButton: React.SFC<EditButtonProps> = (props) => {
-  return <Button disabled={!props.editable} onClick={props.toggleEditState}>
+  return <Button disabled={!props.editable} onClick={props.toggleEditMode}>
     {props.editMode ? 'Done' : 'Edit'}
   </Button>;
 }

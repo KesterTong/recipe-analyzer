@@ -18,9 +18,11 @@ import { Food } from "../core/Food";
 import { normalizeFood } from "../core/normalizeFood";
 import { NormalizedFood } from "../core/NormalizedFood";
 import { NutrientInfo } from "../core/Nutrients";
+import { RootState } from "./RootState";
 
-export interface ToggleEditMode {
-  type: 'ToggleEditMode',
+export interface SetEditMode {
+  type: 'SetEditMode',
+  editMode: boolean,
 }
 
 export interface SetNutrientInfos {
@@ -71,8 +73,20 @@ export interface SetSelectedQuantity {
 }
 
 export type Action = (
-  ToggleEditMode | SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
+  SetEditMode | SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
+
+
+// TODO: make this setEditMode instead of toggleEditMode
+export function toggleEditMode() {
+  return (dispatch: Dispatch<Action>, getState: () => RootState) => {
+    let state = getState();
+    if (state.editMode) {
+      new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food as Food);
+    }
+    return dispatch({type: 'SetEditMode', editMode: !state.editMode});
+  }
+}
 
 export function selectFood(ingredientIdentifier: IngredientIdentifier, description: string) {
   return async (dispatch: Dispatch<Action>) => {

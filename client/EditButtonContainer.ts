@@ -11,23 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Action } from './actions';
+import { Action, toggleEditMode } from './actions';
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 
 import { EditButton } from './EditButton';
+import { bindActionCreators } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 function mapStateToProps(state: RootState) {
   return {
     editable: state.ingredientIdentifier?.identifierType == 'BookmarkId',
     editMode: state.editMode,
   }
- }
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+  return bindActionCreators({toggleEditMode}, dispatch);
+}
  
- function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-   return {
-     toggleEditState: () => dispatch({type: 'ToggleEditMode'}),
-   }
- }
- 
- export const EditButtonContainer = connect(mapStateToProps, mapDispatchToProps)(EditButton);
+export const EditButtonContainer = connect(mapStateToProps, mapDispatchToProps)(EditButton);

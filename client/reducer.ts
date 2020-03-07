@@ -17,14 +17,6 @@ import { RootState } from "./RootState";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
 
-function _toggleEditMode(state: RootState): RootState {
-  if (state.editMode) {
-    // TODO: move this to the action creator, dispatch is supposed to be pure.
-    new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food as Food);
-  }
-  return {...state, editMode: !state.editMode};
-}
-
 export function reducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
     return {
@@ -36,8 +28,8 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     };
   }
   switch (action.type) {
-    case 'ToggleEditMode':
-      return _toggleEditMode(state);
+    case 'SetEditMode':
+      return {...state, editMode: action.editMode};
     case 'SelectFood':
       return {
         ...state,
@@ -49,10 +41,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'SetNutrientInfos':
       return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
-      return {
-        ...state,
-        food: action.food,
-      };
+      return {...state, food: action.food};
     case 'UpdateDescription':
       if (state.food && state.food.dataType == 'Branded') {
         return {...state, food: {...state.food, description: action.description}};
