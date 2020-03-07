@@ -15,11 +15,12 @@
 import { Action } from "./actions";
 import { RootState } from "./RootState";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
+import { Food } from "../core/Food";
 
 function _toggleEditMode(state: RootState): RootState {
   if (state.editMode) {
     // TODO: move this to the action creator, dispatch is supposed to be pure.
-    new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food!);
+    new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food as Food);
   }
   return {...state, editMode: !state.editMode};
 }
@@ -41,7 +42,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       return {
         ...state,
         ingredientIdentifier: action.ingredientIdentifier,
-        food: null,
+        food: action.description ? {dataType: 'Loading', description: action.description} : null,
         editMode: false,
         selectedQuantity: 0,  // Reset selected quantity.
       };

@@ -16,11 +16,15 @@ import { NutrientInfo, Nutrients } from "../core/Nutrients";
 import { IngredientDatabase } from "../core/IngredientDatabase";
 import { IngredientIdentifier } from "../core/FoodRef";
 import { Food } from "../core/Food";
-import { NormalizedFood } from "../core/NormalizedFood";
+
+export interface LoadingFood {
+  dataType: 'Loading',
+  description: string,
+}
 
 export interface RootState {
   ingredientIdentifier: IngredientIdentifier | null;
-  food: Food | null;
+  food: Food | LoadingFood | null;
   // By definition, branded foods store their nutrients per
   // 100 g/ml.  However when entering label data, the nutrients
   // are per household serving.  Therefore, we use this as

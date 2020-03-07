@@ -1,15 +1,15 @@
 import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { IngredientIdentifier } from '../core/FoodRef';
-import { IngredientDatabase } from '../core/IngredientDatabase';
+import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
 import { Action, selectFood } from './actions';
 import { RootState } from './RootState';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { connect } from 'react-redux';
 
 interface IngredientSearcherProps {
-  selectFood(ingredientIdentifier: IngredientIdentifier | null): void;
+  selected: {label: string, value: IngredientIdentifier}[],
+  selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
 }
 
 export class IngredientSearcherView extends React.Component<IngredientSearcherProps> {
@@ -22,8 +22,13 @@ export class IngredientSearcherView extends React.Component<IngredientSearcherPr
     return (<React.Fragment>
       <AsyncTypeahead
         {...this.state}
+        selected={this.props.selected}
         filterBy={x => true}
-        onChange={(selection: any) => selection.length ? this.props.selectFood(selection[0].value) : null }
+        onChange={(selected: any) => {
+          if(selected.length) {
+            this.props.selectFood(selected[0].value, selected[0].label)
+          }
+        }}
         minLength={3} onSearch={this._handleSearch}
         placeholder="Search for a food..." />
     </React.Fragment>);
@@ -44,12 +49,18 @@ export class IngredientSearcherView extends React.Component<IngredientSearcherPr
 }
 
 function mapStateToProps(state: RootState) {
-  return {};
+  let ingredientIdentifier = state.ingredientIdentifier;
+  return {
+    selected: ingredientIdentifier ? [{
+      label: state.food?.description || '',
+      value: ingredientIdentifier,
+    }] : [],
+  };
 }
 
 function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
   return {
-    selectFood: (ingredientIdentifier: IngredientIdentifier | null) => selectFood(dispatch, ingredientIdentifier),
+    selectFood: (ingredientIdentifier: IngredientIdentifier, description: string) => selectFood(dispatch, ingredientIdentifier, description),
   };
 }
 

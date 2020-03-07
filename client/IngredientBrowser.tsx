@@ -22,13 +22,13 @@ import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action } from './actions';
 import { EditButtonContainer } from './EditButtonContainer';
-import { RootState } from './RootState';
+import { RootState, LoadingFood } from './RootState';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeViewerContainer } from './RecipeViewerContainer';
 
 interface IngredientBrowserProps {
-  food: Food | null;
+  food: Food | LoadingFood | null;
   editMode: boolean;
 };
 
@@ -46,6 +46,8 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
         break;
       case 'Recipe':
         contents = <RecipeViewerContainer/>
+        break;
+      case 'Loading': 
         break;
     }
   }

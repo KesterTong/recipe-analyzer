@@ -30,7 +30,8 @@ export interface SetNutrientInfos {
 
 export interface SelectFood {
   type: 'SelectFood',
-  ingredientIdentifier: IngredientIdentifier | null,
+  ingredientIdentifier: IngredientIdentifier,
+  description: string | null, 
 }
 
 export interface SetFood {
@@ -73,8 +74,12 @@ export type Action = (
   ToggleEditMode | SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
-export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: IngredientIdentifier | null) {
-  dispatch({type: 'SelectFood', ingredientIdentifier: ingredientIdentifier});
+export function selectFood(dispatch: Dispatch<Action>, ingredientIdentifier: IngredientIdentifier, description: string) {
+  dispatch({
+    type: 'SelectFood',
+    ingredientIdentifier: ingredientIdentifier,
+    description: description,
+  });
   if (ingredientIdentifier == null) {
     return;
   }
