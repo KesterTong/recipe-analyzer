@@ -2,13 +2,10 @@ import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
-import { Action, selectFood } from './actions';
-import { RootState } from './RootState';
-import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
-import { connect } from 'react-redux';
 
 export interface IngredientSearcherProps {
   selected: FoodRef | null;
+  autocomplete(query: string): Promise<FoodRef[]>,
   selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
 }
 
@@ -40,7 +37,7 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
 
   _handleSearch = (query: string) => {
     this.setState({ isLoading: true });
-    new IngredientDatabaseImpl().searchFoods(query).then(foodRefs => {
+    this.props.autocomplete(query).then(foodRefs => {
       this.setState({
         isLoading: false,
         options: foodRefs.map(foodRef => ({

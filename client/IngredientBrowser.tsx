@@ -27,12 +27,14 @@ import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeViewerContainer } from './RecipeViewerContainer';
 import { FoodRef, IngredientIdentifier } from '../core/FoodRef';
+import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 
 interface IngredientBrowserProps {
   food: Food | LoadingFood | null;
   editMode: boolean;
   selected: FoodRef | null;
   selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
+  autocomplete(query: string): Promise<FoodRef[]>,
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
@@ -57,7 +59,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
-        <IngredientSearcher selected={props.selected} selectFood={props.selectFood}/>
+        <IngredientSearcher selected={props.selected} selectFood={props.selectFood} autocomplete={props.autocomplete}/>
         <EditButtonContainer/>
       </Form>
     </Navbar>
@@ -78,6 +80,7 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
   return {
+    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
     selectFood: (ingredientIdentifier: IngredientIdentifier, description: string) => selectFood(dispatch, ingredientIdentifier, description),
   }
 }
