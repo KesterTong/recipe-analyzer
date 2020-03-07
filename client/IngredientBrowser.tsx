@@ -20,8 +20,7 @@ import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { Action, selectFood } from './actions';
-import { EditButtonContainer } from './EditButtonContainer';
+import { Action, selectFood, toggleEditMode } from './actions';
 import { RootState, LoadingFood } from './RootState';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -30,13 +29,16 @@ import { RecipeViewerContainer } from './RecipeViewerContainer';
 import { FoodRef, IngredientIdentifier } from '../core/FoodRef';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
+import { EditButton } from './EditButton';
 
 interface IngredientBrowserProps {
-  food: Food | LoadingFood | null;
-  editMode: boolean;
-  selected: FoodRef | null;
+  food: Food | LoadingFood | null,
+  editable: boolean,
+  editMode: boolean,
+  selected: FoodRef | null,
   selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
   autocomplete(query: string): Promise<FoodRef[]>,
+  toggleEditMode: () => void,
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
@@ -65,7 +67,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
     <Navbar bg="light" expand="lg">
       <Form inline>
         <IngredientSearcher selected={props.selected} selectFood={props.selectFood} autocomplete={props.autocomplete}/>
-        <EditButtonContainer/>
+        <EditButton editable={props.editable} editMode={props.editMode} toggleEditMode={props.toggleEditMode}/>
       </Form>
     </Navbar>
     <Container>
@@ -78,6 +80,7 @@ function mapStateToProps(state: RootState) {
   let identifier = state.ingredientIdentifier;
   return {
     food: state.food,
+    editable: state.ingredientIdentifier?.identifierType == 'BookmarkId',
     editMode: state.editMode,
     selected: identifier ? {description: state.food?.description || '', identifier} : null,
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
@@ -87,6 +90,7 @@ function mapStateToProps(state: RootState) {
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
   return bindActionCreators({
     selectFood,
+    toggleEditMode,
   }, dispatch);
 }
 
