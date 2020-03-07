@@ -23,7 +23,7 @@ export class IngredientSearcherView extends React.Component<IngredientSearcherPr
       <AsyncTypeahead
         {...this.state}
         filterBy={x => true}
-        onChange={(selection: any) => this.props.selectFood(selection.length ? selection[0].value : null)}
+        onChange={(selection: any) => selection.length ? this.props.selectFood(selection[0].value) : null }
         minLength={3} onSearch={this._handleSearch}
         placeholder="Search for a food..." />
     </React.Fragment>);
