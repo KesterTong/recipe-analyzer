@@ -76,14 +76,15 @@ export type Action = (
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
 function brandedFoodFromEditState(editState: BrandedFoodEdits): BrandedFood {
+  let servingSize = Number(editState.servingSize);
   let foodNutrients = editState.foodNutrients.map(nutrient => ({
     nutrient: {id: nutrient.id},
-    amount: Number(nutrient.amount),
+    amount: Number(nutrient.amount) * 100 / servingSize,
   }));
   return {
     dataType: 'Branded',
     description: editState.description,
-    servingSize: Number(editState.servingSize),
+    servingSize,
     servingSizeUnit: editState.servingSizeUnit,
     householdServingFullText: editState.householdServingFullText,
     foodNutrients,
@@ -93,7 +94,7 @@ function brandedFoodFromEditState(editState: BrandedFoodEdits): BrandedFood {
 function editStateFromBrandedFood(food: BrandedFood): BrandedFoodEdits {
   let foodNutrients = food.foodNutrients.map(nutrient => ({
     id: nutrient.nutrient.id,
-    amount: (nutrient.amount || 0).toString(),
+    amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
   }));
   return {
     dataType: 'Branded Edit',
