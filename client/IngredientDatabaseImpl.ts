@@ -17,7 +17,7 @@ import { IngredientDatabase } from "../core/IngredientDatabase";
 import { NutrientInfo } from "../core/Nutrients";
 import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
-import { searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl } from "../core/FoodDataCentral";
+import { searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl, BrandedFood } from "../core/FoodDataCentral";
 import { FDC_API_KEY } from "./config";
 import { version } from "punycode";
 
@@ -51,6 +51,28 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
       data: JSON.stringify(food),
       version: '0.1',
     });
+  }
+
+  async newFood(): Promise<{ingredientIdentifier: IngredientIdentifier, food: Food}> {
+    let food: BrandedFood = {
+      dataType: 'Branded',
+      description: 'New Food',
+      servingSize: 100,
+      servingSizeUnit: 'g',
+      householdServingFullText: '1 serving',
+      foodNutrients: [],
+    };
+    const documentReference = await firebase.firestore().collection('userData').add({
+      data: JSON.stringify(food),
+      version: '0.1',
+    });
+    return {
+      ingredientIdentifier: {
+        identifierType: 'BookmarkId',
+        bookmarkId: documentReference.id,
+      },
+      food,
+    };
   }
 
   private documentForIngredient(ingredientIdentifier: IngredientIdentifier): firebase.firestore.DocumentReference<firebase.firestore.DocumentData> {

@@ -14,13 +14,13 @@
 
 import * as React from 'react';
 
-import { Form, Navbar, Container, Spinner } from 'react-bootstrap';
+import { Form, Navbar, Container, Spinner, Button } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { Action, selectFood, toggleEditMode } from './actions';
+import { Action, selectFood, toggleEditMode, newBrandedFood } from './actions';
 import { RootState, LoadingFood, BrandedFoodEdits } from './RootState';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -39,6 +39,7 @@ interface IngredientBrowserProps {
   selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
   autocomplete(query: string): Promise<FoodRef[]>,
   toggleEditMode: () => void,
+  newBrandedFood: () => void,
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
@@ -71,6 +72,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
       <Form inline>
         <IngredientSearcher selected={props.selected} selectFood={props.selectFood} autocomplete={props.autocomplete}/>
         <EditButton editable={props.editable} editMode={props.editMode} toggleEditMode={props.toggleEditMode}/>
+        <Button onClick={props.newBrandedFood}>New Custom Food</Button>
       </Form>
     </Navbar>
     <Container>
@@ -94,6 +96,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
   return bindActionCreators({
     selectFood,
     toggleEditMode,
+    newBrandedFood,
   }, dispatch);
 }
 
