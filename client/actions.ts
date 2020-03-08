@@ -15,8 +15,6 @@ import { IngredientIdentifier } from "../core/FoodRef";
 import { Dispatch } from "react";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
-import { normalizeFood } from "../core/normalizeFood";
-import { NormalizedFood } from "../core/NormalizedFood";
 import { NutrientInfo } from "../core/Nutrients";
 import { RootState, BrandedFoodEdits } from "./RootState";
 import { BrandedFood } from "../core/FoodDataCentral";
