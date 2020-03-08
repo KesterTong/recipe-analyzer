@@ -21,7 +21,7 @@ import { Food } from '../core/Food';
 import { BrandedFoodViewer } from './BrandedFoodViewer';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action, selectFood, toggleEditMode } from './actions';
-import { RootState, LoadingFood } from './RootState';
+import { RootState, LoadingFood, BrandedFoodEdits } from './RootState';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
@@ -32,7 +32,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { EditButton } from './EditButton';
 
 interface IngredientBrowserProps {
-  food: Food | LoadingFood | null,
+  food: Food | LoadingFood | BrandedFoodEdits | null,
   editable: boolean,
   editMode: boolean,
   selected: FoodRef | null,
@@ -48,7 +48,10 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   if (food) {
     switch (food.dataType) {
       case 'Branded':
-        contents = props.editMode ? <BrandedFoodEditor/> : <BrandedFoodViewer/>;
+        contents = <BrandedFoodViewer/>;
+        break;
+      case 'Branded Edit': 
+        contents = <BrandedFoodEditor/>;
         break;
       case 'SR Legacy':
         contents = <SRLegacyFoodViewer/>;
@@ -81,7 +84,7 @@ function mapStateToProps(state: RootState) {
   return {
     food: state.food,
     editable: state.ingredientIdentifier?.identifierType == 'BookmarkId',
-    editMode: state.editMode,
+    editMode: state.food?.dataType == 'Branded Edit',
     selected: identifier ? {description: state.food?.description || '', identifier} : null,
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
   }

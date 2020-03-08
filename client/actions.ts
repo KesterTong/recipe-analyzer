@@ -18,7 +18,8 @@ import { Food } from "../core/Food";
 import { normalizeFood } from "../core/normalizeFood";
 import { NormalizedFood } from "../core/NormalizedFood";
 import { NutrientInfo } from "../core/Nutrients";
-import { RootState } from "./RootState";
+import { RootState, BrandedFoodEdits } from "./RootState";
+import { BrandedFood } from "../core/FoodDataCentral";
 
 export interface SetEditMode {
   type: 'SetEditMode',
@@ -38,7 +39,7 @@ export interface SelectFood {
 
 export interface SetFood {
   type: 'SetFood',
-  food: Food | null,
+  food: Food | BrandedFoodEdits | null,
 }
 
 export interface UpdateDescription {
@@ -48,7 +49,7 @@ export interface UpdateDescription {
 
 export interface UpdateServingSize {
   type: 'UpdateServingSize',
-  servingSize: number,
+  servingSize: string,
 }
 
 export interface UpdateServingSizeUnit {
@@ -64,7 +65,7 @@ export interface UpdateHouseholdUnit {
 export interface UpdateNutrientValue {
   type: 'UpdateNutrientValue',
   nutrientId: number,
-  value: number,
+  value: string,
 }
 
 export interface SetSelectedQuantity {
@@ -73,18 +74,51 @@ export interface SetSelectedQuantity {
 }
 
 export type Action = (
-  SetEditMode | SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
+  SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
 
+function brandedFoodFromEditState(editState: BrandedFoodEdits): BrandedFood {
+  let foodNutrients = editState.foodNutrients.map(nutrient => ({
+    nutrient: {id: nutrient.id},
+    amount: Number(nutrient.amount),
+  }));
+  return {
+    dataType: 'Branded',
+    description: editState.description,
+    servingSize: Number(editState.servingSize),
+    servingSizeUnit: editState.servingSizeUnit,
+    householdServingFullText: editState.householdServingFullText,
+    foodNutrients,
+  }
+}
+
+function editStateFromBrandedFood(food: BrandedFood): BrandedFoodEdits {
+  let foodNutrients = food.foodNutrients.map(nutrient => ({
+    id: nutrient.nutrient.id,
+    amount: (nutrient.amount || 0).toString(),
+  }));
+  return {
+    dataType: 'Branded Edit',
+    description: food.description,
+    servingSize: food.servingSize.toString(),
+    servingSizeUnit: food.servingSizeUnit,
+    householdServingFullText: food.householdServingFullText || '',
+    foodNutrients,
+  }
+}
 
 // TODO: make this setEditMode instead of toggleEditMode
 export function toggleEditMode() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
     let state = getState();
-    if (state.editMode) {
-      new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food as Food);
+    if (state.food?.dataType == 'Branded Edit') {
+      let updatedFood = brandedFoodFromEditState(state.food);
+      new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, updatedFood);
+      dispatch({type: 'SetFood', food: updatedFood});
+    } else if (state.food?.dataType == 'Branded') {
+      let editState = editStateFromBrandedFood(state.food);
+      dispatch({type: 'SetFood', food: editState});
     }
-    return dispatch({type: 'SetEditMode', editMode: !state.editMode});
   }
 }
 

@@ -23,19 +23,15 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       ingredientIdentifier: null,
       food: null,
       nutrientInfos: null,
-      editMode: false,
       selectedQuantity: 0,
     };
   }
   switch (action.type) {
-    case 'SetEditMode':
-      return {...state, editMode: action.editMode};
     case 'SelectFood':
       return {
         ...state,
         ingredientIdentifier: action.ingredientIdentifier,
         food: action.description ? {dataType: 'Loading', description: action.description} : null,
-        editMode: false,
         selectedQuantity: 0,  // Reset selected quantity.
       };
     case 'SetNutrientInfos':
@@ -43,29 +39,29 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'SetFood':
       return {...state, food: action.food};
     case 'UpdateDescription':
-      if (state.food && state.food.dataType == 'Branded') {
+      if (state.food && state.food.dataType == 'Branded Edit') {
         return {...state, food: {...state.food, description: action.description}};
       }
       return state;
     case 'UpdateServingSize':
-      if (state.food && state.food.dataType == 'Branded') {
+      if (state.food && state.food.dataType == 'Branded Edit') {
         return {...state, food: {...state.food, servingSize: action.servingSize}};
       }
       return state;
     case 'UpdateServingSizeUnit':
-      if (state.food && state.food.dataType == 'Branded') {
+      if (state.food && state.food.dataType == 'Branded Edit') {
         return {...state, food: {...state.food, servingSizeUnit: action.servingSizeUnit}};
       }
       return state;
     case 'UpdateHouseholdUnit':
-      if (state.food && state.food.dataType == 'Branded') {
+      if (state.food && state.food.dataType == 'Branded Edit') {
         return {...state, food: {...state.food, householdServingFullText: action.householdUnit}};
       }
       return state;
     case 'UpdateNutrientValue':
-      if (state.food && state.food.dataType == 'Branded') {
+      if (state.food && state.food.dataType == 'Branded Edit') {
         let foodNutrients = state.food.foodNutrients.map(nutrient =>
-          nutrient.nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
+          nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
         return {...state, food: {...state.food, foodNutrients}};
       }
       return state;

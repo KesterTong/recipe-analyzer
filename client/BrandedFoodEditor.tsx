@@ -15,7 +15,7 @@
 import * as React from 'react';
 
 import { Form, Col } from 'react-bootstrap';
-import { RootState } from './RootState';
+import { RootState, BrandedFoodEdits } from './RootState';
 import { connect } from 'react-redux';
 import { Action } from './actions';
 import { BrandedFood } from '../core/FoodDataCentral';
@@ -23,15 +23,15 @@ import { BrandedFood } from '../core/FoodDataCentral';
 interface BrandedFoodEditorProps {
   description: string,
   householdServingFullText: string,
-  servingSize: number,
+  servingSize: string,
   servingSizeUnit: string,
-  nutrients: {id: number, description: string, value: number}[],
+  nutrients: {id: number, description: string, value: string}[],
 
   updateDescription(value: string): void,
   updatehouseholdServingFullText(value: string): void,
-  updateServingSize(value: number): void,
+  updateServingSize(value: string): void,
   updateServingSizeUnit(value: string): void,
-  updateNutrientValue(id: number, value: number): void,
+  updateNutrientValue(id: number, value: string): void,
 }
 
 const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
@@ -55,8 +55,8 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
           <Form.Group as={Col} controlId="formServingSize">
             <Form.Label>Serving Size</Form.Label>
             <Form.Control
-              value={props.servingSize.toString()}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateServingSize(Number(event.target.value))}
+              value={props.servingSize}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateServingSize(event.target.value)}
               />
           </Form.Group>
           <Form.Group as={Col} controlId="formServingSizeUnits">
@@ -76,7 +76,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
             <Form.Label>{nutrient.description}</Form.Label>
             <Form.Control
               value={nutrient.value.toString()}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateNutrientValue(nutrient.id, Number(event.target.value))}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateNutrientValue(nutrient.id, event.target.value)}
               />
           </Form.Group>
         )) }
@@ -85,7 +85,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  let food = state.food as BrandedFood;
+  let food = state.food as BrandedFoodEdits;
   let nutrientNamesById: {[index: number]: string} = {};
   (state.nutrientInfos || []).forEach(nutrientInfo => {
     nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
@@ -96,9 +96,9 @@ function mapStateToProps(state: RootState) {
     servingSize: food.servingSize,
     servingSizeUnit: food.servingSizeUnit,
     nutrients: food.foodNutrients.map(nutrient => ({
-      id: nutrient.nutrient.id,
-      description: nutrientNamesById[nutrient.nutrient.id],
-      value: nutrient.amount || 0,
+      id: nutrient.id,
+      description: nutrientNamesById[nutrient.id],
+      value: nutrient.amount,
     })),
   };
 }
@@ -113,7 +113,7 @@ function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
       type: 'UpdateHouseholdUnit',
       householdUnit: value
     }),
-    updateServingSize: (value: number) => dispatch({
+    updateServingSize: (value: string) => dispatch({
       type: 'UpdateServingSize',
       servingSize: value
     }),
@@ -121,7 +121,7 @@ function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
       type: 'UpdateServingSizeUnit',
       servingSizeUnit: value
     }),
-    updateNutrientValue: (id: number, value: number) => dispatch({
+    updateNutrientValue: (id: number, value: string) => dispatch({
       type: 'UpdateNutrientValue',
       nutrientId: id,
       value: value,

@@ -20,7 +20,7 @@ import { NutrientsViewer } from './NutrientsViewer';
 
 function mapStateToProps(state: RootState) {
   let food = state.food;
-  if (food == null || food.dataType == 'Loading' || state.nutrientInfos == null) {
+  if (food == null || food.dataType == 'Loading' || food.dataType == 'Branded Edit' || state.nutrientInfos == null) {
     return {
       nutrientNames: [],
       nutrientValues: [],

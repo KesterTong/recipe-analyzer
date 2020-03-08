@@ -22,16 +22,18 @@ export interface LoadingFood {
   description: string,
 }
 
+export interface BrandedFoodEdits {
+  dataType: 'Branded Edit',
+  servingSize: string,
+  servingSizeUnit: string,
+  householdServingFullText: string,
+  description: string,
+  foodNutrients: {id: number, amount: string}[],
+}
+
 export interface RootState {
   ingredientIdentifier: IngredientIdentifier | null;
-  food: Food | LoadingFood | null;
-  // By definition, branded foods store their nutrients per
-  // 100 g/ml.  However when entering label data, the nutrients
-  // are per household serving.  Therefore, we use this as
-  // the source of truth while editing a branded food, and update
-  // `food` on changes.
-  // brandedFoodNutrientsPerServing: Nutrients | null;
-  editMode: boolean;
+  food: Food | LoadingFood | BrandedFoodEdits | null;
   nutrientInfos: NutrientInfo[] | null;
   selectedQuantity: number;
 }

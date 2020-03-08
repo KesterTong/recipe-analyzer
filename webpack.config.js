@@ -50,4 +50,8 @@ module.exports = {
       filename: 'web_app.html',
     }),
   ],
+	optimization: {
+		// We no not want to minimize our code.
+		minimize: false
+	},
 };
