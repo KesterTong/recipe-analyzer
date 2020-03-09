@@ -19,7 +19,6 @@ import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
 import { searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl, BrandedFood } from "../core/FoodDataCentral";
 import { FDC_API_KEY } from "./config";
-import { version } from "punycode";
 
 export class IngredientDatabaseImpl implements IngredientDatabase {
   getNutrientInfo(): Promise<NutrientInfo[]> {
