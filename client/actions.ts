@@ -113,6 +113,8 @@ export function saveFood() {
     if (state.food?.dataType == 'Branded Edit') {
       let updatedFood = brandedFoodFromEditState(state.food);
       new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, updatedFood);
+    } else if (state.food?.dataType == 'Recipe') {
+      new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food); 
     }
   }
 }
