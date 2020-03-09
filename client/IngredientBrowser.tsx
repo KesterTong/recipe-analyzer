@@ -25,7 +25,7 @@ import { RootState, LoadingFood, BrandedFoodEdits } from './RootState';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
-import { RecipeViewerContainer } from './RecipeViewerContainer';
+import { RecipeEditorContainer } from './RecipeEditorContainer';
 import { FoodRef, IngredientIdentifier } from '../core/FoodRef';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
@@ -59,7 +59,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
         contents = <SRLegacyFoodViewer/>;
         break;
       case 'Recipe':
-        contents = <RecipeViewerContainer/>;
+        contents = <RecipeEditorContainer/>;
         break;
       case 'Loading': 
         contents = <Spinner animation="border" role="status">

@@ -18,7 +18,6 @@ import { Form, Col } from 'react-bootstrap';
 import { RootState, BrandedFoodEdits } from './RootState';
 import { connect } from 'react-redux';
 import { Action } from './actions';
-import { BrandedFood } from '../core/FoodDataCentral';
 
 interface BrandedFoodEditorProps {
   description: string,

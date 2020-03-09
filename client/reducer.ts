@@ -41,6 +41,8 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'UpdateDescription':
       if (state.food && state.food.dataType == 'Branded Edit') {
         return {...state, food: {...state.food, description: action.description}};
+      } else if (state.food && state.food.dataType == 'Recipe') {
+        return {...state, food: {...state.food, description: action.description}};
       }
       return state;
     case 'UpdateServingSize':
