@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NutrientInfo, Nutrients } from "../core/Nutrients";
-import { IngredientDatabase } from "../core/IngredientDatabase";
+import { NutrientInfo } from "../core/Nutrients";
 import { IngredientIdentifier } from "../core/FoodRef";
-import { Food } from "../core/Food";
+import { SRLegacyFood } from "../core/FoodDataCentral";
+import { Recipe } from "../core/Recipe";
 
 export interface LoadingFood {
   dataType: 'Loading',
@@ -33,7 +33,7 @@ export interface BrandedFoodEdits {
 
 export interface RootState {
   ingredientIdentifier: IngredientIdentifier | null;
-  food: Food | LoadingFood | BrandedFoodEdits | null;
+  food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null;
   nutrientInfos: NutrientInfo[] | null;
   selectedQuantity: number;
 }

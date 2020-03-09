@@ -36,16 +36,6 @@ function mapStateToProps(state: RootState) {
       // TODO: store nutrients per serving in separate part of state.
       nutrientsPerServing = {};
       break;
-    case 'Branded':
-      quantities = [{
-        description: food.householdServingFullText! + ' (' + food.servingSize + ' ' + food.servingSizeUnit + ')',
-        servings: food.servingSize / 100
-      }, {
-        description: '100 ' + food.servingSizeUnit,
-        servings: 1,
-      }];
-      nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientInfos.map(nutrientInfo => nutrientInfo.id));
-      break;
     case 'SR Legacy':
       quantities = [{description: '100 g', servings: 1}];
       food.foodPortions.forEach(portion => {

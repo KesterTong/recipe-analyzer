@@ -17,7 +17,8 @@ import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
 import { NutrientInfo } from "../core/Nutrients";
 import { RootState, BrandedFoodEdits } from "./RootState";
-import { BrandedFood } from "../core/FoodDataCentral";
+import { BrandedFood, SRLegacyFood } from "../core/FoodDataCentral";
+import { Recipe } from "../core/Recipe";
 
 export interface SetEditMode {
   type: 'SetEditMode',
@@ -37,7 +38,7 @@ export interface SelectFood {
 
 export interface SetFood {
   type: 'SetFood',
-  food: Food | BrandedFoodEdits | null,
+  food: SRLegacyFood | Recipe | BrandedFoodEdits | null,
 }
 
 export interface UpdateDescription {
@@ -106,17 +107,12 @@ function editStateFromBrandedFood(food: BrandedFood): BrandedFoodEdits {
   }
 }
 
-// TODO: make this setEditMode instead of toggleEditMode
-export function toggleEditMode() {
+export function saveFood() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
     let state = getState();
     if (state.food?.dataType == 'Branded Edit') {
       let updatedFood = brandedFoodFromEditState(state.food);
       new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, updatedFood);
-      dispatch({type: 'SetFood', food: updatedFood});
-    } else if (state.food?.dataType == 'Branded') {
-      let editState = editStateFromBrandedFood(state.food);
-      dispatch({type: 'SetFood', food: editState});
     }
   }
 }
@@ -133,47 +129,53 @@ export function selectFood(ingredientIdentifier: IngredientIdentifier, descripti
     }
     let ingredientDatabase = new IngredientDatabaseImpl()
     const food = await ingredientDatabase.getFood(ingredientIdentifier);
-    return dispatch({ type: 'SetFood', food: food });
+    let updated = food?.dataType == 'Branded'? editStateFromBrandedFood(food) :food;
+    return dispatch({
+      type: 'SetFood',
+      food: updated as (SRLegacyFood | Recipe | null), 
+    });
   } 
 }
 
 export function newBrandedFood() {
   return async (dispatch: Dispatch<Action>) => {
-    let result = await new IngredientDatabaseImpl().insertFood({
+    const food: BrandedFood = {
       dataType: 'Branded',
       description: 'New Food',
       servingSize: 100,
       servingSizeUnit: 'g',
       householdServingFullText: '1 serving',
       foodNutrients: [],
-    });
+    };
+    let ingredientIdentifier = await new IngredientDatabaseImpl().insertFood(food);
     dispatch({
       type: 'SelectFood',
-      ingredientIdentifier: result.ingredientIdentifier,
+      ingredientIdentifier,
       description: null,
     });
     dispatch({
       type: 'SetFood',
-      food: result.food,
+      food: editStateFromBrandedFood(food),
     });
   } 
 }
 
 export function newRecipe() {
   return async (dispatch: Dispatch<Action>) => {
-    let result = await new IngredientDatabaseImpl().insertFood({
+    const food: Recipe = {
       dataType: 'Recipe',
       description: 'New Recipe',
       ingredientsList: [],
-    });
+    };
+    let ingredientIdentifier = await new IngredientDatabaseImpl().insertFood(food);
     dispatch({
       type: 'SelectFood',
-      ingredientIdentifier: result.ingredientIdentifier,
+      ingredientIdentifier,
       description: null,
     });
     dispatch({
       type: 'SetFood',
-      food: result.food,
+      food: food,
     });
   } 
 }
