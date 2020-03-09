@@ -53,15 +53,7 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
     });
   }
 
-  async newFood(): Promise<{ingredientIdentifier: IngredientIdentifier, food: Food}> {
-    let food: BrandedFood = {
-      dataType: 'Branded',
-      description: 'New Food',
-      servingSize: 100,
-      servingSizeUnit: 'g',
-      householdServingFullText: '1 serving',
-      foodNutrients: [],
-    };
+  async insertFood(food: Food): Promise<{ingredientIdentifier: IngredientIdentifier, food: Food}> {
     const documentReference = await firebase.firestore().collection('userData').add({
       data: JSON.stringify(food),
       version: '0.1',

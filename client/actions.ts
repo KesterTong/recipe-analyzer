@@ -139,7 +139,33 @@ export function selectFood(ingredientIdentifier: IngredientIdentifier, descripti
 
 export function newBrandedFood() {
   return async (dispatch: Dispatch<Action>) => {
-    let result = await new IngredientDatabaseImpl().newFood();
+    let result = await new IngredientDatabaseImpl().insertFood({
+      dataType: 'Branded',
+      description: 'New Food',
+      servingSize: 100,
+      servingSizeUnit: 'g',
+      householdServingFullText: '1 serving',
+      foodNutrients: [],
+    });
+    dispatch({
+      type: 'SelectFood',
+      ingredientIdentifier: result.ingredientIdentifier,
+      description: null,
+    });
+    dispatch({
+      type: 'SetFood',
+      food: result.food,
+    });
+  } 
+}
+
+export function newRecipe() {
+  return async (dispatch: Dispatch<Action>) => {
+    let result = await new IngredientDatabaseImpl().insertFood({
+      dataType: 'Recipe',
+      description: 'New Recipe',
+      ingredientsList: [],
+    });
     dispatch({
       type: 'SelectFood',
       ingredientIdentifier: result.ingredientIdentifier,
