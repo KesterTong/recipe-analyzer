@@ -21,7 +21,11 @@ import { FoodRef } from '../core/FoodRef';
 
 export interface RecipeEditorProps {
   description: string,
-  ingredientsList: Ingredient[],
+  ingredientsList: {
+    amount: number,
+    unit: string,
+    foodRef: FoodRef,
+  }[],
   updateDescription(value: string): void,
   autocomplete(query: string): Promise<FoodRef[]>,
   addIngredient(foodRef: FoodRef): void,
@@ -45,14 +49,14 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
               <Form.Group as={Col} controlId="formAmount">
                 <Form.Label>Amount</Form.Label>
                 <Form.Control
-                value={ingredient.quantity.amount.toString()}
+                value={ingredient.amount.toString()}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientAmount(index, Number(event.target.value))}
                 />
               </Form.Group>
               <Form.Group as={Col} controlId="formUnit">
                 <Form.Label>Unit</Form.Label>
                 <Form.Control
-                value={ingredient.quantity.unit}
+                value={ingredient.unit}
                 as="select"
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientUnit(index, event.target.value)}
                 >
@@ -62,7 +66,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
               </Form.Group>
               <Form.Group as={Col} controlId="formIngredient">
                 <Form.Label>Ingredient</Form.Label>
-                <Form.Control value={ingredient.ingredientIdentifier.identifierType}/>
+                <IngredientSearcher key={index} selected={ingredient.foodRef} selectFood={(foodRef: FoodRef) => null} autocomplete={props.autocomplete} />
               </Form.Group>
             </Form.Row>
           )

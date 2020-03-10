@@ -16,12 +16,23 @@ import { Action } from "./actions";
 import { RootState } from "./RootState";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
+import { IngredientIdentifier } from "../core/FoodRef";
+
+export function pathForIdentifier(identifier: IngredientIdentifier): string {
+  switch (identifier.identifierType) {
+    case 'BookmarkId':
+      return 'userData/' + identifier.bookmarkId;
+    case 'FdcId':
+      return 'fdcData/' + identifier.fdcId.toString();
+  }
+}
 
 export function reducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
     return {
       ingredientIdentifier: null,
       food: null,
+      foodByDocumentPath: {},
       nutrientInfos: null,
       selectedQuantity: 0,
     };
@@ -69,26 +80,11 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       return state;
     case 'SetSelectedQuantity':
       return {...state, selectedQuantity: action.index};
-      case 'AddIngredient':
-        if (state.food?.dataType == 'Recipe') {
-          return {
-            ...state,
-            food: {
-              ...state.food,
-              ingredientsList: state.food.ingredientsList.concat([{
-                quantity: {
-                  amount: 100,
-                  unit: 'g',
-                },
-                ingredientIdentifier: action.foodRef.identifier,
-              }])
-            }
-          };
-        }
-        return state;
     case 'AddIngredient':
+      console.log(state)
+      console.log(action)
       if (state.food?.dataType == 'Recipe') {
-        return {
+        let s = {
           ...state,
           food: {
             ...state.food,
@@ -100,7 +96,16 @@ export function reducer(state: RootState | undefined, action: Action): RootState
               ingredientIdentifier: action.foodRef.identifier,
             }])
           },
+          foodByDocumentPath: {
+            ...state.foodByDocumentPath,
+            [pathForIdentifier(action.foodRef.identifier)]: {
+              dataType: 'Loading',
+              description: action.foodRef.description,
+            },
+          }
         };
+        console.log(s)
+        return s as RootState;
       }
       return state;
     case 'UpdateIngredientAmount':

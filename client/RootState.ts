@@ -16,7 +16,10 @@ import { NutrientInfo } from "../core/Nutrients";
 import { IngredientIdentifier } from "../core/FoodRef";
 import { SRLegacyFood } from "../core/FoodDataCentral";
 import { Recipe } from "../core/Recipe";
+import { Food } from "../core/Food";
 
+// When a food has been selected from an IngredientSearcher,
+// we know its description but nothing else.
 export interface LoadingFood {
   dataType: 'Loading',
   description: string,
@@ -32,8 +35,9 @@ export interface BrandedFoodEdits {
 }
 
 export interface RootState {
-  ingredientIdentifier: IngredientIdentifier | null;
-  food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null;
-  nutrientInfos: NutrientInfo[] | null;
-  selectedQuantity: number;
+  ingredientIdentifier: IngredientIdentifier | null,
+  food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null,
+  foodByDocumentPath: {[index: string]: Food | LoadingFood},
+  nutrientInfos: NutrientInfo[] | null,
+  selectedQuantity: number,
 }

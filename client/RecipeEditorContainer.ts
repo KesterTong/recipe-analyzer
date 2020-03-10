@@ -20,12 +20,24 @@ import { Action, updateDescription, addIngredient, updateIngredientAmount, updat
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { pathForIdentifier } from './reducer';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
+  console.log(state);
   return {
     description: food.description,
-    ingredientsList: food.ingredientsList,
+    ingredientsList: food.ingredientsList.map(ingredient => {
+      let food = state.foodByDocumentPath[pathForIdentifier(ingredient.ingredientIdentifier)];
+      return {
+        amount: ingredient.quantity.amount,
+        unit: ingredient.quantity.unit,
+        foodRef: {
+          identifier: ingredient.ingredientIdentifier,
+          description: food?.description || 'loading...',
+        },
+      }
+    }),
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
   }
 }

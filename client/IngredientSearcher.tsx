@@ -19,6 +19,7 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
     return (<React.Fragment>
       <AsyncTypeahead
         {...this.state}
+        defaultSelected={this.props.selected ? [{label: this.props.selected.description, value: this.props.selected.identifier}] : []}
         filterBy={x => true}
         onChange={(selected: any) => {
           if(selected.length) {

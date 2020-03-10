@@ -99,6 +99,7 @@ export function updateDescription(description: string): Action {
 }
 
 export function addIngredient(foodRef: FoodRef): Action {
+  console.log('got here')
   return {type: 'AddIngredient', foodRef};
 }
 
