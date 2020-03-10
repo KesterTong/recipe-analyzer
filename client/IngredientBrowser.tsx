@@ -25,14 +25,14 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeEditorContainer } from './RecipeEditorContainer';
-import { FoodRef, IngredientIdentifier } from '../core/FoodRef';
+import { FoodRef } from '../core/FoodRef';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
 
 interface IngredientBrowserProps {
   food: Food | LoadingFood | BrandedFoodEdits | null,
   selected: FoodRef | null,
-  selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
+  selectFood(foodRef: FoodRef): void,
   autocomplete(query: string): Promise<FoodRef[]>,
   saveFood: () => void,
   newBrandedFood: () => void,

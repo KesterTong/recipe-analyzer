@@ -16,22 +16,27 @@ import { connect } from 'react-redux';
 import { RootState } from './RootState';
 import { Recipe } from '../core/Recipe';
 import { RecipeEditor } from './RecipeEditor';
-import { Action } from './actions';
+import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit } from './actions';
+import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
+import { bindActionCreators } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
   return {
     description: food.description,
+    ingredientsList: food.ingredientsList,
+    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
   }
 }
 
-function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-  return {
-    updateDescription: (value: string) => dispatch({
-      type: 'UpdateDescription',
-      description: value
-    }),
-  }
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+  return bindActionCreators({
+    updateDescription,
+    addIngredient,
+    updateIngredientAmount,
+    updateIngredientUnit,
+  }, dispatch);
 }
 
 export const RecipeEditorContainer = connect(mapStateToProps, mapDispatchToProps)(RecipeEditor);

@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { IngredientIdentifier } from "../core/FoodRef";
+import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
 import { Dispatch } from "react";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
@@ -72,9 +72,43 @@ export interface SetSelectedQuantity {
   index: number,
 }
 
+export interface AddIngredient {
+  type: 'AddIngredient',
+  foodRef: FoodRef,
+}
+
+export interface UpdateIngredientAmount {
+  type: 'UpdateIngredientAmount',
+  index: number,
+  amount: number,
+}
+
+export interface UpdateIngredientUnit {
+  type: 'UpdateIngredientUnit',
+  index: number,
+  unit: string,
+}
+
 export type Action = (
   SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
-  UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);
+  UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity |
+  AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit);
+
+export function updateDescription(description: string): Action {
+  return {type: 'UpdateDescription', description};
+}
+
+export function addIngredient(foodRef: FoodRef): Action {
+  return {type: 'AddIngredient', foodRef};
+}
+
+export function updateIngredientAmount(index: number, amount: number): Action {
+  return {type: 'UpdateIngredientAmount', index, amount};
+}
+
+export function updateIngredientUnit(index: number, unit: string): Action {
+  return {type: 'UpdateIngredientUnit', index, unit};
+}
 
 function brandedFoodFromEditState(editState: BrandedFoodEdits): BrandedFood {
   let servingSize = Number(editState.servingSize);
@@ -119,18 +153,18 @@ export function saveFood() {
   }
 }
 
-export function selectFood(ingredientIdentifier: IngredientIdentifier, description: string) {
+export function selectFood(foodRef: FoodRef) {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: 'SelectFood',
-      ingredientIdentifier: ingredientIdentifier,
-      description: description,
+      ingredientIdentifier: foodRef.identifier,
+      description: foodRef.description,
     });
-    if (ingredientIdentifier == null) {
+    if (foodRef.identifier == null) {
       return Promise.resolve();
     }
     let ingredientDatabase = new IngredientDatabaseImpl()
-    const food = await ingredientDatabase.getFood(ingredientIdentifier);
+    const food = await ingredientDatabase.getFood(foodRef.identifier);
     let updated = food?.dataType == 'Branded'? editStateFromBrandedFood(food) :food;
     return dispatch({
       type: 'SetFood',

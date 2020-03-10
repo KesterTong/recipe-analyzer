@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { IngredientIdentifier, FoodRef } from '../core/FoodRef';
+import { FoodRef } from '../core/FoodRef';
 
 export interface IngredientSearcherProps {
   selected: FoodRef | null;
   autocomplete(query: string): Promise<FoodRef[]>,
-  selectFood(ingredientIdentifier: IngredientIdentifier, description: string): void,
+  selectFood(foodRef: FoodRef): void,
 }
 
 export class IngredientSearcher extends React.Component<IngredientSearcherProps> {
@@ -22,7 +22,7 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
         filterBy={x => true}
         onChange={(selected: any) => {
           if(selected.length) {
-            this.props.selectFood(selected[0].value, selected[0].label)
+            this.props.selectFood({identifier: selected[0].value, description: selected[0].label})
           }
         }}
         minLength={3} onSearch={this._handleSearch}

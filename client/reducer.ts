@@ -69,5 +69,73 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       return state;
     case 'SetSelectedQuantity':
       return {...state, selectedQuantity: action.index};
+      case 'AddIngredient':
+        if (state.food?.dataType == 'Recipe') {
+          return {
+            ...state,
+            food: {
+              ...state.food,
+              ingredientsList: state.food.ingredientsList.concat([{
+                quantity: {
+                  amount: 100,
+                  unit: 'g',
+                },
+                ingredientIdentifier: action.foodRef.identifier,
+              }])
+            }
+          };
+        }
+        return state;
+    case 'AddIngredient':
+      if (state.food?.dataType == 'Recipe') {
+        return {
+          ...state,
+          food: {
+            ...state.food,
+            ingredientsList: state.food.ingredientsList.concat([{
+              quantity: {
+                amount: 100,
+                unit: 'g',
+              },
+              ingredientIdentifier: action.foodRef.identifier,
+            }])
+          },
+        };
+      }
+      return state;
+    case 'UpdateIngredientAmount':
+      if (state.food?.dataType == 'Recipe') {
+        return {
+          ...state,
+          food: {
+            ...state.food,
+            ingredientsList: state.food.ingredientsList.map((ingredient, index) => ({
+              ...ingredient,
+              quantity: {
+                ...ingredient.quantity,
+                amount: index == action.index ? action.amount: ingredient.quantity.amount,
+              }
+            })),
+          },
+        };
+      }
+      return state;
+    case 'UpdateIngredientUnit':
+      if (state.food?.dataType == 'Recipe') {
+        return {
+          ...state,
+          food: {
+            ...state.food,
+            ingredientsList: state.food.ingredientsList.map((ingredient, index) => ({
+              ...ingredient,
+              quantity: {
+                ...ingredient.quantity,
+                unit: index == action.index ? action.unit: ingredient.quantity.unit,
+              }
+            })),
+          },
+        };
+      }
+      return state;
   }
 }
