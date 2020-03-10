@@ -81,8 +81,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'SetSelectedQuantity':
       return {...state, selectedQuantity: action.index};
     case 'AddIngredient':
-      console.log(state)
-      console.log(action)
       if (state.food?.dataType == 'Recipe') {
         let s = {
           ...state,
@@ -104,7 +102,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
             },
           }
         };
-        console.log(s)
         return s as RootState;
       }
       return state;
