@@ -24,7 +24,6 @@ import { pathForIdentifier } from './reducer';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
-  console.log(state);
   return {
     description: food.description,
     ingredientsList: food.ingredientsList.map(ingredient => {
