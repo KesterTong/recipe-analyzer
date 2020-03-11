@@ -31,6 +31,7 @@ function mapStateToProps(state: RootState) {
       return {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
+        units: ['g', 'ml'],
         foodRef: {
           identifier: ingredient.ingredientIdentifier,
           description: food?.description || 'loading...',

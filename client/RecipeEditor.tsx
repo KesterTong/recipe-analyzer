@@ -24,6 +24,7 @@ export interface RecipeEditorProps {
   ingredientsList: {
     amount: number,
     unit: string,
+    units: string[],
     foodRef: FoodRef,
   }[],
   updateDescription(value: string): void,
@@ -67,8 +68,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                   as="select"
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientUnit(index, event.target.value)}
                   >
-                    <option>ml</option>
-                    <option>g</option>
+                    {ingredient.units.map(unit =><option>{unit}</option>)}
                   </Form.Control>
                 </td>
                 <td>
