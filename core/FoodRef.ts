@@ -12,19 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-interface Bookmark {
-  identifierType: 'BookmarkId',
-  bookmarkId: string,
-}
-
-export interface FdcId {
-  identifierType: 'FdcId',
-  fdcId: number,
-}
-
-export type IngredientIdentifier = Bookmark | FdcId;
-
 export interface FoodRef {
-  identifier: IngredientIdentifier,
+  foodId: string,
   description: string,
 }

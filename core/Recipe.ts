@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NormalizedFood } from "./NormalizedFood";
 import { Quantity } from "./Quantity";
-import { IngredientIdentifier } from "./FoodRef";
-import { Nutrients } from "./Nutrients";
 
 export interface Ingredient {
   quantity: Quantity,
-  ingredientIdentifier: IngredientIdentifier,
+  foodId: string,
 }
 
 // Note that Ingredient (and Recipe) store their nutritional values,

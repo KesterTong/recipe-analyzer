@@ -14,23 +14,11 @@
 
 import { Action } from "./actions";
 import { RootState } from "./RootState";
-import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
-import { Food } from "../core/Food";
-import { IngredientIdentifier } from "../core/FoodRef";
-
-export function pathForIdentifier(identifier: IngredientIdentifier): string {
-  switch (identifier.identifierType) {
-    case 'BookmarkId':
-      return 'userData/' + identifier.bookmarkId;
-    case 'FdcId':
-      return 'fdcData/' + identifier.fdcId.toString();
-  }
-}
 
 export function reducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
     return {
-      ingredientIdentifier: null,
+      foodId: null,
       food: null,
       foodByDocumentPath: {},
       nutrientInfos: null,
@@ -41,7 +29,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'SelectFood':
       return {
         ...state,
-        ingredientIdentifier: action.ingredientIdentifier,
+        foodId: action.foodId,
         food: action.description ? {dataType: 'Loading', description: action.description} : null,
         selectedQuantity: 0,  // Reset selected quantity.
       };
@@ -54,7 +42,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         ...state,
         foodByDocumentPath: {
           ...state.foodByDocumentPath, 
-          [pathForIdentifier(action.id)]: action.food,
+          [action.foodId]: action.food,
         }
       };
     case 'UpdateDescription':
@@ -99,12 +87,12 @@ export function reducer(state: RootState | undefined, action: Action): RootState
                 amount: 100,
                 unit: 'g',
               },
-              ingredientIdentifier: action.foodRef.identifier,
+              foodId: action.foodRef.foodId,
             }])
           },
           foodByDocumentPath: {
             ...state.foodByDocumentPath,
-            [pathForIdentifier(action.foodRef.identifier)]: {
+            [action.foodRef.foodId]: {
               dataType: 'Loading',
               description: action.foodRef.description,
             },
@@ -147,7 +135,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         };
       }
       return state;
-    case 'UpdateIngredientIdentifier':
+    case 'UpdateIngredientId':
       if (state.food?.dataType == 'Recipe') {
         return {
           ...state,
@@ -158,12 +146,12 @@ export function reducer(state: RootState | undefined, action: Action): RootState
                 amount: 100,
                 unit: 'g',
               },
-              ingredientIdentifier: index == action.index ? action.foodRef.identifier: ingredient.ingredientIdentifier,
+              foodId: index == action.index ? action.foodRef.foodId: ingredient.foodId,
             })),
           },
           foodByDocumentPath: {
             ...state.foodByDocumentPath,
-            [pathForIdentifier(action.foodRef.identifier)]: {
+            [action.foodRef.foodId]: {
               dataType: 'Loading',
               description: action.foodRef.description,
             },

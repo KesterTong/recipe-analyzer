@@ -30,7 +30,7 @@ export interface RecipeEditorProps {
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
   updateIngredientUnit(index: number, unit: string): void,
-  updateIngredientIdentifier(index: number, foodRef: FoodRef): void,
+  updateIngredientId(index: number, foodRef: FoodRef): void,
 }
 
 export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
@@ -74,7 +74,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                   <IngredientSearcher
                   key={index}
                   selected={ingredient.foodRef}
-                  selectFood={(foodRef: FoodRef) => props.updateIngredientIdentifier(index, foodRef)}
+                  selectFood={(foodRef: FoodRef) => props.updateIngredientId(index, foodRef)}
                   autocomplete={props.autocomplete} />
                 </td>
               </tr>

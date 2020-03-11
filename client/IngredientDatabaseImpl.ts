@@ -15,7 +15,7 @@ import * as firebase from "firebase";
 
 import { IngredientDatabase } from "../core/IngredientDatabase";
 import { NutrientInfo } from "../core/Nutrients";
-import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
+import { FoodRef } from "../core/FoodRef";
 import { Food } from "../core/Food";
 import { searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl, BrandedFood } from "../core/FoodDataCentral";
 import { FDC_API_KEY } from "./config";
@@ -27,17 +27,18 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
     return nutrients.then(documentData => JSON.parse(documentData.data()?.value));
   } 
 
-  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
-    return this.documentForIngredient(ingredientIdentifier)
+  getFood(foodId: string): Promise<Food | null> {
+    return firebase.firestore().doc(foodId)
     .get()
     .then(documentData => {
       let data = documentData.data();
       if (data) {
         return <Food>JSON.parse(data.data);
-      } else if (ingredientIdentifier.identifierType == 'FdcId') {
-        let result : Promise<Food> = fetch(getFdcFoodUrl(ingredientIdentifier.fdcId, FDC_API_KEY))
+      } else if (foodId.startsWith('fdcData/')) {
+        let fdcId = Number(foodId.substr(8, foodId.length - 8));
+        let result : Promise<Food> = fetch(getFdcFoodUrl(fdcId, FDC_API_KEY))
         .then(result => result.json());
-        result.then(food => this.patchFood(ingredientIdentifier, food));
+        result.then(food => this.patchFood(foodId, food));
         return result;
       } else {
         return null;
@@ -45,57 +46,41 @@ export class IngredientDatabaseImpl implements IngredientDatabase {
     });
   }
 
-  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
-    return this.documentForIngredient(ingredientIdentifier).set({
+  patchFood(foodId: string, food: Food): Promise<void> {
+    return firebase.firestore().doc(foodId).set({
       data: JSON.stringify(food),
       version: '0.1',
     });
   }
 
-  async insertFood(food: Food): Promise<IngredientIdentifier> {
+  async insertFood(food: Food): Promise<string> {
     const documentReference = await firebase.firestore().collection('userData').add({
       data: JSON.stringify(food),
       version: '0.1',
     });
-    return {
-      identifierType: 'BookmarkId',
-      bookmarkId: documentReference.id,
-    };
-  }
-
-  private documentForIngredient(ingredientIdentifier: IngredientIdentifier): firebase.firestore.DocumentReference<firebase.firestore.DocumentData> {
-    switch (ingredientIdentifier.identifierType) {
-      case 'BookmarkId':
-        return firebase.firestore().collection('userData').doc(ingredientIdentifier.bookmarkId);
-      case 'FdcId':
-        return firebase.firestore().collection('fdcData').doc(ingredientIdentifier.fdcId.toString());
-    }
+    return documentReference.path;
   }
 
   searchFoods(query: string): Promise<FoodRef[]> {
     let customFoods = firebase.firestore().collection('userData').get().then(documentData => {
       return documentData.docs
       .map(document => ({
-        id: document.id,
+        foodId: document.ref.path,
         food: <Food>JSON.parse(document.data().data),
       }))
       .filter(data => data.food.description.match(query))
       .map(data => <FoodRef>({
-        identifier: {identifierType: 'BookmarkId', bookmarkId:  data.id},
+        foodId: data.foodId,
         description: data.food.description,
       }));
     });
     let queryResult = fetch(searchFdcFoodsUrl(query, FDC_API_KEY))
     .then(result => result.json())
     .then((queryResult: FDCQueryResult) => queryResult.foods.map(entry => <FoodRef>({
-        identifier: {identifierType: 'FdcId', fdcId: entry.fdcId},
+        foodId: 'fdcData/' + entry.fdcId.toString(),
         description: entry.description,
       })));
     return Promise.all([customFoods, queryResult])
     .then(results => results[0].concat(results[1]));
-  }
-
-  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
-    throw new Error("Method not implemented.");
   }
 }

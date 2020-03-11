@@ -75,10 +75,7 @@ export const TEST_RECIPE: Food = {
       amount: 7.5,
       unit: 'piece'
     },
-    ingredientIdentifier: {
-      identifierType: 'BookmarkId',
-      bookmarkId: 'id.abc123',
-    }
+    foodId: 'userData/id.abc123',
   }],
 };
 

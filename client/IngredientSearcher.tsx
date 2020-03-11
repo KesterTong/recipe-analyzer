@@ -19,11 +19,11 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
     return (<React.Fragment>
       <AsyncTypeahead
         {...this.state}
-        defaultSelected={this.props.selected ? [{label: this.props.selected.description, value: this.props.selected.identifier}] : []}
+        defaultSelected={this.props.selected ? [{label: this.props.selected.description, value: this.props.selected.foodId}] : []}
         filterBy={x => true}
         onChange={(selected: any) => {
           if(selected.length) {
-            this.props.selectFood({identifier: selected[0].value, description: selected[0].label})
+            this.props.selectFood({foodId: selected[0].value, description: selected[0].label})
           }
         }}
         minLength={3} onSearch={this._handleSearch}
@@ -38,7 +38,7 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
         isLoading: false,
         options: foodRefs.map(foodRef => ({
           label: foodRef.description,
-          value: foodRef.identifier
+          value: foodRef.foodId
         })),
       });
     });

@@ -77,10 +77,10 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  let identifier = state.ingredientIdentifier;
+  let foodId = state.foodId;
   return {
     food: state.food,
-    selected: identifier ? {description: state.food?.description || '', identifier} : null,
+    selected: foodId ? {description: state.food?.description || '', foodId} : null,
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
   }
 }

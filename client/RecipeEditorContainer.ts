@@ -16,11 +16,10 @@ import { connect } from 'react-redux';
 import { RootState } from './RootState';
 import { Recipe } from '../core/Recipe';
 import { RecipeEditor } from './RecipeEditor';
-import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit, updateIngredientIdentifier } from './actions';
+import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit, updateIngredientId } from './actions';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { pathForIdentifier } from './reducer';
 import { servingEquivalentQuantities } from '../core/normalizeFood';
 
 function mapStateToProps(state: RootState) {
@@ -28,14 +27,14 @@ function mapStateToProps(state: RootState) {
   return {
     description: food.description,
     ingredientsList: food.ingredientsList.map(ingredient => {
-      let food = state.foodByDocumentPath[pathForIdentifier(ingredient.ingredientIdentifier)];
+      let food = state.foodByDocumentPath[ingredient.foodId];
 
       return {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
         units: (food && food.dataType != 'Loading')? Object.keys(servingEquivalentQuantities(food)) : ['g'],
         foodRef: {
-          identifier: ingredient.ingredientIdentifier,
+          foodId: ingredient.foodId,
           description: food?.description || 'loading...',
         },
       }
@@ -50,7 +49,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
     addIngredient,
     updateIngredientAmount,
     updateIngredientUnit,
-    updateIngredientIdentifier,
+    updateIngredientId,
   }, dispatch);
 }
 

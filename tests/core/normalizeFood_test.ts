@@ -19,23 +19,23 @@ import { expect } from 'chai';
 import 'mocha';
 import { IngredientDatabase } from '../../core/IngredientDatabase';
 import { NutrientInfo } from '../../core/Nutrients';
-import { IngredientIdentifier, FoodRef } from '../../core/FoodRef';
+import { FoodRef } from '../../core/FoodRef';
 import { Food } from '../../core/Food';
 
 class FakeIngredientDatabase implements IngredientDatabase {
   getNutrientInfo(): Promise<NutrientInfo[]> {
     return Promise.resolve([{name: '', display: true, id: 1008}, {name: '', display: true, id: 1003}]);
   }
-  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null> {
+  getFood(foodId: string): Promise<Food | null> {
     return Promise.resolve(TEST_BRANDED_FOOD);
   }
-  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void> {
+  patchFood(foodId: string, food: Food): Promise<void> {
     throw new Error("Method not implemented.");
   }
   searchFoods(query: string): Promise<FoodRef[]> {
     throw new Error("Method not implemented.");
   }
-  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void> {
+  addIngredient(foodId: string, amount: number, unit: string, description: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
 }

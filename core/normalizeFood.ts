@@ -19,7 +19,6 @@ import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
 import { IngredientDatabase } from './IngredientDatabase';
-import { IngredientIdentifier } from './FoodRef';
 import { Recipe } from './Recipe';
 
 export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase): Promise<NormalizedFood> {
@@ -41,7 +40,7 @@ export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase
 function nutrientsForRecipe(food: Recipe, ingredientDatabase: IngredientDatabase): Promise<Nutrients> {
   return Promise.all(food.ingredientsList.map(ingredient =>
     ingredientDatabase
-    .getFood(ingredient.ingredientIdentifier)
+    .getFood(ingredient.foodId)
     .then(subFood => normalizeFood(subFood!, ingredientDatabase))
     .then(normalizedSubFood => nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!)
   ))

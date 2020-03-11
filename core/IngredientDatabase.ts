@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { NutrientInfo } from "./Nutrients";
-import { IngredientIdentifier, FoodRef } from "./FoodRef";
+import { FoodRef } from "./FoodRef";
 import { Food } from "./Food";
 
 /**
@@ -22,8 +22,7 @@ import { Food } from "./Food";
  */
 export interface IngredientDatabase {
   getNutrientInfo(): Promise<NutrientInfo[]>;
-  getFood(ingredientIdentifier: IngredientIdentifier): Promise<Food | null>,
-  patchFood(ingredientIdentifier: IngredientIdentifier, food: Food): Promise<void>,
+  getFood(foodId: string): Promise<Food | null>,
+  patchFood(foodId: string, food: Food): Promise<void>,
   searchFoods(query: string): Promise<FoodRef[]>,
-  addIngredient(ingredientIdentifier: IngredientIdentifier, amount: number, unit: string, description: string): Promise<void>,
 }

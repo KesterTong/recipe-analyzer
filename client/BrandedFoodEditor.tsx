@@ -94,7 +94,7 @@ function mapStateToProps(state: RootState) {
     householdServingFullText: food.householdServingFullText || '',
     servingSize: food.servingSize,
     servingSizeUnit: food.servingSizeUnit,
-    editable: state.ingredientIdentifier?.identifierType == 'BookmarkId',
+    editable: state.foodId && state.foodId.startsWith('userData/'),
     nutrients: food.foodNutrients.map(nutrient => ({
       id: nutrient.id,
       description: nutrientNamesById[nutrient.id],

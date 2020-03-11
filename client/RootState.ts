@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import { NutrientInfo } from "../core/Nutrients";
-import { IngredientIdentifier } from "../core/FoodRef";
 import { SRLegacyFood } from "../core/FoodDataCentral";
 import { Recipe } from "../core/Recipe";
 import { Food } from "../core/Food";
@@ -35,7 +34,7 @@ export interface BrandedFoodEdits {
 }
 
 export interface RootState {
-  ingredientIdentifier: IngredientIdentifier | null,
+  foodId: string | null,
   food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null,
   foodByDocumentPath: {[index: string]: Food | LoadingFood},
   nutrientInfos: NutrientInfo[] | null,

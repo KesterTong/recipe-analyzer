@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { IngredientIdentifier, FoodRef } from "../core/FoodRef";
+import { FoodRef } from "../core/FoodRef";
 import { Dispatch } from "react";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
@@ -32,7 +32,7 @@ export interface SetNutrientInfos {
 
 export interface SelectFood {
   type: 'SelectFood',
-  ingredientIdentifier: IngredientIdentifier,
+  foodId: string,
   description: string | null, 
 }
 
@@ -44,7 +44,7 @@ export interface SetFood {
 export interface SetFoodForId {
   type: 'SetFoodForId',
   food: Food,
-  id: IngredientIdentifier,
+  foodId: string,
 }
 
 export interface UpdateDescription {
@@ -95,8 +95,8 @@ export interface UpdateIngredientUnit {
   unit: string,
 }
 
-export interface UpdateIngredientIdentifier {
-  type: 'UpdateIngredientIdentifier',
+export interface UpdateIngredientId {
+  type: 'UpdateIngredientId',
   index: number,
   foodRef: FoodRef,
 }
@@ -104,7 +104,7 @@ export interface UpdateIngredientIdentifier {
 export type Action = (
   SetNutrientInfos | SelectFood | SetFood | SetFoodForId | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity |
-  AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientIdentifier);
+  AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId);
 
 export function updateDescription(description: string): Action {
   return {type: 'UpdateDescription', description};
@@ -113,11 +113,11 @@ export function updateDescription(description: string): Action {
 export function addIngredient(foodRef: FoodRef) {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({type: 'AddIngredient', foodRef});
-    const food = await new IngredientDatabaseImpl().getFood(foodRef.identifier);
+    const food = await new IngredientDatabaseImpl().getFood(foodRef.foodId);
     if (food == null) {
       return;
     }
-    dispatch({type: 'SetFoodForId', food, id: foodRef.identifier});
+    dispatch({type: 'SetFoodForId', food, foodId: foodRef.foodId});
   }
 }
 
@@ -129,14 +129,14 @@ export function updateIngredientUnit(index: number, unit: string): Action {
   return {type: 'UpdateIngredientUnit', index, unit};
 }
 
-export function updateIngredientIdentifier(index: number, foodRef: FoodRef) {
+export function updateIngredientId(index: number, foodRef: FoodRef) {
   return async (dispatch: Dispatch<Action>) => {
-    dispatch({type: 'UpdateIngredientIdentifier', index, foodRef});
-    const food = await new IngredientDatabaseImpl().getFood(foodRef.identifier);
+    dispatch({type: 'UpdateIngredientId', index, foodRef});
+    const food = await new IngredientDatabaseImpl().getFood(foodRef.foodId);
     if (food == null) {
       return;
     }
-    dispatch({type: 'SetFoodForId', food, id: foodRef.identifier});
+    dispatch({type: 'SetFoodForId', food, foodId: foodRef.foodId});
   }
 }
 
@@ -176,9 +176,9 @@ export function saveFood() {
     let state = getState();
     if (state.food?.dataType == 'Branded Edit') {
       let updatedFood = brandedFoodFromEditState(state.food);
-      new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, updatedFood);
+      new IngredientDatabaseImpl().patchFood(state.foodId!, updatedFood);
     } else if (state.food?.dataType == 'Recipe') {
-      new IngredientDatabaseImpl().patchFood(state.ingredientIdentifier!, state.food); 
+      new IngredientDatabaseImpl().patchFood(state.foodId!, state.food); 
     }
   }
 }
@@ -187,14 +187,14 @@ export function selectFood(foodRef: FoodRef) {
   return async (dispatch: Dispatch<Action>) => {
     dispatch({
       type: 'SelectFood',
-      ingredientIdentifier: foodRef.identifier,
+      foodId: foodRef.foodId,
       description: foodRef.description,
     });
-    if (foodRef.identifier == null) {
+    if (foodRef.foodId == null) {
       return Promise.resolve();
     }
     let ingredientDatabase = new IngredientDatabaseImpl()
-    const food = await ingredientDatabase.getFood(foodRef.identifier);
+    const food = await ingredientDatabase.getFood(foodRef.foodId);
     let updated = food?.dataType == 'Branded'? editStateFromBrandedFood(food) :food;
     return dispatch({
       type: 'SetFood',
@@ -213,10 +213,10 @@ export function newBrandedFood() {
       householdServingFullText: '1 serving',
       foodNutrients: [],
     };
-    let ingredientIdentifier = await new IngredientDatabaseImpl().insertFood(food);
+    let foodId = await new IngredientDatabaseImpl().insertFood(food);
     dispatch({
       type: 'SelectFood',
-      ingredientIdentifier,
+      foodId,
       description: null,
     });
     dispatch({
@@ -233,10 +233,10 @@ export function newRecipe() {
       description: 'New Recipe',
       ingredientsList: [],
     };
-    let ingredientIdentifier = await new IngredientDatabaseImpl().insertFood(food);
+    let foodId = await new IngredientDatabaseImpl().insertFood(food);
     dispatch({
       type: 'SelectFood',
-      ingredientIdentifier,
+      foodId,
       description: null,
     });
     dispatch({
