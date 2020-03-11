@@ -13,9 +13,7 @@
 // limitations under the License.
 import * as React from 'react';
 
-import { NutrientInfo } from '../core/Nutrients';
-import { Recipe, Ingredient } from '../core/Recipe';
-import { Form, Table, Col, Tab } from 'react-bootstrap';
+import { Form, Table } from 'react-bootstrap';
 import { IngredientSearcher } from './IngredientSearcher';
 import { FoodRef } from '../core/FoodRef';
 
@@ -32,6 +30,7 @@ export interface RecipeEditorProps {
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
   updateIngredientUnit(index: number, unit: string): void,
+  updateIngredientIdentifier(index: number, foodRef: FoodRef): void,
 }
 
 export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
@@ -72,7 +71,11 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                   </Form.Control>
                 </td>
                 <td>
-                  <IngredientSearcher key={index} selected={ingredient.foodRef} selectFood={(foodRef: FoodRef) => null} autocomplete={props.autocomplete} />
+                  <IngredientSearcher
+                  key={index}
+                  selected={ingredient.foodRef}
+                  selectFood={(foodRef: FoodRef) => props.updateIngredientIdentifier(index, foodRef)}
+                  autocomplete={props.autocomplete} />
                 </td>
               </tr>
             )

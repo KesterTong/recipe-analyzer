@@ -147,5 +147,29 @@ export function reducer(state: RootState | undefined, action: Action): RootState
         };
       }
       return state;
+    case 'UpdateIngredientIdentifier':
+      if (state.food?.dataType == 'Recipe') {
+        return {
+          ...state,
+          food: {
+            ...state.food,
+            ingredientsList: state.food.ingredientsList.map((ingredient, index) => ({
+              quantity: {
+                amount: 100,
+                unit: 'g',
+              },
+              ingredientIdentifier: index == action.index ? action.foodRef.identifier: ingredient.ingredientIdentifier,
+            })),
+          },
+          foodByDocumentPath: {
+            ...state.foodByDocumentPath,
+            [pathForIdentifier(action.foodRef.identifier)]: {
+              dataType: 'Loading',
+              description: action.foodRef.description,
+            },
+          }
+        };
+      }
+      return state;
   }
 }

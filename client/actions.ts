@@ -95,10 +95,16 @@ export interface UpdateIngredientUnit {
   unit: string,
 }
 
+export interface UpdateIngredientIdentifier {
+  type: 'UpdateIngredientIdentifier',
+  index: number,
+  foodRef: FoodRef,
+}
+
 export type Action = (
   SetNutrientInfos | SelectFood | SetFood | SetFoodForId | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity |
-  AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit);
+  AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientIdentifier);
 
 export function updateDescription(description: string): Action {
   return {type: 'UpdateDescription', description};
@@ -121,6 +127,17 @@ export function updateIngredientAmount(index: number, amount: number): Action {
 
 export function updateIngredientUnit(index: number, unit: string): Action {
   return {type: 'UpdateIngredientUnit', index, unit};
+}
+
+export function updateIngredientIdentifier(index: number, foodRef: FoodRef) {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({type: 'UpdateIngredientIdentifier', index, foodRef});
+    const food = await new IngredientDatabaseImpl().getFood(foodRef.identifier);
+    if (food == null) {
+      return;
+    }
+    dispatch({type: 'SetFoodForId', food, id: foodRef.identifier});
+  }
 }
 
 function brandedFoodFromEditState(editState: BrandedFoodEdits): BrandedFood {

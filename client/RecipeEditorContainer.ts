@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { RootState } from './RootState';
 import { Recipe } from '../core/Recipe';
 import { RecipeEditor } from './RecipeEditor';
-import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit } from './actions';
+import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit, updateIngredientIdentifier } from './actions';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -50,6 +50,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
     addIngredient,
     updateIngredientAmount,
     updateIngredientUnit,
+    updateIngredientIdentifier,
   }, dispatch);
 }
 
