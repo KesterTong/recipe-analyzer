@@ -12,24 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { expect } from 'chai';
-import 'mocha';
 import { addNutrients, scaleNutrients } from '../../core/Nutrients';
 
 describe('scaleNutrients', () => {
   it('scaleNutrients', () => {
-    expect(scaleNutrients({1008: 10, 1003: 20}, 2)).to.deep.equal(
+    expect(scaleNutrients({1008: 10, 1003: 20}, 2)).toEqual(
       {1008: 20, 1003: 40});
   });
 });
 
 describe('addNutrients', () => {
   it('sameKeys', () => {
-    expect(addNutrients({1008: 10, 1003: 20}, {1008: 5, 1003: 2})).to.deep.equal(
+    expect(addNutrients({1008: 10, 1003: 20}, {1008: 5, 1003: 2})).toEqual(
       {1008: 15, 1003: 22});
   });
   it('differentKeys', () => {
-    expect(addNutrients({1008: 10, 1004: 20}, {1008: 5, 1003: 2})).to.deep.equal(
+    expect(addNutrients({1008: 10, 1004: 20}, {1008: 5, 1003: 2})).toEqual(
       {1008: 15, 1004:20, 1003: 2});
   });
 });

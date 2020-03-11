@@ -15,8 +15,6 @@
 import { normalizeFood } from '../../core/normalizeFood';
 import { TEST_SR_LEGACY_FOOD, TEST_SR_LEGACY_FOOD_NORMALIZED, TEST_BRANDED_FOOD, TEST_BRANDED_FOOD_NORMALIZED, TEST_RECIPE, TEST_RECIPE_NORMALIZED } from '../testData';
 
-import { expect } from 'chai';
-import 'mocha';
 import { IngredientDatabase } from '../../core/IngredientDatabase';
 import { NutrientInfo } from '../../core/Nutrients';
 import { FoodRef } from '../../core/FoodRef';
@@ -44,19 +42,19 @@ describe('normalizeFood', () => {
   
   it('SR Legacy', () => {
     return normalizeFood(TEST_SR_LEGACY_FOOD, new FakeIngredientDatabase()).then(result => {
-      expect(result).to.deep.equal(TEST_SR_LEGACY_FOOD_NORMALIZED);
+      expect(result).toEqual(TEST_SR_LEGACY_FOOD_NORMALIZED);
     });
   });
 
   it('Branded', () => {
     return normalizeFood(TEST_BRANDED_FOOD, new FakeIngredientDatabase()).then(result => {
-      expect(result).to.deep.equal(TEST_BRANDED_FOOD_NORMALIZED);
+      expect(result).toEqual(TEST_BRANDED_FOOD_NORMALIZED);
     });
   });
 
   it('Recipe', () => {
     return normalizeFood(TEST_RECIPE, new FakeIngredientDatabase()).then(result => {
-      expect(result).to.deep.equal(TEST_RECIPE_NORMALIZED);
+      expect(result).toEqual(TEST_RECIPE_NORMALIZED);
     });
   });
 });

@@ -12,26 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { parseHouseholdServing } from '../../core/parseHouseholdServing';
-import { expect } from 'chai';
-import 'mocha';
+import { printHouseholdServing } from '../../core/printHouseholdServing';
 
-describe('parseHouseholdServing', () => {
+describe('printHouseholdServing', () => {
   it('1 cup (240 ml)', () => {
-    expect(parseHouseholdServing('1 cup (240 ml)')).to.deep.equal({
+    expect(printHouseholdServing({
       servingSize: 240.0,
       servingSizeUnit: 'ml',
       householdServingFullText: '1 cup',
-    });
+    })).toEqual('1 cup (240 ml)');
   });
   it('240 ml', () => {
-    expect(parseHouseholdServing('240 ml')).to.deep.equal({
+    expect(printHouseholdServing({
       servingSize: 240.0,
       servingSizeUnit: 'ml',
-      householdServingFullText: undefined,
-    });
-  });
-  it('1 cup', () => {
-    expect(parseHouseholdServing('1 cup')).to.equal(null);
+    })).toEqual('240 ml');
   });
 });

@@ -45,7 +45,6 @@ function nutrientsForRecipe(food: Recipe, ingredientDatabase: IngredientDatabase
     .then(normalizedSubFood => nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!)
   ))
   .then(nutrients => {
-    console.log(nutrients)
     let result = <Nutrients>{};
     nutrients.forEach(nutrient => {
       result = addNutrients(result, nutrient);
