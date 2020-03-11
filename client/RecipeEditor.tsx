@@ -15,7 +15,7 @@ import * as React from 'react';
 
 import { NutrientInfo } from '../core/Nutrients';
 import { Recipe, Ingredient } from '../core/Recipe';
-import { Form, Table, Col } from 'react-bootstrap';
+import { Form, Table, Col, Tab } from 'react-bootstrap';
 import { IngredientSearcher } from './IngredientSearcher';
 import { FoodRef } from '../core/FoodRef';
 
@@ -43,49 +43,53 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
               />
         </Form.Group>
-        {
-          props.ingredientsList.map((ingredient, index) => 
-            <Form.Row>
-              <Form.Group as={Col} controlId="formAmount">
-                <Form.Label>Amount</Form.Label>
-                <Form.Control
-                value={ingredient.amount.toString()}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientAmount(index, Number(event.target.value))}
-                />
-              </Form.Group>
-              <Form.Group as={Col} controlId="formUnit">
-                <Form.Label>Unit</Form.Label>
-                <Form.Control
-                value={ingredient.unit}
-                as="select"
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientUnit(index, event.target.value)}
-                >
-                  <option>ml</option>
-                  <option>g</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group as={Col} controlId="formIngredient">
-                <Form.Label>Ingredient</Form.Label>
-                <IngredientSearcher key={index} selected={ingredient.foodRef} selectFood={(foodRef: FoodRef) => null} autocomplete={props.autocomplete} />
-              </Form.Group>
-            </Form.Row>
-          )
-        }
-        <Form.Row>
-          <Form.Group as={Col} controlId="formAmount">
-            <Form.Label>Amount</Form.Label>
-            <Form.Control disabled={true} value={''}/>
-          </Form.Group>
-          <Form.Group as={Col} controlId="formUnit">
-            <Form.Label>Unit</Form.Label>
-            <Form.Control disabled={true}  value={''} as="select">
-            </Form.Control>
-          </Form.Group>
-          <Form.Group as={Col} controlId="formIngredient">
-            <Form.Label>Ingredient</Form.Label>
-            <IngredientSearcher selected={null} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
-          </Form.Group>
-        </Form.Row>
       </Form>
+      <Form.Label>Ingredients</Form.Label>
+      <Table>
+        <thead>
+          <th>Amount</th>
+          <th>Unit</th>
+          <th>Ingredient</th>
+        </thead>
+        <tbody>
+          {
+            props.ingredientsList.map((ingredient, index) => 
+              <tr>
+                <td>
+                  <Form.Control
+                  value={ingredient.amount.toString()}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientAmount(index, Number(event.target.value))}
+                  />
+                </td>
+                <td>
+                  <Form.Control
+                  value={ingredient.unit}
+                  as="select"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientUnit(index, event.target.value)}
+                  >
+                    <option>ml</option>
+                    <option>g</option>
+                  </Form.Control>
+                </td>
+                <td>
+                  <IngredientSearcher key={index} selected={ingredient.foodRef} selectFood={(foodRef: FoodRef) => null} autocomplete={props.autocomplete} />
+                </td>
+              </tr>
+            )
+          }
+          <tr>
+            <td>
+              <Form.Control disabled={true} value={''}/>
+            </td>
+            <td>
+              <Form.Control disabled={true}  value={''} as="select">
+              </Form.Control>
+            </td>
+            <td>
+              <IngredientSearcher selected={null} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
+            </td>
+          </tr>
+        </tbody>
+      </Table>
   </React.Fragment>;
 }
