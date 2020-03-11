@@ -49,6 +49,14 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
       return {...state, food: action.food};
+    case 'SetFoodForId':
+      return {
+        ...state,
+        foodByDocumentPath: {
+          ...state.foodByDocumentPath, 
+          [pathForIdentifier(action.id)]: action.food,
+        }
+      };
     case 'UpdateDescription':
       if (state.food && state.food.dataType == 'Branded Edit') {
         return {...state, food: {...state.food, description: action.description}};

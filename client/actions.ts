@@ -41,6 +41,12 @@ export interface SetFood {
   food: SRLegacyFood | Recipe | BrandedFoodEdits | null,
 }
 
+export interface SetFoodForId {
+  type: 'SetFoodForId',
+  food: Food,
+  id: IngredientIdentifier,
+}
+
 export interface UpdateDescription {
   type: 'UpdateDescription',
   description: string,
@@ -90,7 +96,7 @@ export interface UpdateIngredientUnit {
 }
 
 export type Action = (
-  SetNutrientInfos | SelectFood | SetFood | UpdateDescription | UpdateServingSize |
+  SetNutrientInfos | SelectFood | SetFood | SetFoodForId | UpdateDescription | UpdateServingSize |
   UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity |
   AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit);
 
@@ -98,9 +104,15 @@ export function updateDescription(description: string): Action {
   return {type: 'UpdateDescription', description};
 }
 
-export function addIngredient(foodRef: FoodRef): Action {
-  console.log('got here')
-  return {type: 'AddIngredient', foodRef};
+export function addIngredient(foodRef: FoodRef) {
+  return async (dispatch: Dispatch<Action>) => {
+    dispatch({type: 'AddIngredient', foodRef});
+    const food = await new IngredientDatabaseImpl().getFood(foodRef.identifier);
+    if (food == null) {
+      return;
+    }
+    dispatch({type: 'SetFoodForId', food, id: foodRef.identifier});
+  }
 }
 
 export function updateIngredientAmount(index: number, amount: number): Action {

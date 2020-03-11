@@ -21,6 +21,7 @@ import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { pathForIdentifier } from './reducer';
+import { servingEquivalentQuantities } from '../core/normalizeFood';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
@@ -28,10 +29,11 @@ function mapStateToProps(state: RootState) {
     description: food.description,
     ingredientsList: food.ingredientsList.map(ingredient => {
       let food = state.foodByDocumentPath[pathForIdentifier(ingredient.ingredientIdentifier)];
+
       return {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
-        units: ['g', 'ml'],
+        units: (food && food.dataType != 'Loading')? Object.keys(servingEquivalentQuantities(food)) : ['g'],
         foodRef: {
           identifier: ingredient.ingredientIdentifier,
           description: food?.description || 'loading...',

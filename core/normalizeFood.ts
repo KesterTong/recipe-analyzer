@@ -70,7 +70,7 @@ export function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDispla
   return result;
 }
 
-function servingEquivalentQuantities(food: Food): {[index: string]: number} {
+export function servingEquivalentQuantities(food: Food): {[index: string]: number} {
   let servingEquivalentQuantities: Quantity[];
   switch (food.dataType) {
     case 'SR Legacy':
