@@ -20,7 +20,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     return {
       foodId: null,
       food: null,
-      foodByDocumentPath: {},
+      foodsById: {},
       nutrientInfos: null,
       selectedQuantity: 0,
     };
@@ -40,8 +40,8 @@ export function reducer(state: RootState | undefined, action: Action): RootState
     case 'SetFoodForId':
       return {
         ...state,
-        foodByDocumentPath: {
-          ...state.foodByDocumentPath, 
+        foodsById: {
+          ...state.foodsById, 
           [action.foodId]: action.food,
         }
       };
@@ -91,7 +91,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
             }])
           },
           foodByDocumentPath: {
-            ...state.foodByDocumentPath,
+            ...state.foodsById,
             [action.foodRef.foodId]: {
               dataType: 'Loading',
               description: action.foodRef.description,
@@ -149,8 +149,8 @@ export function reducer(state: RootState | undefined, action: Action): RootState
               foodId: index == action.index ? action.foodRef.foodId: ingredient.foodId,
             })),
           },
-          foodByDocumentPath: {
-            ...state.foodByDocumentPath,
+          foodsById: {
+            ...state.foodsById,
             [action.foodRef.foodId]: {
               dataType: 'Loading',
               description: action.foodRef.description,

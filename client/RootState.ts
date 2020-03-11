@@ -36,7 +36,7 @@ export interface BrandedFoodEdits {
 export interface RootState {
   foodId: string | null,
   food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null,
-  foodByDocumentPath: {[index: string]: Food | LoadingFood},
+  foodsById: {[index: string]: Food | LoadingFood},
   nutrientInfos: NutrientInfo[] | null,
   selectedQuantity: number,
 }

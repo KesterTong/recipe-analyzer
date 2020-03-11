@@ -27,7 +27,7 @@ function mapStateToProps(state: RootState) {
   return {
     description: food.description,
     ingredientsList: food.ingredientsList.map(ingredient => {
-      let food = state.foodByDocumentPath[ingredient.foodId];
+      let food = state.foodsById[ingredient.foodId];
 
       return {
         amount: ingredient.quantity.amount,
