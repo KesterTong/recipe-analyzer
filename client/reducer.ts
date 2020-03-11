@@ -78,7 +78,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       return {...state, selectedQuantity: action.index};
     case 'AddIngredient':
       if (state.food?.dataType == 'Recipe') {
-        let s = {
+        return {
           ...state,
           food: {
             ...state.food,
@@ -90,7 +90,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
               foodId: action.foodRef.foodId,
             }])
           },
-          foodByDocumentPath: {
+          foodsById: {
             ...state.foodsById,
             [action.foodRef.foodId]: {
               dataType: 'Loading',
@@ -98,8 +98,7 @@ export function reducer(state: RootState | undefined, action: Action): RootState
             },
           }
         };
-        return s as RootState;
-      }
+      }      
       return state;
     case 'UpdateIngredientAmount':
       if (state.food?.dataType == 'Recipe') {

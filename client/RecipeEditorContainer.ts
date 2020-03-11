@@ -28,11 +28,10 @@ function mapStateToProps(state: RootState) {
     description: food.description,
     ingredientsList: food.ingredientsList.map(ingredient => {
       let food = state.foodsById[ingredient.foodId];
-
       return {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
-        units: (food && food.dataType != 'Loading')? Object.keys(servingEquivalentQuantities(food)) : ['g'],
+        units: (food && food.dataType != 'Loading') ? Object.keys(servingEquivalentQuantities(food)) : ['g'],
         foodRef: {
           foodId: ingredient.foodId,
           description: food?.description || 'loading...',

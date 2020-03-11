@@ -112,7 +112,6 @@ export function updateDescription(description: string): Action {
 
 export function addIngredient(foodRef: FoodRef) {
   return async (dispatch: Dispatch<Action>) => {
-    console.log(foodRef);
     dispatch({type: 'AddIngredient', foodRef});
     const food = await new IngredientDatabaseImpl().getFood(foodRef.foodId);
     if (food == null) {
