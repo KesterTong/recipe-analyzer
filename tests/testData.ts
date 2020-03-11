@@ -38,7 +38,7 @@ export const TEST_SR_LEGACY_FOOD: Food = {
 
 export const TEST_SR_LEGACY_FOOD_NORMALIZED: NormalizedFood = {
   description: 'Bananas',
-  nutrientsPerServing: {1008: 123, 1003: 10},
+  nutrientsPerServing: [123, 10],
   servingEquivalentQuantities: {
     'g': 100.0,
     'ml': 102.86521739130434,
@@ -63,7 +63,7 @@ export const TEST_BRANDED_FOOD: Food = {
 
 export const TEST_BRANDED_FOOD_NORMALIZED: NormalizedFood = {
   description: 'Plantain Chips',
-  nutrientsPerServing: {1008: 425, 1003: 5},
+  nutrientsPerServing: [425, 5],
   servingEquivalentQuantities: {'g': 100.0, 'piece': 15.0},
 };
 
@@ -81,6 +81,6 @@ export const TEST_RECIPE: Food = {
 
 export const TEST_RECIPE_NORMALIZED: NormalizedFood = {
   description: 'My Recipe',
-  nutrientsPerServing: {1008: 212.5, 1003: 2.5},
+  nutrientsPerServing: [212.5, 2.5],
   servingEquivalentQuantities: {'serving': 1.0},
 };

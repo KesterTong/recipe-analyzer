@@ -45,16 +45,12 @@ function nutrientsForRecipe(food: Recipe, ingredientDatabase: IngredientDatabase
     .then(normalizedSubFood => nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!)
   ))
   .then(nutrients => {
-    let result = <Nutrients>{};
-    nutrients.forEach(nutrient => {
-      result = addNutrients(result, nutrient);
-    })
-    return result;
+    return nutrients.reduce(addNutrients);
   })
 }
 
 export function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {
-  let result: Nutrients = {};
+  let nutrientsById: {[id: number]: number} = {};
   for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
     var foodNutrient = foodDetails.foodNutrients[i];
     var nutrientId = foodNutrient.nutrient.id;
@@ -62,10 +58,10 @@ export function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDispla
     // Only include nutrients that will be displayed, in order to reduce 
     // the computational cost of adding up and scaling nutrients.
     if (nutrientsToDisplay.indexOf(nutrientId) != -1) {
-      result[nutrientId] = nutrientAmount
+      nutrientsById[nutrientId] = nutrientAmount
     }
   }
-  return result;
+  return nutrientsToDisplay.map(id => nutrientsById[id] || 0);
 }
 
 export function servingEquivalentQuantities(food: Food): {[index: string]: number} {

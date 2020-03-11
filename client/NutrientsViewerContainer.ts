@@ -14,7 +14,7 @@
 import { RootState } from './RootState';
 import { connect } from 'react-redux';
 import { Action } from './actions';
-import { Nutrients } from '../core/Nutrients';
+import { Nutrients, scaleNutrients } from '../core/Nutrients';
 import { nutrientsFromFoodDetails } from '../core/normalizeFood';
 import { NutrientsViewer } from './NutrientsViewer';
 
@@ -34,7 +34,7 @@ function mapStateToProps(state: RootState) {
     case 'Recipe':
       quantities = [{description: '1 serving', servings: 1}];
       // TODO: store nutrients per serving in separate part of state.
-      nutrientsPerServing = {};
+      nutrientsPerServing = state.nutrientInfos.map(nutrientInfo => 0);
       break;
     case 'SR Legacy':
       quantities = [{description: '100 g', servings: 1}];
@@ -48,7 +48,7 @@ function mapStateToProps(state: RootState) {
   let scale = quantities[state.selectedQuantity].servings;
   return {
     nutrientNames: state.nutrientInfos.map(nutrientInfo => nutrientInfo.name),
-    nutrientValues: state.nutrientInfos.map(nutrientInfo => nutrientsPerServing[nutrientInfo.id] * scale),
+    nutrientValues: scaleNutrients(nutrientsPerServing, scale),
     quantities: quantities.map(quantity => quantity.description),
     selectedQuantity: state.selectedQuantity,
   };
