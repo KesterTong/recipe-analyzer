@@ -110,13 +110,33 @@ export function updateDescription(description: string): Action {
   return {type: 'UpdateDescription', description};
 }
 
+function addRecipeIngredients(food: Food | null, dispatch: Dispatch<Action>, getState: () => RootState) {
+  console.log(food)
+  if (food?.dataType != 'Recipe') {
+    return;
+  }
+  food.ingredientsList.map(ingredient => {
+    let foodId = ingredient.foodId;
+    if (getState().foodsById[foodId]) {
+      return;
+    }
+    new IngredientDatabaseImpl().getFood(foodId).then(food => {
+      if (food != null) {
+        addRecipeIngredients(food, dispatch, getState);
+        dispatch({type: 'SetFoodForId', food, foodId});
+      }
+    })
+  })
+}
+
 export function addIngredient(foodRef: FoodRef) {
-  return async (dispatch: Dispatch<Action>) => {
+  return async (dispatch: Dispatch<Action>, getState:() => RootState) => {
     dispatch({type: 'AddIngredient', foodRef});
     const food = await new IngredientDatabaseImpl().getFood(foodRef.foodId);
     if (food == null) {
       return;
     }
+    addRecipeIngredients(food, dispatch, getState)
     dispatch({type: 'SetFoodForId', food, foodId: foodRef.foodId});
   }
 }
@@ -184,7 +204,7 @@ export function saveFood() {
 }
 
 export function selectFood(foodRef: FoodRef) {
-  return async (dispatch: Dispatch<Action>) => {
+  return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
     dispatch({
       type: 'SelectFood',
       foodId: foodRef.foodId,
@@ -195,7 +215,8 @@ export function selectFood(foodRef: FoodRef) {
     }
     let ingredientDatabase = new IngredientDatabaseImpl()
     const food = await ingredientDatabase.getFood(foodRef.foodId);
-    let updated = food?.dataType == 'Branded'? editStateFromBrandedFood(food) :food;
+    let updated = food?.dataType == 'Branded' ? editStateFromBrandedFood(food) :food;
+    addRecipeIngredients(food, dispatch, getState);
     return dispatch({
       type: 'SetFood',
       food: updated as (SRLegacyFood | Recipe | null), 

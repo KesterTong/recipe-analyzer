@@ -24,6 +24,7 @@ import { servingEquivalentQuantities } from '../core/normalizeFood';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
+  console.log(state)
   return {
     description: food.description,
     ingredientsList: food.ingredientsList.map(ingredient => {
@@ -32,10 +33,10 @@ function mapStateToProps(state: RootState) {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
         units: (food && food.dataType != 'Loading') ? Object.keys(servingEquivalentQuantities(food)) : ['g'],
-        foodRef: {
+        foodRef: food ? {
           foodId: ingredient.foodId,
-          description: food?.description || 'loading...',
-        },
+          description: food.description,
+        } : null,
       }
     }),
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
