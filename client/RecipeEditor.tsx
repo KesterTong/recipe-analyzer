@@ -19,11 +19,13 @@ import { FoodRef } from '../core/FoodRef';
 
 export interface RecipeEditorProps {
   description: string,
+  nutrientNames: string[],
   ingredientsList: {
     amount: number,
     unit: string,
     units: string[],
     foodRef: FoodRef | null,
+    nutrients: number[],
   }[],
   updateDescription(value: string): void,
   autocomplete(query: string): Promise<FoodRef[]>,
@@ -50,6 +52,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
           <th>Amount</th>
           <th>Unit</th>
           <th>Ingredient</th>
+          { props.nutrientNames.map(nutrientName => <th>{nutrientName}</th>) }
         </thead>
         <tbody>
           {
@@ -81,6 +84,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                     : null
                   }
                 </td>
+                { ingredient.nutrients.map(value => <td>{value.toString()}</td>) }
               </tr>
             )
           }
@@ -95,6 +99,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
             <td>
               <IngredientSearcher selected={null} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
             </td>
+            { props.nutrientNames.map(nutrientName => <td></td>) }
           </tr>
         </tbody>
       </Table>

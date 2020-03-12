@@ -21,12 +21,14 @@ import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { servingEquivalentQuantities } from '../core/normalizeFood';
+import { nutrientsForQuantity } from '../core/Quantity';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
   console.log(state)
   return {
     description: food.description,
+    nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
     ingredientsList: food.ingredientsList.map(ingredient => {
       let food = state.foodsById[ingredient.foodId];
       return {
@@ -37,6 +39,7 @@ function mapStateToProps(state: RootState) {
           foodId: ingredient.foodId,
           description: food.description,
         } : null,
+        nutrients: (state.nutrientInfos || []).map(nutrientInfo => 0),
       }
     }),
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
