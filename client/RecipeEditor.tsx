@@ -13,9 +13,11 @@
 // limitations under the License.
 import * as React from 'react';
 
-import { Form, Table } from 'react-bootstrap';
+import { Form, Table, Button } from 'react-bootstrap';
 import { IngredientSearcher } from './IngredientSearcher';
 import { FoodRef } from '../core/FoodRef';
+import { addIngredient } from './actions';
+import { addNutrients } from '../core/Nutrients';
 
 export interface RecipeEditorProps {
   description: string,
@@ -53,6 +55,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
           <th>Unit</th>
           <th>Ingredient</th>
           { props.nutrientNames.map(nutrientName => <th>{nutrientName}</th>) }
+          <th></th>
         </thead>
         <tbody>
           {
@@ -85,6 +88,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                   }
                 </td>
                 { ingredient.nutrients.map(value => <td>{value.toString()}</td>) }
+                <td><Button>Delete</Button></td>
               </tr>
             )
           }
@@ -99,7 +103,8 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
             <td>
               <IngredientSearcher selected={null} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
             </td>
-            { props.nutrientNames.map(nutrientName => <td></td>) }
+            { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients).map(value => <td>{value.toString()}</td>) }
+            <td></td>
           </tr>
         </tbody>
       </Table>
