@@ -20,6 +20,7 @@ import { Action, updateDescription, addIngredient, updateIngredientAmount, updat
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { nutrientsForQuantity } from '../core/Quantity';
 
 function mapStateToProps(state: RootState) {
   let food = state.food as Recipe;
@@ -36,7 +37,7 @@ function mapStateToProps(state: RootState) {
           foodId: ingredient.foodId,
           description: food.description,
         } : null,
-        nutrients: (state.nutrientInfos || []).map(nutrientInfo => 0),
+        nutrients: food?.dataType == 'NormalizedFood' ? nutrientsForQuantity(ingredient.quantity, food)! : (state.nutrientInfos || []).map(nutrientInfo => 0),
       }
     }),
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
