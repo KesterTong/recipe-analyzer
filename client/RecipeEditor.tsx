@@ -99,7 +99,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
               <IngredientSearcher selected={null} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
             </td>
             <td><Button>Add</Button></td>
-            { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients).map(value => <td>{value.toFixed(1)}</td>) }
+            { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }
           </tr>
         </tbody>
       </Table>
