@@ -16,6 +16,7 @@ import { NutrientInfo } from "../core/Nutrients";
 import { SRLegacyFood } from "../core/FoodDataCentral";
 import { Recipe } from "../core/Recipe";
 import { Food } from "../core/Food";
+import { NormalizedFood } from "../core/NormalizedFood";
 
 // When a food has been selected from an IngredientSearcher,
 // we know its description but nothing else.
@@ -36,7 +37,7 @@ export interface BrandedFoodEdits {
 export interface RootState {
   foodId: string | null,
   food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null,
-  foodsById: {[index: string]: Food | LoadingFood},
+  foodsById: {[index: string]: NormalizedFood | LoadingFood},
   nutrientInfos: NutrientInfo[] | null,
   selectedQuantity: number,
 }

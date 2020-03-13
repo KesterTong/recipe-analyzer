@@ -16,9 +16,11 @@ import { Dispatch } from "react";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
 import { NutrientInfo } from "../core/Nutrients";
-import { RootState, BrandedFoodEdits } from "./RootState";
+import { RootState, BrandedFoodEdits, LoadingFood } from "./RootState";
 import { BrandedFood, SRLegacyFood } from "../core/FoodDataCentral";
 import { Recipe } from "../core/Recipe";
+import { NormalizedFood } from "../core/NormalizedFood";
+import { normalizeFood } from "../core/normalizeFood";
 
 export interface SetEditMode {
   type: 'SetEditMode',
@@ -43,7 +45,7 @@ export interface SetFood {
 
 export interface SetFoodForId {
   type: 'SetFoodForId',
-  food: Food,
+  food: NormalizedFood | LoadingFood,
   foodId: string,
 }
 
@@ -110,34 +112,18 @@ export function updateDescription(description: string): Action {
   return {type: 'UpdateDescription', description};
 }
 
-function addRecipeIngredients(food: Food | null, dispatch: Dispatch<Action>, getState: () => RootState) {
-  console.log(food)
-  if (food?.dataType != 'Recipe') {
-    return;
+async function loadIngredient(foodId: string, dispatch: Dispatch<Action>, getState: () => RootState) {
+  const food = await new IngredientDatabaseImpl().getFood(foodId);
+  const normalizedFood = food ? await normalizeFood(food, new IngredientDatabaseImpl()) : null;
+  if (normalizedFood != null) {
+    dispatch({type: 'SetFoodForId', food: normalizedFood, foodId});
   }
-  food.ingredientsList.map(ingredient => {
-    let foodId = ingredient.foodId;
-    if (getState().foodsById[foodId]) {
-      return;
-    }
-    new IngredientDatabaseImpl().getFood(foodId).then(food => {
-      if (food != null) {
-        addRecipeIngredients(food, dispatch, getState);
-        dispatch({type: 'SetFoodForId', food, foodId});
-      }
-    })
-  })
 }
 
 export function addIngredient(foodRef: FoodRef) {
-  return async (dispatch: Dispatch<Action>, getState:() => RootState) => {
+  return (dispatch: Dispatch<Action>, getState:() => RootState) => {
     dispatch({type: 'AddIngredient', foodRef});
-    const food = await new IngredientDatabaseImpl().getFood(foodRef.foodId);
-    if (food == null) {
-      return;
-    }
-    addRecipeIngredients(food, dispatch, getState)
-    dispatch({type: 'SetFoodForId', food, foodId: foodRef.foodId});
+    return loadIngredient(foodRef.foodId, dispatch, getState);
   }
 }
 
@@ -150,13 +136,9 @@ export function updateIngredientUnit(index: number, unit: string): Action {
 }
 
 export function updateIngredientId(index: number, foodRef: FoodRef) {
-  return async (dispatch: Dispatch<Action>) => {
+  return async (dispatch: Dispatch<Action>, getState:() => RootState) => {
     dispatch({type: 'UpdateIngredientId', index, foodRef});
-    const food = await new IngredientDatabaseImpl().getFood(foodRef.foodId);
-    if (food == null) {
-      return;
-    }
-    dispatch({type: 'SetFoodForId', food, foodId: foodRef.foodId});
+    return loadIngredient(foodRef.foodId, dispatch, getState);
   }
 }
 
@@ -215,12 +197,27 @@ export function selectFood(foodRef: FoodRef) {
     }
     let ingredientDatabase = new IngredientDatabaseImpl()
     const food = await ingredientDatabase.getFood(foodRef.foodId);
-    let updated = food?.dataType == 'Branded' ? editStateFromBrandedFood(food) :food;
-    addRecipeIngredients(food, dispatch, getState);
-    return dispatch({
-      type: 'SetFood',
-      food: updated as (SRLegacyFood | Recipe | null), 
-    });
+    if (food == null) {
+      return dispatch({
+        type: 'SetFood',
+        food: null, 
+      })
+    }
+    switch (food.dataType) {
+      case 'Branded':
+        return dispatch({
+          type: 'SetFood',
+          food: editStateFromBrandedFood(food), 
+        });
+      case 'Recipe':
+        food.ingredientsList.forEach(ingredient => loadIngredient(ingredient.foodId, dispatch, getState));
+        // fallthrough intended
+      case 'SR Legacy':
+        return dispatch({
+          type: 'SetFood',
+          food, 
+        });
+    }
   } 
 }
 

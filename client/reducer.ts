@@ -140,13 +140,16 @@ export function reducer(state: RootState | undefined, action: Action): RootState
           ...state,
           food: {
             ...state.food,
-            ingredientsList: state.food.ingredientsList.map((ingredient, index) => ({
-              quantity: {
-                amount: 100,
-                unit: 'g',
-              },
-              foodId: index == action.index ? action.foodRef.foodId: ingredient.foodId,
-            })),
+            ingredientsList: state.food.ingredientsList.map((ingredient, index) => {
+              if (index == action.index) {
+                return {
+                  quantity: {amount: 100, unit: 'g'},
+                  foodId: action.foodRef.foodId,
+                }
+              } else {
+                return ingredient;
+              }
+            }),
           },
           foodsById: {
             ...state.foodsById,

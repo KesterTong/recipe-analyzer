@@ -31,6 +31,7 @@ export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase
         return nutrientsForRecipe(food, ingredientDatabase);
     }
   }).then(nutrientsPerServing => ({
+    dataType: 'NormalizedFood',
     description: food.description,
     nutrientsPerServing: nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantities(food),
