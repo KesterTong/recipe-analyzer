@@ -29,7 +29,7 @@ module.exports = {
           }
       ]
   },
-  entry: './client/web_main.tsx',
+  entry: './src/web_main.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'ui'),
