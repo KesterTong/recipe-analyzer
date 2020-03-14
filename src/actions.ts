@@ -16,7 +16,7 @@ import { Dispatch } from "react";
 import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
 import { Food } from "../core/Food";
 import { NutrientInfo } from "../core/Nutrients";
-import { RootState, BrandedFoodEdits, LoadingFood } from "./RootState";
+import { RootState, BrandedFoodEdits, LoadingFood } from "./store";
 import { BrandedFood, SRLegacyFood } from "../core/FoodDataCentral";
 import { Recipe } from "../core/Recipe";
 import { NormalizedFood } from "../core/NormalizedFood";

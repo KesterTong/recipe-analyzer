@@ -12,10 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Action } from "./actions";
-import { RootState } from "./RootState";
+import { Action } from "../actions";
+import { createStore, applyMiddleware } from "redux";
+import thunk, { ThunkDispatch } from "redux-thunk";
+import { SRLegacyFood } from "../../core/FoodDataCentral";
+import { Recipe } from "../../core/Recipe";
+import { NormalizedFood } from "../../core/NormalizedFood";
+import { NutrientInfo } from "../../core/Nutrients";
 
-export function reducer(state: RootState | undefined, action: Action): RootState {
+// When a food has been selected from an IngredientSearcher,
+// we know its description but nothing else.
+export interface LoadingFood {
+  dataType: 'Loading',
+  description: string,
+}
+
+export interface BrandedFoodEdits {
+  dataType: 'Branded Edit',
+  servingSize: string,
+  servingSizeUnit: string,
+  householdServingFullText: string,
+  description: string,
+  foodNutrients: {id: number, amount: string}[],
+}
+
+export interface RootState {
+  foodId: string | null,
+  food: SRLegacyFood | Recipe | BrandedFoodEdits | LoadingFood | null,
+  foodsById: {[index: string]: NormalizedFood | LoadingFood},
+  nutrientInfos: NutrientInfo[] | null,
+  selectedQuantity: number,
+}
+
+export function rootReducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
     return {
       foodId: null,
@@ -163,3 +192,6 @@ export function reducer(state: RootState | undefined, action: Action): RootState
       return state;
   }
 }
+
+export const store = createStore<RootState, Action, any, any>(
+  rootReducer, applyMiddleware<ThunkDispatch<RootState, any, Action>, RootState>(thunk));

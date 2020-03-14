@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { connect } from 'react-redux';
-import { RootState } from './RootState';
+import { RootState } from './store';
 import { Recipe } from '../core/Recipe';
 import { RecipeEditor } from './RecipeEditor';
 import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit, updateIngredientId } from './actions';

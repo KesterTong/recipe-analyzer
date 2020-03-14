@@ -16,7 +16,6 @@ import * as React from 'react';
 import { Form, Table, Button } from 'react-bootstrap';
 import { IngredientSearcher } from './IngredientSearcher';
 import { FoodRef } from '../core/FoodRef';
-import { addIngredient } from './actions';
 import { addNutrients } from '../core/Nutrients';
 
 export interface RecipeEditorProps {

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { SRLegacyFood } from "../core/FoodDataCentral";
-import { RootState } from "./RootState";
+import { RootState } from "./store";
 import { NutrientsViewerContainer } from "./NutrientsViewerContainer";
 import { connect } from "react-redux";
 import * as React from 'react';
