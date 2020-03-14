@@ -19,7 +19,7 @@ import { Form, Navbar, Container, Spinner, Button } from 'react-bootstrap';
 import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { Action, selectFood, saveFood, newBrandedFood, newRecipe } from './actions';
+import { Action, selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
 import { RootState, LoadingFood, BrandedFoodEdits } from './store';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

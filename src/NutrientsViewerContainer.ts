@@ -11,9 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RootState } from './store';
+import { RootState } from "./store";
 import { connect } from 'react-redux';
-import { Action } from './actions';
+import { Action } from './store/actions';
 import { Nutrients, scaleNutrients } from '../core/Nutrients';
 import { nutrientsFromFoodDetails } from '../core/normalizeFood';
 import { NutrientsViewer } from './NutrientsViewer';

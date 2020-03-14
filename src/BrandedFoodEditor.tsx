@@ -17,7 +17,7 @@ import * as React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import { RootState, BrandedFoodEdits } from './store';
 import { connect } from 'react-redux';
-import { Action } from './actions';
+import { Action } from './store/actions';
 
 interface BrandedFoodEditorProps {
   description: string,

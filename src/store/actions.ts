@@ -11,16 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodRef } from "../core/FoodRef";
+import { FoodRef } from "../../core/FoodRef";
 import { Dispatch } from "react";
-import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
-import { Food } from "../core/Food";
-import { NutrientInfo } from "../core/Nutrients";
-import { RootState, BrandedFoodEdits, LoadingFood } from "./store";
-import { BrandedFood, SRLegacyFood } from "../core/FoodDataCentral";
-import { Recipe } from "../core/Recipe";
-import { NormalizedFood } from "../core/NormalizedFood";
-import { normalizeFood } from "../core/normalizeFood";
+import { IngredientDatabaseImpl } from "../IngredientDatabaseImpl";
+import { Food } from "../../core/Food";
+import { NutrientInfo } from "../../core/Nutrients";
+import { BrandedFoodEdits, LoadingFood , RootState } from "./RootState";
+import { BrandedFood, SRLegacyFood } from "../../core/FoodDataCentral";
+import { Recipe } from "../../core/Recipe";
+import { NormalizedFood } from "../../core/NormalizedFood";
+import { normalizeFood } from "../../core/normalizeFood";
 
 export interface SetEditMode {
   type: 'SetEditMode',
