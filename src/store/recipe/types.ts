@@ -14,11 +14,16 @@
 import { Recipe } from "../../../core/Recipe";
 import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
+import { Quantity } from "../../../core/Quantity";
 
 export interface RecipeState {
   dataType: 'Recipe Edit';
   description: string,
-  recipe: Recipe;
+  ingredients: {
+    quantity: Quantity,
+    foodId: string,
+    deselected: boolean,
+  }[];
   foodsById: {[index: string]: NormalizedFood};
 }
 
@@ -53,7 +58,12 @@ export interface UpdateIngredientUnit {
 export interface UpdateIngredientId {
   type: 'UpdateIngredientId',
   index: number,
-  foodRef: FoodRef,
+  foodId: string,
 }
 
-export type RecipeAction = UpdateDescription | SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId;
+export interface DeselectIngredient {
+  type: 'DeselectIngredient',
+  index: number,
+}
+
+export type RecipeAction = UpdateDescription | SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId | DeselectIngredient;

@@ -12,16 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { RecipeState, RecipeAction } from "./types";
+import { IngredientBrowser } from "../../IngredientBrowser";
 
 export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeState {
   switch (action.type) {
     case 'UpdateRecipeDescription':
       return {
         ...state,
-        recipe: {
-          ...state.recipe,
-          description: action.description,
-        }
+        description: action.description,
       }
     case 'SetFoodForId':
       return {
@@ -34,61 +32,62 @@ export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeS
     case 'AddIngredient':
       return {
         ...state,
-        recipe: {
-          ...state.recipe,
-          ingredientsList: state.recipe.ingredientsList.concat([{
-            quantity: {
-              amount: 100,
-              unit: 'g',
-            },
-            foodId: action.foodRef.foodId,
-          }])
-        },
+        ingredients: state.ingredients.concat([{
+          quantity: {
+            amount: 100,
+            unit: 'g',
+          },
+          foodId: action.foodRef.foodId,
+          deselected: false,
+        }]),
       };
     case 'UpdateIngredientAmount':
       return {
         ...state,
-        recipe: {
-          ...state.recipe,
-          ingredientsList: state.recipe.ingredientsList.map((ingredient, index) => ({
-            ...ingredient,
-            quantity: {
-              ...ingredient.quantity,
-              amount: index == action.index ? action.amount: ingredient.quantity.amount,
-            }
-          })),
-        },
+        ingredients: state.ingredients.map((ingredient, index) => ({
+          ...ingredient,
+          quantity: {
+            ...ingredient.quantity,
+            amount: index == action.index ? action.amount: ingredient.quantity.amount,
+          }
+        })),
       };
     case 'UpdateIngredientUnit':
       return {
         ...state,
-        recipe: {
-          ...state.recipe,
-          ingredientsList: state.recipe.ingredientsList.map((ingredient, index) => ({
-            ...ingredient,
-            quantity: {
-              ...ingredient.quantity,
-              unit: index == action.index ? action.unit: ingredient.quantity.unit,
-            }
-          })),
-        },
+        ingredients: state.ingredients.map((ingredient, index) => ({
+          ...ingredient,
+          quantity: {
+            ...ingredient.quantity,
+            unit: index == action.index ? action.unit: ingredient.quantity.unit,
+          }
+        })),
       };
     case 'UpdateIngredientId':
       return {
         ...state,
-        recipe: {
-          ...state.recipe,
-          ingredientsList: state.recipe.ingredientsList.map((ingredient, index) => {
-            if (index == action.index) {
-              return {
-                quantity: {amount: 100, unit: 'g'},
-                foodId: action.foodRef.foodId,
-              }
-            } else {
-              return ingredient;
+        ingredients: state.ingredients.map((ingredient, index) => {
+          if (index == action.index) {
+            return {
+              quantity: {amount: 100, unit: 'g'},
+              foodId: action.foodId,
+              deselected: false,
             }
-          }),
-        },
+          } else {
+            return ingredient;
+          }
+        }),
       };
+    case 'DeselectIngredient':
+      return {
+        ...state,
+        ingredients: state.ingredients.map((ingredient, index) => {
+          if (index == action.index) {
+            return {...ingredient, deselected: true};
+          } else {
+            return ingredient;
+          }
+        }),
+      }
   }
 }

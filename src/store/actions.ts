@@ -64,14 +64,28 @@ function brandedFoodFromState(state: BrandedFoodState): BrandedFood {
   }
 }
 
+function recipeFromState(state: RecipeState): Recipe {
+  return {
+    dataType: 'Recipe',
+    description: state.description,
+    ingredientsList: state.ingredients.map(ingredient => ({
+      quantity: ingredient.quantity,
+      foodId: ingredient.foodId,
+    })),
+  }
+}
+
 export function saveFood() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
     let state = getState();
     if (state.food?.dataType == 'Branded Edit') {
-      let updatedFood = brandedFoodFromState(state.food);
-      new IngredientDatabaseImpl().patchFood(state.selectedFoodId!, updatedFood);
+      new IngredientDatabaseImpl().patchFood(
+        state.selectedFoodId!,
+        brandedFoodFromState(state.food));
     } else if (state.food?.dataType == 'Recipe Edit') {
-      new IngredientDatabaseImpl().patchFood(state.selectedFoodId!, state.food.recipe); 
+      new IngredientDatabaseImpl().patchFood(
+        state.selectedFoodId!,
+        recipeFromState(state.food)); 
     }
   }
 }
@@ -95,7 +109,11 @@ export function selectFood(selection: {label: string, value: string}[]) {
       return;
     }
     dispatch({type: 'SetFood', food});
-    //food.ingredientsList.forEach(ingredient => loadIngredient(ingredient.foodId)(dispatch, () => (<RecipeState>getState().food)));
+    if (food.dataType == 'Recipe') {
+      food.ingredientsList.forEach(ingredient => {
+        loadIngredient(ingredient.foodId)(dispatch)
+      });
+    }
   } 
 }
 

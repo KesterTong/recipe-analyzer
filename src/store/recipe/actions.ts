@@ -22,7 +22,7 @@ export function updateRecipeDescription(description: string): RecipeAction {
 }
 
 export function loadIngredient(foodId: string) {
-  return async (dispatch: Dispatch<RecipeAction>, getState: () => RecipeState) => {
+  return async (dispatch: Dispatch<RecipeAction>) => {
     const food = await new IngredientDatabaseImpl().getFood(foodId);
     const normalizedFood = food ? await normalizeFood(food, new IngredientDatabaseImpl()) : null;
     if (normalizedFood != null) {
@@ -34,7 +34,7 @@ export function loadIngredient(foodId: string) {
 export function addIngredient(foodRef: FoodRef) {
   return (dispatch: Dispatch<RecipeAction>, getState:() => RecipeState) => {
     dispatch({type: 'AddIngredient', foodRef});
-    return loadIngredient(foodRef.foodId)(dispatch, getState);
+    return loadIngredient(foodRef.foodId)(dispatch);
   }
 }
 
@@ -46,9 +46,14 @@ export function updateIngredientUnit(index: number, unit: string): RecipeAction 
   return {type: 'UpdateIngredientUnit', index, unit};
 }
 
-export function updateIngredientId(index: number, foodRef: FoodRef) {
+export function updateIngredientId(index: number, selection: {label: string, value: string}[]) {
   return async (dispatch: Dispatch<RecipeAction>, getState:() => RecipeState) => {
-    dispatch({type: 'UpdateIngredientId', index, foodRef});
-    return loadIngredient(foodRef.foodId)(dispatch, getState);
+    if (selection.length == 0) {
+      dispatch({type: 'DeselectIngredient', index});
+      return;
+    }
+    let foodId = selection[0].value;
+    dispatch({type: 'UpdateIngredientId', index, foodId});
+    return loadIngredient(foodId)(dispatch);
   }
 }

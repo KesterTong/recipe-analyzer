@@ -35,22 +35,25 @@ function mapStateToProps(state: RootState) {
     throw("Should not get here");
   }
   return {
-    description: recipeState.recipe.description,
+    description: recipeState.description,
     nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
-    ingredientsList: recipeState.recipe.ingredientsList.map(ingredient => {
-      let food = recipeState.foodsById[ingredient.foodId];
+    ingredientsList: recipeState.ingredients.map(ingredient => {
+      const food = recipeState.foodsById[ingredient.foodId];
+      const selected: {label: string, value: string}[] = ingredient.foodId && !ingredient.deselected ? [{
+        value: ingredient.foodId,
+        label: recipeState.foodsById[ingredient.foodId]?.description || 'Loading...',
+      }] : [];
       return {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
         units: food ? Object.keys(food.servingEquivalentQuantities) : ['g'],
-        foodRef: food ? {
-          foodId: ingredient.foodId,
-          description: food.description,
-        } : null,
+        selected,
+        disabled: selected.length > 0 && selected[0].label == 'Loading...',
         nutrients: food?.dataType == 'NormalizedFood' ? nutrientsForQuantity(ingredient.quantity, food)! : (state.nutrientInfos || []).map(nutrientInfo => 0),
       }
     }),
-    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
+    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query)
+    .then(result => result.map(foodRef => ({label: foodRef.description, value: foodRef.foodId}))),
   }
 }
 
@@ -60,7 +63,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
     addIngredient,
     updateIngredientAmount,
     updateIngredientUnit,
-    updateIngredientId,
+    select: updateIngredientId,
   }, dispatch);
 }
 

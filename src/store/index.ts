@@ -20,6 +20,8 @@ import { brandedFoodReducer } from "./branded_food/reducer";
 import { BrandedFoodState } from "./branded_food/types";
 import { recipeReducer } from "./recipe/reducer";
 import { BrandedFood } from "../../core/FoodDataCentral";
+import { RecipeState } from "./recipe/types";
+import { Recipe } from "../../core/Recipe";
 
 export { RootState, BrandedFoodState }
 
@@ -36,6 +38,18 @@ function editStateFromBrandedFood(food: BrandedFood): BrandedFoodState {
     householdServingFullText: food.householdServingFullText || '',
     foodNutrients,
     selectedQuantity: 0,
+  }
+}
+
+function recipeStateFromRecipe(food: Recipe): RecipeState {
+  return {
+    dataType: 'Recipe Edit',
+    description: food.description,
+    ingredients: food.ingredientsList.map(ingredient => ({
+      ...ingredient,
+      deselected: false,
+    })),
+    foodsById: {},
   }
 }
 
@@ -72,12 +86,7 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
         case 'Recipe':
           return {
             ...state,
-            food: {
-              dataType: 'Recipe Edit',
-              description: action.food.description,
-              recipe: action.food,
-              foodsById: {},
-            },
+            food: recipeStateFromRecipe(action.food),
           }
         case 'SR Legacy':
           return {...state, food: action.food};
@@ -88,6 +97,7 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
     case "UpdateIngredientAmount":
     case "UpdateIngredientUnit":
     case "UpdateIngredientId":
+    case 'DeselectIngredient':
       if (state.food?.dataType == 'Recipe Edit') {
         return {...state, food: recipeReducer(state.food, action)}
       } else {

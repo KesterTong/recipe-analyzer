@@ -96,8 +96,8 @@ function mapStateToProps(state: RootState) {
   if (state.food?.dataType != 'Branded Edit') {
     throw('should not get here');
   }
-  let food = state.food;
-  let nutrientNamesById: {[index: number]: string} = {};
+  const food = state.food;
+  const nutrientNamesById: {[index: number]: string} = {};
   (state.nutrientInfos || []).forEach(nutrientInfo => {
     nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
   });

@@ -25,15 +25,16 @@ export interface RecipeEditorProps {
     amount: number,
     unit: string,
     units: string[],
-    foodRef: FoodRef | null,
+    selected: {label: string, value: string}[],
+    disabled: boolean,
     nutrients: number[],
   }[],
   updateRecipeDescription(value: string): void,
-  autocomplete(query: string): Promise<FoodRef[]>,
+  autocomplete(query: string): Promise<{label: string, value: string}[]>,
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
   updateIngredientUnit(index: number, unit: string): void,
-  updateIngredientId(index: number, foodRef: FoodRef): void,
+  select(index: number, selection: {label: string, value: string}[]): void,
 }
 
 export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
@@ -76,16 +77,14 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                   </Form.Control>
                 </td>
                 <td>
-                  {/* {
-                    ingredient.foodRef ? 
+                  {
                     <IngredientSearcher
                     key={index}
-                    selected={ingredient.foodRef}
-                    state={'Selected'}
-                    selectFood={(foodRef: FoodRef) => props.updateIngredientId(index, foodRef)}
+                    selected={ingredient.selected}
+                    disabled={ingredient.disabled}
+                    select={selected => props.select(index, selected)}
                     autocomplete={props.autocomplete} />
-                    : null
-                  } */}
+                  }
                 </td>
                 <td><Button>Delete</Button></td>
                 { ingredient.nutrients.map(value => <td>{value.toFixed(1)}</td>) }
