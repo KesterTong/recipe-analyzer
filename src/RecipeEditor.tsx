@@ -76,7 +76,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                   </Form.Control>
                 </td>
                 <td>
-                  {
+                  {/* {
                     ingredient.foodRef ? 
                     <IngredientSearcher
                     key={index}
@@ -85,7 +85,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                     selectFood={(foodRef: FoodRef) => props.updateIngredientId(index, foodRef)}
                     autocomplete={props.autocomplete} />
                     : null
-                  }
+                  } */}
                 </td>
                 <td><Button>Delete</Button></td>
                 { ingredient.nutrients.map(value => <td>{value.toFixed(1)}</td>) }
@@ -96,7 +96,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
             <td></td>
             <td></td>
             <td>
-              <IngredientSearcher selected={null} state={'Selected'} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
+              {/* <IngredientSearcher selected={null} state={'Selected'} selectFood={props.addIngredient} autocomplete={props.autocomplete} /> */}
             </td>
             <td><Button>Add</Button></td>
             { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }

@@ -15,8 +15,9 @@ import { Recipe } from "../../../core/Recipe";
 import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 
-export type RecipeState = {
+export interface RecipeState {
   dataType: 'Recipe Edit';
+  description: string,
   recipe: Recipe;
   foodsById: {[index: string]: NormalizedFood};
 }

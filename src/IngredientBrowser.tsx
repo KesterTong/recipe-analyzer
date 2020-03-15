@@ -28,15 +28,16 @@ import { RecipeEditorContainer } from './RecipeEditorContainer';
 import { FoodRef } from '../core/FoodRef';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
-import { FoodSearcherState } from './store/food_searcher/types';
 import { RecipeState } from './store/recipe/types';
 import { SRLegacyFood } from '../core/FoodDataCentral';
+import { LoadingFood } from './store/RootState';
 
 interface IngredientBrowserProps {
-  food: SRLegacyFood | RecipeState | BrandedFoodState | null,
-  foodSearcher: FoodSearcherState,
-  selectFood(foodRef: FoodRef): void,
-  autocomplete(query: string): Promise<FoodRef[]>,
+  food: SRLegacyFood | RecipeState | BrandedFoodState | LoadingFood | null,
+  selectFoodDisabled: boolean,
+  selectedFood: {label: string, value: string}[],
+  selectFood(selected: {label: string, value: string}[]): void,
+  autocomplete(query: string): Promise<{label: string, value: string}[]>,
   saveFood: () => void,
   newBrandedFood: () => void,
   newRecipe: () => void,
@@ -62,7 +63,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
-        <IngredientSearcher {...props.foodSearcher} selectFood={props.selectFood} autocomplete={props.autocomplete}/>
+        <IngredientSearcher selected={props.selectedFood} disabled={props.selectFoodDisabled} select={props.selectFood} autocomplete={props.autocomplete}/>
         <Button onClick={props.saveFood}>Save</Button>
         <Button onClick={props.newBrandedFood}>New Custom Food</Button>
         <Button onClick={props.newRecipe}>New Recipe</Button>
@@ -75,10 +76,16 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
+  let selectedFood: {label: string, value: string}[] = state.selectedFoodId && !state.deselected ? [{
+    value: state.selectedFoodId,
+    label: state.food?.description || 'Loading...',
+  }] : [];
   return {
     food: state.food,
-    foodSearcher: state.foodSearcher,
-    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
+    selectedFood,
+    selectFoodDisabled: selectedFood.length > 0 && selectedFood[0].label == 'Loading...',
+    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query)
+    .then(results => results.map(foodRef => ({label: foodRef.description, value: foodRef.foodId}))),
   }
 }
 

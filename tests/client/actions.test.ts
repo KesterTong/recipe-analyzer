@@ -16,7 +16,7 @@ import { selectFood } from '../../src/store/actions';
 
 describe('actions', () => {
   it('SelectFood', () => {
-    store.dispatch(selectFood({foodId: 'userData/abcdefg', description: 'My Food'}));
+    store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
     expect(store.getState()).toEqual({
       "food": null,
       "foodSearcher": {

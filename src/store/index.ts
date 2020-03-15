@@ -19,28 +19,69 @@ import { RootState } from "./RootState";
 import { brandedFoodReducer } from "./branded_food/reducer";
 import { BrandedFoodState } from "./branded_food/types";
 import { recipeReducer } from "./recipe/reducer";
-import { foodSearcherReducer } from "./food_searcher/reducer";
+import { BrandedFood } from "../../core/FoodDataCentral";
 
 export { RootState, BrandedFoodState }
+
+function editStateFromBrandedFood(food: BrandedFood): BrandedFoodState {
+  let foodNutrients = food.foodNutrients.map(nutrient => ({
+    id: nutrient.nutrient.id,
+    amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
+  }));
+  return {
+    dataType: 'Branded Edit',
+    description: food.description,
+    servingSize: food.servingSize.toString(),
+    servingSizeUnit: food.servingSizeUnit,
+    householdServingFullText: food.householdServingFullText || '',
+    foodNutrients,
+    selectedQuantity: 0,
+  }
+}
 
 export function rootReducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
     return {
-      foodSearcher: {selected: null, state: 'Selected'},
+      selectedFoodId: null,
+      deselected: false,
       food: null,
       nutrientInfos: null,
     };
   }
   switch (action.type) {
-    case 'UpdateFoodSearcher':
+    case 'Deselect':
       return {
         ...state,
-        foodSearcher: foodSearcherReducer(state.foodSearcher, action.action),
+        deselected: true,
       };
+    case 'SelectFood':
+      return {
+        ...state,
+        selectedFoodId: action.foodId,
+
+      }
     case 'SetNutrientInfos':
       return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
-      return {...state, food: action.food};
+      switch (action.food.dataType) {
+        case 'Branded':
+          return {
+            ...state,
+            food: editStateFromBrandedFood(action.food),
+          }
+        case 'Recipe':
+          return {
+            ...state,
+            food: {
+              dataType: 'Recipe Edit',
+              description: action.food.description,
+              recipe: action.food,
+              foodsById: {},
+            },
+          }
+        case 'SR Legacy':
+          return {...state, food: action.food};
+      }
     case "UpdateRecipeDescription":
     case 'SetFoodForId':
     case "AddIngredient":

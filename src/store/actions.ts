@@ -19,31 +19,34 @@ import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
 import { RootState } from "./RootState";
 import { BrandedFood, SRLegacyFood } from "../../core/FoodDataCentral";
-import * as food_searcher_actions from "./food_searcher/actions";
 import * as branded_food_actions from "./branded_food/actions";
 import * as recipe_actions from "./recipe/actions";
 import { Recipe } from "../../core/Recipe";
 import { BrandedFoodAction, BrandedFoodState } from "./branded_food/types";
 import { RecipeAction, RecipeState } from "./recipe/types";
 import { loadIngredient } from "./recipe/actions";
-import { FoodSearcherAction } from "./food_searcher/types";
 
 export interface SetNutrientInfos {
   type: 'SetNutrientInfos',
   nutrientInfos: NutrientInfo[],
 }
 
-export interface UpdatedFoodSearcher {
-  type: 'UpdateFoodSearcher',
-  action: FoodSearcherAction
+export interface Deselect {
+  type: 'Deselect';
+}
+
+export interface SelectFood {
+  type: 'SelectFood',
+  foodId: string,
+  description: string | null,
 }
 
 export interface SetFood {
   type: 'SetFood',
-  food: SRLegacyFood | RecipeState | BrandedFoodState | null,
+  food: Food,
 }
 
-export type Action = SetNutrientInfos | UpdatedFoodSearcher | SetFood | BrandedFoodAction | RecipeAction;
+export type Action = SetNutrientInfos | Deselect | SelectFood | SetFood | BrandedFoodAction | RecipeAction;
 
 function brandedFoodFromState(state: BrandedFoodState): BrandedFood {
   let servingSize = Number(state.servingSize);
@@ -61,71 +64,38 @@ function brandedFoodFromState(state: BrandedFoodState): BrandedFood {
   }
 }
 
-function editStateFromBrandedFood(food: BrandedFood): BrandedFoodState {
-  let foodNutrients = food.foodNutrients.map(nutrient => ({
-    id: nutrient.nutrient.id,
-    amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
-  }));
-  return {
-    dataType: 'Branded Edit',
-    description: food.description,
-    servingSize: food.servingSize.toString(),
-    servingSizeUnit: food.servingSizeUnit,
-    householdServingFullText: food.householdServingFullText || '',
-    foodNutrients,
-    selectedQuantity: 0,
-  }
-}
-
 export function saveFood() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
     let state = getState();
     if (state.food?.dataType == 'Branded Edit') {
       let updatedFood = brandedFoodFromState(state.food);
-      new IngredientDatabaseImpl().patchFood(state.foodSearcher.selected!.foodId, updatedFood);
+      new IngredientDatabaseImpl().patchFood(state.selectedFoodId!, updatedFood);
     } else if (state.food?.dataType == 'Recipe Edit') {
-      new IngredientDatabaseImpl().patchFood(state.foodSearcher.selected!.foodId, state.food.recipe); 
+      new IngredientDatabaseImpl().patchFood(state.selectedFoodId!, state.food.recipe); 
     }
   }
 }
 
-export function selectFood(foodRef: FoodRef | null) {
+export function selectFood(selection: {label: string, value: string}[]) {
   return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
-    if (foodRef == null) {
-      dispatch({type: 'UpdateFoodSearcher', action: {type: 'Deselect'}});
+    if (selection.length == 0) {
+      dispatch({type: 'Deselect'});
       return;
     }
+    const foodId = selection[0].value;
     dispatch({
-      type: 'UpdateFoodSearcher',
-      action: {type: 'SelectFood', selected: foodRef},
+      type: 'SelectFood',
+      foodId,
+      description: selection[0].label,
     });
     let ingredientDatabase = new IngredientDatabaseImpl()
-    const food = await ingredientDatabase.getFood(foodRef.foodId);
+    const food = await ingredientDatabase.getFood(foodId);
     if (food == null) {
-      return dispatch({
-        type: 'SetFood',
-        food: null, 
-      })
+      // TODO: handle this error.
+      return;
     }
-    switch (food.dataType) {
-      case 'Branded':
-        return dispatch({
-          type: 'SetFood',
-          food: editStateFromBrandedFood(food), 
-        });
-      case 'Recipe':
-        food.ingredientsList.forEach(ingredient => loadIngredient(ingredient.foodId)(dispatch, () => (<RecipeState>getState().food)));
-        return dispatch({
-          type: 'SetFood',
-          food: {
-            dataType: 'Recipe Edit',
-            recipe: food,
-            foodsById: {},
-          },
-        });
-      case 'SR Legacy':
-        return dispatch({type: 'SetFood', food});
-    }
+    dispatch({type: 'SetFood', food});
+    //food.ingredientsList.forEach(ingredient => loadIngredient(ingredient.foodId)(dispatch, () => (<RecipeState>getState().food)));
   } 
 }
 
@@ -141,14 +111,8 @@ export function newBrandedFood() {
       foodNutrients: [],
     };
     let foodId = await new IngredientDatabaseImpl().insertFood(food);
-    dispatch({
-      type: 'UpdateFoodSearcher',
-      action: {type: 'SelectFood', selected: {foodId, description}},
-    });
-    dispatch({
-      type: 'SetFood',
-      food: editStateFromBrandedFood(food),
-    });
+    dispatch({type: 'SelectFood', foodId, description});
+    dispatch({type: 'SetFood', food});
   } 
 }
 
@@ -161,17 +125,7 @@ export function newRecipe() {
       ingredientsList: [],
     };
     let foodId = await new IngredientDatabaseImpl().insertFood(food);
-    dispatch({
-      type: 'UpdateFoodSearcher',
-      action: food_searcher_actions.selectFood({foodId, description}),
-    });
-    dispatch({
-      type: 'SetFood',
-      food: {
-        dataType: 'Recipe Edit',
-        recipe: food,
-        foodsById: {},
-      },
-    });
+    dispatch({type: 'SelectFood', foodId, description});
+    dispatch({type: 'SetFood', food});
   } 
 }

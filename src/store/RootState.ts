@@ -17,10 +17,15 @@ import { NormalizedFood } from "../../core/NormalizedFood";
 import { NutrientInfo } from "../../core/Nutrients";
 import { BrandedFoodState } from "./branded_food/types";
 import { RecipeState } from "./recipe/types";
-import { FoodSearcherState } from "./food_searcher/types";
+
+export interface LoadingFood {
+  dataType: 'Loading',
+  description: string | null,
+}
 
 export interface RootState {
-  foodSearcher: FoodSearcherState;
-  food: SRLegacyFood | RecipeState | BrandedFoodState | null;
-  nutrientInfos: NutrientInfo[] | null;
+  selectedFoodId: string | null,
+  deselected: boolean,
+  food: SRLegacyFood | RecipeState | BrandedFoodState | LoadingFood | null,
+  nutrientInfos: NutrientInfo[] | null,
 }

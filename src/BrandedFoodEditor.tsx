@@ -101,7 +101,7 @@ function mapStateToProps(state: RootState) {
   (state.nutrientInfos || []).forEach(nutrientInfo => {
     nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
   });
-  const foodId = state.foodSearcher.selected?.foodId;
+  const foodId = state.selectedFoodId;
   return {
     description: food.description,
     householdServingFullText: food.householdServingFullText || '',

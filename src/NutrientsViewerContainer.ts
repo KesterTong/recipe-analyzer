@@ -31,6 +31,10 @@ function mapStateToProps(state: RootState) {
   let quantities: {description: string, servings: number}[];
   let nutrientsPerServing: Nutrients;
   switch (food.dataType) {
+    case 'Loading':
+      quantities = [];
+      nutrientsPerServing = [];
+      break;
     case 'Recipe Edit':
       quantities = [{description: '1 serving', servings: 1}];
       // TODO: store nutrients per serving in separate part of state.
