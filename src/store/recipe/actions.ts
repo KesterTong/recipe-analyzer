@@ -17,8 +17,8 @@ import { RecipeAction, RecipeState } from "./types";
 import { IngredientDatabaseImpl } from "../../IngredientDatabaseImpl";
 import { normalizeFood } from "../../../core/normalizeFood";
 
-export function updateDescription(description: string): RecipeAction {
-  return {type: 'UpdateDescription', description};
+export function updateRecipeDescription(description: string): RecipeAction {
+  return {type: 'UpdateRecipeDescription', description};
 }
 
 export function loadIngredient(foodId: string) {

@@ -17,9 +17,16 @@ import * as React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import { RootState } from './store';
 import { connect } from 'react-redux';
-import { Action, updateBrandedFoodDescription, updateBrandedFoodServingSize, updateBrandedFoodServingSizeUnit, updateBrandedFoodHouseholdUnit, updateBrandedFoodNutrientValue } from './store/actions';
+import { Action } from './store/actions';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import {
+  updateBrandedFoodDescription,
+  updateServingSize,
+  updateServingSizeUnit,
+  updateHouseholdUnit,
+  updateNutrientValue
+ } from './store/branded_food/actions';
 
 interface BrandedFoodEditorProps {
   description: string,
@@ -28,8 +35,8 @@ interface BrandedFoodEditorProps {
   servingSizeUnit: string,
   nutrients: {id: number, description: string, value: string}[],
 
-  updateDescription(value: string): void,
-  updatehouseholdServingFullText(value: string): void,
+  updateBrandedFoodDescription(value: string): void,
+  updateHouseholdUnit(value: string): void,
   updateServingSize(value: string): void,
   updateServingSizeUnit(value: string): void,
   updateNutrientValue(id: number, value: string): void,
@@ -42,7 +49,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               value={props.description}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateBrandedFoodDescription(event.target.value)}
               />
         </Form.Group>
         <Form.Row>
@@ -50,7 +57,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
             <Form.Label>Household Units</Form.Label>
             <Form.Control
               value={props.householdServingFullText}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updatehouseholdServingFullText(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateHouseholdUnit(event.target.value)}
               />
           </Form.Group>
           <Form.Group as={Col} controlId="formServingSize">
@@ -111,11 +118,11 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
   return bindActionCreators({
-    updateDescription: updateBrandedFoodDescription,
-    updateServingSize: updateBrandedFoodServingSize,
-    updateServingSizeUnit: updateBrandedFoodServingSizeUnit,
-    updatehouseholdServingFullText: updateBrandedFoodHouseholdUnit,
-    updateNutrientValue: updateBrandedFoodNutrientValue,
+    updateBrandedFoodDescription,
+    updateServingSize,
+    updateServingSizeUnit,
+    updateHouseholdUnit,
+    updateNutrientValue,
   }, dispatch);
 }
 

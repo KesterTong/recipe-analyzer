@@ -14,8 +14,8 @@
 import { BrandedFoodAction, BrandedFoodState } from "./types";
 import { BrandedFood } from "../../../core/FoodDataCentral";
 
-export function updateDescription(description: string): BrandedFoodAction {
-  return {type: 'UpdateDescription', description};
+export function updateBrandedFoodDescription(description: string): BrandedFoodAction {
+  return {type: 'UpdateBrandedFoodDescription', description};
 }
 
 export function updateServingSize(servingSize: string): BrandedFoodAction {

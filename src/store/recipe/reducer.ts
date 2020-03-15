@@ -15,7 +15,7 @@ import { RecipeState, RecipeAction } from "./types";
 
 export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeState {
   switch (action.type) {
-    case 'UpdateDescription':
+    case 'UpdateRecipeDescription':
       return {
         ...state,
         recipe: {

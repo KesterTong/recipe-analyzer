@@ -43,74 +43,7 @@ export interface SetFood {
   food: SRLegacyFood | RecipeState | BrandedFoodState | null,
 }
 
-export interface UpdateBrandedFood {
-  type: 'UpdateBrandedFood',
-  action: BrandedFoodAction,
-}
-
-export interface UpdateRecipe {
-  type: 'UpdateRecipe',
-  action: RecipeAction,
-}
-
-export type Action = SetNutrientInfos | UpdatedFoodSearcher | SetFood | UpdateBrandedFood | UpdateRecipe;
-
-function compose1<T,U,V>(f: (arg0: T) => U, g: (arg0: U) => V): (arg0: T) => V {
-  return (arg0: T) => g(f(arg0));
-}
-
-function compose2<T0, T1, U,V>(f: (arg0: T0, arg1: T1) => U, g: (arg0: U) => V): (arg0: T0, arg1: T1) => V {
-  return (arg0: T0, arg1: T1) => g(f(arg0, arg1));
-}
-
-function wrapBrandedFoodAction(action: BrandedFoodAction): Action {
-  return {type: 'UpdateBrandedFood', action};
-}
-
-export const updateBrandedFoodDescription = compose1(
-  branded_food_actions.updateDescription, wrapBrandedFoodAction);
-
-export const updateBrandedFoodServingSize = compose1(
-  branded_food_actions.updateServingSize, wrapBrandedFoodAction);
-
-export const updateBrandedFoodServingSizeUnit = compose1(
-  branded_food_actions.updateServingSizeUnit, wrapBrandedFoodAction);
-
-export const updateBrandedFoodHouseholdUnit = compose1(
-  branded_food_actions.updateHouseholdUnit, wrapBrandedFoodAction);
-
-export const updateBrandedFoodNutrientValue = compose2(
-  branded_food_actions.updateNutrientValue, wrapBrandedFoodAction);
-
-export const updateBrandedFoodSelectedQuantity = compose1(
-  branded_food_actions.setSelectedQuantity, wrapBrandedFoodAction);
-
-function wrapRecipeAction(action: RecipeAction): Action {
-  return {type: 'UpdateRecipe', action};
-}
-
-function wrapRecipeThunk(thunk: (dispatch: Dispatch<RecipeAction>, getState: () => RecipeState) => void) {
-  return (dispatch: Dispatch<Action>, getState: () => RootState) => {
-    thunk((action: RecipeAction) => dispatch(wrapRecipeAction(action)), () => getState().food as RecipeState);
-  };
-}
-
-export const updateRecipeDescription = compose1(
-  recipe_actions.updateDescription, wrapRecipeAction);
-
-export const addRecipeIngredient = compose1(
-  recipe_actions.addIngredient, wrapRecipeThunk);
-
-export const updateRecipeIngredientAmount = compose2(
-  recipe_actions.updateIngredientAmount, wrapRecipeAction);
-
-export const updateRecipeIngredientUnit = compose2(
-  recipe_actions.updateIngredientUnit, wrapRecipeAction);
-      
-export const updateRecipeIngredient = compose2(
-  recipe_actions.updateIngredientId, wrapRecipeThunk);
-  
-  
+export type Action = SetNutrientInfos | UpdatedFoodSearcher | SetFood | BrandedFoodAction | RecipeAction;
 
 function brandedFoodFromState(state: BrandedFoodState): BrandedFood {
   let servingSize = Number(state.servingSize);
@@ -181,7 +114,7 @@ export function selectFood(foodRef: FoodRef | null) {
           food: editStateFromBrandedFood(food), 
         });
       case 'Recipe':
-        food.ingredientsList.forEach(ingredient => wrapRecipeThunk(loadIngredient(ingredient.foodId))(dispatch, getState));
+        food.ingredientsList.forEach(ingredient => loadIngredient(ingredient.foodId)(dispatch, () => (<RecipeState>getState().food)));
         return dispatch({
           type: 'SetFood',
           food: {

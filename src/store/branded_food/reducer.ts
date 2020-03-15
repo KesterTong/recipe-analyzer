@@ -15,7 +15,7 @@ import { BrandedFoodState, BrandedFoodAction } from "./types";
 
 export function brandedFoodReducer(state: BrandedFoodState, action: BrandedFoodAction): BrandedFoodState {
   switch (action.type) {
-    case 'UpdateDescription':
+    case 'UpdateBrandedFoodDescription':
       return {...state, description: action.description};
     case 'UpdateServingSize':
       return {...state, servingSize: action.servingSize};

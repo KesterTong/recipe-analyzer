@@ -23,7 +23,7 @@ export interface BrandedFoodState {
 }
 
 export interface UpdateDescription {
-  type: 'UpdateDescription',
+  type: 'UpdateBrandedFoodDescription',
   description: string,
 }
 

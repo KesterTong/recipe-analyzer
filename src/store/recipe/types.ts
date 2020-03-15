@@ -22,7 +22,7 @@ export type RecipeState = {
 }
 
 export interface UpdateDescription {
-  type: 'UpdateDescription',
+  type: 'UpdateRecipeDescription',
   description: string,
 }
 

@@ -41,15 +41,25 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
       return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
       return {...state, food: action.food};
-    case 'UpdateRecipe':
+    case "UpdateRecipeDescription":
+    case 'SetFoodForId':
+    case "AddIngredient":
+    case "UpdateIngredientAmount":
+    case "UpdateIngredientUnit":
+    case "UpdateIngredientId":
       if (state.food?.dataType == 'Recipe Edit') {
-        return {...state, food: recipeReducer(state.food, action.action)}
+        return {...state, food: recipeReducer(state.food, action)}
       } else {
         return state;
       }
-    case 'UpdateBrandedFood':
+    case 'UpdateBrandedFoodDescription':
+    case 'UpdateServingSize':
+    case 'UpdateServingSizeUnit':
+    case 'UpdateHouseholdUnit':
+    case 'UpdateNutrientValue':
+    case 'SetSelectedQuantity':
       if (state.food?.dataType == 'Branded Edit') {
-        return {...state, food: brandedFoodReducer(state.food, action.action)}
+        return {...state, food: brandedFoodReducer(state.food, action)}
       } else {
         return state;
       }
