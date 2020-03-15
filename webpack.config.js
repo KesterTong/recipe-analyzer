@@ -1,6 +1,4 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 module.exports = {
   mode: "production",
@@ -44,14 +42,8 @@ module.exports = {
     "react-bootstrap": "ReactBootstrap",
     "react-bootstrap-typeahead": "ReactBootstrapTypeahead",
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: 'templates/web_app.html',
-      filename: 'web_app.html',
-    }),
-  ],
 	optimization: {
-		// We no not want to minimize our code.
+		// We do not want to minimize our code.
 		minimize: false
 	},
 };

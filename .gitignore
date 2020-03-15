@@ -1,6 +1,6 @@
 # node
 /node_modules
-/ui
+/ui/bundle*
 package-lock.json
 
 # deployment configs
