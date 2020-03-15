@@ -20,7 +20,7 @@ import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action, selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
-import { RootState, LoadingFood, BrandedFoodEdits } from './store';
+import { RootState, BrandedFoodState } from './store';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
@@ -28,10 +28,13 @@ import { RecipeEditorContainer } from './RecipeEditorContainer';
 import { FoodRef } from '../core/FoodRef';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
+import { FoodSearcherState } from './store/food_searcher/types';
+import { RecipeState } from './store/recipe/types';
+import { SRLegacyFood } from '../core/FoodDataCentral';
 
 interface IngredientBrowserProps {
-  food: Food | LoadingFood | BrandedFoodEdits | null,
-  selected: FoodRef | null,
+  food: SRLegacyFood | RecipeState | BrandedFoodState | null,
+  foodSearcher: FoodSearcherState,
   selectFood(foodRef: FoodRef): void,
   autocomplete(query: string): Promise<FoodRef[]>,
   saveFood: () => void,
@@ -51,20 +54,15 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
       case 'SR Legacy':
         contents = <SRLegacyFoodViewer/>;
         break;
-      case 'Recipe':
+      case 'Recipe Edit':
         contents = <RecipeEditorContainer/>;
-        break;
-      case 'Loading': 
-        contents = <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
         break;
     }
   }
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
-        <IngredientSearcher selected={props.selected} selectFood={props.selectFood} autocomplete={props.autocomplete}/>
+        <IngredientSearcher {...props.foodSearcher} selectFood={props.selectFood} autocomplete={props.autocomplete}/>
         <Button onClick={props.saveFood}>Save</Button>
         <Button onClick={props.newBrandedFood}>New Custom Food</Button>
         <Button onClick={props.newRecipe}>New Recipe</Button>
@@ -77,10 +75,9 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  let foodId = state.foodId;
   return {
     food: state.food,
-    selected: foodId ? {description: state.food?.description || '', foodId} : null,
+    foodSearcher: state.foodSearcher,
     autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query),
   }
 }

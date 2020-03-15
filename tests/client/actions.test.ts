@@ -12,23 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { store } from '../../src/store';
+import { selectFood } from '../../src/store/actions';
 
 describe('actions', () => {
   it('SelectFood', () => {
-    store.dispatch({
-      type: 'SelectFood',
-      foodId: 'userData/abcdefg',
-      description: 'My Food',
-    });
+    store.dispatch(selectFood({foodId: 'userData/abcdefg', description: 'My Food'}));
     expect(store.getState()).toEqual({
-      "food": {
-        "dataType": "Loading",
-        "description": "My Food",
+      "food": null,
+      "foodSearcher": {
+        "selected": {
+          "description": "My Food",
+          "foodId": "userData/abcdefg",
+        },
+        "state": "Selected",
       },
-      "foodId": "userData/abcdefg",
-      "foodsById": {},
       "nutrientInfos": null,
-      "selectedQuantity": 0,
     });
   });
 });

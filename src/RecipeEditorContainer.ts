@@ -16,23 +16,27 @@ import { connect } from 'react-redux';
 import { RootState } from "./store";
 import { Recipe } from '../core/Recipe';
 import { RecipeEditor } from './RecipeEditor';
-import { Action, updateDescription, addIngredient, updateIngredientAmount, updateIngredientUnit, updateIngredientId } from './store/actions';
+import { Action, updateRecipeDescription, addRecipeIngredient, updateRecipeIngredientAmount, updateRecipeIngredientUnit, updateRecipeIngredient } from './store/actions';
 import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { nutrientsForQuantity } from '../core/Quantity';
+import { RecipeState } from './store/recipe/types';
 
 function mapStateToProps(state: RootState) {
-  let food = state.food as Recipe;
+  const recipeState = state.food;
+  if (recipeState?.dataType != 'Recipe Edit') {
+    throw("Should not get here");
+  }
   return {
-    description: food.description,
+    description: recipeState.recipe.description,
     nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
-    ingredientsList: food.ingredientsList.map(ingredient => {
-      let food = state.foodsById[ingredient.foodId];
+    ingredientsList: recipeState.recipe.ingredientsList.map(ingredient => {
+      let food = recipeState.foodsById[ingredient.foodId];
       return {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
-        units: (food && food.dataType != 'Loading') ? Object.keys(food.servingEquivalentQuantities) : ['g'],
+        units: food ? Object.keys(food.servingEquivalentQuantities) : ['g'],
         foodRef: food ? {
           foodId: ingredient.foodId,
           description: food.description,
@@ -46,11 +50,11 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
   return bindActionCreators({
-    updateDescription,
-    addIngredient,
-    updateIngredientAmount,
-    updateIngredientUnit,
-    updateIngredientId,
+    updateRecipeDescription,
+    addRecipeIngredient,
+    updateRecipeIngredientAmount,
+    updateRecipeIngredientUnit,
+    updateRecipeIngredient,
   }, dispatch);
 }
 

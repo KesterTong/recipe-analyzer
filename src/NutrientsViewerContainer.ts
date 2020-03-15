@@ -20,7 +20,7 @@ import { NutrientsViewer } from './NutrientsViewer';
 
 function mapStateToProps(state: RootState) {
   let food = state.food;
-  if (food == null || food.dataType == 'Loading' || food.dataType == 'Branded Edit' || state.nutrientInfos == null) {
+  if (food == null || food.dataType == 'Branded Edit' || state.nutrientInfos == null) {
     return {
       nutrientNames: [],
       nutrientValues: [],
@@ -31,7 +31,7 @@ function mapStateToProps(state: RootState) {
   let quantities: {description: string, servings: number}[];
   let nutrientsPerServing: Nutrients;
   switch (food.dataType) {
-    case 'Recipe':
+    case 'Recipe Edit':
       quantities = [{description: '1 serving', servings: 1}];
       // TODO: store nutrients per serving in separate part of state.
       nutrientsPerServing = state.nutrientInfos.map(nutrientInfo => 0);
@@ -45,12 +45,12 @@ function mapStateToProps(state: RootState) {
       nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientInfos.map(nutrientInfo => nutrientInfo.id));
       break;
   }
-  let scale = quantities[state.selectedQuantity].servings;
+  let scale = quantities[0].servings;
   return {
     nutrientNames: state.nutrientInfos.map(nutrientInfo => nutrientInfo.name),
     nutrientValues: scaleNutrients(nutrientsPerServing, scale),
     quantities: quantities.map(quantity => quantity.description),
-    selectedQuantity: state.selectedQuantity,
+    selectedQuantity: 0,
   };
 }
 
@@ -58,10 +58,10 @@ function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
   return {
     selectQuantity: (event: React.FormEvent) => {
       if (event.target instanceof HTMLSelectElement) {
-        dispatch({
-          type: 'SetSelectedQuantity',
-          index: Number(event.target.value),
-        });
+        // dispatch({
+        //   type: 'SetSelectedQuantity',
+        //   index: Number(event.target.value),
+        // });
       }
     }
   };

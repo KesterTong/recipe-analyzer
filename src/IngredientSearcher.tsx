@@ -6,7 +6,7 @@ import { FoodRef } from '../core/FoodRef';
 export interface IngredientSearcherProps {
   selected: FoodRef | null;
   autocomplete(query: string): Promise<FoodRef[]>,
-  selectFood(foodRef: FoodRef): void,
+  selectFood(foodRef: FoodRef | null): void,
 }
 
 export class IngredientSearcher extends React.Component<IngredientSearcherProps> {
@@ -19,13 +19,9 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
     return (<React.Fragment>
       <AsyncTypeahead
         {...this.state}
-        defaultSelected={this.props.selected ? [{label: this.props.selected.description, value: this.props.selected.foodId}] : []}
+        selected={this.props.selected ? [{label: this.props.selected.description, value: this.props.selected.foodId}] : []}
         filterBy={x => true}
-        onChange={(selected: any) => {
-          if(selected.length) {
-            this.props.selectFood({foodId: selected[0].value, description: selected[0].label})
-          }
-        }}
+        onChange={selected => this.props.selectFood(selected.length ? {foodId: selected[0].value, description: selected[0].label} : null)}
         minLength={3} onSearch={this._handleSearch}
         placeholder="Search for a food..." />
     </React.Fragment>);

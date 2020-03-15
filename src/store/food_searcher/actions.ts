@@ -11,16 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { SRLegacyFood } from "../../core/FoodDataCentral";
-import { Recipe } from "../../core/Recipe";
-import { NormalizedFood } from "../../core/NormalizedFood";
-import { NutrientInfo } from "../../core/Nutrients";
-import { BrandedFoodState } from "./branded_food/types";
-import { RecipeState } from "./recipe/types";
-import { FoodSearcherState } from "./food_searcher/types";
+import { FoodRef } from "../../../core/FoodRef";
+import { FoodSearcherAction } from "./types";
 
-export interface RootState {
-  foodSearcher: FoodSearcherState;
-  food: SRLegacyFood | RecipeState | BrandedFoodState | null;
-  nutrientInfos: NutrientInfo[] | null;
+export function selectFood(selected: FoodRef): FoodSearcherAction {
+  return {type: 'SelectFood', selected};
+}
+
+export function deselect(): FoodSearcherAction {
+  return {type: 'Deselect'};
 }

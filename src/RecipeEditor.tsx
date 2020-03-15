@@ -28,12 +28,12 @@ export interface RecipeEditorProps {
     foodRef: FoodRef | null,
     nutrients: number[],
   }[],
-  updateDescription(value: string): void,
+  updateRecipeDescription(value: string): void,
   autocomplete(query: string): Promise<FoodRef[]>,
-  addIngredient(foodRef: FoodRef): void,
-  updateIngredientAmount(index: number, amount: number): void,
-  updateIngredientUnit(index: number, unit: string): void,
-  updateIngredientId(index: number, foodRef: FoodRef): void,
+  addRecipeIngredient(foodRef: FoodRef): void,
+  updateRecipeIngredientAmount(index: number, amount: number): void,
+  updateRecipeIngredientUnit(index: number, unit: string): void,
+  updateRecipeIngredient(index: number, foodRef: FoodRef): void,
 }
 
 export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
@@ -43,7 +43,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               value={props.description}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateRecipeDescription(event.target.value)}
               />
         </Form.Group>
       </Form>
@@ -63,14 +63,14 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                 <td>
                   <Form.Control
                   value={ingredient.amount.toString()}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientAmount(index, Number(event.target.value))}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateRecipeIngredientAmount(index, Number(event.target.value))}
                   />
                 </td>
                 <td>
                   <Form.Control
                   value={ingredient.unit}
                   as="select"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientUnit(index, event.target.value)}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateRecipeIngredientUnit(index, event.target.value)}
                   >
                     {ingredient.units.map(unit =><option>{unit}</option>)}
                   </Form.Control>
@@ -81,7 +81,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
                     <IngredientSearcher
                     key={index}
                     selected={ingredient.foodRef}
-                    selectFood={(foodRef: FoodRef) => props.updateIngredientId(index, foodRef)}
+                    selectFood={(foodRef: FoodRef) => props.updateRecipeIngredient(index, foodRef)}
                     autocomplete={props.autocomplete} />
                     : null
                   }
@@ -95,7 +95,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
             <td></td>
             <td></td>
             <td>
-              <IngredientSearcher selected={null} selectFood={props.addIngredient} autocomplete={props.autocomplete} />
+              <IngredientSearcher selected={null} selectFood={props.addRecipeIngredient} autocomplete={props.autocomplete} />
             </td>
             <td><Button>Add</Button></td>
             { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }

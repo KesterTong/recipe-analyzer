@@ -15,156 +15,44 @@
 import { Action } from "./actions";
 import { createStore, applyMiddleware } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
-import { RootState, BrandedFoodEdits, LoadingFood } from "./RootState";
+import { RootState } from "./RootState";
+import { brandedFoodReducer } from "./branded_food/reducer";
+import { BrandedFoodState } from "./branded_food/types";
+import { recipeReducer } from "./recipe/reducer";
+import { foodSearcherReducer } from "./food_searcher/reducer";
 
-export { RootState, BrandedFoodEdits, LoadingFood }
+export { RootState, BrandedFoodState }
 
 export function rootReducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
     return {
-      foodId: null,
+      foodSearcher: {selected: null, state: 'Selected'},
       food: null,
-      foodsById: {},
       nutrientInfos: null,
-      selectedQuantity: 0,
     };
   }
   switch (action.type) {
-    case 'SelectFood':
+    case 'UpdateFoodSearcher':
       return {
         ...state,
-        foodId: action.foodId,
-        food: action.description ? {dataType: 'Loading', description: action.description} : null,
-        selectedQuantity: 0,  // Reset selected quantity.
+        foodSearcher: foodSearcherReducer(state.foodSearcher, action.action),
       };
     case 'SetNutrientInfos':
       return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
       return {...state, food: action.food};
-    case 'SetFoodForId':
-      return {
-        ...state,
-        foodsById: {
-          ...state.foodsById, 
-          [action.foodId]: action.food,
-        }
-      };
-    case 'UpdateDescription':
-      if (state.food && state.food.dataType == 'Branded Edit') {
-        return {...state, food: {...state.food, description: action.description}};
-      } else if (state.food && state.food.dataType == 'Recipe') {
-        return {...state, food: {...state.food, description: action.description}};
+    case 'UpdateRecipe':
+      if (state.food?.dataType == 'Recipe Edit') {
+        return {...state, food: recipeReducer(state.food, action.action)}
+      } else {
+        return state;
       }
-      return state;
-    case 'UpdateServingSize':
-      if (state.food && state.food.dataType == 'Branded Edit') {
-        return {...state, food: {...state.food, servingSize: action.servingSize}};
+    case 'UpdateBrandedFood':
+      if (state.food?.dataType == 'Branded Edit') {
+        return {...state, food: brandedFoodReducer(state.food, action.action)}
+      } else {
+        return state;
       }
-      return state;
-    case 'UpdateServingSizeUnit':
-      if (state.food && state.food.dataType == 'Branded Edit') {
-        return {...state, food: {...state.food, servingSizeUnit: action.servingSizeUnit}};
-      }
-      return state;
-    case 'UpdateHouseholdUnit':
-      if (state.food && state.food.dataType == 'Branded Edit') {
-        return {...state, food: {...state.food, householdServingFullText: action.householdUnit}};
-      }
-      return state;
-    case 'UpdateNutrientValue':
-      if (state.food && state.food.dataType == 'Branded Edit') {
-        let foodNutrients = state.food.foodNutrients.map(nutrient =>
-          nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
-        return {...state, food: {...state.food, foodNutrients}};
-      }
-      return state;
-    case 'SetSelectedQuantity':
-      return {...state, selectedQuantity: action.index};
-    case 'AddIngredient':
-      if (state.food?.dataType == 'Recipe') {
-        return {
-          ...state,
-          food: {
-            ...state.food,
-            ingredientsList: state.food.ingredientsList.concat([{
-              quantity: {
-                amount: 100,
-                unit: 'g',
-              },
-              foodId: action.foodRef.foodId,
-            }])
-          },
-          foodsById: {
-            ...state.foodsById,
-            [action.foodRef.foodId]: {
-              dataType: 'Loading',
-              description: action.foodRef.description,
-            },
-          }
-        };
-      }      
-      return state;
-    case 'UpdateIngredientAmount':
-      if (state.food?.dataType == 'Recipe') {
-        return {
-          ...state,
-          food: {
-            ...state.food,
-            ingredientsList: state.food.ingredientsList.map((ingredient, index) => ({
-              ...ingredient,
-              quantity: {
-                ...ingredient.quantity,
-                amount: index == action.index ? action.amount: ingredient.quantity.amount,
-              }
-            })),
-          },
-        };
-      }
-      return state;
-    case 'UpdateIngredientUnit':
-      if (state.food?.dataType == 'Recipe') {
-        return {
-          ...state,
-          food: {
-            ...state.food,
-            ingredientsList: state.food.ingredientsList.map((ingredient, index) => ({
-              ...ingredient,
-              quantity: {
-                ...ingredient.quantity,
-                unit: index == action.index ? action.unit: ingredient.quantity.unit,
-              }
-            })),
-          },
-        };
-      }
-      return state;
-    case 'UpdateIngredientId':
-      if (state.food?.dataType == 'Recipe') {
-        return {
-          ...state,
-          food: {
-            ...state.food,
-            ingredientsList: state.food.ingredientsList.map((ingredient, index) => {
-              if (index == action.index) {
-                return {
-                  quantity: {amount: 100, unit: 'g'},
-                  foodId: action.foodRef.foodId,
-                }
-              } else {
-                return ingredient;
-              }
-            }),
-          },
-          foodsById: {
-            ...state.foodsById,
-            [action.foodRef.foodId]: {
-              dataType: 'Loading',
-              description: action.foodRef.description,
-            },
-          }
-        };
-      }
-      return state;
   }
 }
 

@@ -15,9 +15,11 @@
 import * as React from 'react';
 
 import { Form, Col } from 'react-bootstrap';
-import { RootState, BrandedFoodEdits } from './store';
+import { RootState } from './store';
 import { connect } from 'react-redux';
-import { Action } from './store/actions';
+import { Action, updateBrandedFoodDescription, updateBrandedFoodServingSize, updateBrandedFoodServingSizeUnit, updateBrandedFoodHouseholdUnit, updateBrandedFoodNutrientValue } from './store/actions';
+import { bindActionCreators } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
 
 interface BrandedFoodEditorProps {
   description: string,
@@ -84,17 +86,21 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  let food = state.food as BrandedFoodEdits;
+  if (state.food?.dataType != 'Branded Edit') {
+    throw('should not get here');
+  }
+  let food = state.food;
   let nutrientNamesById: {[index: number]: string} = {};
   (state.nutrientInfos || []).forEach(nutrientInfo => {
     nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
   });
+  const foodId = state.foodSearcher.selected?.foodId;
   return {
     description: food.description,
     householdServingFullText: food.householdServingFullText || '',
     servingSize: food.servingSize,
     servingSizeUnit: food.servingSizeUnit,
-    editable: state.foodId && state.foodId.startsWith('userData/'),
+    editable: foodId && foodId.startsWith('userData/'),
     nutrients: food.foodNutrients.map(nutrient => ({
       id: nutrient.id,
       description: nutrientNamesById[nutrient.id],
@@ -103,30 +109,14 @@ function mapStateToProps(state: RootState) {
   };
 }
 
-function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
-  return {
-    updateDescription: (value: string) => dispatch({
-      type: 'UpdateDescription',
-      description: value
-    }),
-    updatehouseholdServingFullText: (value: string) => dispatch({
-      type: 'UpdateHouseholdUnit',
-      householdUnit: value
-    }),
-    updateServingSize: (value: string) => dispatch({
-      type: 'UpdateServingSize',
-      servingSize: value
-    }),
-    updateServingSizeUnit: (value: string) => dispatch({
-      type: 'UpdateServingSizeUnit',
-      servingSizeUnit: value
-    }),
-    updateNutrientValue: (id: number, value: string) => dispatch({
-      type: 'UpdateNutrientValue',
-      nutrientId: id,
-      value: value,
-    }),
-  }
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+  return bindActionCreators({
+    updateDescription: updateBrandedFoodDescription,
+    updateServingSize: updateBrandedFoodServingSize,
+    updateServingSizeUnit: updateBrandedFoodServingSizeUnit,
+    updatehouseholdServingFullText: updateBrandedFoodHouseholdUnit,
+    updateNutrientValue: updateBrandedFoodNutrientValue,
+  }, dispatch);
 }
 
 export const BrandedFoodEditor = connect(mapStateToProps, mapDispatchToProps)(BrandedFoodEditorView);
