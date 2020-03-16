@@ -18,10 +18,10 @@ describe('actions', () => {
   it('SelectFood', () => {
     store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
     expect(store.getState()).toEqual({
-      "selectedFoodId": "userData/abcdefg",
-      "deselected": false,
-      "food": null,
-      "nutrientInfos": null,
+      selectedFoodId: "userData/abcdefg",
+      deselected: false,
+      food: null,
+      nutrientInfos: null,
     });
   });
 });
