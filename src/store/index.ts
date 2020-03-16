@@ -19,39 +19,11 @@ import { RootState } from "./RootState";
 import { brandedFoodReducer } from "./branded_food/reducer";
 import { BrandedFoodState, BrandedFoodActionType } from "./branded_food/types";
 import { recipeReducer } from "./recipe/reducer";
-import { BrandedFood } from "../../core/FoodDataCentral";
-import { RecipeState, RecipeActionType } from "./recipe/types";
-import { Recipe } from "../../core/Recipe";
+import { stateFromBrandedFood } from "./branded_food/conversion";
+import { RecipeActionType } from "./recipe/types";
+import { stateFromRecipe } from './recipe/conversion';
 
 export { RootState, BrandedFoodState }
-
-function editStateFromBrandedFood(food: BrandedFood): BrandedFoodState {
-  let foodNutrients = food.foodNutrients.map(nutrient => ({
-    id: nutrient.nutrient.id,
-    amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
-  }));
-  return {
-    dataType: 'Branded Edit',
-    description: food.description,
-    servingSize: food.servingSize.toString(),
-    servingSizeUnit: food.servingSizeUnit,
-    householdServingFullText: food.householdServingFullText || '',
-    foodNutrients,
-    selectedQuantity: 0,
-  }
-}
-
-function recipeStateFromRecipe(food: Recipe): RecipeState {
-  return {
-    dataType: 'Recipe Edit',
-    description: food.description,
-    ingredients: food.ingredientsList.map(ingredient => ({
-      ...ingredient,
-      deselected: false,
-    })),
-    foodsById: {},
-  }
-}
 
 export function rootReducer(state: RootState | undefined, action: Action): RootState {
   if (state == undefined) {
@@ -81,12 +53,12 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
         case 'Branded':
           return {
             ...state,
-            food: editStateFromBrandedFood(action.food),
+            food: stateFromBrandedFood(action.food),
           }
         case 'Recipe':
           return {
             ...state,
-            food: recipeStateFromRecipe(action.food),
+            food: stateFromRecipe(action.food),
           }
         case 'SR Legacy':
           return {...state, food: action.food};

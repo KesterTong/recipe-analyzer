@@ -19,12 +19,12 @@ import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
 import { RootState } from "./RootState";
 import { BrandedFood, SRLegacyFood } from "../../core/FoodDataCentral";
-import * as branded_food_actions from "./branded_food/actions";
-import * as recipe_actions from "./recipe/actions";
 import { Recipe } from "../../core/Recipe";
 import { Action as BrandedFoodAction, BrandedFoodState } from "./branded_food/types";
-import { RecipeAction, RecipeState } from "./recipe/types";
+import { RecipeAction } from "./recipe/types";
+import { recipeFromState } from './recipe/conversion';
 import { loadIngredient } from "./recipe/actions";
+import { brandedFoodFromState } from "./branded_food/conversion";
 
 export interface SetNutrientInfos {
   type: 'SetNutrientInfos',
@@ -48,45 +48,24 @@ export interface SetFood {
 
 export type Action = SetNutrientInfos | Deselect | SelectFood | SetFood | BrandedFoodAction | RecipeAction;
 
-function brandedFoodFromState(state: BrandedFoodState): BrandedFood {
-  let servingSize = Number(state.servingSize);
-  let foodNutrients = state.foodNutrients.map(nutrient => ({
-    nutrient: {id: nutrient.id},
-    amount: Number(nutrient.amount) * 100 / servingSize,
-  }));
-  return {
-    dataType: 'Branded',
-    description: state.description,
-    servingSize,
-    servingSizeUnit: state.servingSizeUnit,
-    householdServingFullText: state.householdServingFullText,
-    foodNutrients,
-  }
-}
-
-function recipeFromState(state: RecipeState): Recipe {
-  return {
-    dataType: 'Recipe',
-    description: state.description,
-    ingredientsList: state.ingredients.map(ingredient => ({
-      quantity: ingredient.quantity,
-      foodId: ingredient.foodId,
-    })),
-  }
-}
-
 export function saveFood() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
     let state = getState();
-    if (state.food?.dataType == 'Branded Edit') {
-      new IngredientDatabaseImpl().patchFood(
-        state.selectedFoodId!,
-        brandedFoodFromState(state.food));
-    } else if (state.food?.dataType == 'Recipe Edit') {
-      new IngredientDatabaseImpl().patchFood(
-        state.selectedFoodId!,
-        recipeFromState(state.food)); 
+    let food: Food;
+    if (state.food == null) {
+      return;
     }
+    switch (state.food.dataType) {
+      case 'Branded Edit':
+        food = brandedFoodFromState(state.food);
+        break;
+      case 'Recipe Edit':
+        food = recipeFromState(state.food);
+        break;
+      default:
+        return;
+    }
+    new IngredientDatabaseImpl().patchFood(state.selectedFoodId!, food);
   }
 }
 
