@@ -32,7 +32,7 @@ export function loadIngredient(foodId: string) {
 }
 
 export function addIngredient(foodRef: FoodRef) {
-  return (dispatch: Dispatch<RecipeAction>, getState:() => RecipeState) => {
+  return (dispatch: Dispatch<RecipeAction>) => {
     dispatch({type: RecipeActionType.ADD_INGREDIENT, foodRef});
     return loadIngredient(foodRef.foodId)(dispatch);
   }
@@ -47,7 +47,7 @@ export function updateIngredientUnit(index: number, unit: string): RecipeAction 
 }
 
 export function updateIngredientId(index: number, selection: {label: string, value: string}[]) {
-  return async (dispatch: Dispatch<RecipeAction>, getState:() => RecipeState) => {
+  return async (dispatch: Dispatch<RecipeAction>) => {
     if (selection.length == 0) {
       dispatch({type: RecipeActionType.DESELECT_INGREDIENT, index});
       return;
