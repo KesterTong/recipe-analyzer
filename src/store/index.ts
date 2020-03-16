@@ -36,30 +36,17 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
   }
   switch (action.type) {
     case 'Deselect':
-      return {
-        ...state,
-        deselected: true,
-      };
+      return {...state, deselected: true};
     case 'SelectFood':
-      return {
-        ...state,
-        selectedFoodId: action.foodId,
-
-      }
+      return {...state, selectedFoodId: action.foodId};
     case 'SetNutrientInfos':
       return {...state, nutrientInfos: action.nutrientInfos};
     case 'SetFood':
       switch (action.food.dataType) {
         case 'Branded':
-          return {
-            ...state,
-            food: stateFromBrandedFood(action.food),
-          }
+          return {...state, food: stateFromBrandedFood(action.food)};
         case 'Recipe':
-          return {
-            ...state,
-            food: stateFromRecipe(action.food),
-          }
+          return {...state, food: stateFromRecipe(action.food)};
         case 'SR Legacy':
           return {...state, food: action.food};
       }
