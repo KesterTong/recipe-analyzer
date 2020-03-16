@@ -22,7 +22,7 @@ import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { nutrientsForQuantity } from '../core/Quantity';
 import {
-  updateRecipeDescription,
+  updateDescription,
   addIngredient,
   updateIngredientAmount,
   updateIngredientUnit,
@@ -59,7 +59,7 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
   return bindActionCreators({
-    updateRecipeDescription,
+    updateDescription,
     addIngredient,
     updateIngredientAmount,
     updateIngredientUnit,

@@ -11,17 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RecipeState, RecipeAction } from "./types";
+import { RecipeState, RecipeAction, RecipeActionType } from "./types";
 import { IngredientBrowser } from "../../IngredientBrowser";
 
 export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeState {
   switch (action.type) {
-    case 'UpdateRecipeDescription':
+    case RecipeActionType.UPDATE_DESCRIPTION:
       return {
         ...state,
         description: action.description,
       }
-    case 'SetFoodForId':
+    case RecipeActionType.SET_FOOD_FOR_ID:
       return {
         ...state,
         foodsById: {
@@ -29,7 +29,7 @@ export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeS
           [action.foodId]: action.food,
         }
       };
-    case 'AddIngredient':
+    case RecipeActionType.ADD_INGREDIENT:
       return {
         ...state,
         ingredients: state.ingredients.concat([{
@@ -41,7 +41,7 @@ export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeS
           deselected: false,
         }]),
       };
-    case 'UpdateIngredientAmount':
+    case RecipeActionType.UPDATE_INGREDIENT_AMOUNT:
       return {
         ...state,
         ingredients: state.ingredients.map((ingredient, index) => ({
@@ -52,7 +52,7 @@ export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeS
           }
         })),
       };
-    case 'UpdateIngredientUnit':
+    case RecipeActionType.UPDATE_INGREDIENT_UNIT:
       return {
         ...state,
         ingredients: state.ingredients.map((ingredient, index) => ({
@@ -63,7 +63,7 @@ export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeS
           }
         })),
       };
-    case 'UpdateIngredientId':
+    case RecipeActionType.UPDATE_INGREDIENT_ID:
       return {
         ...state,
         ingredients: state.ingredients.map((ingredient, index) => {
@@ -78,7 +78,7 @@ export function recipeReducer(state: RecipeState, action: RecipeAction): RecipeS
           }
         }),
       };
-    case 'DeselectIngredient':
+    case RecipeActionType.DESELECT_INGREDIENT:
       return {
         ...state,
         ingredients: state.ingredients.map((ingredient, index) => {

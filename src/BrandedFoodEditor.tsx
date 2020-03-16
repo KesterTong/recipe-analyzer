@@ -21,7 +21,7 @@ import { Action } from './store/actions';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
-  updateBrandedFoodDescription,
+  updateDescription,
   updateServingSize,
   updateServingSizeUnit,
   updateHouseholdUnit,
@@ -35,7 +35,7 @@ interface BrandedFoodEditorProps {
   servingSizeUnit: string,
   nutrients: {id: number, description: string, value: string}[],
 
-  updateBrandedFoodDescription(value: string): void,
+  updateDescription(value: string): void,
   updateHouseholdUnit(value: string): void,
   updateServingSize(value: string): void,
   updateServingSizeUnit(value: string): void,
@@ -49,7 +49,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               value={props.description}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateBrandedFoodDescription(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
               />
         </Form.Group>
         <Form.Row>
@@ -118,7 +118,7 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
   return bindActionCreators({
-    updateBrandedFoodDescription,
+    updateDescription,
     updateServingSize,
     updateServingSizeUnit,
     updateHouseholdUnit,

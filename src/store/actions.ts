@@ -22,7 +22,7 @@ import { BrandedFood, SRLegacyFood } from "../../core/FoodDataCentral";
 import * as branded_food_actions from "./branded_food/actions";
 import * as recipe_actions from "./recipe/actions";
 import { Recipe } from "../../core/Recipe";
-import { BrandedFoodAction, BrandedFoodState } from "./branded_food/types";
+import { Action as BrandedFoodAction, BrandedFoodState } from "./branded_food/types";
 import { RecipeAction, RecipeState } from "./recipe/types";
 import { loadIngredient } from "./recipe/actions";
 

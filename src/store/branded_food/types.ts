@@ -22,37 +22,46 @@ export interface BrandedFoodState {
   selectedQuantity: number,
 }
 
+export enum BrandedFoodActionType {
+  UPDATE_DESCRIPTION = '@branded_food/UpdateDescription',
+  UPDATE_SERVING_SIZE = '@branded_food/UpdateServingSize',
+  UPDATE_SERVING_SIZE_UNIT = '@branded_food/UpdateServingSizeUnit',
+  UPDATE_HOUSEHOLD_UNIT = '@branded_food/UpdateHouseholdUnit',
+  UPDATE_NUTRIENT_VALUE = '@branded_food/UpdateNutrientValue',
+  SET_SELECTED_QUANTITY = '@branded_food/SetSelectedQuantity',
+};
+
 export interface UpdateDescription {
-  type: 'UpdateBrandedFoodDescription',
+  type: BrandedFoodActionType.UPDATE_DESCRIPTION,
   description: string,
 }
 
 export interface UpdateServingSize {
-  type: 'UpdateServingSize',
+  type: BrandedFoodActionType.UPDATE_SERVING_SIZE,
   servingSize: string,
 }
 
 export interface UpdateServingSizeUnit {
-  type: 'UpdateServingSizeUnit',
+  type: BrandedFoodActionType.UPDATE_SERVING_SIZE_UNIT,
   servingSizeUnit: string,
 }
 
 export interface UpdateHouseholdUnit {
-  type: 'UpdateHouseholdUnit',
+  type: BrandedFoodActionType.UPDATE_HOUSEHOLD_UNIT,
   householdUnit: string,
 }
 
 export interface UpdateNutrientValue {
-  type: 'UpdateNutrientValue',
+  type: BrandedFoodActionType.UPDATE_NUTRIENT_VALUE,
   nutrientId: number,
   value: string,
 }
 
 export interface SetSelectedQuantity {
-  type: 'SetSelectedQuantity',
+  type: BrandedFoodActionType.SET_SELECTED_QUANTITY,
   index: number,
 }
 
-export type BrandedFoodAction = (
+export type Action = (
   UpdateDescription | UpdateServingSize | UpdateServingSizeUnit |
   UpdateHouseholdUnit | UpdateNutrientValue | SetSelectedQuantity);

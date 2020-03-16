@@ -29,7 +29,7 @@ export interface RecipeEditorProps {
     disabled: boolean,
     nutrients: number[],
   }[],
-  updateRecipeDescription(value: string): void,
+  updateDescription(value: string): void,
   autocomplete(query: string): Promise<{label: string, value: string}[]>,
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
@@ -44,7 +44,7 @@ export const RecipeEditor: React.SFC<RecipeEditorProps> = (props) => {
             <Form.Label>Description</Form.Label>
             <Form.Control
               value={props.description}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateRecipeDescription(event.target.value)}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
               />
         </Form.Group>
       </Form>

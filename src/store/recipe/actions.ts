@@ -13,12 +13,12 @@
 // limitations under the License.
 import { FoodRef } from "../../../core/FoodRef";
 import { Dispatch } from "react";
-import { RecipeAction, RecipeState } from "./types";
+import { RecipeAction, RecipeState, RecipeActionType } from "./types";
 import { IngredientDatabaseImpl } from "../../IngredientDatabaseImpl";
 import { normalizeFood } from "../../../core/normalizeFood";
 
-export function updateRecipeDescription(description: string): RecipeAction {
-  return {type: 'UpdateRecipeDescription', description};
+export function updateDescription(description: string): RecipeAction {
+  return {type: RecipeActionType.UPDATE_DESCRIPTION, description};
 }
 
 export function loadIngredient(foodId: string) {
@@ -26,34 +26,34 @@ export function loadIngredient(foodId: string) {
     const food = await new IngredientDatabaseImpl().getFood(foodId);
     const normalizedFood = food ? await normalizeFood(food, new IngredientDatabaseImpl()) : null;
     if (normalizedFood != null) {
-      dispatch({type: 'SetFoodForId', food: normalizedFood, foodId});
+      dispatch({type: RecipeActionType.SET_FOOD_FOR_ID, food: normalizedFood, foodId});
     }
   }
 }
 
 export function addIngredient(foodRef: FoodRef) {
   return (dispatch: Dispatch<RecipeAction>, getState:() => RecipeState) => {
-    dispatch({type: 'AddIngredient', foodRef});
+    dispatch({type: RecipeActionType.ADD_INGREDIENT, foodRef});
     return loadIngredient(foodRef.foodId)(dispatch);
   }
 }
 
 export function updateIngredientAmount(index: number, amount: number): RecipeAction {
-  return {type: 'UpdateIngredientAmount', index, amount};
+  return {type: RecipeActionType.UPDATE_INGREDIENT_AMOUNT, index, amount};
 }
 
 export function updateIngredientUnit(index: number, unit: string): RecipeAction {
-  return {type: 'UpdateIngredientUnit', index, unit};
+  return {type: RecipeActionType.UPDATE_INGREDIENT_UNIT, index, unit};
 }
 
 export function updateIngredientId(index: number, selection: {label: string, value: string}[]) {
   return async (dispatch: Dispatch<RecipeAction>, getState:() => RecipeState) => {
     if (selection.length == 0) {
-      dispatch({type: 'DeselectIngredient', index});
+      dispatch({type: RecipeActionType.DESELECT_INGREDIENT, index});
       return;
     }
     let foodId = selection[0].value;
-    dispatch({type: 'UpdateIngredientId', index, foodId});
+    dispatch({type: RecipeActionType.UPDATE_INGREDIENT_ID, index, foodId});
     return loadIngredient(foodId)(dispatch);
   }
 }

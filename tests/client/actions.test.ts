@@ -18,14 +18,9 @@ describe('actions', () => {
   it('SelectFood', () => {
     store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
     expect(store.getState()).toEqual({
+      "selectedFoodId": "userData/abcdefg",
+      "deselected": false,
       "food": null,
-      "foodSearcher": {
-        "selected": {
-          "description": "My Food",
-          "foodId": "userData/abcdefg",
-        },
-        "state": "Selected",
-      },
       "nutrientInfos": null,
     });
   });

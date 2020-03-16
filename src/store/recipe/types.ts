@@ -27,42 +27,52 @@ export interface RecipeState {
   foodsById: {[index: string]: NormalizedFood};
 }
 
+export enum RecipeActionType {
+  UPDATE_DESCRIPTION = '@recipe/UpdateDescription',
+  SET_FOOD_FOR_ID = '@recipe/SetFoodForId',
+  ADD_INGREDIENT = '@recipe/AddIngredient',
+  UPDATE_INGREDIENT_AMOUNT = '@recipe/UpdateIngredientAmount',
+  UPDATE_INGREDIENT_UNIT = '@recipe/UpdateIngredientUnit',
+  UPDATE_INGREDIENT_ID = '@recipe/UpdateIngredientId',
+  DESELECT_INGREDIENT = '@recipe/DeselectIngredient',
+}
+
 export interface UpdateDescription {
-  type: 'UpdateRecipeDescription',
+  type: RecipeActionType.UPDATE_DESCRIPTION,
   description: string,
 }
 
 export interface SetFoodForId {
-  type: 'SetFoodForId',
+  type: RecipeActionType.SET_FOOD_FOR_ID,
   food: NormalizedFood,
   foodId: string,
 }
 
 export interface AddIngredient {
-  type: 'AddIngredient',
+  type: RecipeActionType.ADD_INGREDIENT,
   foodRef: FoodRef,
 }
 
 export interface UpdateIngredientAmount {
-  type: 'UpdateIngredientAmount',
+  type: RecipeActionType.UPDATE_INGREDIENT_AMOUNT,
   index: number,
   amount: number,
 }
 
 export interface UpdateIngredientUnit {
-  type: 'UpdateIngredientUnit',
+  type: RecipeActionType.UPDATE_INGREDIENT_UNIT,
   index: number,
   unit: string,
 }
 
 export interface UpdateIngredientId {
-  type: 'UpdateIngredientId',
+  type: RecipeActionType.UPDATE_INGREDIENT_ID,
   index: number,
   foodId: string,
 }
 
 export interface DeselectIngredient {
-  type: 'DeselectIngredient',
+  type: RecipeActionType.DESELECT_INGREDIENT,
   index: number,
 }
 

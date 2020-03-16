@@ -17,10 +17,10 @@ import { createStore, applyMiddleware } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
 import { RootState } from "./RootState";
 import { brandedFoodReducer } from "./branded_food/reducer";
-import { BrandedFoodState } from "./branded_food/types";
+import { BrandedFoodState, BrandedFoodActionType } from "./branded_food/types";
 import { recipeReducer } from "./recipe/reducer";
 import { BrandedFood } from "../../core/FoodDataCentral";
-import { RecipeState } from "./recipe/types";
+import { RecipeState, RecipeActionType } from "./recipe/types";
 import { Recipe } from "../../core/Recipe";
 
 export { RootState, BrandedFoodState }
@@ -91,24 +91,24 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
         case 'SR Legacy':
           return {...state, food: action.food};
       }
-    case "UpdateRecipeDescription":
-    case 'SetFoodForId':
-    case "AddIngredient":
-    case "UpdateIngredientAmount":
-    case "UpdateIngredientUnit":
-    case "UpdateIngredientId":
-    case 'DeselectIngredient':
+    case RecipeActionType.UPDATE_DESCRIPTION:
+    case RecipeActionType.SET_FOOD_FOR_ID:
+    case RecipeActionType.ADD_INGREDIENT:
+    case RecipeActionType.UPDATE_INGREDIENT_AMOUNT:
+    case RecipeActionType.UPDATE_INGREDIENT_UNIT:
+    case RecipeActionType.UPDATE_INGREDIENT_ID:
+    case RecipeActionType.DESELECT_INGREDIENT:
       if (state.food?.dataType == 'Recipe Edit') {
         return {...state, food: recipeReducer(state.food, action)}
       } else {
         return state;
       }
-    case 'UpdateBrandedFoodDescription':
-    case 'UpdateServingSize':
-    case 'UpdateServingSizeUnit':
-    case 'UpdateHouseholdUnit':
-    case 'UpdateNutrientValue':
-    case 'SetSelectedQuantity':
+    case BrandedFoodActionType.UPDATE_DESCRIPTION:
+    case BrandedFoodActionType.UPDATE_SERVING_SIZE:
+    case BrandedFoodActionType.UPDATE_SERVING_SIZE_UNIT:
+    case BrandedFoodActionType.UPDATE_HOUSEHOLD_UNIT:
+    case BrandedFoodActionType.UPDATE_NUTRIENT_VALUE:
+    case BrandedFoodActionType.SET_SELECTED_QUANTITY:
       if (state.food?.dataType == 'Branded Edit') {
         return {...state, food: brandedFoodReducer(state.food, action)}
       } else {

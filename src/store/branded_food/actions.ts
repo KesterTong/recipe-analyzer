@@ -11,28 +11,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { BrandedFoodAction } from "./types";
+import { Action, BrandedFoodActionType } from "./types";
 
-export function updateBrandedFoodDescription(description: string): BrandedFoodAction {
-  return {type: 'UpdateBrandedFoodDescription', description};
+export function updateDescription(description: string): Action {
+  return {type: BrandedFoodActionType.UPDATE_DESCRIPTION, description};
 }
 
-export function updateServingSize(servingSize: string): BrandedFoodAction {
-  return {type: 'UpdateServingSize', servingSize};
+export function updateServingSize(servingSize: string): Action {
+  return {type: BrandedFoodActionType.UPDATE_SERVING_SIZE, servingSize};
 }
 
-export function updateServingSizeUnit(servingSizeUnit: string): BrandedFoodAction {
-  return {type: 'UpdateServingSizeUnit', servingSizeUnit};
+export function updateServingSizeUnit(servingSizeUnit: string): Action {
+  return {type: BrandedFoodActionType.UPDATE_SERVING_SIZE_UNIT, servingSizeUnit};
 }
 
-export function updateHouseholdUnit(householdUnit: string): BrandedFoodAction {
-  return {type: 'UpdateHouseholdUnit', householdUnit};
+export function updateHouseholdUnit(householdUnit: string): Action {
+  return {type: BrandedFoodActionType.UPDATE_HOUSEHOLD_UNIT, householdUnit};
 }
 
-export function updateNutrientValue(nutrientId: number, value: string): BrandedFoodAction {
-  return {type: 'UpdateNutrientValue', nutrientId, value};
+export function updateNutrientValue(nutrientId: number, value: string): Action {
+  return {type: BrandedFoodActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value};
 }
 
-export function setSelectedQuantity(index: number): BrandedFoodAction {
-  return {type: 'SetSelectedQuantity', index};
+export function setSelectedQuantity(index: number): Action {
+  return {type: BrandedFoodActionType.SET_SELECTED_QUANTITY, index};
 }
