@@ -17,7 +17,7 @@ import * as firebase from "firebase";
 import * as firebaseui from "firebaseui";
 
 import { firebaseConfig } from './config';
-import { IngredientDatabaseImpl } from "./IngredientDatabaseImpl";
+import { getNutrientInfo } from "./IngredientDatabaseImpl";
 import { IngredientBrowser } from './IngredientBrowser';
 import ReactDOM = require("react-dom");
 import React = require("react");
@@ -32,8 +32,7 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
-    let ingredientDatabase = new IngredientDatabaseImpl();
-    ingredientDatabase.getNutrientInfo().then(nutrientInfos => 
+    getNutrientInfo().then(nutrientInfos => 
       store.dispatch({type: 'SetNutrientInfos', nutrientInfos}));
     ReactDOM.render(<Provider store={store}>
       <IngredientBrowser/>

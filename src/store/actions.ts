@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Dispatch } from "react";
-import { IngredientDatabaseImpl } from "../IngredientDatabaseImpl";
+import { patchFood, getFood, insertFood } from "../IngredientDatabaseImpl";
 import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
 import { RootState, LoadingFood } from "./RootState";
@@ -65,7 +65,7 @@ export function saveFood() {
       default:
         return;
     }
-    new IngredientDatabaseImpl().patchFood(state.selectedFoodId!, food);
+    patchFood(state.selectedFoodId!, food);
   }
 }
 
@@ -81,8 +81,7 @@ export function selectFood(selection: {label: string, value: string}[]) {
       foodId,
       food: {dataType: 'Loading', description: selection[0].label},
     });
-    let ingredientDatabase = new IngredientDatabaseImpl()
-    const food = await ingredientDatabase.getFood(foodId);
+    const food = await getFood(foodId);
     if (food == null) {
       // TODO: handle this error.
       return;
@@ -90,7 +89,7 @@ export function selectFood(selection: {label: string, value: string}[]) {
     dispatch({type: 'UpdateFood', foodId, food});
     if (food.dataType == 'Recipe') {
       food.ingredientsList.forEach(ingredient => {
-        loadIngredient(ingredient.foodId)(dispatch)
+        loadIngredient(ingredient.foodId)(dispatch, getState)
       });
     }
   } 
@@ -107,7 +106,7 @@ export function newBrandedFood() {
       householdServingFullText: '1 serving',
       foodNutrients: [],
     };
-    let foodId = await new IngredientDatabaseImpl().insertFood(food);
+    let foodId = await insertFood(food);
     dispatch({type: 'SelectFood', foodId, food});
   } 
 }
@@ -120,7 +119,7 @@ export function newRecipe() {
       description,
       ingredientsList: [],
     };
-    let foodId = await new IngredientDatabaseImpl().insertFood(food);
+    let foodId = await insertFood(food);
     dispatch({type: 'SelectFood', foodId, food});
   } 
 }

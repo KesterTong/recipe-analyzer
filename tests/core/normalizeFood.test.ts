@@ -15,45 +15,27 @@
 import { normalizeFood } from '../../core/normalizeFood';
 import { TEST_SR_LEGACY_FOOD, TEST_SR_LEGACY_FOOD_NORMALIZED, TEST_BRANDED_FOOD, TEST_BRANDED_FOOD_NORMALIZED, TEST_RECIPE, TEST_RECIPE_NORMALIZED } from '../testData';
 
-import { IngredientDatabase } from '../../core/IngredientDatabase';
-import { NutrientInfo } from '../../core/Nutrients';
-import { FoodRef } from '../../core/FoodRef';
 import { Food } from '../../core/Food';
 
-class FakeIngredientDatabase implements IngredientDatabase {
-  getNutrientInfo(): Promise<NutrientInfo[]> {
-    return Promise.resolve([{name: '', display: true, id: 1008}, {name: '', display: true, id: 1003}]);
-  }
-  getFood(foodId: string): Promise<Food | null> {
+describe('normalizeFood', () => {
+  function getFood(foodId: string): Promise<Food | null> {
     return Promise.resolve(TEST_BRANDED_FOOD);
   }
-  patchFood(foodId: string, food: Food): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  searchFoods(query: string): Promise<FoodRef[]> {
-    throw new Error("Method not implemented.");
-  }
-  addIngredient(foodId: string, amount: number, unit: string, description: string): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-}
-
-describe('normalizeFood', () => {
   
   it('SR Legacy', () => {
-    return normalizeFood(TEST_SR_LEGACY_FOOD, new FakeIngredientDatabase()).then(result => {
+    return normalizeFood(TEST_SR_LEGACY_FOOD, getFood, [1008, 1003]).then(result => {
       expect(result).toEqual(TEST_SR_LEGACY_FOOD_NORMALIZED);
     });
   });
 
   it('Branded', () => {
-    return normalizeFood(TEST_BRANDED_FOOD, new FakeIngredientDatabase()).then(result => {
+    return normalizeFood(TEST_BRANDED_FOOD, getFood, [1008, 1003]).then(result => {
       expect(result).toEqual(TEST_BRANDED_FOOD_NORMALIZED);
     });
   });
 
   it('Recipe', () => {
-    return normalizeFood(TEST_RECIPE, new FakeIngredientDatabase()).then(result => {
+    return normalizeFood(TEST_RECIPE, getFood, [1008, 1003]).then(result => {
       expect(result).toEqual(TEST_RECIPE_NORMALIZED);
     });
   });

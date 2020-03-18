@@ -20,7 +20,10 @@ describe('actions', () => {
     expect(store.getState()).toEqual({
       selectedFoodId: "userData/abcdefg",
       deselected: false,
-      food: null,
+      food: {
+        dataType: "Loading",
+        description: "My Food",
+      },  
       nutrientInfos: null,
     });
   });

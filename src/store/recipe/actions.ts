@@ -14,17 +14,18 @@
 import { FoodRef } from "../../../core/FoodRef";
 import { Dispatch } from "react";
 import { RecipeAction, RecipeState, RecipeActionType } from "./types";
-import { IngredientDatabaseImpl } from "../../IngredientDatabaseImpl";
+import { getFood } from "../../IngredientDatabaseImpl";
 import { normalizeFood } from "../../../core/normalizeFood";
+import { RootState } from "..";
 
 export function updateDescription(description: string): RecipeAction {
   return {type: RecipeActionType.UPDATE_DESCRIPTION, description};
 }
 
 export function loadIngredient(foodId: string) {
-  return async (dispatch: Dispatch<RecipeAction>) => {
-    const food = await new IngredientDatabaseImpl().getFood(foodId);
-    const normalizedFood = food ? await normalizeFood(food, new IngredientDatabaseImpl()) : null;
+  return async (dispatch: Dispatch<RecipeAction>, getState: () => RootState) => {
+    const food = await getFood(foodId);
+    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
     if (normalizedFood != null) {
       dispatch({type: RecipeActionType.SET_FOOD_FOR_ID, food: normalizedFood, foodId});
     }
@@ -32,9 +33,9 @@ export function loadIngredient(foodId: string) {
 }
 
 export function addIngredient(foodRef: FoodRef) {
-  return (dispatch: Dispatch<RecipeAction>) => {
+  return (dispatch: Dispatch<RecipeAction>,  getState: () => RootState) => {
     dispatch({type: RecipeActionType.ADD_INGREDIENT, foodRef});
-    return loadIngredient(foodRef.foodId)(dispatch);
+    return loadIngredient(foodRef.foodId)(dispatch, getState);
   }
 }
 
@@ -47,13 +48,13 @@ export function updateIngredientUnit(index: number, unit: string): RecipeAction 
 }
 
 export function updateIngredientId(index: number, selection: {label: string, value: string}[]) {
-  return async (dispatch: Dispatch<RecipeAction>) => {
+  return async (dispatch: Dispatch<RecipeAction>, getState: () => RootState) => {
     if (selection.length == 0) {
       dispatch({type: RecipeActionType.DESELECT_INGREDIENT, index});
       return;
     }
     let foodId = selection[0].value;
     dispatch({type: RecipeActionType.UPDATE_INGREDIENT_ID, index, foodId});
-    return loadIngredient(foodId)(dispatch);
+    return loadIngredient(foodId)(dispatch, getState);
   }
 }

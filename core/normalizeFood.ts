@@ -18,19 +18,20 @@ import { FDCFood, SRLegacyFood, HouseholdServing } from './FoodDataCentral';
 import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
-import { IngredientDatabase } from './IngredientDatabase';
 import { Recipe } from './Recipe';
 
-export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase): Promise<NormalizedFood> {
-  return ingredientDatabase.getNutrientInfo().then(nutrientInfo => {
-    switch (food.dataType) {
-      case 'SR Legacy':
-      case 'Branded':
-        return nutrientsFromFoodDetails(food, nutrientInfo.map(info => info.id));
-      case 'Recipe':
-        return nutrientsForRecipe(food, ingredientDatabase);
-    }
-  }).then(nutrientsPerServing => ({
+export function normalizeFood(food: Food, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<NormalizedFood> {
+  let nutrientsPerServing: Promise<Nutrients>;
+  switch (food.dataType) {
+    case 'SR Legacy':
+    case 'Branded':
+      nutrientsPerServing = Promise.resolve(nutrientsFromFoodDetails(food, nutrientIds));
+      break;
+    case 'Recipe':
+      nutrientsPerServing = nutrientsForRecipe(food, getFood, nutrientIds);
+      break;
+  }
+  return nutrientsPerServing.then(nutrientsPerServing => ({
     dataType: 'NormalizedFood',
     description: food.description,
     nutrientsPerServing: nutrientsPerServing,
@@ -38,11 +39,10 @@ export function normalizeFood(food: Food, ingredientDatabase: IngredientDatabase
   }));
 }
 
-function nutrientsForRecipe(food: Recipe, ingredientDatabase: IngredientDatabase): Promise<Nutrients> {
+function nutrientsForRecipe(food: Recipe, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<Nutrients> {
   return Promise.all(food.ingredientsList.map(ingredient =>
-    ingredientDatabase
-    .getFood(ingredient.foodId)
-    .then(subFood => normalizeFood(subFood!, ingredientDatabase))
+    getFood(ingredient.foodId)
+    .then(subFood => normalizeFood(subFood!, getFood, nutrientIds))
     .then(normalizedSubFood => nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!)
   ))
   .then(nutrients => {

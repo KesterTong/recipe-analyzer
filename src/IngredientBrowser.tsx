@@ -26,7 +26,7 @@ import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeEditorContainer } from './RecipeEditorContainer';
 import { FoodRef } from '../core/FoodRef';
-import { IngredientDatabaseImpl } from './IngredientDatabaseImpl';
+import { searchFoods } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
 import { RecipeState } from './store/recipe/types';
 import { SRLegacyFood } from '../core/FoodDataCentral';
@@ -84,7 +84,7 @@ function mapStateToProps(state: RootState) {
     food: state.food,
     selectedFood,
     selectFoodDisabled: selectedFood.length > 0 && selectedFood[0].label == 'Loading...',
-    autocomplete: (query: string) => new IngredientDatabaseImpl().searchFoods(query)
+    autocomplete: (query: string) => searchFoods(query)
     .then(results => results.map(foodRef => ({label: foodRef.description, value: foodRef.foodId}))),
   }
 }
