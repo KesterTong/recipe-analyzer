@@ -15,10 +15,10 @@ import { Dispatch } from "react";
 import { IngredientDatabaseImpl } from "../IngredientDatabaseImpl";
 import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
-import { RootState } from "./RootState";
-import { BrandedFood, SRLegacyFood } from "../../core/FoodDataCentral";
+import { RootState, LoadingFood } from "./RootState";
+import { BrandedFood } from "../../core/FoodDataCentral";
 import { Recipe } from "../../core/Recipe";
-import { Action as BrandedFoodAction, BrandedFoodState } from "./branded_food/types";
+import { Action as BrandedFoodAction } from "./branded_food/types";
 import { RecipeAction } from "./recipe/types";
 import { recipeFromState } from './recipe/conversion';
 import { loadIngredient } from "./recipe/actions";
@@ -36,15 +36,17 @@ export interface Deselect {
 export interface SelectFood {
   type: 'SelectFood',
   foodId: string,
-  description: string | null,
+  food: Food | LoadingFood | null,
 }
 
-export interface SetFood {
-  type: 'SetFood',
+// Update the data for the current food.
+export interface UpdateFood {
+  type: 'UpdateFood',
+  foodId: string,
   food: Food,
 }
 
-export type Action = SetNutrientInfos | Deselect | SelectFood | SetFood | BrandedFoodAction | RecipeAction;
+export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | BrandedFoodAction | RecipeAction;
 
 export function saveFood() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
@@ -77,7 +79,7 @@ export function selectFood(selection: {label: string, value: string}[]) {
     dispatch({
       type: 'SelectFood',
       foodId,
-      description: selection[0].label,
+      food: {dataType: 'Loading', description: selection[0].label},
     });
     let ingredientDatabase = new IngredientDatabaseImpl()
     const food = await ingredientDatabase.getFood(foodId);
@@ -85,7 +87,7 @@ export function selectFood(selection: {label: string, value: string}[]) {
       // TODO: handle this error.
       return;
     }
-    dispatch({type: 'SetFood', food});
+    dispatch({type: 'UpdateFood', foodId, food});
     if (food.dataType == 'Recipe') {
       food.ingredientsList.forEach(ingredient => {
         loadIngredient(ingredient.foodId)(dispatch)
@@ -106,8 +108,7 @@ export function newBrandedFood() {
       foodNutrients: [],
     };
     let foodId = await new IngredientDatabaseImpl().insertFood(food);
-    dispatch({type: 'SelectFood', foodId, description});
-    dispatch({type: 'SetFood', food});
+    dispatch({type: 'SelectFood', foodId, food});
   } 
 }
 
@@ -120,7 +121,6 @@ export function newRecipe() {
       ingredientsList: [],
     };
     let foodId = await new IngredientDatabaseImpl().insertFood(food);
-    dispatch({type: 'SelectFood', foodId, description});
-    dispatch({type: 'SetFood', food});
+    dispatch({type: 'SelectFood', foodId, food});
   } 
 }
