@@ -51,8 +51,8 @@ export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | Bra
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 
-export function saveFood() {
-  return (dispatch: Dispatch<Action>, getState: () => RootState) => {
+export function saveFood(): ThunkResult<void> {
+  return (dispatch, getState) => {
     let state = getState();
     let food: Food;
     if (state.food == null) {
