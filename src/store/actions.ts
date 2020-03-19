@@ -11,13 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Dispatch } from "react";
 import { patchFood, getFood, insertFood } from "../IngredientDatabaseImpl";
 import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
 import { RootState, LoadingFood } from "./RootState";
-import { BrandedFood } from "../../core/FoodDataCentral";
-import { Recipe } from "../../core/Recipe";
 import { Action as BrandedFoodAction } from "./branded_food/types";
 import { RecipeAction } from "./recipe/types";
 import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
@@ -92,7 +89,7 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
     dispatch({type: 'UpdateFood', foodId, food});
     if (food.dataType == 'Recipe') {
       food.ingredientsList.forEach(ingredient => {
-        loadIngredient(ingredient.foodId)(dispatch, getState)
+        dispatch(loadIngredient(ingredient.foodId));
       });
     }
   } 
