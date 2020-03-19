@@ -15,6 +15,7 @@ import { getFood, insertFood } from '../../src/IngredientDatabaseImpl';
 import { store, RootState } from '../../src/store';
 import { selectFood, newRecipe } from '../../src/store/actions';
 import { TEST_BRANDED_FOOD } from '../testData';
+import { NEW_RECIPE } from '../../src/store/recipe/conversion';
 
 jest.mock('../../src/IngredientDatabaseImpl');
 
@@ -58,6 +59,7 @@ describe('actions', () => {
       },  
       nutrientInfos: null,
     });
+    expect(getFoodMock.mock.calls).toEqual([['userData/abcdefg']])
   });
   it('New Recipe', async () => {
     insertFoodMock.mockReset();
@@ -74,5 +76,6 @@ describe('actions', () => {
       },
       nutrientInfos: null,
     });
+    expect(insertFoodMock.mock.calls).toEqual([[NEW_RECIPE]])
   });
 });
