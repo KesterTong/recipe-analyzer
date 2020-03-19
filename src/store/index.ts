@@ -85,5 +85,6 @@ export function rootReducer(state: RootState | undefined, action: Action): RootS
   }
 }
 
-export const store = createStore<RootState, Action, any, any>(
-  rootReducer, applyMiddleware<ThunkDispatch<RootState, any, Action>, RootState>(thunk));
+export const store = createStore(
+  rootReducer,
+  applyMiddleware<ThunkDispatch<RootState, undefined, Action>>(thunk));

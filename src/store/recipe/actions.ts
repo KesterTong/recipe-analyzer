@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { FoodRef } from "../../../core/FoodRef";
-import { Dispatch } from "react";
 import { RecipeAction, RecipeActionType } from "./types";
 import { getFood } from "../../IngredientDatabaseImpl";
 import { normalizeFood } from "../../../core/normalizeFood";
@@ -26,7 +25,7 @@ export function updateDescription(description: string): Action {
   return {type: RecipeActionType.UPDATE_DESCRIPTION, description};
 }
 
-export function loadIngredient(foodId: string): ThunkResult<void> {
+export function loadIngredient(foodId: string): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
     const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
@@ -36,8 +35,8 @@ export function loadIngredient(foodId: string): ThunkResult<void> {
   }
 }
 
-export function addIngredient(foodRef: FoodRef): ThunkResult<void> {
-  return dispatch => {
+export function addIngredient(foodRef: FoodRef): ThunkResult<Promise<void>> {
+  return async dispatch => {
     dispatch({type: RecipeActionType.ADD_INGREDIENT, foodRef});
     dispatch(loadIngredient(foodRef.foodId));
   }
@@ -51,7 +50,7 @@ export function updateIngredientUnit(index: number, unit: string): RecipeAction 
   return {type: RecipeActionType.UPDATE_INGREDIENT_UNIT, index, unit};
 }
 
-export function updateIngredientId(index: number, selection: {label: string, value: string}[]): ThunkResult<void> {
+export function updateIngredientId(index: number, selection: {label: string, value: string}[]): ThunkResult<Promise<void>> {
   return async dispatch => {
     if (selection.length == 0) {
       dispatch({type: RecipeActionType.DESELECT_INGREDIENT, index});

@@ -48,8 +48,8 @@ export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | Bra
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 
-export function saveFood(): ThunkResult<void> {
-  return (dispatch, getState) => {
+export function saveFood(): ThunkResult<Promise<void>> {
+  return async (dispatch, getState) => {
     let state = getState();
     let food: Food;
     if (state.food == null) {
@@ -69,7 +69,7 @@ export function saveFood(): ThunkResult<void> {
   }
 }
 
-export function selectFood(selection: {label: string, value: string}[]): ThunkResult<void> {
+export function selectFood(selection: {label: string, value: string}[]): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     if (selection.length == 0) {
       dispatch({type: 'Deselect'});
@@ -95,17 +95,17 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
   } 
 }
 
-function newFood(food: Food): ThunkResult<void> {
+function newFood(food: Food): ThunkResult<Promise<void>> {
   return async dispatch => {
     let foodId = await insertFood(food);
     dispatch({type: 'SelectFood', foodId, food});
   }
 }
 
-export function newBrandedFood(): ThunkResult<void> {
+export function newBrandedFood(): ThunkResult<Promise<void>> {
   return dispatch => dispatch(newFood(NEW_BRANDED_FOOD));
 }
 
-export function newRecipe(): ThunkResult<void> {
+export function newRecipe(): ThunkResult<Promise<void>> {
   return dispatch => dispatch(newFood(NEW_RECIPE));
 }
