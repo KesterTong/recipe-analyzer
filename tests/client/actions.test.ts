@@ -11,18 +11,48 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { getFood } from '../../src/IngredientDatabaseImpl';
 import { store } from '../../src/store';
 import { selectFood } from '../../src/store/actions';
+import { TEST_BRANDED_FOOD } from '../testData';
+
+jest.mock('../../src/IngredientDatabaseImpl');
 
 describe('actions', () => {
-  it('SelectFood', () => {
-    store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
+  const getFoodMock = getFood as jest.MockedFunction<typeof getFood>;
+  getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
+
+  it('SelectFood', async () => {
+    let actionCompleted = store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
     expect(store.getState()).toEqual({
       selectedFoodId: "userData/abcdefg",
       deselected: false,
       food: {
         dataType: "Loading",
         description: "My Food",
+      },  
+      nutrientInfos: null,
+    });
+    await actionCompleted;
+    expect(store.getState()).toEqual({
+      selectedFoodId: "userData/abcdefg",
+      deselected: false,
+      food: {
+        dataType: "Branded Edit",
+        description: "Plantain Chips",
+        foodNutrients: [
+          {
+            amount: "170",
+            id: 1008,
+          }, {
+            amount: "2",
+            id: 1003,
+          },
+        ],
+        householdServingFullText: "6 pieces",
+        selectedQuantity: 0,
+        servingSize: "40",
+        servingSizeUnit: "g",
       },  
       nutrientInfos: null,
     });
