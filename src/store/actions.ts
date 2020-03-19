@@ -98,7 +98,7 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
   } 
 }
 
-export function newFood(food: Food): ThunkResult<void> {
+function newFood(food: Food): ThunkResult<void> {
   return async dispatch => {
     let foodId = await insertFood(food);
     dispatch({type: 'SelectFood', foodId, food});
