@@ -11,23 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { BrandedFoodState, Action, BrandedFoodActionType } from "./types";
+import { State, Action, ActionType } from "./types";
 
-export function brandedFoodReducer(state: BrandedFoodState, action: Action): BrandedFoodState {
+export function brandedFoodReducer(state: State, action: Action): State {
   switch (action.type) {
-    case BrandedFoodActionType.UPDATE_DESCRIPTION:
+    case ActionType.UPDATE_DESCRIPTION:
       return {...state, description: action.description};
-    case BrandedFoodActionType.UPDATE_SERVING_SIZE:
+    case ActionType.UPDATE_SERVING_SIZE:
       return {...state, servingSize: action.servingSize};
-    case BrandedFoodActionType.UPDATE_SERVING_SIZE_UNIT:
+    case ActionType.UPDATE_SERVING_SIZE_UNIT:
       return {...state, servingSizeUnit: action.servingSizeUnit};
-    case BrandedFoodActionType.UPDATE_HOUSEHOLD_UNIT:
+    case ActionType.UPDATE_HOUSEHOLD_UNIT:
       return {...state, householdServingFullText: action.householdUnit};
-    case BrandedFoodActionType.UPDATE_NUTRIENT_VALUE:
+    case ActionType.UPDATE_NUTRIENT_VALUE:
       let foodNutrients = state.foodNutrients.map(nutrient =>
         nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
       return {...state, foodNutrients};
-    case BrandedFoodActionType.SET_SELECTED_QUANTITY:
+    case ActionType.SET_SELECTED_QUANTITY:
       return {...state, selectedQuantity: action.index};
   }
 }

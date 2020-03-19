@@ -17,15 +17,15 @@ import { createStore, applyMiddleware } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
 import { RootState } from "./RootState";
 import { brandedFoodReducer } from "./branded_food/reducer";
-import { BrandedFoodState, BrandedFoodActionType } from "./branded_food/types";
+import { State as BrandedFoodState, ActionType as BrandedFoodActionType } from "./branded_food/types";
 import { recipeReducer } from "./recipe/reducer";
 import { stateFromBrandedFood } from "./branded_food/conversion";
-import { RecipeActionType, RecipeState } from "./recipe/types";
+import { State as RecipeState, ActionType as RecipeActionType } from "./recipe/types";
 import { stateFromRecipe } from './recipe/conversion';
 import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";
 
-export { RootState, BrandedFoodState }
+export { RootState, BrandedFoodState, RecipeState }
 
 function stateFromFood(food: Food): SRLegacyFood | BrandedFoodState | RecipeState {
   switch (food.dataType) {

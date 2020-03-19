@@ -20,15 +20,13 @@ import { IngredientSearcher } from './IngredientSearcher';
 import { Food } from '../core/Food';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action, selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
-import { RootState, BrandedFoodState } from './store';
+import { RootState, BrandedFoodState, RecipeState } from './store';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeEditorContainer } from './RecipeEditorContainer';
-import { FoodRef } from '../core/FoodRef';
 import { searchFoods } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
-import { RecipeState } from './store/recipe/types';
 import { SRLegacyFood } from '../core/FoodDataCentral';
 import { LoadingFood } from './store/RootState';
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BrandedFoodState } from './types';
+import { State } from './types';
 import { BrandedFood } from '../../../core/FoodDataCentral';
 
 export const NEW_BRANDED_FOOD: BrandedFood = {
@@ -24,7 +24,7 @@ export const NEW_BRANDED_FOOD: BrandedFood = {
   foodNutrients: [],
 };
 
-export function stateFromBrandedFood(food: BrandedFood): BrandedFoodState {
+export function stateFromBrandedFood(food: BrandedFood): State {
   let foodNutrients = food.foodNutrients.map(nutrient => ({
     id: nutrient.nutrient.id,
     amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
@@ -40,7 +40,7 @@ export function stateFromBrandedFood(food: BrandedFood): BrandedFoodState {
   }
 }
 
-export function brandedFoodFromState(state: BrandedFoodState): BrandedFood {
+export function brandedFoodFromState(state: State): BrandedFood {
   let servingSize = Number(state.servingSize);
   let foodNutrients = state.foodNutrients.map(nutrient => ({
     nutrient: {id: nutrient.id},

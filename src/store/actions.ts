@@ -16,7 +16,7 @@ import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
 import { RootState, LoadingFood } from "./RootState";
 import { Action as BrandedFoodAction } from "./branded_food/types";
-import { RecipeAction } from "./recipe/types";
+import { Action as RecipeAction } from "./recipe/types";
 import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
 import { loadIngredient } from "./recipe/actions";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food/conversion";

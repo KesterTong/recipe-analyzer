@@ -11,28 +11,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Action, BrandedFoodActionType } from "./types";
+import { Action, ActionType } from "./types";
 
 export function updateDescription(description: string): Action {
-  return {type: BrandedFoodActionType.UPDATE_DESCRIPTION, description};
+  return {type: ActionType.UPDATE_DESCRIPTION, description};
 }
 
 export function updateServingSize(servingSize: string): Action {
-  return {type: BrandedFoodActionType.UPDATE_SERVING_SIZE, servingSize};
+  return {type: ActionType.UPDATE_SERVING_SIZE, servingSize};
 }
 
 export function updateServingSizeUnit(servingSizeUnit: string): Action {
-  return {type: BrandedFoodActionType.UPDATE_SERVING_SIZE_UNIT, servingSizeUnit};
+  return {type: ActionType.UPDATE_SERVING_SIZE_UNIT, servingSizeUnit};
 }
 
 export function updateHouseholdUnit(householdUnit: string): Action {
-  return {type: BrandedFoodActionType.UPDATE_HOUSEHOLD_UNIT, householdUnit};
+  return {type: ActionType.UPDATE_HOUSEHOLD_UNIT, householdUnit};
 }
 
 export function updateNutrientValue(nutrientId: number, value: string): Action {
-  return {type: BrandedFoodActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value};
+  return {type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value};
 }
 
 export function setSelectedQuantity(index: number): Action {
-  return {type: BrandedFoodActionType.SET_SELECTED_QUANTITY, index};
+  return {type: ActionType.SET_SELECTED_QUANTITY, index};
 }

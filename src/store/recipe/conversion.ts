@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RecipeState } from './types';
+import { State } from './types';
 import { Recipe } from '../../../core/Recipe';
 
 export const NEW_RECIPE: Recipe = {
@@ -20,7 +20,7 @@ export const NEW_RECIPE: Recipe = {
   ingredientsList: [],
 };
 
-export function recipeFromState(state: RecipeState): Recipe {
+export function recipeFromState(state: State): Recipe {
   return {
     dataType: 'Recipe',
     description: state.description,
@@ -31,7 +31,7 @@ export function recipeFromState(state: RecipeState): Recipe {
   }
 }
 
-export function stateFromRecipe(food: Recipe): RecipeState {
+export function stateFromRecipe(food: Recipe): State {
   return {
     dataType: 'Recipe Edit',
     description: food.description,

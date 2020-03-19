@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface BrandedFoodState {
+export interface State {
   dataType: 'Branded Edit',
   servingSize: string,
   servingSizeUnit: string,
@@ -22,7 +22,7 @@ export interface BrandedFoodState {
   selectedQuantity: number,
 }
 
-export enum BrandedFoodActionType {
+export enum ActionType {
   UPDATE_DESCRIPTION = '@branded_food/UpdateDescription',
   UPDATE_SERVING_SIZE = '@branded_food/UpdateServingSize',
   UPDATE_SERVING_SIZE_UNIT = '@branded_food/UpdateServingSizeUnit',
@@ -32,33 +32,33 @@ export enum BrandedFoodActionType {
 };
 
 export interface UpdateDescription {
-  type: BrandedFoodActionType.UPDATE_DESCRIPTION,
+  type: ActionType.UPDATE_DESCRIPTION,
   description: string,
 }
 
 export interface UpdateServingSize {
-  type: BrandedFoodActionType.UPDATE_SERVING_SIZE,
+  type: ActionType.UPDATE_SERVING_SIZE,
   servingSize: string,
 }
 
 export interface UpdateServingSizeUnit {
-  type: BrandedFoodActionType.UPDATE_SERVING_SIZE_UNIT,
+  type: ActionType.UPDATE_SERVING_SIZE_UNIT,
   servingSizeUnit: string,
 }
 
 export interface UpdateHouseholdUnit {
-  type: BrandedFoodActionType.UPDATE_HOUSEHOLD_UNIT,
+  type: ActionType.UPDATE_HOUSEHOLD_UNIT,
   householdUnit: string,
 }
 
 export interface UpdateNutrientValue {
-  type: BrandedFoodActionType.UPDATE_NUTRIENT_VALUE,
+  type: ActionType.UPDATE_NUTRIENT_VALUE,
   nutrientId: number,
   value: string,
 }
 
 export interface SetSelectedQuantity {
-  type: BrandedFoodActionType.SET_SELECTED_QUANTITY,
+  type: ActionType.SET_SELECTED_QUANTITY,
   index: number,
 }
 

@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { SRLegacyFood } from "../../core/FoodDataCentral";
-import { Recipe } from "../../core/Recipe";
-import { NormalizedFood } from "../../core/NormalizedFood";
 import { NutrientInfo } from "../../core/Nutrients";
-import { BrandedFoodState } from "./branded_food/types";
-import { RecipeState } from "./recipe/types";
+import { State as BrandedFoodState } from "./branded_food/types";
+import { State as RecipeState } from "./recipe/types";
 
 export interface LoadingFood {
   dataType: 'Loading',

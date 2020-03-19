@@ -16,7 +16,7 @@ import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
 
-export interface RecipeState {
+export interface State {
   dataType: 'Recipe Edit';
   description: string,
   ingredients: {
@@ -27,7 +27,7 @@ export interface RecipeState {
   foodsById: {[index: string]: NormalizedFood};
 }
 
-export enum RecipeActionType {
+export enum ActionType {
   UPDATE_DESCRIPTION = '@recipe/UpdateDescription',
   SET_FOOD_FOR_ID = '@recipe/SetFoodForId',
   ADD_INGREDIENT = '@recipe/AddIngredient',
@@ -38,42 +38,42 @@ export enum RecipeActionType {
 }
 
 export interface UpdateDescription {
-  type: RecipeActionType.UPDATE_DESCRIPTION,
+  type: ActionType.UPDATE_DESCRIPTION,
   description: string,
 }
 
 export interface SetFoodForId {
-  type: RecipeActionType.SET_FOOD_FOR_ID,
+  type: ActionType.SET_FOOD_FOR_ID,
   food: NormalizedFood,
   foodId: string,
 }
 
 export interface AddIngredient {
-  type: RecipeActionType.ADD_INGREDIENT,
+  type: ActionType.ADD_INGREDIENT,
   foodRef: FoodRef,
 }
 
 export interface UpdateIngredientAmount {
-  type: RecipeActionType.UPDATE_INGREDIENT_AMOUNT,
+  type: ActionType.UPDATE_INGREDIENT_AMOUNT,
   index: number,
   amount: number,
 }
 
 export interface UpdateIngredientUnit {
-  type: RecipeActionType.UPDATE_INGREDIENT_UNIT,
+  type: ActionType.UPDATE_INGREDIENT_UNIT,
   index: number,
   unit: string,
 }
 
 export interface UpdateIngredientId {
-  type: RecipeActionType.UPDATE_INGREDIENT_ID,
+  type: ActionType.UPDATE_INGREDIENT_ID,
   index: number,
   foodId: string,
 }
 
 export interface DeselectIngredient {
-  type: RecipeActionType.DESELECT_INGREDIENT,
+  type: ActionType.DESELECT_INGREDIENT,
   index: number,
 }
 
-export type RecipeAction = UpdateDescription | SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId | DeselectIngredient;
+export type Action = UpdateDescription | SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId | DeselectIngredient;

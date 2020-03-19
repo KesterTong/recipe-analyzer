@@ -12,18 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { getFood, insertFood } from '../../src/IngredientDatabaseImpl';
-import { store, RootState } from '../../src/store';
+import { store, RootState, BrandedFoodState } from '../../src/store';
 import { selectFood, newRecipe } from '../../src/store/actions';
+import * as branded_food_actions from '../../src/store/branded_food/actions';
 import { TEST_BRANDED_FOOD } from '../testData';
 import { NEW_RECIPE } from '../../src/store/recipe/conversion';
 
 jest.mock('../../src/IngredientDatabaseImpl');
 
+const _TEST_BRANDED_FOOD_EDIT: BrandedFoodState = {
+  dataType: "Branded Edit",
+  description: "Plantain Chips",
+  foodNutrients: [
+    {amount: "170", id: 1008},
+    {amount: "2", id: 1003},
+  ],
+  householdServingFullText: "6 pieces",
+  selectedQuantity: 0,
+  servingSize: "40",
+  servingSizeUnit: "g",
+};
+
 describe('actions', () => {
   const getFoodMock = getFood as jest.MockedFunction<typeof getFood>;
   const insertFoodMock = insertFood as jest.MockedFunction<typeof insertFood>;
 
-  it('SelectFood', async () => {
+  it('SelectFood_Branded', async () => {
     getFoodMock.mockReset();
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     let actionCompleted = store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
@@ -40,27 +54,35 @@ describe('actions', () => {
     expect(store.getState()).toEqual<RootState>({
       selectedFoodId: "userData/abcdefg",
       deselected: false,
-      food: {
-        dataType: "Branded Edit",
-        description: "Plantain Chips",
-        foodNutrients: [
-          {
-            amount: "170",
-            id: 1008,
-          }, {
-            amount: "2",
-            id: 1003,
-          },
-        ],
-        householdServingFullText: "6 pieces",
-        selectedQuantity: 0,
-        servingSize: "40",
-        servingSizeUnit: "g",
-      },  
+      food: _TEST_BRANDED_FOOD_EDIT,  
       nutrientInfos: null,
     });
     expect(getFoodMock.mock.calls).toEqual([['userData/abcdefg']])
   });
+  
+  it('UpdateDescription', async () => {
+    getFoodMock.mockReset();
+    getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
+    let actionCompleted = store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
+    expect(store.getState()).toEqual<RootState>({
+      selectedFoodId: "userData/abcdefg",
+      deselected: false,
+      food: {
+        dataType: "Loading",
+        description: "My Food",
+      },  
+      nutrientInfos: null,
+    });
+    await actionCompleted;
+    expect(store.getState()).toEqual<RootState>({
+      selectedFoodId: "userData/abcdefg",
+      deselected: false,
+      food: _TEST_BRANDED_FOOD_EDIT,  
+      nutrientInfos: null,
+    });
+    expect(getFoodMock.mock.calls).toEqual([['userData/abcdefg']])
+  });
+  
   it('New Recipe', async () => {
     insertFoodMock.mockReset();
     insertFoodMock.mockResolvedValue('userData/abcdefg');

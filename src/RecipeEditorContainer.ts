@@ -14,7 +14,6 @@
 
 import { connect } from 'react-redux';
 import { RootState } from "./store";
-import { Recipe } from '../core/Recipe';
 import { RecipeEditor } from './RecipeEditor';
 import { Action } from './store/actions';
 import { searchFoods } from './IngredientDatabaseImpl';
