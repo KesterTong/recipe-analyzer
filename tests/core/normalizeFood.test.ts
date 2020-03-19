@@ -22,21 +22,18 @@ describe('normalizeFood', () => {
     return Promise.resolve(TEST_BRANDED_FOOD);
   }
   
-  it('SR Legacy', () => {
-    return normalizeFood(TEST_SR_LEGACY_FOOD, getFood, [1008, 1003]).then(result => {
-      expect(result).toEqual(TEST_SR_LEGACY_FOOD_NORMALIZED);
-    });
+  it('SR Legacy', async () => {
+    const result = await normalizeFood(TEST_SR_LEGACY_FOOD, getFood, [1008, 1003]);
+    expect(result).toEqual(TEST_SR_LEGACY_FOOD_NORMALIZED);
   });
 
-  it('Branded', () => {
-    return normalizeFood(TEST_BRANDED_FOOD, getFood, [1008, 1003]).then(result => {
-      expect(result).toEqual(TEST_BRANDED_FOOD_NORMALIZED);
-    });
+  it('Branded', async () => {
+    const result = await normalizeFood(TEST_BRANDED_FOOD, getFood, [1008, 1003]);
+    expect(result).toEqual(TEST_BRANDED_FOOD_NORMALIZED);
   });
 
-  it('Recipe', () => {
-    return normalizeFood(TEST_RECIPE, getFood, [1008, 1003]).then(result => {
-      expect(result).toEqual(TEST_RECIPE_NORMALIZED);
-    });
+  it('Recipe', async () => {
+    const result = await normalizeFood(TEST_RECIPE, getFood, [1008, 1003]);
+    expect(result).toEqual(TEST_RECIPE_NORMALIZED);
   });
 });
