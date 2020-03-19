@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { getFood, insertFood } from '../../src/IngredientDatabaseImpl';
-import { store } from '../../src/store';
+import { store, RootState } from '../../src/store';
 import { selectFood, newRecipe } from '../../src/store/actions';
 import { TEST_BRANDED_FOOD } from '../testData';
 
@@ -26,7 +26,7 @@ describe('actions', () => {
     getFoodMock.mockReset();
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     let actionCompleted = store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
-    expect(store.getState()).toEqual({
+    expect(store.getState()).toEqual<RootState>({
       selectedFoodId: "userData/abcdefg",
       deselected: false,
       food: {
@@ -36,7 +36,7 @@ describe('actions', () => {
       nutrientInfos: null,
     });
     await actionCompleted;
-    expect(store.getState()).toEqual({
+    expect(store.getState()).toEqual<RootState>({
       selectedFoodId: "userData/abcdefg",
       deselected: false,
       food: {
@@ -63,7 +63,7 @@ describe('actions', () => {
     insertFoodMock.mockReset();
     insertFoodMock.mockResolvedValue('userData/abcdefg');
     await store.dispatch(newRecipe());
-    expect(store.getState()).toEqual({
+    expect(store.getState()).toEqual<RootState>({
       selectedFoodId: "userData/abcdefg",
       deselected: false,
       food: {
