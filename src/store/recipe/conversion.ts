@@ -14,6 +14,12 @@
 import { RecipeState } from './types';
 import { Recipe } from '../../../core/Recipe';
 
+export const NEW_RECIPE: Recipe = {
+  dataType: 'Recipe',
+  description: 'New Recipe',
+  ingredientsList: [],
+};
+
 export function recipeFromState(state: RecipeState): Recipe {
   return {
     dataType: 'Recipe',

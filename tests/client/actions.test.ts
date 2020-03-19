@@ -11,18 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { getFood } from '../../src/IngredientDatabaseImpl';
+import { getFood, insertFood } from '../../src/IngredientDatabaseImpl';
 import { store } from '../../src/store';
-import { selectFood } from '../../src/store/actions';
+import { selectFood, newRecipe } from '../../src/store/actions';
 import { TEST_BRANDED_FOOD } from '../testData';
 
 jest.mock('../../src/IngredientDatabaseImpl');
 
 describe('actions', () => {
   const getFoodMock = getFood as jest.MockedFunction<typeof getFood>;
-  getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
+  const insertFoodMock = insertFood as jest.MockedFunction<typeof insertFood>;
 
   it('SelectFood', async () => {
+    getFoodMock.mockReset();
+    getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     let actionCompleted = store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
     expect(store.getState()).toEqual({
       selectedFoodId: "userData/abcdefg",
@@ -54,6 +56,22 @@ describe('actions', () => {
         servingSize: "40",
         servingSizeUnit: "g",
       },  
+      nutrientInfos: null,
+    });
+  });
+  it('New Recipe', async () => {
+    insertFoodMock.mockReset();
+    insertFoodMock.mockResolvedValue('userData/abcdefg');
+    await store.dispatch(newRecipe());
+    expect(store.getState()).toEqual({
+      selectedFoodId: "userData/abcdefg",
+      deselected: false,
+      food: {
+        dataType: "Recipe Edit",
+        description: "New Recipe",
+        foodsById: {},
+        ingredients: [],
+      },
       nutrientInfos: null,
     });
   });

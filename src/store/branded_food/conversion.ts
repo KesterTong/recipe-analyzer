@@ -15,6 +15,15 @@
 import { BrandedFoodState } from './types';
 import { BrandedFood } from '../../../core/FoodDataCentral';
 
+export const NEW_BRANDED_FOOD: BrandedFood = {
+  dataType: 'Branded',
+  description: 'New Food',
+  servingSize: 100,
+  servingSizeUnit: 'g',
+  householdServingFullText: '1 serving',
+  foodNutrients: [],
+};
+
 export function stateFromBrandedFood(food: BrandedFood): BrandedFoodState {
   let foodNutrients = food.foodNutrients.map(nutrient => ({
     id: nutrient.nutrient.id,

@@ -20,9 +20,10 @@ import { BrandedFood } from "../../core/FoodDataCentral";
 import { Recipe } from "../../core/Recipe";
 import { Action as BrandedFoodAction } from "./branded_food/types";
 import { RecipeAction } from "./recipe/types";
-import { recipeFromState } from './recipe/conversion';
+import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
 import { loadIngredient } from "./recipe/actions";
-import { brandedFoodFromState } from "./branded_food/conversion";
+import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food/conversion";
+import { ThunkAction } from "redux-thunk";
 
 export interface SetNutrientInfos {
   type: 'SetNutrientInfos',
@@ -48,6 +49,8 @@ export interface UpdateFood {
 
 export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | BrandedFoodAction | RecipeAction;
 
+type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
+
 export function saveFood() {
   return (dispatch: Dispatch<Action>, getState: () => RootState) => {
     let state = getState();
@@ -69,8 +72,8 @@ export function saveFood() {
   }
 }
 
-export function selectFood(selection: {label: string, value: string}[]) {
-  return async (dispatch: Dispatch<Action>, getState: () => RootState) => {
+export function selectFood(selection: {label: string, value: string}[]): ThunkResult<void> {
+  return async (dispatch, getState) => {
     if (selection.length == 0) {
       dispatch({type: 'Deselect'});
       return;
@@ -95,31 +98,17 @@ export function selectFood(selection: {label: string, value: string}[]) {
   } 
 }
 
-export function newBrandedFood() {
-  return async (dispatch: Dispatch<Action>) => {
-    const description = 'New Food';
-    const food: BrandedFood = {
-      dataType: 'Branded',
-      description,
-      servingSize: 100,
-      servingSizeUnit: 'g',
-      householdServingFullText: '1 serving',
-      foodNutrients: [],
-    };
+export function newFood(food: Food): ThunkResult<void> {
+  return async dispatch => {
     let foodId = await insertFood(food);
     dispatch({type: 'SelectFood', foodId, food});
-  } 
+  }
 }
 
-export function newRecipe() {
-  return async (dispatch: Dispatch<Action>) => {
-    const description = 'New Recipe';
-    const food: Recipe = {
-      dataType: 'Recipe',
-      description,
-      ingredientsList: [],
-    };
-    let foodId = await insertFood(food);
-    dispatch({type: 'SelectFood', foodId, food});
-  } 
+export function newBrandedFood(): ThunkResult<void> {
+  return dispatch => dispatch(newFood(NEW_BRANDED_FOOD));
+}
+
+export function newRecipe(): ThunkResult<void> {
+  return dispatch => dispatch(newFood(NEW_RECIPE));
 }
