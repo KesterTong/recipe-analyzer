@@ -49,7 +49,7 @@ export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | Bra
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 
 export function saveFood(): ThunkResult<Promise<void>> {
-  return async (dispatch, getState) => {
+  return async (_, getState) => {
     let state = getState();
     let food: Food;
     if (state.food == null) {
