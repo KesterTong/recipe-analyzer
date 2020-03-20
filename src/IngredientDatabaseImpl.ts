@@ -25,23 +25,21 @@ export async function getNutrientInfo(): Promise<NutrientInfo[]> {
   return JSON.parse(documentData.data()?.value);
 } 
 
-export function getFood(foodId: string): Promise<Food | null> {
-  return firebase.firestore().doc(foodId)
-  .get()
-  .then(documentData => {
-    let data = documentData.data();
-    if (data) {
-      return <Food>JSON.parse(data.data);
-    } else if (foodId.startsWith('fdcData/')) {
-      let fdcId = Number(foodId.substr(8, foodId.length - 8));
-      let result : Promise<Food> = fetch(getFdcFoodUrl(fdcId, FDC_API_KEY))
-      .then(result => result.json());
-      result.then(food => patchFood(foodId, food));
-      return result;
-    } else {
-      return null;
-    }
-  });
+export async function getFood(foodId: string): Promise<Food | null> {
+  const documentData = await firebase.firestore().doc(foodId)
+    .get();
+  let data = documentData.data();
+  if (data) {
+    return <Food>JSON.parse(data.data);
+  }
+  if (!foodId.startsWith('fdcData/')) {
+    return null;
+  }
+  let fdcId = Number(foodId.substr(8, foodId.length - 8));
+  let foodData = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY))
+  let result = foodData.json();
+  result.then(food => patchFood(foodId, food));
+  return result;
 }
 
 export function patchFood(foodId: string, food: Food): Promise<void> {
@@ -59,25 +57,32 @@ export async function insertFood(food: Food): Promise<string> {
   return documentReference.path;
 }
 
-export function searchFoods(query: string): Promise<FoodRef[]> {
-  let customFoods = firebase.firestore().collection('userData').get().then(documentData => {
-    return documentData.docs
-    .map(document => ({
-      foodId: document.ref.path,
-      food: <Food>JSON.parse(document.data().data),
-    }))
-    .filter(data => data.food.description.match(query))
-    .map(data => <FoodRef>({
-      foodId: data.foodId,
-      description: data.food.description,
-    }));
-  });
-  let queryResult = fetch(searchFdcFoodsUrl(query, FDC_API_KEY))
-  .then(result => result.json())
-  .then((queryResult: FDCQueryResult) => queryResult.foods.map(entry => <FoodRef>({
-      foodId: 'fdcData/' + entry.fdcId.toString(),
-      description: entry.description,
-    })));
-  return Promise.all([customFoods, queryResult])
-  .then(results => results[0].concat(results[1]));
+async function searchCustomFoods(query: string): Promise<FoodRef[]> {
+  let documentData = await firebase.firestore().collection('userData').get();
+  return documentData.docs
+  .map(document => ({
+    foodId: document.ref.path,
+    food: <Food>JSON.parse(document.data().data),
+  }))
+  .filter(data => data.food.description.match(query))
+  .map(data => <FoodRef>({
+    foodId: data.foodId,
+    description: data.food.description,
+  }));
+}
+
+async function searchFdcFoods(query: string): Promise<FoodRef[]> {
+  let result = await fetch(searchFdcFoodsUrl(query, FDC_API_KEY));
+  let queryResult = await result.json() as FDCQueryResult;
+  return queryResult.foods.map(entry => <FoodRef>({
+    foodId: 'fdcData/' + entry.fdcId.toString(),
+    description: entry.description,
+  }));
+}
+
+export async function searchFoods(query: string): Promise<FoodRef[]> {
+  let customFoods = searchCustomFoods(query)
+  let queryResult = searchFdcFoods(query);
+  const results = await Promise.all([customFoods, queryResult]);
+  return results[0].concat(results[1]);
 }
