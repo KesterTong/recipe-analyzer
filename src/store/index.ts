@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Action, ActionType } from "./types";
+import { RootAction, ActionType, ThunkDispatch, ThunkResult } from "./types";
 import { createStore, applyMiddleware, combineReducers } from "redux";
-import thunk, { ThunkDispatch } from "redux-thunk";
+import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import { brandedFoodReducer } from "./branded_food/reducer";
 import { State as BrandedFoodState} from "./branded_food/types";
@@ -25,7 +25,7 @@ import { stateFromRecipe } from './recipe/conversion';
 import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";
 
-export { RootState, BrandedFoodState, RecipeState }
+export { RootState, BrandedFoodState, RecipeState, ThunkDispatch, ThunkResult }
 
 function stateFromFood(food: Food): SRLegacyFood | BrandedFoodState | RecipeState {
   switch (food.dataType) {
@@ -38,7 +38,7 @@ function stateFromFood(food: Food): SRLegacyFood | BrandedFoodState | RecipeStat
   }
 }
 
-const rootReducer = combineReducers<RootState, Action>({
+const rootReducer = combineReducers<RootState, RootAction>({
   selectedFood: (state = initialState.selectedFood, action) => {
     switch(action.type) {
       case ActionType.DESELECT:
@@ -79,6 +79,4 @@ const rootReducer = combineReducers<RootState, Action>({
   recipeState: recipeReducer,
 })
 
-export const store = createStore(
-  rootReducer,
-  applyMiddleware<ThunkDispatch<RootState, undefined, Action>>(thunk));
+export const store = createStore(rootReducer, applyMiddleware<ThunkDispatch>(thunk));

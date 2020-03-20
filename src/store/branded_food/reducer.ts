@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { State, ActionType } from "./types";
-import { Action, ActionType as RootActionType } from "../types";
+import { RootAction, ActionType as RootActionType } from "../types";
 import { stateFromBrandedFood } from "./conversion";
 import { initialState } from "../types";
 
-export function brandedFoodReducer(state: State | null = initialState.brandedFoodState, action: Action): State | null {
+export function brandedFoodReducer(state: State | null = initialState.brandedFoodState, action: RootAction): State | null {
   switch (action.type) {   
     case RootActionType.SELECT_FOOD:
     case RootActionType.UPDATE_FOOD:

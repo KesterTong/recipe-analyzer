@@ -26,7 +26,7 @@ import {
   updateHouseholdUnit,
   updateNutrientValue
  } from './store/branded_food/actions';
-import { Action } from './store/types';
+import { RootAction } from './store/types';
 
 interface BrandedFoodProps {
   description: string,
@@ -124,7 +124,7 @@ function mapStateToProps(state: RootState): {brandedFood: BrandedFoodProps | nul
   };
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, RootAction>) {
   return bindActionCreators({
     updateDescription,
     updateServingSize,

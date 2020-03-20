@@ -16,7 +16,7 @@ import { NutrientInfo } from "../../core/Nutrients";
 import { State as BrandedFoodState, Action as BrandedFoodAction} from "./branded_food/types";
 import { State as RecipeState, Action as RecipeAction } from "./recipe/types";
 import { Food } from "../../core/Food";
-import { ThunkAction } from "redux-thunk";
+import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 
 export interface SelectedFood {
   foodId: string | null,
@@ -84,8 +84,8 @@ export interface UpdateDescription {
   description: string,
 }
 
-export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | UpdateDescription | BrandedFoodAction | RecipeAction;
+export type RootAction = SetNutrientInfos | Deselect | SelectFood | UpdateFood | UpdateDescription | BrandedFoodAction | RecipeAction;
 
-export type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
-
+export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
+export type ThunkDispatch = ReduxThunkDispatch<RootState, undefined, RootAction>;
 

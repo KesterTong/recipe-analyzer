@@ -24,8 +24,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeEditorContainer } from './RecipeEditorContainer';
-import { ThunkDispatch } from 'redux-thunk';
-import { Action } from './store/types';
+import { ThunkDispatch } from './store/types';
 
 interface IngredientBrowserProps {
   selectFoodDisabled: boolean,
@@ -65,7 +64,7 @@ function mapStateToProps(state: RootState) {
   }
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators({
     selectFood,
     saveFood,

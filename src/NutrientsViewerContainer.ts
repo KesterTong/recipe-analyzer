@@ -13,9 +13,7 @@
 // limitations under the License.
 import { RootState, BrandedFoodState, RecipeState } from "./store";
 import { connect } from 'react-redux';
-import { Action } from './store/types';
-import { Nutrients, scaleNutrients } from '../core/Nutrients';
-import { nutrientsFromFoodDetails } from '../core/normalizeFood';
+import { ThunkDispatch } from './store/types';
 import { NutrientsViewer } from './NutrientsViewer';
 import { SRLegacyFood } from "../core/FoodDataCentral";
 
@@ -59,7 +57,7 @@ function mapStateToProps(state: RootState) {
   // };
 }
 
-function mapDispatchToProps(dispatch: React.Dispatch<Action>) {
+function mapDispatchToProps(dispatch: ThunkDispatch) {
   return {
     selectQuantity: (event: React.FormEvent) => {
       if (event.target instanceof HTMLSelectElement) {

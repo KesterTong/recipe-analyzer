@@ -13,11 +13,10 @@
 // limitations under the License.
 
 import { connect } from 'react-redux';
-import { RootState } from "./store";
+import { RootState, ThunkDispatch } from "./store";
 import { RecipeEditor, RecipeProps } from './RecipeEditor';
 import { updateDescription } from './store/actions';
 import { bindActionCreators } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
 import { nutrientsForQuantity } from '../core/Quantity';
 import {
   addIngredient,
@@ -25,7 +24,7 @@ import {
   updateIngredientUnit,
   updateIngredientId,
 } from './store/recipe/actions';
-import { Action } from './store/types';
+import { RootAction } from './store/types';
 
 function mapStateToProps(state: RootState): {recipe : RecipeProps | null} {
   const recipeState = state.recipeState;
@@ -55,7 +54,7 @@ function mapStateToProps(state: RootState): {recipe : RecipeProps | null} {
   };
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
+function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators({
     updateDescription,
     addIngredient,

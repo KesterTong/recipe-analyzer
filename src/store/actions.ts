@@ -13,12 +13,12 @@
 // limitations under the License.
 import { patchFood, getFood, insertFood } from "../IngredientDatabaseImpl";
 import { Food } from "../../core/Food";
-import { Action, ThunkResult, ActionType } from "./types";
+import { RootAction, ThunkResult, ActionType } from "./types";
 import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
 import { loadIngredient } from "./recipe/actions";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food/conversion";
 
-export function updateDescription(description: string): Action {
+export function updateDescription(description: string): RootAction {
   return {type: ActionType.UPDATE_DESCRIPTION, description};
 }
 
