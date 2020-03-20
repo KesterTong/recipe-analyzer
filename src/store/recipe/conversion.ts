@@ -33,7 +33,6 @@ export function recipeFromState(state: State): Recipe {
 
 export function stateFromRecipe(food: Recipe): State {
   return {
-    dataType: 'Recipe Edit',
     description: food.description,
     ingredients: food.ingredientsList.map(ingredient => ({
       ...ingredient,

@@ -17,7 +17,6 @@ import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
 
 export interface State {
-  dataType: 'Recipe Edit';
   description: string,
   ingredients: {
     quantity: Quantity,

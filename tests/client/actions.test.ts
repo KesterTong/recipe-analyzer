@@ -21,7 +21,6 @@ import { initialState } from '../../src/store/types';
 jest.mock('../../src/IngredientDatabaseImpl');
 
 const _TEST_BRANDED_FOOD_EDIT: BrandedFoodState = {
-  dataType: "Branded Edit",
   description: "Plantain Chips",
   foodNutrients: [
     {amount: "170", id: 1008},
@@ -90,7 +89,6 @@ describe('actions', () => {
         deselected: false,
       },
       recipeState: {
-        dataType: "Recipe Edit",
         description: "New Recipe",
         foodsById: {},
         ingredients: [],

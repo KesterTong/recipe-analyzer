@@ -13,7 +13,6 @@
 // limitations under the License.
 
 export interface State {
-  dataType: 'Branded Edit',
   servingSize: string,
   servingSizeUnit: string,
   householdServingFullText: string,
