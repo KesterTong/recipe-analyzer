@@ -14,7 +14,7 @@
 import { patchFood, getFood, insertFood } from "../IngredientDatabaseImpl";
 import { Food } from "../../core/Food";
 import { NutrientInfo } from "../../core/Nutrients";
-import { RootState, LoadingFood } from "./RootState";
+import { RootState } from "./RootState";
 import { Action as BrandedFoodAction } from "./branded_food/types";
 import { Action as RecipeAction } from "./recipe/types";
 import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
@@ -31,6 +31,11 @@ export interface Deselect {
   type: 'Deselect';
 }
 
+export interface LoadingFood {
+  dataType: 'Loading',
+  description: string,
+}
+
 export interface SelectFood {
   type: 'SelectFood',
   foodId: string,
@@ -40,7 +45,6 @@ export interface SelectFood {
 // Update the data for the current food.
 export interface UpdateFood {
   type: 'UpdateFood',
-  foodId: string,
   food: Food,
 }
 
@@ -51,21 +55,15 @@ type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (_, getState) => {
     let state = getState();
-    let food: Food;
-    if (state.food == null) {
+    let foodId = state.selectedFood.foodId;
+    if (foodId == null) {
       return;
     }
-    switch (state.food.dataType) {
-      case 'Branded Edit':
-        food = brandedFoodFromState(state.food);
-        break;
-      case 'Recipe Edit':
-        food = recipeFromState(state.food);
-        break;
-      default:
-        return;
+    if (state.brandedFoodState) {
+      return patchFood(foodId, brandedFoodFromState(state.brandedFoodState));
+    } else if (state.recipeState) {
+      return patchFood(foodId, recipeFromState(state.recipeState));
     }
-    patchFood(state.selectedFoodId!, food);
   }
 }
 
@@ -84,6 +82,9 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
     const food = await getFood(foodId);
     if (food == null) {
       // TODO: handle this error.
+      return;
+    }
+    if (getState().selectedFood.foodId != foodId) {
       return;
     }
     dispatch({type: 'UpdateFood', foodId, food});

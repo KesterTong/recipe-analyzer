@@ -17,7 +17,6 @@ import * as React from 'react';
 import { Form, Navbar, Container, Spinner, Button } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
-import { Food } from '../core/Food';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
 import { Action, selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
 import { RootState, BrandedFoodState, RecipeState } from './store';
@@ -28,10 +27,8 @@ import { RecipeEditorContainer } from './RecipeEditorContainer';
 import { searchFoods } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
 import { SRLegacyFood } from '../core/FoodDataCentral';
-import { LoadingFood } from './store/RootState';
 
 interface IngredientBrowserProps {
-  food: SRLegacyFood | RecipeState | BrandedFoodState | LoadingFood | null,
   selectFoodDisabled: boolean,
   selectedFood: {label: string, value: string}[],
   selectFood(selected: {label: string, value: string}[]): void,
@@ -42,22 +39,6 @@ interface IngredientBrowserProps {
 };
 
 const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
-  let contents: React.ReactElement | null = null;
-  let food = props.food;
-
-  if (food) {
-    switch (food.dataType) {
-      case 'Branded Edit': 
-        contents = <BrandedFoodEditor/>;
-        break;
-      case 'SR Legacy':
-        contents = <SRLegacyFoodViewer/>;
-        break;
-      case 'Recipe Edit':
-        contents = <RecipeEditorContainer/>;
-        break;
-    }
-  }
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
@@ -68,18 +49,19 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
       </Form>
     </Navbar>
     <Container>
-      { contents }
+      <BrandedFoodEditor/>
+      <RecipeEditorContainer/>
+      <SRLegacyFoodViewer/>
     </Container>
   </React.Fragment>;
 }
 
 function mapStateToProps(state: RootState) {
-  let selectedFood: {label: string, value: string}[] = state.selectedFoodId && !state.deselected ? [{
-    value: state.selectedFoodId,
-    label: state.food?.description || 'Loading...',
+  let selectedFood: {label: string, value: string}[] = state.selectedFood.foodId && !state.selectedFood.deselected ? [{
+    value: state.selectedFood.foodId,
+    label: state.selectedFood.description || 'Loading...',
   }] : [];
   return {
-    food: state.food,
     selectedFood,
     selectFoodDisabled: selectedFood.length > 0 && selectedFood[0].label == 'Loading...',
     autocomplete: (query: string) => searchFoods(query)

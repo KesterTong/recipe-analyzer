@@ -16,14 +16,29 @@ import { NutrientInfo } from "../../core/Nutrients";
 import { State as BrandedFoodState } from "./branded_food/types";
 import { State as RecipeState } from "./recipe/types";
 
-export interface LoadingFood {
-  dataType: 'Loading',
+export interface SelectedFood {
+  foodId: string | null,
   description: string | null,
+  deselected: boolean,
 }
 
 export interface RootState {
-  selectedFoodId: string | null,
-  deselected: boolean,
-  food: SRLegacyFood | RecipeState | BrandedFoodState | LoadingFood | null,
+  selectedFood: SelectedFood,
+  srLegacyFood: SRLegacyFood | null,
+  recipeState: RecipeState | null,
+  brandedFoodState: BrandedFoodState | null,
   nutrientInfos: NutrientInfo[] | null,
 }
+
+export const initialState: RootState = {
+  selectedFood: {
+    foodId: null,
+    description: null,
+    deselected: false,
+  },
+  srLegacyFood: null,
+  recipeState: null,
+  brandedFoodState: null,
+  nutrientInfos: null,
+};
+

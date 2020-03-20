@@ -17,8 +17,11 @@ import { NutrientsViewerContainer } from "./NutrientsViewerContainer";
 import { connect } from "react-redux";
 import * as React from 'react';
 
-const SRLegacyFoodViewerView: React.SFC<{food: SRLegacyFood}> = (props) => {
+const SRLegacyFoodViewerView: React.SFC<{food: SRLegacyFood | null}> = (props) => {
   let food = props.food;
+  if (food == null) {
+    return null;
+  }
   // TODO new id instead of description for key.
   return <React.Fragment>
     <h1>{food.description}</h1>
@@ -28,7 +31,7 @@ const SRLegacyFoodViewerView: React.SFC<{food: SRLegacyFood}> = (props) => {
 }
 
 function mapStateToProps(state: RootState) {
-  return {food: state.food as SRLegacyFood};
+  return {food: state.srLegacyFood};
 }
 
 export const SRLegacyFoodViewer = connect(mapStateToProps)(SRLegacyFoodViewerView);

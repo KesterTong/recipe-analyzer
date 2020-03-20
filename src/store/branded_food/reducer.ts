@@ -11,23 +11,34 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { State, Action, ActionType } from "./types";
+import { State, ActionType } from "./types";
+import { Action } from "../actions";
+import { stateFromBrandedFood } from "./conversion";
+import { initialState } from "../RootState";
 
-export function brandedFoodReducer(state: State, action: Action): State {
-  switch (action.type) {
+export function brandedFoodReducer(state: State | null = initialState.brandedFoodState, action: Action): State | null {
+  switch (action.type) {   
+    case 'SelectFood':
+    case 'UpdateFood':
+      return action.food?.dataType == 'Branded' ? stateFromBrandedFood(action.food) : null;
     case ActionType.UPDATE_DESCRIPTION:
-      return {...state, description: action.description};
+      return state ? {...state, description: action.description} : null;
     case ActionType.UPDATE_SERVING_SIZE:
-      return {...state, servingSize: action.servingSize};
+      return state ? {...state, servingSize: action.servingSize} : null;
     case ActionType.UPDATE_SERVING_SIZE_UNIT:
-      return {...state, servingSizeUnit: action.servingSizeUnit};
+      return state ? {...state, servingSizeUnit: action.servingSizeUnit} : null;
     case ActionType.UPDATE_HOUSEHOLD_UNIT:
-      return {...state, householdServingFullText: action.householdUnit};
+      return state ? {...state, householdServingFullText: action.householdUnit} : null;
     case ActionType.UPDATE_NUTRIENT_VALUE:
+      if (state == null) {
+        return null;
+      }
       let foodNutrients = state.foodNutrients.map(nutrient =>
         nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
       return {...state, foodNutrients};
     case ActionType.SET_SELECTED_QUANTITY:
-      return {...state, selectedQuantity: action.index};
+      return state ? {...state, selectedQuantity: action.index} : null;
+    default:
+      return state;
   }
 }
