@@ -62,8 +62,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch<RootState, null, Action>) {
     updateIngredientAmount,
     updateIngredientUnit,
     select: updateIngredientId,
-    autocomplete: (query: string) => searchFoods(query)
-    .then(result => result.map(foodRef => ({label: foodRef.description, value: foodRef.foodId}))),
   }, dispatch);
 }
 

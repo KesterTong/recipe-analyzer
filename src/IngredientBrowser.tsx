@@ -32,7 +32,6 @@ interface IngredientBrowserProps {
   selectFoodDisabled: boolean,
   selectedFood: {label: string, value: string}[],
   selectFood(selected: {label: string, value: string}[]): void,
-  autocomplete(query: string): Promise<{label: string, value: string}[]>,
   saveFood: () => void,
   newBrandedFood: () => void,
   newRecipe: () => void,
@@ -42,7 +41,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
-        <IngredientSearcher selected={props.selectedFood} disabled={props.selectFoodDisabled} select={props.selectFood} autocomplete={props.autocomplete}/>
+        <IngredientSearcher selected={props.selectedFood} disabled={props.selectFoodDisabled} select={props.selectFood} />
         <Button onClick={props.saveFood}>Save</Button>
         <Button onClick={props.newBrandedFood}>New Custom Food</Button>
         <Button onClick={props.newRecipe}>New Recipe</Button>
@@ -64,8 +63,6 @@ function mapStateToProps(state: RootState) {
   return {
     selectedFood,
     selectFoodDisabled: selectedFood.length > 0 && selectedFood[0].label == 'Loading...',
-    autocomplete: (query: string) => searchFoods(query)
-    .then(results => results.map(foodRef => ({label: foodRef.description, value: foodRef.foodId}))),
   }
 }
 

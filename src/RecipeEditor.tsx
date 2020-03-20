@@ -34,7 +34,6 @@ export interface RecipeProps {
 export interface RecipeEditorProps {
   recipe : RecipeProps | null,
   updateDescription(value: string): void,
-  autocomplete(query: string): Promise<{label: string, value: string}[]>,
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
   updateIngredientUnit(index: number, unit: string): void,
@@ -91,7 +90,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
                     selected={ingredient.selected}
                     disabled={ingredient.disabled}
                     select={selected => props.select(index, selected)}
-                    autocomplete={props.autocomplete} />
+                    />
                   }
                 </td>
                 <td><Button>Delete</Button></td>

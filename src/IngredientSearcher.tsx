@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { searchFoods } from './IngredientDatabaseImpl';
 
 export interface IngredientSearcherProps {
   selected: {label: string, value: string}[],
   disabled: boolean,
-  autocomplete(query: string): Promise<{label: string, value: string}[]>,
   select(selected: {label: string, value: string}[]): void,
 }
 
@@ -28,8 +28,10 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
     </React.Fragment>);
   }
 
-  _handleSearch = (query: string) => {
+  _handleSearch = async (query: string) => {
     this.setState({ isLoading: true });
-    this.props.autocomplete(query).then(options => this.setState({isLoading: false, options}));
+    const result = await searchFoods(query);
+    const options = result.map(foodRef => ({label: foodRef.description, value: foodRef.foodId}));
+    this.setState({isLoading: false, options});
   };
 }
