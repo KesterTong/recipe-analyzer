@@ -13,7 +13,7 @@
 // limitations under the License.
 import { getFood, insertFood } from '../../src/IngredientDatabaseImpl';
 import { store, RootState, BrandedFoodState } from '../../src/store';
-import { selectFood, newRecipe } from '../../src/store/actions';
+import { selectFood, newRecipe, updateDescription } from '../../src/store/actions';
 import * as branded_food_actions from '../../src/store/branded_food/actions';
 import { TEST_BRANDED_FOOD } from '../testData';
 import { NEW_RECIPE } from '../../src/store/recipe/conversion';
@@ -67,7 +67,7 @@ describe('actions', () => {
     getFoodMock.mockReset();
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     await store.dispatch(selectFood([{value: 'userData/abcdefg', label: 'My Food'}]));
-    store.dispatch(branded_food_actions.updateDescription('New Description'));
+    store.dispatch(updateDescription('New Description'));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       selectedFood: {

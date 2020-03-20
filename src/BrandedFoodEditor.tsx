@@ -17,11 +17,10 @@ import * as React from 'react';
 import { Form, Col } from 'react-bootstrap';
 import { RootState } from './store';
 import { connect } from 'react-redux';
-import { Action } from './store/actions';
+import { Action, updateDescription } from './store/actions';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import {
-  updateDescription,
   updateServingSize,
   updateServingSizeUnit,
   updateHouseholdUnit,

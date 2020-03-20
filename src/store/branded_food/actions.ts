@@ -13,10 +13,6 @@
 // limitations under the License.
 import { Action, ActionType } from "./types";
 
-export function updateDescription(description: string): Action {
-  return {type: ActionType.UPDATE_DESCRIPTION, description};
-}
-
 export function updateServingSize(servingSize: string): Action {
   return {type: ActionType.UPDATE_SERVING_SIZE, servingSize};
 }

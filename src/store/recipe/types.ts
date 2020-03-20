@@ -37,11 +37,6 @@ export enum ActionType {
   DESELECT_INGREDIENT = '@recipe/DeselectIngredient',
 }
 
-export interface UpdateDescription {
-  type: ActionType.UPDATE_DESCRIPTION,
-  description: string,
-}
-
 export interface SetFoodForId {
   type: ActionType.SET_FOOD_FOR_ID,
   food: NormalizedFood,
@@ -76,4 +71,4 @@ export interface DeselectIngredient {
   index: number,
 }
 
-export type Action = UpdateDescription | SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId | DeselectIngredient;
+export type Action = SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId | DeselectIngredient;

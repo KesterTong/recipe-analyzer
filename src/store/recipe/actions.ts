@@ -20,10 +20,6 @@ import { ThunkAction } from "redux-thunk";
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 
-export function updateDescription(description: string): Action {
-  return {type: ActionType.UPDATE_DESCRIPTION, description};
-}
-
 export function loadIngredient(foodId: string): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodId);

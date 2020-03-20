@@ -22,13 +22,22 @@ import { loadIngredient } from "./recipe/actions";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food/conversion";
 import { ThunkAction } from "redux-thunk";
 
+
+export enum ActionType {
+  SET_NUTRIENT_INFOS = '@SetNutrientInfos',
+  DESELECT = '@Deselect',
+  SELECT_FOOD = '@SelectFood',
+  UPDATE_FOOD = '@UpdateFood',
+  UPDATE_DESCRIPTION = '@UpdateDescription',
+};
+
 export interface SetNutrientInfos {
-  type: 'SetNutrientInfos',
+  type: ActionType.SET_NUTRIENT_INFOS,
   nutrientInfos: NutrientInfo[],
 }
 
 export interface Deselect {
-  type: 'Deselect';
+  type: ActionType.DESELECT;
 }
 
 export interface LoadingFood {
@@ -37,20 +46,29 @@ export interface LoadingFood {
 }
 
 export interface SelectFood {
-  type: 'SelectFood',
+  type: ActionType.SELECT_FOOD,
   foodId: string,
   food: Food | LoadingFood | null,
 }
 
 // Update the data for the current food.
 export interface UpdateFood {
-  type: 'UpdateFood',
+  type: ActionType.UPDATE_FOOD,
   food: Food,
 }
 
-export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | BrandedFoodAction | RecipeAction;
+export interface UpdateDescription {
+  type: ActionType.UPDATE_DESCRIPTION,
+  description: string,
+}
+
+export type Action = SetNutrientInfos | Deselect | SelectFood | UpdateFood | UpdateDescription | BrandedFoodAction | RecipeAction;
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
+
+export function updateDescription(description: string): Action {
+  return {type: ActionType.UPDATE_DESCRIPTION, description};
+}
 
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (_, getState) => {
@@ -70,12 +88,12 @@ export function saveFood(): ThunkResult<Promise<void>> {
 export function selectFood(selection: {label: string, value: string}[]): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     if (selection.length == 0) {
-      dispatch({type: 'Deselect'});
+      dispatch({type: ActionType.DESELECT});
       return;
     }
     const foodId = selection[0].value;
     dispatch({
-      type: 'SelectFood',
+      type: ActionType.SELECT_FOOD,
       foodId,
       food: {dataType: 'Loading', description: selection[0].label},
     });
@@ -87,7 +105,7 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
     if (getState().selectedFood.foodId != foodId) {
       return;
     }
-    dispatch({type: 'UpdateFood', foodId, food});
+    dispatch({type: ActionType.UPDATE_FOOD, foodId, food});
     if (food.dataType == 'Recipe') {
       food.ingredientsList.forEach(ingredient => {
         dispatch(loadIngredient(ingredient.foodId));
@@ -99,7 +117,7 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
 function newFood(food: Food): ThunkResult<Promise<void>> {
   return async dispatch => {
     let foodId = await insertFood(food);
-    dispatch({type: 'SelectFood', foodId, food});
+    dispatch({type: ActionType.SELECT_FOOD, foodId, food});
   }
 }
 

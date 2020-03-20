@@ -23,6 +23,7 @@ import ReactDOM = require("react-dom");
 import React = require("react");
 import { Provider } from "react-redux";
 import { store } from "./store";
+import { ActionType } from "./store/actions";
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -33,7 +34,7 @@ var ui = new firebaseui.auth.AuthUI(firebase.auth());
 firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     getNutrientInfo().then(nutrientInfos => 
-      store.dispatch({type: 'SetNutrientInfos', nutrientInfos}));
+      store.dispatch({type: ActionType.SET_NUTRIENT_INFOS, nutrientInfos}));
     ReactDOM.render(<Provider store={store}>
       <IngredientBrowser/>
     </Provider>, document.getElementById('root'));

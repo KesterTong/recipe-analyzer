@@ -15,13 +15,12 @@
 import { connect } from 'react-redux';
 import { RootState } from "./store";
 import { RecipeEditor, RecipeProps } from './RecipeEditor';
-import { Action } from './store/actions';
+import { Action, updateDescription } from './store/actions';
 import { searchFoods } from './IngredientDatabaseImpl';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { nutrientsForQuantity } from '../core/Quantity';
 import {
-  updateDescription,
   addIngredient,
   updateIngredientAmount,
   updateIngredientUnit,
