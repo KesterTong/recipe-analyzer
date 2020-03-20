@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Action, ActionType } from "./actions";
+import { Action, ActionType } from "./types";
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunk, { ThunkDispatch } from "redux-thunk";
-import { RootState, initialState } from "./RootState";
+import { RootState, initialState } from "./types";
 import { brandedFoodReducer } from "./branded_food/reducer";
-import { State as BrandedFoodState, ActionType as BrandedFoodActionType } from "./branded_food/types";
+import { State as BrandedFoodState} from "./branded_food/types";
 import { recipeReducer } from "./recipe/reducer";
 import { stateFromBrandedFood } from "./branded_food/conversion";
-import { State as RecipeState, ActionType as RecipeActionType } from "./recipe/types";
+import { State as RecipeState} from "./recipe/types";
 import { stateFromRecipe } from './recipe/conversion';
 import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";

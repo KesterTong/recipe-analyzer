@@ -13,7 +13,7 @@
 // limitations under the License.
 import { RootState, BrandedFoodState, RecipeState } from "./store";
 import { connect } from 'react-redux';
-import { Action } from './store/actions';
+import { Action } from './store/types';
 import { Nutrients, scaleNutrients } from '../core/Nutrients';
 import { nutrientsFromFoodDetails } from '../core/normalizeFood';
 import { NutrientsViewer } from './NutrientsViewer';

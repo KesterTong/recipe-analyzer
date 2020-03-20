@@ -18,15 +18,14 @@ import { Form, Navbar, Container, Spinner, Button } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { Action, selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
-import { RootState, BrandedFoodState, RecipeState } from './store';
+import { selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
+import { RootState } from './store';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeEditorContainer } from './RecipeEditorContainer';
-import { searchFoods } from './IngredientDatabaseImpl';
 import { ThunkDispatch } from 'redux-thunk';
-import { SRLegacyFood } from '../core/FoodDataCentral';
+import { Action } from './store/types';
 
 interface IngredientBrowserProps {
   selectFoodDisabled: boolean,

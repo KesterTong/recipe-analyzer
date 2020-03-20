@@ -15,8 +15,7 @@
 import { connect } from 'react-redux';
 import { RootState } from "./store";
 import { RecipeEditor, RecipeProps } from './RecipeEditor';
-import { Action, updateDescription } from './store/actions';
-import { searchFoods } from './IngredientDatabaseImpl';
+import { updateDescription } from './store/actions';
 import { bindActionCreators } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { nutrientsForQuantity } from '../core/Quantity';
@@ -26,6 +25,7 @@ import {
   updateIngredientUnit,
   updateIngredientId,
 } from './store/recipe/actions';
+import { Action } from './store/types';
 
 function mapStateToProps(state: RootState): {recipe : RecipeProps | null} {
   const recipeState = state.recipeState;

@@ -14,10 +14,9 @@
 import { getFood, insertFood } from '../../src/IngredientDatabaseImpl';
 import { store, RootState, BrandedFoodState } from '../../src/store';
 import { selectFood, newRecipe, updateDescription } from '../../src/store/actions';
-import * as branded_food_actions from '../../src/store/branded_food/actions';
 import { TEST_BRANDED_FOOD } from '../testData';
 import { NEW_RECIPE } from '../../src/store/recipe/conversion';
-import { initialState } from '../../src/store/RootState';
+import { initialState } from '../../src/store/types';
 
 jest.mock('../../src/IngredientDatabaseImpl');
 

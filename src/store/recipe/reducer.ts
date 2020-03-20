@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { State, ActionType } from "./types";
-import { Action, ActionType as RootActionType } from "../actions";
-import { initialState } from "../RootState";
+import { Action, ActionType as RootActionType } from "../types";
+import { initialState } from "../types";
 import { stateFromRecipe } from "./conversion";
 
 export function recipeReducer(state: State | null = initialState.recipeState, action: Action): State | null{

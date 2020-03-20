@@ -23,7 +23,7 @@ import ReactDOM = require("react-dom");
 import React = require("react");
 import { Provider } from "react-redux";
 import { store } from "./store";
-import { ActionType } from "./store/actions";
+import { ActionType } from "./store/types";
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
