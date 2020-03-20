@@ -18,7 +18,8 @@ import { IngredientSearcher } from './IngredientSearcher';
 import { FoodRef } from '../core/FoodRef';
 import { addNutrients } from '../core/Nutrients';
 
-export interface RecipeProps {
+export interface RecipeEditorProps {
+  hasRecipe: boolean,
   description: string,
   nutrientNames: string[],
   ingredientsList: {
@@ -29,10 +30,6 @@ export interface RecipeProps {
     disabled: boolean,
     nutrients: number[],
   }[]
-};
-
-export interface RecipeEditorProps {
-  recipe : RecipeProps | null,
   updateDescription(value: string): void,
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
@@ -41,16 +38,15 @@ export interface RecipeEditorProps {
 }
 
 export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) => {
-  if (props.recipe == null) {
+  if (!props.hasRecipe) {
     return null;
   }
-  let recipe = props.recipe;
   return <React.Fragment>
       <Form>
         <Form.Group controlId="formDescription">
             <Form.Label>Description</Form.Label>
             <Form.Control
-              value={recipe.description}
+              value={props.description}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
               />
         </Form.Group>
@@ -62,11 +58,11 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
           <th>Unit</th>
           <th>Ingredient</th>
           <th></th>
-          { recipe.nutrientNames.map(nutrientName => <th>{nutrientName}</th>) }
+          { props.nutrientNames.map(nutrientName => <th>{nutrientName}</th>) }
         </thead>
         <tbody>
           {
-            recipe.ingredientsList.map((ingredient, index) => 
+            props.ingredientsList.map((ingredient, index) => 
               <tr>
                 <td>
                   <Form.Control
@@ -105,7 +101,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
               {/* <IngredientSearcher selected={null} state={'Selected'} selectFood={props.addIngredient} autocomplete={props.autocomplete} /> */}
             </td>
             <td><Button>Add</Button></td>
-            { recipe.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  recipe.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }
+            { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }
           </tr>
         </tbody>
       </Table>

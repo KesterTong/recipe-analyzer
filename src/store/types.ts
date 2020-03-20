@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { NutrientInfo } from "../../core/Nutrients";
 import { State as BrandedFoodState, Action as BrandedFoodAction} from "./branded_food/types";
 import { State as RecipeState, Action as RecipeAction } from "./recipe/types";

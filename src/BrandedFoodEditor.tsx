@@ -29,15 +29,12 @@ import {
 import { RootAction } from './store/types';
 
 interface BrandedFoodProps {
+  hasBrandedFood: boolean,
   description: string,
   householdServingFullText: string,
   servingSize: string,
   servingSizeUnit: string,
   nutrients: {id: number, description: string, value: string}[],
-}
-
-interface BrandedFoodEditorProps {
-  brandedFood: BrandedFoodProps | null,
   updateDescription(value: string): void,
   updateHouseholdUnit(value: string): void,
   updateServingSize(value: string): void,
@@ -45,9 +42,8 @@ interface BrandedFoodEditorProps {
   updateNutrientValue(id: number, value: string): void,
 }
 
-const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
-  const brandedFood = props.brandedFood;
-  if (brandedFood == null) {
+const BrandedFoodEditorView: React.SFC<BrandedFoodProps> = props => {
+  if (!props.hasBrandedFood) {
     return null;
   }
   return <React.Fragment>
@@ -55,7 +51,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
         <Form.Group controlId="formDescription">
             <Form.Label>Description</Form.Label>
             <Form.Control
-              value={brandedFood.description}
+              value={props.description}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateDescription(event.target.value)}
               />
         </Form.Group>
@@ -63,14 +59,14 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
           <Form.Group as={Col} controlId="formHouseholdUnit">
             <Form.Label>Household Units</Form.Label>
             <Form.Control
-              value={brandedFood.householdServingFullText}
+              value={props.householdServingFullText}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateHouseholdUnit(event.target.value)}
               />
           </Form.Group>
           <Form.Group as={Col} controlId="formServingSize">
             <Form.Label>Serving Size</Form.Label>
             <Form.Control
-              value={brandedFood.servingSize}
+              value={props.servingSize}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateServingSize(event.target.value)}
               />
           </Form.Group>
@@ -78,7 +74,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
             <Form.Label>Units</Form.Label>
             <Form.Control
               as="select"
-              value={brandedFood.servingSizeUnit}
+              value={props.servingSizeUnit}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateServingSizeUnit(event.target.value)}
               >
               <option>ml</option>
@@ -86,7 +82,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
             </Form.Control>
           </Form.Group>
         </Form.Row>
-        { brandedFood.nutrients.map(nutrient => (
+        { props.nutrients.map(nutrient => (
           <Form.Group controlId={"form-" + nutrient.description}>
             <Form.Label>{nutrient.description}</Form.Label>
             <Form.Control
@@ -99,28 +95,33 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodEditorProps> = props => {
     </React.Fragment>;
 }
 
-function mapStateToProps(state: RootState): {brandedFood: BrandedFoodProps | null} {
+function mapStateToProps(state: RootState) {
   const food = state.brandedFoodState;
   if (food == null) {
-    return {brandedFood: null};
+    return {
+      hasBrandedFood: false,
+      description: '',
+      householdServingFullText: '',
+      servingSize: '',
+      servingSizeUnit: '',
+      nutrients: [],
+    };
   }
   const nutrientNamesById: {[index: number]: string} = {};
   (state.nutrientInfos || []).forEach(nutrientInfo => {
     nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
   });
-  const foodId = state.selectedFood.foodId;
   return {
-      brandedFood: {
-      description: food.description,
-      householdServingFullText: food.householdServingFullText || '',
-      servingSize: food.servingSize,
-      servingSizeUnit: food.servingSizeUnit,
-      nutrients: food.foodNutrients.map(nutrient => ({
-        id: nutrient.id,
-        description: nutrientNamesById[nutrient.id],
-        value: nutrient.amount,
-      })),
-    }
+    hasBrandedFood: true,
+    description: food.description,
+    householdServingFullText: food.householdServingFullText || '',
+    servingSize: food.servingSize,
+    servingSizeUnit: food.servingSizeUnit,
+    nutrients: food.foodNutrients.map(nutrient => ({
+      id: nutrient.id,
+      description: nutrientNamesById[nutrient.id],
+      value: nutrient.amount,
+    })),
   };
 }
 
