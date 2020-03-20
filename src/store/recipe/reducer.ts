@@ -16,7 +16,7 @@ import { RootAction, ActionType as RootActionType } from "../types";
 import { initialState } from "../types";
 import { stateFromRecipe } from "./conversion";
 
-export function recipeReducer(state: State | null = initialState.recipeState, action: RootAction): State | null{
+export function reducer(state: State | null = initialState.recipeState, action: RootAction): State | null{
   switch (action.type) {
     case RootActionType.SELECT_FOOD:
     case RootActionType.UPDATE_FOOD:

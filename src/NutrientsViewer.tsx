@@ -20,13 +20,13 @@ export interface NutrientsViewProps {
   nutrientValues: number[],
   quantities: string[],
   selectedQuantity: number,
-  selectQuantity: (event: React.FormEvent) => void,
+  setSelectedQuantity: (index: number) => void,
 }
 
 export const NutrientsViewer: React.SFC<NutrientsViewProps> = (props) => {
   return (
     <React.Fragment>
-      <Form.Control as="select" value={props.selectedQuantity.toString()} onChange={props.selectQuantity}>
+      <Form.Control as="select" value={props.selectedQuantity.toString()} onChange={(event: React.FormEvent) => props.setSelectedQuantity(Number((event.target as HTMLSelectElement).value))}>
         { props.quantities.map((quantity, index) => <option value={index}>{quantity}</option>) }
       </Form.Control>
       <p>

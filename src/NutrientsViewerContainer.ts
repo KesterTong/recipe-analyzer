@@ -59,14 +59,7 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
   return {
-    selectQuantity: (event: React.FormEvent) => {
-      if (event.target instanceof HTMLSelectElement) {
-        // dispatch({
-        //   type: 'SetSelectedQuantity',
-        //   index: Number(event.target.value),
-        // });
-      }
-    }
+    setSelectedQuantity: (index:number) => {return },
   };
 }
 

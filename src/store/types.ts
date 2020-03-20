@@ -15,6 +15,7 @@ import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { NutrientInfo } from "../../core/Nutrients";
 import { State as BrandedFoodState, Action as BrandedFoodAction} from "./branded_food/types";
 import { State as RecipeState, Action as RecipeAction } from "./recipe/types";
+import { State as SRLegacyFoodState} from './sr_legacy_food/types';
 import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 
@@ -26,7 +27,7 @@ export interface SelectedFood {
 
 export interface RootState {
   selectedFood: SelectedFood,
-  srLegacyFood: SRLegacyFood | null,
+  srLegacyFoodState: SRLegacyFoodState | null,
   recipeState: RecipeState | null,
   brandedFoodState: BrandedFoodState | null,
   nutrientInfos: NutrientInfo[] | null,
@@ -38,7 +39,7 @@ export const initialState: RootState = {
     description: null,
     deselected: false,
   },
-  srLegacyFood: null,
+  srLegacyFoodState: null,
   recipeState: null,
   brandedFoodState: null,
   nutrientInfos: null,
@@ -51,6 +52,7 @@ export enum ActionType {
   SELECT_FOOD = '@SelectFood',
   UPDATE_FOOD = '@UpdateFood',
   UPDATE_DESCRIPTION = '@UpdateDescription',
+  SET_SELECTED_QUANTITY = '@SetSelectedQuantity',
 };
 
 export interface SetNutrientInfos {
@@ -84,7 +86,12 @@ export interface UpdateDescription {
   description: string,
 }
 
-export type RootAction = SetNutrientInfos | Deselect | SelectFood | UpdateFood | UpdateDescription | BrandedFoodAction | RecipeAction;
+export interface SetSelectedQuantity {
+  type: ActionType.SET_SELECTED_QUANTITY,
+  index: number,
+}
+
+export type RootAction = SetNutrientInfos | Deselect | SelectFood | UpdateFood | UpdateDescription | SetSelectedQuantity | BrandedFoodAction | RecipeAction;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<RootState, undefined, RootAction>;

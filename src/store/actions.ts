@@ -22,6 +22,10 @@ export function updateDescription(description: string): RootAction {
   return {type: ActionType.UPDATE_DESCRIPTION, description};
 }
 
+export function setSelectedQuantity(index: number): RootAction {
+  return {type: ActionType.SET_SELECTED_QUANTITY, index};
+}
+
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (_, getState) => {
     let state = getState();

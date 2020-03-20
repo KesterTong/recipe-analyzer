@@ -28,7 +28,3 @@ export function updateHouseholdUnit(householdUnit: string): Action {
 export function updateNutrientValue(nutrientId: number, value: string): Action {
   return {type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value};
 }
-
-export function setSelectedQuantity(index: number): Action {
-  return {type: ActionType.SET_SELECTED_QUANTITY, index};
-}

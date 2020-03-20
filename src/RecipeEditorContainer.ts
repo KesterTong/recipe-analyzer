@@ -24,7 +24,6 @@ import {
   updateIngredientUnit,
   updateIngredientId,
 } from './store/recipe/actions';
-import { RootAction } from './store/types';
 
 function mapStateToProps(state: RootState): {recipe : RecipeProps | null} {
   const recipeState = state.recipeState;

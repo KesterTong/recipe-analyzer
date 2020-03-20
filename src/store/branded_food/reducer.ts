@@ -16,13 +16,15 @@ import { RootAction, ActionType as RootActionType } from "../types";
 import { stateFromBrandedFood } from "./conversion";
 import { initialState } from "../types";
 
-export function brandedFoodReducer(state: State | null = initialState.brandedFoodState, action: RootAction): State | null {
+export function reducer(state: State | null = initialState.brandedFoodState, action: RootAction): State | null {
   switch (action.type) {   
     case RootActionType.SELECT_FOOD:
     case RootActionType.UPDATE_FOOD:
       return action.food?.dataType == 'Branded' ? stateFromBrandedFood(action.food) : null;
     case RootActionType.UPDATE_DESCRIPTION:
       return state ? {...state, description: action.description} : null;
+    case RootActionType.SET_SELECTED_QUANTITY:
+      return state ? {...state, selectedQuantity: action.index} : null;  
     case ActionType.UPDATE_SERVING_SIZE:
       return state ? {...state, servingSize: action.servingSize} : null;
     case ActionType.UPDATE_SERVING_SIZE_UNIT:
@@ -36,8 +38,6 @@ export function brandedFoodReducer(state: State | null = initialState.brandedFoo
       let foodNutrients = state.foodNutrients.map(nutrient =>
         nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient);
       return {...state, foodNutrients};
-    case ActionType.SET_SELECTED_QUANTITY:
-      return state ? {...state, selectedQuantity: action.index} : null;
     default:
       return state;
   }

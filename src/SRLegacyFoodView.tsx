@@ -12,26 +12,74 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { SRLegacyFood } from "../core/FoodDataCentral";
-import { RootState } from "./store";
-import { NutrientsViewerContainer } from "./NutrientsViewerContainer";
+import { RootState, ThunkDispatch } from "./store";
 import { connect } from "react-redux";
 import * as React from 'react';
+import { NutrientsViewer } from "./NutrientsViewer";
+import { bindActionCreators } from "redux";
+import { setSelectedQuantity } from "./store/actions";
+import { nutrientsFromFoodDetails } from "../core/normalizeFood";
+import { scaleNutrients } from "../core/Nutrients";
 
-const SRLegacyFoodViewerView: React.SFC<{food: SRLegacyFood | null}> = (props) => {
-  let food = props.food;
+interface SRLegacyFoodProps {
+  srLegacyFood: SRLegacyFood,
+  viewerProps: {
+    nutrientNames: string[],
+    nutrientValues: number[],
+    quantities: string[],
+    selectedQuantity: number,
+  },
+}
+
+interface SRLegacyFoodViewerProps {
+  srLegacyFoodProps: SRLegacyFoodProps | null,
+  setSelectedQuantity: (index: number) => void,
+}
+
+const SRLegacyFoodViewerView: React.SFC<SRLegacyFoodViewerProps> = (props) => {
+  let food = props.srLegacyFoodProps;
   if (food == null) {
     return null;
   }
   // TODO new id instead of description for key.
   return <React.Fragment>
-    <h1>{food.description}</h1>
+    <h1>{food.srLegacyFood.description}</h1>
     <h2>Nutrients</h2>
-    <NutrientsViewerContainer/>
+    <NutrientsViewer {...food.viewerProps} setSelectedQuantity={props.setSelectedQuantity}/>
   </React.Fragment>;
 }
 
 function mapStateToProps(state: RootState) {
-  return {food: state.srLegacyFood};
+  let srLegacyFoodProps: SRLegacyFoodProps |  null;
+  if (state.srLegacyFoodState == null) {
+    srLegacyFoodProps = null;
+  } else {
+    let quantities: {description: string, servings: number}[];
+    quantities = [{description: '100 g', servings: 1}];
+    const food = state.srLegacyFoodState.srLegacyFood;
+    food.foodPortions.forEach(portion => {
+      let description = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
+      quantities.push({description, servings: portion.gramWeight / 100});
+    });
+    let nutrientsPerServing = nutrientsFromFoodDetails(food, (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.id));
+    let scale = quantities[state.srLegacyFoodState.selectedQuantity].servings;
+    srLegacyFoodProps = {
+      srLegacyFood: state.srLegacyFoodState.srLegacyFood,
+      viewerProps: {
+        nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
+        nutrientValues: scaleNutrients(nutrientsPerServing, scale),
+        quantities: quantities.map(quantity => quantity.description),
+        selectedQuantity: state.srLegacyFoodState.selectedQuantity,
+      },
+    };
+  }
+  return {srLegacyFoodProps};
 }
 
-export const SRLegacyFoodViewer = connect(mapStateToProps)(SRLegacyFoodViewerView);
+function mapDispatchToProps(dispatch: ThunkDispatch) {
+  return bindActionCreators({
+    setSelectedQuantity,
+  }, dispatch);
+}
+
+export const SRLegacyFoodViewer = connect(mapStateToProps, mapDispatchToProps)(SRLegacyFoodViewerView);
