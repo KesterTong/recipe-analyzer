@@ -13,41 +13,39 @@
 // limitations under the License.
 
 import { Quantity, canonicalizeQuantity, nutrientsForQuantity } from './Quantity';
-import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
+import { Nutrients, addNutrients } from "./Nutrients";
 import { FDCFood, SRLegacyFood, HouseholdServing } from './FoodDataCentral';
 import { parseQuantity } from './parseQuantity';
 import { Food } from './Food';
 import { NormalizedFood } from './NormalizedFood';
 import { Recipe } from './Recipe';
 
-export function normalizeFood(food: Food, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<NormalizedFood> {
-  let nutrientsPerServing: Promise<Nutrients>;
+export async function normalizeFood(food: Food, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<NormalizedFood> {
+  const nutrientsPerServing = await nutrientsPerServingForFood(food, getFood, nutrientIds);
+  return ({
+    description: food.description,
+    nutrientsPerServing,
+    servingEquivalentQuantities: servingEquivalentQuantities(food),
+  });
+}
+
+function nutrientsPerServingForFood(food: Food, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<Nutrients> {
   switch (food.dataType) {
     case 'SR Legacy':
     case 'Branded':
-      nutrientsPerServing = Promise.resolve(nutrientsFromFoodDetails(food, nutrientIds));
-      break;
+      return Promise.resolve(nutrientsFromFoodDetails(food, nutrientIds));
     case 'Recipe':
-      nutrientsPerServing = nutrientsForRecipe(food, getFood, nutrientIds);
-      break;
+      return nutrientsForRecipe(food, getFood, nutrientIds);
   }
-  return nutrientsPerServing.then(nutrientsPerServing => ({
-    dataType: 'NormalizedFood',
-    description: food.description,
-    nutrientsPerServing: nutrientsPerServing,
-    servingEquivalentQuantities: servingEquivalentQuantities(food),
-  }));
 }
 
-function nutrientsForRecipe(food: Recipe, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<Nutrients> {
-  return Promise.all(food.ingredientsList.map(ingredient =>
-    getFood(ingredient.foodId)
-    .then(subFood => normalizeFood(subFood!, getFood, nutrientIds))
-    .then(normalizedSubFood => nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!)
-  ))
-  .then(nutrients => {
-    return nutrients.reduce(addNutrients);
-  })
+async function nutrientsForRecipe(food: Recipe, getFood: (foodId: string) => Promise<Food | null>, nutrientIds: number[]): Promise<Nutrients> {
+  const nutrients = await Promise.all(food.ingredientsList.map(async ingredient => {
+    const subFood = await getFood(ingredient.foodId);
+    const normalizedSubFood = await normalizeFood(subFood!, getFood, nutrientIds);
+    return nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!
+  }));
+  return nutrients.reduce(addNutrients);
 }
 
 export function nutrientsFromFoodDetails(foodDetails: FDCFood, nutrientsToDisplay: number[]): Nutrients {

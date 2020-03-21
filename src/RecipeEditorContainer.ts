@@ -28,7 +28,6 @@ import {
 } from './store/recipe/actions';
 
 function mapStateToProps(state: RootState) {
-  console.log(state)
   const recipeState = state.recipeState;
   if (recipeState == null) {
     return {
@@ -38,7 +37,7 @@ function mapStateToProps(state: RootState) {
       ingredientsList: [],
     }
   }
-  const result = {
+  return {
     hasRecipe: true,
     description: recipeState.description,
     nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
@@ -53,8 +52,6 @@ function mapStateToProps(state: RootState) {
       }
     }),
   };
-  console.log(result);
-  return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {

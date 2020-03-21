@@ -51,8 +51,11 @@ export function deselectIngredient(index: number): Action {
 }
 
 export function selectIngredient(index: number, foodRef: FoodRef): ThunkResult<Promise<void>> {
-  return async dispatch => {
-    dispatch({type: ActionType.UPDATE_INGREDIENT_ID, index, foodRef});
-    dispatch(loadIngredient(index, foodRef.foodId));
+  return async (dispatch, getState) => {
+    const food = await getFood(foodRef.foodId);
+    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
+    if (normalizedFood != null) {
+      dispatch({type: ActionType.UPDATE_INGREDIENT, index, foodRef, food: normalizedFood});
+    }
   }
 }

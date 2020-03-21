@@ -31,7 +31,7 @@ export enum ActionType {
   DELETE_INGREDIENT = '@recipe/DeleteIngredient',
   UPDATE_INGREDIENT_AMOUNT = '@recipe/UpdateIngredientAmount',
   UPDATE_INGREDIENT_UNIT = '@recipe/UpdateIngredientUnit',
-  UPDATE_INGREDIENT_ID = '@recipe/UpdateIngredientId',
+  UPDATE_INGREDIENT = '@recipe/UpdateIngredient',
   UPDATE_INGREDIENT_FOOD = '@recipe/UpdateIngredientFood',
   DESELECT_INGREDIENT = '@recipe/DeselectIngredient',
 }
@@ -58,9 +58,10 @@ export interface UpdateIngredientUnit {
 }
 
 export interface UpdateIngredient {
-  type: ActionType.UPDATE_INGREDIENT_ID,
+  type: ActionType.UPDATE_INGREDIENT,
   index: number,
   foodRef: FoodRef,
+  food: NormalizedFood,
 }
 
 export interface UpdateIngredientFood {

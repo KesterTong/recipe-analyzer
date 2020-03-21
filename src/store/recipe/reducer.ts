@@ -84,15 +84,15 @@ export function reducer(state: State | null = initialState.recipeState, action: 
           }
         })),
       } : null;
-    case ActionType.UPDATE_INGREDIENT_ID:
+    case ActionType.UPDATE_INGREDIENT:
       return state ? {
         ...state,
         ingredients: state.ingredients.map((ingredient, index) => {
           if (index == action.index) {
             return {
-              quantity: {amount: 100, unit: 'g'},
+              quantity: action.food.servingEquivalentQuantities['g'] ? {amount: 100, unit: 'g'} : {amount: 1, unit: 'serving'},
               foodInputState: foodInputReducer(undefined, select(action.foodRef)), 
-              normalizedFood: null,
+              normalizedFood: action.food,
             }
           } else {
             return ingredient;
