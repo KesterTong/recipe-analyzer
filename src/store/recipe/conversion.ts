@@ -27,8 +27,8 @@ export function recipeFromState(state: State): Recipe {
     description: state.description,
     ingredientsList: state.ingredients.map(ingredient => ({
       quantity: ingredient.quantity,
-      foodId: ingredient.foodInputState.foodRef!.foodId,
-    })),
+      foodId: ingredient.foodInputState.foodRef?.foodId!,
+    })).filter(ingredient => ingredient.foodId),
   }
 }
 

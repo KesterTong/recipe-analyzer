@@ -30,11 +30,8 @@ export function loadIngredient(index: number, foodId: string): ThunkResult<Promi
   }
 }
 
-export function addIngredient(foodRef: FoodRef): ThunkResult<Promise<void>> {
-  return async (dispatch, getState) => {
-    dispatch({type: ActionType.ADD_INGREDIENT, foodRef});
-    dispatch(loadIngredient(getState().recipeState!.ingredients.length, foodRef.foodId));
-  }
+export function addIngredient(): Action {
+  return {type: ActionType.ADD_INGREDIENT};
 }
 
 export function updateIngredientAmount(index: number, amount: number): Action {

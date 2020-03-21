@@ -37,7 +37,6 @@ export enum ActionType {
 
 export interface AddIngredient {
   type: ActionType.ADD_INGREDIENT,
-  foodRef: FoodRef,
 }
 
 export interface UpdateIngredientAmount {

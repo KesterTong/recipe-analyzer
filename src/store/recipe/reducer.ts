@@ -17,6 +17,7 @@ import { initialState } from "../types";
 import { stateFromRecipe } from "./conversion";
 import { reducer as foodInputReducer } from "../food_input/reducer";
 import { select, deselect, updateDescription } from '../food_input/actions';
+import { initialState as foodInputInitialiState } from '../food_input/types';
 
 export function reducer(state: State | null = initialState.recipeState, action: RootAction): State | null{
   switch (action.type) {
@@ -52,7 +53,7 @@ export function reducer(state: State | null = initialState.recipeState, action: 
             amount: 100,
             unit: 'g',
           },
-          foodInputState: foodInputReducer(undefined, select(action.foodRef)),
+          foodInputState: foodInputInitialiState,
           normalizedFood: null,
         }]),
       } : null;

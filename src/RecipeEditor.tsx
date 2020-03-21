@@ -36,6 +36,7 @@ export interface RecipeEditorProps {
   updateIngredientUnit(index: number, unit: string): void,
   selectIngredient(index: number, foodRef: FoodRef): void,
   deselectIngredient(index: number): void,
+  addIngredient(): void,
 }
 
 export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) => {
@@ -99,10 +100,8 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
           <tr>
             <td></td>
             <td></td>
-            <td>
-              {/* <IngredientSearcher selected={null} state={'Selected'} selectFood={props.addIngredient} autocomplete={props.autocomplete} /> */}
-            </td>
-            <td><Button>Add</Button></td>
+            <td>Total</td>
+            <td><Button onClick={props.addIngredient}>Add</Button></td>
             { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }
           </tr>
         </tbody>
