@@ -25,7 +25,7 @@ export function loadIngredient(index: number, foodId: string): ThunkResult<Promi
     const food = await getFood(foodId);
     const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
     if (normalizedFood != null) {
-      dispatch({type: ActionType.UPDATE_INGREDIENT_FOOD, index, food: normalizedFood, foodId});
+      dispatch({type: ActionType.UPDATE_INGREDIENT_FOOD, index, food: normalizedFood});
     }
   }
 }

@@ -61,7 +61,6 @@ export interface UpdateIngredient {
 export interface UpdateIngredientFood {
   type: ActionType.UPDATE_INGREDIENT_FOOD,
   index: number,
-  foodId: string,
   food: NormalizedFood,
 }
 

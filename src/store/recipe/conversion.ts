@@ -37,7 +37,10 @@ export function stateFromRecipe(food: Recipe): State {
     description: food.description,
     ingredients: food.ingredientsList.map(ingredient => ({
       quantity: ingredient.quantity,
-      foodInputState: initialState,
+      foodInputState: {
+        foodRef: {foodId: ingredient.foodId, description: 'Loading...'},
+        deselected: false,
+      },
       normalizedFood: null,
     })),
   }

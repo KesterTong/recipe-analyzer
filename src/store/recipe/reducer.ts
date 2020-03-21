@@ -17,7 +17,6 @@ import { initialState } from "../types";
 import { stateFromRecipe } from "./conversion";
 import { reducer as foodInputReducer } from "../food_input/reducer";
 import { select, deselect, updateDescription } from '../food_input/actions';
-import { normalizeFood } from "../../../core/normalizeFood";
 
 export function reducer(state: State | null = initialState.recipeState, action: RootAction): State | null{
   switch (action.type) {
@@ -39,7 +38,9 @@ export function reducer(state: State | null = initialState.recipeState, action: 
           return {
             ...ingredient,
             normalizedFood: action.food,
-            foodInputState: foodInputReducer(ingredient.foodInputState, select({foodId: action.foodId, description: action.food.description}))
+            foodInputState: foodInputReducer(
+              ingredient.foodInputState,
+              updateDescription(action.food.description)),
           }
         }),
       } : null;
