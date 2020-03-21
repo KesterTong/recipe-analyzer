@@ -56,24 +56,24 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
       </Form>
       <Form.Label>Ingredients</Form.Label>
       <Table>
-        <thead>
-          <th>Amount</th>
-          <th>Unit</th>
-          <th>Ingredient</th>
-          <th></th>
-          { props.nutrientNames.map(nutrientName => <th>{nutrientName}</th>) }
+        <thead className="d-flex">
+          <th className="col-1">Amount</th>
+          <th className="col-2">Unit</th>
+          <th className="col-6">Ingredient</th>
+          { props.nutrientNames.map(nutrientName => <th className="col-1">{nutrientName}</th>) }
+          <th className="col-1"></th>
         </thead>
         <tbody>
           {
             props.ingredientsList.map((ingredient, index) => 
-              <tr>
-                <td>
+              <tr className="d-flex">
+                <td className="col-1">
                   <Form.Control
                   value={ingredient.amount.toString()}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateIngredientAmount(index, Number(event.target.value))}
                   />
                 </td>
-                <td>
+                <td className="col-2">
                   <Form.Control
                   value={ingredient.unit}
                   as="select"
@@ -82,7 +82,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
                     {ingredient.units.map(unit =><option>{unit}</option>)}
                   </Form.Control>
                 </td>
-                <td>
+                <td className="col-6">
                   {
                     <IngredientSearcher
                     key={index}
@@ -93,17 +93,17 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
                     />
                   }
                 </td>
-                <td><Button onClick={() => props.deleteIngredient(index)}>Delete</Button></td>
-                { ingredient.nutrients.map(value => <td>{value.toFixed(1)}</td>) }
+                { ingredient.nutrients.map(value => <td className="col-1">{value.toFixed(1)}</td>) }
+                <td className="col-1"><Button onClick={() => props.deleteIngredient(index)}>Delete</Button></td>
               </tr>
             )
           }
-          <tr>
-            <td></td>
-            <td></td>
-            <td>Total</td>
-            <td><Button onClick={props.addIngredient}>Add</Button></td>
-            { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td>{value.toFixed(1)}</td>) }
+          <tr className="d-flex">
+            <td className="col-1"></td>
+            <td className="col-2"></td>
+            <td className="col-6">Total</td>
+            { props.ingredientsList.map(ingredient => ingredient.nutrients).reduce(addNutrients,  props.nutrientNames.map(() => 0)).map(value => <td className="col-1">{value.toFixed(1)}</td>) }
+            <td className="col-1"><Button onClick={props.addIngredient}>Add</Button></td>
           </tr>
         </tbody>
       </Table>
