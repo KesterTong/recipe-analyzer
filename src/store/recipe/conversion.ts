@@ -13,7 +13,6 @@
 // limitations under the License.
 import { State } from './types';
 import { Recipe } from '../../../core/Recipe';
-import { initialState } from '../food_input/types';
 
 export const NEW_RECIPE: Recipe = {
   dataType: 'Recipe',

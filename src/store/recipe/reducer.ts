@@ -57,6 +57,11 @@ export function reducer(state: State | null = initialState.recipeState, action: 
           normalizedFood: null,
         }]),
       } : null;
+    case ActionType.DELETE_INGREDIENT:
+      return state ? {
+        ...state,
+        ingredients: state.ingredients.filter((_, index) => index != action.index),
+      } : null;
     case ActionType.UPDATE_INGREDIENT_AMOUNT:
       return state ? {
         ...state,

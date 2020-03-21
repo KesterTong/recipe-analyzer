@@ -34,6 +34,10 @@ export function addIngredient(): Action {
   return {type: ActionType.ADD_INGREDIENT};
 }
 
+export function deleteIngredient(index: number): Action {
+  return {type: ActionType.DELETE_INGREDIENT, index};
+}
+
 export function updateIngredientAmount(index: number, amount: number): Action {
   return {type: ActionType.UPDATE_INGREDIENT_AMOUNT, index, amount};
 }

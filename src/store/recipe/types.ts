@@ -28,6 +28,7 @@ export interface State {
 export enum ActionType {
   UPDATE_DESCRIPTION = '@recipe/UpdateDescription',
   ADD_INGREDIENT = '@recipe/AddIngredient',
+  DELETE_INGREDIENT = '@recipe/DeleteIngredient',
   UPDATE_INGREDIENT_AMOUNT = '@recipe/UpdateIngredientAmount',
   UPDATE_INGREDIENT_UNIT = '@recipe/UpdateIngredientUnit',
   UPDATE_INGREDIENT_ID = '@recipe/UpdateIngredientId',
@@ -37,6 +38,11 @@ export enum ActionType {
 
 export interface AddIngredient {
   type: ActionType.ADD_INGREDIENT,
+}
+
+export interface DeleteIngredient {
+  type: ActionType.DELETE_INGREDIENT,
+  index: number,
 }
 
 export interface UpdateIngredientAmount {
@@ -68,4 +74,4 @@ export interface DeselectIngredient {
   index: number,
 }
 
-export type Action = AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredient | UpdateIngredientFood | DeselectIngredient;
+export type Action = AddIngredient | DeleteIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredient | UpdateIngredientFood | DeselectIngredient;

@@ -37,6 +37,7 @@ export interface RecipeEditorProps {
   selectIngredient(index: number, foodRef: FoodRef): void,
   deselectIngredient(index: number): void,
   addIngredient(): void,
+  deleteIngredient(index: number): void,
 }
 
 export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) => {
@@ -92,7 +93,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
                     />
                   }
                 </td>
-                <td><Button>Delete</Button></td>
+                <td><Button onClick={() => props.deleteIngredient(index)}>Delete</Button></td>
                 { ingredient.nutrients.map(value => <td>{value.toFixed(1)}</td>) }
               </tr>
             )
