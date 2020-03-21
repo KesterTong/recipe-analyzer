@@ -15,6 +15,9 @@ import { State, ActionType } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
 import { initialState } from "../types";
 import { stateFromRecipe } from "./conversion";
+import { reducer as foodInputReducer } from "../food_input/reducer";
+import { select, deselect, updateDescription } from '../food_input/actions';
+import { normalizeFood } from "../../../core/normalizeFood";
 
 export function reducer(state: State | null = initialState.recipeState, action: RootAction): State | null{
   switch (action.type) {
@@ -26,13 +29,19 @@ export function reducer(state: State | null = initialState.recipeState, action: 
         ...state,
         description: action.description,
       } : null;
-    case ActionType.SET_FOOD_FOR_ID:
+    case ActionType.UPDATE_INGREDIENT_FOOD:
       return state ? {
         ...state,
-        foodsById: {
-          ...state.foodsById, 
-          [action.foodId]: action.food,
-        }
+        ingredients: state.ingredients.map((ingredient, index) => {
+          if (index != action.index) {
+            return ingredient;
+          }
+          return {
+            ...ingredient,
+            normalizedFood: action.food,
+            foodInputState: foodInputReducer(ingredient.foodInputState, select({foodId: action.foodId, description: action.food.description}))
+          }
+        }),
       } : null;
     case ActionType.ADD_INGREDIENT:
       return state ? {
@@ -42,8 +51,8 @@ export function reducer(state: State | null = initialState.recipeState, action: 
             amount: 100,
             unit: 'g',
           },
-          foodId: action.foodRef.foodId,
-          deselected: false,
+          foodInputState: foodInputReducer(undefined, select(action.foodRef)),
+          normalizedFood: null,
         }]),
       } : null;
     case ActionType.UPDATE_INGREDIENT_AMOUNT:
@@ -75,8 +84,8 @@ export function reducer(state: State | null = initialState.recipeState, action: 
           if (index == action.index) {
             return {
               quantity: {amount: 100, unit: 'g'},
-              foodId: action.foodId,
-              deselected: false,
+              foodInputState: foodInputReducer(undefined, select(action.foodRef)), 
+              normalizedFood: null,
             }
           } else {
             return ingredient;
@@ -88,7 +97,10 @@ export function reducer(state: State | null = initialState.recipeState, action: 
         ...state,
         ingredients: state.ingredients.map((ingredient, index) => {
           if (index == action.index) {
-            return {...ingredient, deselected: true};
+            return {
+              ...ingredient,
+              foodInputState: foodInputReducer(undefined, deselect()),
+            };
           } else {
             return ingredient;
           }

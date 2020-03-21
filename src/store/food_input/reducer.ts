@@ -18,8 +18,8 @@ export function reducer(state: State=initialState, action: Action): State {
     case ActionType.DESELECT:
       return {...state, deselected: true};
     case ActionType.SELECT:
-      return {foodId: action.foodId, description: action.description, deselected: false};
+      return {foodRef: action.foodRef, deselected: false};
     case ActionType.UPDATE_DESCRIPTION:
-      return {...state, description: action.description};
+      return state.foodRef ? {...state, foodRef: {...state.foodRef, description: action.description}} : state;
   }
 }

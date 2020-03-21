@@ -13,6 +13,7 @@
 // limitations under the License.
 import { State } from './types';
 import { Recipe } from '../../../core/Recipe';
+import { initialState } from '../food_input/types';
 
 export const NEW_RECIPE: Recipe = {
   dataType: 'Recipe',
@@ -26,7 +27,7 @@ export function recipeFromState(state: State): Recipe {
     description: state.description,
     ingredientsList: state.ingredients.map(ingredient => ({
       quantity: ingredient.quantity,
-      foodId: ingredient.foodId,
+      foodId: ingredient.foodInputState.foodRef!.foodId,
     })),
   }
 }
@@ -35,9 +36,9 @@ export function stateFromRecipe(food: Recipe): State {
   return {
     description: food.description,
     ingredients: food.ingredientsList.map(ingredient => ({
-      ...ingredient,
-      deselected: false,
+      quantity: ingredient.quantity,
+      foodInputState: initialState,
+      normalizedFood: null,
     })),
-    foodsById: {},
   }
 }

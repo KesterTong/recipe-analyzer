@@ -11,15 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { FoodRef } from '../../../core/FoodRef';
+
 export interface State {
-  foodId: string | null,
-  description: string | null,
+  foodRef: FoodRef | null,
   deselected: boolean,
 }
 
 export const initialState: State = {
-  foodId: null,
-  description: null,
+  foodRef: null,
   deselected: false,
 };
 
@@ -35,8 +35,7 @@ export interface Deselect {
 
 export interface Select {
   type: ActionType.SELECT,
-  foodId: string,
-  description: string,
+  foodRef: FoodRef,
 }
 
 export interface UpdateDescription {

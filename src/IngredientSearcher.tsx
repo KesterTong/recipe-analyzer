@@ -2,11 +2,13 @@ import * as React from 'react';
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { searchFoods } from './IngredientDatabaseImpl';
+import { FoodRef } from '../core/FoodRef';
 
 export interface IngredientSearcherProps {
-  selected: {label: string, value: string}[],
-  disabled: boolean,
-  select(selected: {label: string, value: string}[]): void,
+  foodRef: FoodRef | null,
+  deselected: boolean,
+  select(foodRef: FoodRef): void,
+  deselect(): void,
 }
 
 export class IngredientSearcher extends React.Component<IngredientSearcherProps> {
@@ -16,13 +18,22 @@ export class IngredientSearcher extends React.Component<IngredientSearcherProps>
   };
 
   render() {
+    let foodRef = this.props.foodRef;
+    let deselected = this.props.deselected;
+    let selected = foodRef && !deselected ? [{label: foodRef.description, value: foodRef.foodId}]: [];
+    let onChange = (selected: {label: string, value: string}[]) => {
+      if (selected.length > 0) {
+        this.props.select({foodId: selected[0].value, description: selected[0].label});
+      } else {
+        this.props.deselect();
+      }
+    }
     return (<React.Fragment>
       <AsyncTypeahead
         {...this.state}
-        selected={this.props.selected}
-        disabled={this.props.disabled}
+        selected={selected}
         filterBy={x => true}
-        onChange={this.props.select}
+        onChange={onChange}
         minLength={3} onSearch={this._handleSearch}
         placeholder="Search for a food..." />
     </React.Fragment>);

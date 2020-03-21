@@ -26,15 +26,16 @@ export interface RecipeEditorProps {
     amount: number,
     unit: string,
     units: string[],
-    selected: {label: string, value: string}[],
-    disabled: boolean,
+    foodRef: FoodRef | null,
+    deselected: boolean,
     nutrients: number[],
   }[]
   updateDescription(value: string): void,
   addIngredient(foodRef: FoodRef): void,
   updateIngredientAmount(index: number, amount: number): void,
   updateIngredientUnit(index: number, unit: string): void,
-  select(index: number, selection: {label: string, value: string}[]): void,
+  selectIngredient(index: number, foodRef: FoodRef): void,
+  deselectIngredient(index: number): void,
 }
 
 export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) => {
@@ -83,9 +84,10 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (props) 
                   {
                     <IngredientSearcher
                     key={index}
-                    selected={ingredient.selected}
-                    disabled={ingredient.disabled}
-                    select={selected => props.select(index, selected)}
+                    foodRef={ingredient.foodRef}
+                    deselected={ingredient.deselected}
+                    select={foodRef => props.selectIngredient(index, foodRef)}
+                    deselect={() => props.deselectIngredient(index)}
                     />
                   }
                 </td>

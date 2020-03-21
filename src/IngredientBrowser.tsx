@@ -18,18 +18,20 @@ import { Form, Navbar, Container, Spinner, Button } from 'react-bootstrap';
 
 import { IngredientSearcher } from './IngredientSearcher';
 import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { selectFood, saveFood, newBrandedFood, newRecipe } from './store/actions';
+import { select, saveFood, newBrandedFood, newRecipe, deselect } from './store/actions';
 import { RootState } from './store';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { SRLegacyFoodViewer } from './SRLegacyFoodView';
 import { RecipeEditorContainer } from './RecipeEditorContainer';
 import { ThunkDispatch } from './store/types';
+import { FoodRef } from '../core/FoodRef';
 
 interface IngredientBrowserProps {
-  selectFoodDisabled: boolean,
-  selectedFood: {label: string, value: string}[],
-  selectFood(selected: {label: string, value: string}[]): void,
+  foodRef: FoodRef | null,
+  deselected: boolean,
+  select(foodRef: FoodRef): void,
+  deselect(): void,
   saveFood: () => void,
   newBrandedFood: () => void,
   newRecipe: () => void,
@@ -39,7 +41,12 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
   return <React.Fragment>
     <Navbar bg="light" expand="lg">
       <Form inline>
-        <IngredientSearcher selected={props.selectedFood} disabled={props.selectFoodDisabled} select={props.selectFood} />
+        <IngredientSearcher
+          foodRef={props.foodRef}
+          deselected={props.deselected}
+          select={props.select}
+          deselect={props.deselect}
+          />
         <Button onClick={props.saveFood}>Save</Button>
         <Button onClick={props.newBrandedFood}>New Custom Food</Button>
         <Button onClick={props.newRecipe}>New Recipe</Button>
@@ -54,19 +61,13 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  let selectedFood: {label: string, value: string}[] = state.selectedFood.foodId && !state.selectedFood.deselected ? [{
-    value: state.selectedFood.foodId,
-    label: state.selectedFood.description || 'Loading...',
-  }] : [];
-  return {
-    selectedFood,
-    selectFoodDisabled: selectedFood.length > 0 && selectedFood[0].label == 'Loading...',
-  }
+  return state.selectedFood;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators({
-    selectFood,
+    deselect,
+    select,
     saveFood,
     newBrandedFood,
     newRecipe,

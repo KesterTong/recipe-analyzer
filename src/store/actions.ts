@@ -17,6 +17,7 @@ import { RootAction, ThunkResult, ActionType } from "./types";
 import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
 import { loadIngredient } from "./recipe/actions";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food/conversion";
+import { FoodRef } from "../../core/FoodRef";
 
 export function updateDescription(description: string): RootAction {
   return {type: ActionType.UPDATE_DESCRIPTION, description};
@@ -29,7 +30,7 @@ export function setSelectedQuantity(index: number): RootAction {
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (_, getState) => {
     let state = getState();
-    let foodId = state.selectedFood.foodId;
+    let foodId = state.selectedFood.foodRef?.foodId;
     if (foodId == null) {
       return;
     }
@@ -41,30 +42,25 @@ export function saveFood(): ThunkResult<Promise<void>> {
   }
 }
 
-export function selectFood(selection: {label: string, value: string}[]): ThunkResult<Promise<void>> {
+export function deselect(): RootAction {
+  return {type: ActionType.DESELECT};
+}
+
+export function select(foodRef: FoodRef): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    if (selection.length == 0) {
-      dispatch({type: ActionType.DESELECT});
-      return;
-    }
-    const foodId = selection[0].value;
-    dispatch({
-      type: ActionType.SELECT_FOOD,
-      foodId,
-      description: selection[0].label,
-    });
-    const food = await getFood(foodId);
+    dispatch({type: ActionType.SELECT_FOOD, foodRef});
+    const food = await getFood(foodRef.foodId);
     if (food == null) {
       // TODO: handle this error.
       return;
     }
-    if (getState().selectedFood.foodId != foodId) {
+    if (getState().selectedFood.foodRef?.foodId != foodRef.foodId) {
       return;
     }
-    dispatch({type: ActionType.UPDATE_FOOD, foodId, food});
+    dispatch({type: ActionType.UPDATE_FOOD, foodId: foodRef.foodId, food});
     if (food.dataType == 'Recipe') {
-      food.ingredientsList.forEach(ingredient => {
-        dispatch(loadIngredient(ingredient.foodId));
+      food.ingredientsList.forEach((ingredient, index) => {
+        dispatch(loadIngredient(index, ingredient.foodId));
       });
     }
   } 

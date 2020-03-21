@@ -15,9 +15,10 @@ import { NutrientInfo } from "../../core/Nutrients";
 import { State as BrandedFoodState, Action as BrandedFoodAction} from "./branded_food/types";
 import { State as RecipeState, Action as RecipeAction } from "./recipe/types";
 import { State as SRLegacyFoodState} from './sr_legacy_food/types';
-import { State as FoodInputState} from './food_input/types';
+import { State as FoodInputState, initialState as foodInputInitialState } from './food_input/types';
 import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
+import { FoodRef } from "../../core/FoodRef";
 
 export interface RootState {
   selectedFood: FoodInputState,
@@ -28,11 +29,7 @@ export interface RootState {
 }
 
 export const initialState: RootState = {
-  selectedFood: {
-    foodId: null,
-    description: null,
-    deselected: false,
-  },
+  selectedFood: foodInputInitialState,
   srLegacyFoodState: null,
   recipeState: null,
   brandedFoodState: null,
@@ -60,8 +57,7 @@ export interface Deselect {
 
 export interface SelectFood {
   type: ActionType.SELECT_FOOD,
-  foodId: string,
-  description: string,
+  foodRef: FoodRef,
 }
 
 export interface NewFood {

@@ -22,10 +22,12 @@ import {
   addIngredient,
   updateIngredientAmount,
   updateIngredientUnit,
-  updateIngredientId,
+  selectIngredient,
+  deselectIngredient,
 } from './store/recipe/actions';
 
 function mapStateToProps(state: RootState) {
+  console.log(state)
   const recipeState = state.recipeState;
   if (recipeState == null) {
     return {
@@ -35,26 +37,23 @@ function mapStateToProps(state: RootState) {
       ingredientsList: [],
     }
   }
-  return {
+  const result = {
     hasRecipe: true,
     description: recipeState.description,
     nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
     ingredientsList: recipeState.ingredients.map(ingredient => {
-      const food = recipeState.foodsById[ingredient.foodId];
-      const selected: {label: string, value: string}[] = ingredient.foodId && !ingredient.deselected ? [{
-        value: ingredient.foodId,
-        label: recipeState.foodsById[ingredient.foodId]?.description || 'Loading...',
-      }] : [];
+      const food = ingredient.normalizedFood;
       return {
+        ...ingredient.foodInputState,
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
         units: food ? Object.keys(food.servingEquivalentQuantities) : ['g'],
-        selected,
-        disabled: selected.length > 0 && selected[0].label == 'Loading...',
-        nutrients: food?.dataType == 'NormalizedFood' ? nutrientsForQuantity(ingredient.quantity, food)! : (state.nutrientInfos || []).map(nutrientInfo => 0),
+        nutrients: (food ? nutrientsForQuantity(ingredient.quantity, food) : null) || (state.nutrientInfos || []).map(nutrientInfo => 0),
       }
     }),
   };
+  console.log(result);
+  return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
@@ -63,7 +62,8 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
     addIngredient,
     updateIngredientAmount,
     updateIngredientUnit,
-    select: updateIngredientId,
+    selectIngredient,
+    deselectIngredient,
   }, dispatch);
 }
 

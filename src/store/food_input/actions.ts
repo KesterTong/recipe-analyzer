@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Action, ActionType } from "./types";
+import { FoodRef } from "../../../core/FoodRef";
 
 export function deselect(): Action {
   return {type: ActionType.DESELECT};
 }
 
-export function select(foodId: string, description: string): Action {
-  return {type: ActionType.SELECT, foodId, description};
+export function select(foodRef: FoodRef): Action {
+  return {type: ActionType.SELECT, foodRef};
 }
 
 export function updateDescription(description: string): Action {

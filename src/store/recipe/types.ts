@@ -14,31 +14,25 @@
 import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
+import { State as FoodInputState } from '../food_input/types';
 
 export interface State {
   description: string,
   ingredients: {
     quantity: Quantity,
-    foodId: string,
-    deselected: boolean,
+    foodInputState: FoodInputState,
+    normalizedFood: NormalizedFood | null,
   }[];
-  foodsById: {[index: string]: NormalizedFood};
 }
 
 export enum ActionType {
   UPDATE_DESCRIPTION = '@recipe/UpdateDescription',
-  SET_FOOD_FOR_ID = '@recipe/SetFoodForId',
   ADD_INGREDIENT = '@recipe/AddIngredient',
   UPDATE_INGREDIENT_AMOUNT = '@recipe/UpdateIngredientAmount',
   UPDATE_INGREDIENT_UNIT = '@recipe/UpdateIngredientUnit',
   UPDATE_INGREDIENT_ID = '@recipe/UpdateIngredientId',
+  UPDATE_INGREDIENT_FOOD = '@recipe/UpdateIngredientFood',
   DESELECT_INGREDIENT = '@recipe/DeselectIngredient',
-}
-
-export interface SetFoodForId {
-  type: ActionType.SET_FOOD_FOR_ID,
-  food: NormalizedFood,
-  foodId: string,
 }
 
 export interface AddIngredient {
@@ -58,10 +52,17 @@ export interface UpdateIngredientUnit {
   unit: string,
 }
 
-export interface UpdateIngredientId {
+export interface UpdateIngredient {
   type: ActionType.UPDATE_INGREDIENT_ID,
   index: number,
+  foodRef: FoodRef,
+}
+
+export interface UpdateIngredientFood {
+  type: ActionType.UPDATE_INGREDIENT_FOOD,
+  index: number,
   foodId: string,
+  food: NormalizedFood,
 }
 
 export interface DeselectIngredient {
@@ -69,4 +70,4 @@ export interface DeselectIngredient {
   index: number,
 }
 
-export type Action = SetFoodForId | AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredientId | DeselectIngredient;
+export type Action = AddIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredient | UpdateIngredientFood | DeselectIngredient;

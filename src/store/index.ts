@@ -47,9 +47,9 @@ const rootReducer = combineReducers<RootState, RootAction>({
       case ActionType.DESELECT:
         return foodInputReducer(state, deselect());
       case ActionType.SELECT_FOOD:
-        return foodInputReducer(state, select(action.foodId, action.description));
+        return foodInputReducer(state, select(action.foodRef));
       case ActionType.NEW_FOOD:
-        return foodInputReducer(state, select(action.foodId, action.food.description));
+        return foodInputReducer(state, select({foodId: action.foodId, description: action.food.description}));
       case ActionType.UPDATE_DESCRIPTION:
         return foodInputReducer(state, updateDescription(action.description));
       case ActionType.UPDATE_FOOD:
