@@ -47,8 +47,11 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
           select={props.select}
           deselect={props.deselect}
           />
+        &nbsp;
         <Button onClick={props.saveFood}>Save</Button>
+        &nbsp;
         <Button onClick={props.newBrandedFood}>New Custom Food</Button>
+        &nbsp;
         <Button onClick={props.newRecipe}>New Recipe</Button>
       </Form>
     </Navbar>
