@@ -11,20 +11,15 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { State } from "./types";
-import { initialState, RootAction, ActionType } from "../types";
+import { State, Action, ActionType, initialState } from "./types";
 
-export function reducer(state: State | null = initialState.srLegacyFoodState, action: RootAction): State | null {
+export function reducer(state: State=initialState, action: Action): State {
   switch(action.type) {
-    case ActionType.NEW_FOOD:
-    case ActionType.UPDATE_FOOD:
-      return action.food?.dataType == 'SR Legacy' && action.food ? {
-        srLegacyFood: action.food,
-        selectedQuantity: 0,
-      } : null;
-    case ActionType.SET_SELECTED_QUANTITY:
-      return state ? {...state, selectedQuantity: action.index} : null;
-    default:
-      return state;
+    case ActionType.DESELECT:
+      return {...state, deselected: true};
+    case ActionType.SELECT:
+      return {foodId: action.foodId, description: action.description, deselected: false};
+    case ActionType.UPDATE_DESCRIPTION:
+      return {...state, description: action.description};
   }
 }

@@ -51,7 +51,7 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
     dispatch({
       type: ActionType.SELECT_FOOD,
       foodId,
-      food: {dataType: 'Loading', description: selection[0].label},
+      description: selection[0].label,
     });
     const food = await getFood(foodId);
     if (food == null) {
@@ -73,7 +73,7 @@ export function selectFood(selection: {label: string, value: string}[]): ThunkRe
 function newFood(food: Food): ThunkResult<Promise<void>> {
   return async dispatch => {
     let foodId = await insertFood(food);
-    dispatch({type: ActionType.SELECT_FOOD, foodId, food});
+    dispatch({type: ActionType.NEW_FOOD, foodId, food});
   }
 }
 

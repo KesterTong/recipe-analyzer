@@ -15,17 +15,12 @@ import { NutrientInfo } from "../../core/Nutrients";
 import { State as BrandedFoodState, Action as BrandedFoodAction} from "./branded_food/types";
 import { State as RecipeState, Action as RecipeAction } from "./recipe/types";
 import { State as SRLegacyFoodState} from './sr_legacy_food/types';
+import { State as FoodInputState} from './food_input/types';
 import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 
-export interface SelectedFood {
-  foodId: string | null,
-  description: string | null,
-  deselected: boolean,
-}
-
 export interface RootState {
-  selectedFood: SelectedFood,
+  selectedFood: FoodInputState,
   srLegacyFoodState: SRLegacyFoodState | null,
   recipeState: RecipeState | null,
   brandedFoodState: BrandedFoodState | null,
@@ -44,11 +39,11 @@ export const initialState: RootState = {
   nutrientInfos: null,
 };
 
-
 export enum ActionType {
   SET_NUTRIENT_INFOS = '@SetNutrientInfos',
   DESELECT = '@Deselect',
   SELECT_FOOD = '@SelectFood',
+  NEW_FOOD = '@NewFood',
   UPDATE_FOOD = '@UpdateFood',
   UPDATE_DESCRIPTION = '@UpdateDescription',
   SET_SELECTED_QUANTITY = '@SetSelectedQuantity',
@@ -63,15 +58,16 @@ export interface Deselect {
   type: ActionType.DESELECT;
 }
 
-export interface LoadingFood {
-  dataType: 'Loading',
-  description: string,
-}
-
 export interface SelectFood {
   type: ActionType.SELECT_FOOD,
   foodId: string,
-  food: Food | LoadingFood | null,
+  description: string,
+}
+
+export interface NewFood {
+  type: ActionType.NEW_FOOD,
+  foodId: string,
+  food: Food,
 }
 
 // Update the data for the current food.
@@ -90,7 +86,7 @@ export interface SetSelectedQuantity {
   index: number,
 }
 
-export type RootAction = SetNutrientInfos | Deselect | SelectFood | UpdateFood | UpdateDescription | SetSelectedQuantity | BrandedFoodAction | RecipeAction;
+export type RootAction = SetNutrientInfos | Deselect | SelectFood | NewFood | UpdateFood | UpdateDescription | SetSelectedQuantity | BrandedFoodAction | RecipeAction;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<RootState, undefined, RootAction>;

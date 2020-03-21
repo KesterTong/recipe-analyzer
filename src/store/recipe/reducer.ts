@@ -18,7 +18,7 @@ import { stateFromRecipe } from "./conversion";
 
 export function reducer(state: State | null = initialState.recipeState, action: RootAction): State | null{
   switch (action.type) {
-    case RootActionType.SELECT_FOOD:
+    case RootActionType.NEW_FOOD:
     case RootActionType.UPDATE_FOOD:
       return action.food?.dataType == 'Recipe' ? stateFromRecipe(action.food) : null;
     case RootActionType.UPDATE_DESCRIPTION:

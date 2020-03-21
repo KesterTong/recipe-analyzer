@@ -18,7 +18,7 @@ import { initialState } from "../types";
 
 export function reducer(state: State | null = initialState.brandedFoodState, action: RootAction): State | null {
   switch (action.type) {   
-    case RootActionType.SELECT_FOOD:
+    case RootActionType.NEW_FOOD:
     case RootActionType.UPDATE_FOOD:
       return action.food?.dataType == 'Branded' ? stateFromBrandedFood(action.food) : null;
     case RootActionType.UPDATE_DESCRIPTION:

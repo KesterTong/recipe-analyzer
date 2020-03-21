@@ -70,7 +70,7 @@ describe('actions', () => {
       ...initialState,
       selectedFood: {
         foodId: "userData/abcdefg",
-        description: 'Plantain Chips',
+        description: 'New Description',
         deselected: false,
       },
       brandedFoodState: {..._TEST_BRANDED_FOOD_EDIT, description: 'New Description'},

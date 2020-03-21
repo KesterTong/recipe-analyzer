@@ -18,8 +18,10 @@ import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import { reducer as brandedFoodReducer } from "./branded_food/reducer";
 import { State as BrandedFoodState} from "./branded_food/types";
+import { deselect, select, updateDescription } from "./food_input/actions";
 import { reducer as recipeReducer } from "./recipe/reducer";
 import { reducer as srLegacyFoodReducer } from './sr_legacy_food/reducer';
+import { reducer as foodInputReducer } from './food_input/reducer';
 import { stateFromBrandedFood } from "./branded_food/conversion";
 import { State as RecipeState} from "./recipe/types";
 import { stateFromRecipe } from './recipe/conversion';
@@ -43,21 +45,19 @@ const rootReducer = combineReducers<RootState, RootAction>({
   selectedFood: (state = initialState.selectedFood, action) => {
     switch(action.type) {
       case ActionType.DESELECT:
-        return {...state, deselected: true};
+        return foodInputReducer(state, deselect());
       case ActionType.SELECT_FOOD:
-        return {
-          foodId: action.foodId,
-          description: action.food ? action.food.description : null,
-          deselected: false,
-        }
+        return foodInputReducer(state, select(action.foodId, action.description));
+      case ActionType.NEW_FOOD:
+        return foodInputReducer(state, select(action.foodId, action.food.description));
+      case ActionType.UPDATE_DESCRIPTION:
+        return foodInputReducer(state, updateDescription(action.description));
       case ActionType.UPDATE_FOOD:
-        return {
-          ...state,
-          description: action.food.description,
-        }
+        return foodInputReducer(state, updateDescription(action.food.description));
       default:
         return state;
     }
+    
   },
   nutrientInfos: (state = initialState.nutrientInfos, action) => {
     switch (action.type) {
