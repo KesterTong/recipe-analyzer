@@ -13,10 +13,11 @@
 // limitations under the License.
 import { FoodRef } from "../../../core/FoodRef";
 import { Action, ActionType } from "./types";
-import { getFood } from "../../IngredientDatabaseImpl";
+import { getFood, patchFood } from "../../IngredientDatabaseImpl";
 import { normalizeFood } from "../../../core/normalizeFood";
 import { RootState } from "..";
 import { ThunkAction } from "redux-thunk";
+import { recipeFromState } from "./conversion";
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 
@@ -56,6 +57,16 @@ export function selectIngredient(index: number, foodRef: FoodRef): ThunkResult<P
     const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
     if (normalizedFood != null) {
       dispatch({type: ActionType.UPDATE_INGREDIENT, index, foodRef, food: normalizedFood});
+    }
+  }
+}
+
+export function maybeSave(): ThunkResult<Promise<void>> {
+  return async (_, getState) => {
+    let state = getState();
+    let foodId = state.selectedFood.foodRef?.foodId;
+    if (foodId != null && state.recipeState) {
+      return patchFood(foodId, recipeFromState(state.recipeState));
     }
   }
 }

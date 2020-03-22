@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Action, ActionType } from "./types";
+import { ThunkResult } from "..";
+import { brandedFoodFromState } from "./conversion";
+import { patchFood } from "../../IngredientDatabaseImpl";
 
 export function updateServingSize(servingSize: string): Action {
   return {type: ActionType.UPDATE_SERVING_SIZE, servingSize};
@@ -27,4 +30,14 @@ export function updateHouseholdUnit(householdUnit: string): Action {
 
 export function updateNutrientValue(nutrientId: number, value: string): Action {
   return {type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value};
+}
+
+export function maybeSave(): ThunkResult<Promise<void>> {
+  return async (_, getState) => {
+    let state = getState();
+    let foodId = state.selectedFood.foodRef?.foodId;
+    if (foodId != null && state.brandedFoodState) {
+      return patchFood(foodId, brandedFoodFromState(state.brandedFoodState));
+    }
+  }
 }

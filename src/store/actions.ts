@@ -15,7 +15,8 @@ import { patchFood, getFood, insertFood } from "../IngredientDatabaseImpl";
 import { Food } from "../../core/Food";
 import { RootAction, ThunkResult, ActionType } from "./types";
 import { recipeFromState, NEW_RECIPE } from './recipe/conversion';
-import { loadIngredient } from "./recipe/actions";
+import { maybeSave as maybeSaveBrandedFood } from "./branded_food/actions";
+import { loadIngredient, maybeSave as maybeSaveRecipe } from "./recipe/actions";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
@@ -27,18 +28,10 @@ export function setSelectedQuantity(index: number): RootAction {
   return {type: ActionType.SET_SELECTED_QUANTITY, index};
 }
 
-export function saveFood(): ThunkResult<Promise<void>> {
-  return async (_, getState) => {
-    let state = getState();
-    let foodId = state.selectedFood.foodRef?.foodId;
-    if (foodId == null) {
-      return;
-    }
-    if (state.brandedFoodState) {
-      return patchFood(foodId, brandedFoodFromState(state.brandedFoodState));
-    } else if (state.recipeState) {
-      return patchFood(foodId, recipeFromState(state.recipeState));
-    }
+export function saveFood(): ThunkResult<void> {
+  return async dispatch => {
+    await dispatch(maybeSaveBrandedFood());
+    await dispatch(maybeSaveRecipe());
   }
 }
 
