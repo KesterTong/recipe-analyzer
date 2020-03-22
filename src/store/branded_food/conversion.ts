@@ -21,7 +21,10 @@ export const NEW_BRANDED_FOOD: BrandedFood = {
   servingSize: 100,
   servingSizeUnit: 'g',
   householdServingFullText: '1 serving',
-  foodNutrients: [],
+  foodNutrients: [
+    {nutrient: {id: 1008}, amount: 0},
+    {nutrient: {id: 1003}, amount: 0},
+  ],
 };
 
 export function stateFromBrandedFood(food: BrandedFood): State {
