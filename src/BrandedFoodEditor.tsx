@@ -107,9 +107,9 @@ function mapStateToProps(state: RootState) {
     };
   }
   const edits = state.brandedFoodState.edits;
-  const nutrientNamesById: {[index: number]: string} = {};
-  (state.nutrientInfos || []).forEach(nutrientInfo => {
-    nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
+  const nutrientsById: {[index: number]: string} = {};
+  edits.foodNutrients.forEach(({id, amount}) => {
+    nutrientsById[id] = amount;
   });
   return {
     hasBrandedFood: true,
@@ -117,10 +117,10 @@ function mapStateToProps(state: RootState) {
     householdServingFullText: edits.householdServingFullText || '',
     servingSize: edits.servingSize,
     servingSizeUnit: edits.servingSizeUnit,
-    nutrients: edits.foodNutrients.map(nutrient => ({
-      id: nutrient.id,
-      description: nutrientNamesById[nutrient.id],
-      value: nutrient.amount,
+    nutrients: state.nutrientIds.map((id, index) => ({
+      id,
+      description: state.nutrientNames[index],
+      value: nutrientsById[id],
     })),
   };
 }

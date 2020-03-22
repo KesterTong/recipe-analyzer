@@ -61,12 +61,12 @@ function mapStateToProps(state: RootState) {
       let description = portion.amount.toString() + ' ' + portion.modifier + ' (' + portion.gramWeight + ' g)';
       quantities.push({description, servings: portion.gramWeight / 100});
     });
-    let nutrientsPerServing = nutrientsFromFoodDetails(food, (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.id));
+    let nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientIds);
     let scale = quantities[state.srLegacyFoodState.selectedQuantity].servings;
     srLegacyFoodProps = {
       srLegacyFood: state.srLegacyFoodState.srLegacyFood,
       viewerProps: {
-        nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
+        nutrientNames: state.nutrientNames,
         nutrientValues: scaleNutrients(nutrientsPerServing, scale),
         quantities: quantities.map(quantity => quantity.description),
         selectedQuantity: state.srLegacyFoodState.selectedQuantity,

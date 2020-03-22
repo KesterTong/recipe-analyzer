@@ -24,7 +24,7 @@ type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 export function loadIngredient(index: number, foodId: string): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
-    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
+    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientIds) : null;
     if (normalizedFood != null) {
       dispatch({type: ActionType.UPDATE_INGREDIENT_FOOD, index, food: normalizedFood});
     }
@@ -54,7 +54,7 @@ export function deselectIngredient(index: number): Action {
 export function selectIngredient(index: number, foodRef: FoodRef): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodRef.foodId);
-    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientInfos?.map(nutrientInfo => nutrientInfo.id) || []) : null;
+    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientIds) : null;
     if (normalizedFood != null) {
       dispatch({type: ActionType.UPDATE_INGREDIENT, index, foodRef, food: normalizedFood});
     }

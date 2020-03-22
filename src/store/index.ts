@@ -59,10 +59,18 @@ const rootReducer = combineReducers<RootState, RootAction>({
     }
     
   },
-  nutrientInfos: (state = initialState.nutrientInfos, action) => {
+  nutrientNames: (state = initialState.nutrientNames, action) => {
     switch (action.type) {
       case ActionType.SET_NUTRIENT_INFOS:
-        return action.nutrientInfos;
+        return action.nutrientInfos.map(nutrientInfo => nutrientInfo.name);
+      default:
+        return state;
+    }
+  },
+  nutrientIds: (state = initialState.nutrientIds, action) => {
+    switch (action.type) {
+      case ActionType.SET_NUTRIENT_INFOS:
+        return action.nutrientInfos.map(nutrientInfo => nutrientInfo.id);
       default:
         return state;
     }
@@ -70,6 +78,6 @@ const rootReducer = combineReducers<RootState, RootAction>({
   srLegacyFoodState: srLegacyFoodReducer,
   brandedFoodState: brandedFoodReducer,
   recipeState: recipeReducer,
-})
+});
 
 export const store = createStore(rootReducer, applyMiddleware<ThunkDispatch>(thunk));

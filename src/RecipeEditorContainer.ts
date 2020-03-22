@@ -40,7 +40,7 @@ function mapStateToProps(state: RootState) {
   return {
     hasRecipe: true,
     description: recipeState.description,
-    nutrientNames: (state.nutrientInfos || []).map(nutrientInfo => nutrientInfo.name),
+    nutrientNames: state.nutrientNames,
     ingredientsList: recipeState.ingredients.map(ingredient => {
       const food = ingredient.normalizedFood;
       return {
@@ -48,7 +48,7 @@ function mapStateToProps(state: RootState) {
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
         units: food ? Object.keys(food.servingEquivalentQuantities) : ['g'],
-        nutrients: (food ? nutrientsForQuantity(ingredient.quantity, food) : null) || (state.nutrientInfos || []).map(nutrientInfo => 0),
+        nutrients: (food ? nutrientsForQuantity(ingredient.quantity, food) : null) || (state.nutrientIds || []).map(_ => 0),
       }
     }),
   };

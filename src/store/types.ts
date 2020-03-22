@@ -25,7 +25,8 @@ export interface RootState {
   srLegacyFoodState: SRLegacyFoodState | null,
   recipeState: RecipeState | null,
   brandedFoodState: BrandedFoodState | null,
-  nutrientInfos: NutrientInfo[] | null,
+  nutrientNames: string[],
+  nutrientIds: number[],
 }
 
 export const initialState: RootState = {
@@ -33,7 +34,8 @@ export const initialState: RootState = {
   srLegacyFoodState: null,
   recipeState: null,
   brandedFoodState: null,
-  nutrientInfos: null,
+  nutrientNames: [],
+  nutrientIds: [],
 };
 
 export enum ActionType {
