@@ -33,27 +33,31 @@ export function stateFromBrandedFood(food: BrandedFood): State {
     amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
   }));
   return {
-    description: food.description,
-    servingSize: food.servingSize.toString(),
-    servingSizeUnit: food.servingSizeUnit,
-    householdServingFullText: food.householdServingFullText || '',
-    foodNutrients,
-    selectedQuantity: 0,
+    food,
+    edits: {
+      description: food.description,
+      servingSize: food.servingSize.toString(),
+      servingSizeUnit: food.servingSizeUnit,
+      householdServingFullText: food.householdServingFullText || '',
+      foodNutrients,
+      selectedQuantity: 0,
+    },
   }
 }
 
 export function brandedFoodFromState(state: State): BrandedFood {
-  let servingSize = Number(state.servingSize);
-  let foodNutrients = state.foodNutrients.map(nutrient => ({
+  let edits = state.edits;
+  let servingSize = Number(edits.servingSize);
+  let foodNutrients = edits.foodNutrients.map(nutrient => ({
     nutrient: {id: nutrient.id},
     amount: Number(nutrient.amount) * 100 / servingSize,
   }));
   return {
     dataType: 'Branded',
-    description: state.description,
+    description: edits.description,
     servingSize,
-    servingSizeUnit: state.servingSizeUnit,
-    householdServingFullText: state.householdServingFullText,
+    servingSizeUnit: edits.servingSizeUnit,
+    householdServingFullText: edits.householdServingFullText,
     foodNutrients,
   }
 }

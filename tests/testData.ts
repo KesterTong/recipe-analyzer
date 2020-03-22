@@ -14,6 +14,7 @@
 
 import { NormalizedFood } from '../core/NormalizedFood';
 import { Food } from '../core/Food';
+import { BrandedFood } from '../core/FoodDataCentral';
 
 export const TEST_SR_LEGACY_FOOD: Food = {
   description: 'Bananas',
@@ -46,7 +47,7 @@ export const TEST_SR_LEGACY_FOOD_NORMALIZED: NormalizedFood = {
   },
 };
 
-export const TEST_BRANDED_FOOD: Food = {
+export const TEST_BRANDED_FOOD: BrandedFood = {
   description: 'Plantain Chips',
   dataType: 'Branded',
   foodNutrients: [{

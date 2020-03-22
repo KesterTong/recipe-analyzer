@@ -28,7 +28,7 @@ export function setSelectedQuantity(index: number): RootAction {
   return {type: ActionType.SET_SELECTED_QUANTITY, index};
 }
 
-export function saveFood(): ThunkResult<void> {
+export function saveFood(): ThunkResult<Promise<void>> {
   return async dispatch => {
     await dispatch(maybeSaveBrandedFood());
     await dispatch(maybeSaveRecipe());

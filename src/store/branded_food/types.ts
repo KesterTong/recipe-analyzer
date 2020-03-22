@@ -1,3 +1,5 @@
+import { BrandedFood } from "../../../core/FoodDataCentral";
+
 // Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface State {
+export interface Edits {
   servingSize: string,
   servingSizeUnit: string,
   householdServingFullText: string,
@@ -21,12 +23,23 @@ export interface State {
   selectedQuantity: number,
 }
 
+export interface State {
+  food: BrandedFood,
+  edits: Edits,
+}
+
 export enum ActionType {
+  UPDATE_AFTER_SAVE = '@branded_food/UpdateAfterSave',
   UPDATE_SERVING_SIZE = '@branded_food/UpdateServingSize',
   UPDATE_SERVING_SIZE_UNIT = '@branded_food/UpdateServingSizeUnit',
   UPDATE_HOUSEHOLD_UNIT = '@branded_food/UpdateHouseholdUnit',
   UPDATE_NUTRIENT_VALUE = '@branded_food/UpdateNutrientValue',
 };
+
+export interface UpdateAfterSave {
+  type: ActionType.UPDATE_AFTER_SAVE,
+  food: BrandedFood,
+}
 
 export interface UpdateServingSize {
   type: ActionType.UPDATE_SERVING_SIZE,
@@ -49,4 +62,4 @@ export interface UpdateNutrientValue {
   value: string,
 }
 
-export type Action = UpdateServingSize | UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue;
+export type Action = UpdateAfterSave | UpdateServingSize | UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue;

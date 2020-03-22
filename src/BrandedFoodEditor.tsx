@@ -96,8 +96,7 @@ const BrandedFoodEditorView: React.SFC<BrandedFoodProps> = props => {
 }
 
 function mapStateToProps(state: RootState) {
-  const food = state.brandedFoodState;
-  if (food == null) {
+  if (state.brandedFoodState == null) {
     return {
       hasBrandedFood: false,
       description: '',
@@ -107,17 +106,18 @@ function mapStateToProps(state: RootState) {
       nutrients: [],
     };
   }
+  const edits = state.brandedFoodState.edits;
   const nutrientNamesById: {[index: number]: string} = {};
   (state.nutrientInfos || []).forEach(nutrientInfo => {
     nutrientNamesById[nutrientInfo.id] = nutrientInfo.name;
   });
   return {
     hasBrandedFood: true,
-    description: food.description,
-    householdServingFullText: food.householdServingFullText || '',
-    servingSize: food.servingSize,
-    servingSizeUnit: food.servingSizeUnit,
-    nutrients: food.foodNutrients.map(nutrient => ({
+    description: edits.description,
+    householdServingFullText: edits.householdServingFullText || '',
+    servingSize: edits.servingSize,
+    servingSizeUnit: edits.servingSizeUnit,
+    nutrients: edits.foodNutrients.map(nutrient => ({
       id: nutrient.id,
       description: nutrientNamesById[nutrient.id],
       value: nutrient.amount,
