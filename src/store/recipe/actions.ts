@@ -13,7 +13,7 @@
 // limitations under the License.
 import { FoodRef } from "../../../core/FoodRef";
 import { Action, ActionType } from "./types";
-import { getFood, patchFood } from "../../IngredientDatabaseImpl";
+import { getFood, patchFood } from "../../database";
 import { normalizeFood } from "../../../core/normalizeFood";
 import { RootState } from "..";
 import { ThunkAction } from "redux-thunk";

@@ -20,7 +20,6 @@ import {
   searchFdcFoodsUrl,
   FDCQueryResult,
   getFdcFoodUrl,
-  BrandedFood,
 } from "../core/FoodDataCentral";
 import { FDC_API_KEY } from "./config";
 

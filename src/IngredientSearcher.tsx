@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import { searchFoods } from "./IngredientDatabaseImpl";
+import { searchFoods } from "./database";
 import { FoodRef } from "../core/FoodRef";
 
 export interface IngredientSearcherProps {

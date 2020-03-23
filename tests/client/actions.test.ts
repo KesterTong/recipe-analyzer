@@ -11,11 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import {
-  getFood,
-  insertFood,
-  patchFood,
-} from "../../src/IngredientDatabaseImpl";
+import { getFood, insertFood, patchFood } from "../../src/database";
 import { store, RootState, BrandedFoodState } from "../../src/store";
 import {
   select,
@@ -28,7 +24,7 @@ import { NEW_RECIPE } from "../../src/store/recipe/conversion";
 import { initialState } from "../../src/store/types";
 import { Edits as BrandedFoodEdits } from "../../src/store/branded_food/types";
 
-jest.mock("../../src/IngredientDatabaseImpl");
+jest.mock("../../src/database");
 
 const _TEST_BRANDED_FOOD_EDITS: BrandedFoodEdits = {
   description: "Plantain Chips",

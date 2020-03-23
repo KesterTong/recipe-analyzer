@@ -14,7 +14,7 @@
 import { Action, ActionType } from "./types";
 import { ThunkResult } from "..";
 import { brandedFoodFromState } from "./conversion";
-import { patchFood } from "../../IngredientDatabaseImpl";
+import { patchFood } from "../../database";
 import { BrandedFood } from "../../../core/FoodDataCentral";
 
 export function updateAfterSave(food: BrandedFood): Action {

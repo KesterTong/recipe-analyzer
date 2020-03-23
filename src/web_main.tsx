@@ -17,7 +17,7 @@ import * as firebase from "firebase";
 import * as firebaseui from "firebaseui";
 
 import { firebaseConfig } from "./config";
-import { getNutrientInfo } from "./IngredientDatabaseImpl";
+import { getNutrientInfo } from "./database";
 import { IngredientBrowser } from "./IngredientBrowser";
 import ReactDOM = require("react-dom");
 import React = require("react");
