@@ -15,51 +15,56 @@ import { BrandedFood } from "../../../core/FoodDataCentral";
 // limitations under the License.
 
 export interface Edits {
-  servingSize: string,
-  servingSizeUnit: string,
-  householdServingFullText: string,
-  description: string,
-  foodNutrients: {id: number, amount: string}[],
-  selectedQuantity: number,
+  servingSize: string;
+  servingSizeUnit: string;
+  householdServingFullText: string;
+  description: string;
+  foodNutrients: { id: number; amount: string }[];
+  selectedQuantity: number;
 }
 
 export interface State {
-  food: BrandedFood,
-  edits: Edits,
+  food: BrandedFood;
+  edits: Edits;
 }
 
 export enum ActionType {
-  UPDATE_AFTER_SAVE = '@branded_food/UpdateAfterSave',
-  UPDATE_SERVING_SIZE = '@branded_food/UpdateServingSize',
-  UPDATE_SERVING_SIZE_UNIT = '@branded_food/UpdateServingSizeUnit',
-  UPDATE_HOUSEHOLD_UNIT = '@branded_food/UpdateHouseholdUnit',
-  UPDATE_NUTRIENT_VALUE = '@branded_food/UpdateNutrientValue',
-};
+  UPDATE_AFTER_SAVE = "@branded_food/UpdateAfterSave",
+  UPDATE_SERVING_SIZE = "@branded_food/UpdateServingSize",
+  UPDATE_SERVING_SIZE_UNIT = "@branded_food/UpdateServingSizeUnit",
+  UPDATE_HOUSEHOLD_UNIT = "@branded_food/UpdateHouseholdUnit",
+  UPDATE_NUTRIENT_VALUE = "@branded_food/UpdateNutrientValue",
+}
 
 export interface UpdateAfterSave {
-  type: ActionType.UPDATE_AFTER_SAVE,
-  food: BrandedFood,
+  type: ActionType.UPDATE_AFTER_SAVE;
+  food: BrandedFood;
 }
 
 export interface UpdateServingSize {
-  type: ActionType.UPDATE_SERVING_SIZE,
-  servingSize: string,
+  type: ActionType.UPDATE_SERVING_SIZE;
+  servingSize: string;
 }
 
 export interface UpdateServingSizeUnit {
-  type: ActionType.UPDATE_SERVING_SIZE_UNIT,
-  servingSizeUnit: string,
+  type: ActionType.UPDATE_SERVING_SIZE_UNIT;
+  servingSizeUnit: string;
 }
 
 export interface UpdateHouseholdUnit {
-  type: ActionType.UPDATE_HOUSEHOLD_UNIT,
-  householdUnit: string,
+  type: ActionType.UPDATE_HOUSEHOLD_UNIT;
+  householdUnit: string;
 }
 
 export interface UpdateNutrientValue {
-  type: ActionType.UPDATE_NUTRIENT_VALUE,
-  nutrientId: number,
-  value: string,
+  type: ActionType.UPDATE_NUTRIENT_VALUE;
+  nutrientId: number;
+  value: string;
 }
 
-export type Action = UpdateAfterSave | UpdateServingSize | UpdateServingSizeUnit | UpdateHouseholdUnit | UpdateNutrientValue;
+export type Action =
+  | UpdateAfterSave
+  | UpdateServingSize
+  | UpdateServingSizeUnit
+  | UpdateHouseholdUnit
+  | UpdateNutrientValue;

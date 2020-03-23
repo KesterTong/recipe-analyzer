@@ -11,36 +11,38 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { State } from './types';
-import { Recipe } from '../../../core/Recipe';
+import { State } from "./types";
+import { Recipe } from "../../../core/Recipe";
 
 export const NEW_RECIPE: Recipe = {
-  dataType: 'Recipe',
-  description: 'New Recipe',
+  dataType: "Recipe",
+  description: "New Recipe",
   ingredientsList: [],
 };
 
 export function recipeFromState(state: State): Recipe {
   return {
-    dataType: 'Recipe',
+    dataType: "Recipe",
     description: state.description,
-    ingredientsList: state.ingredients.map(ingredient => ({
-      quantity: ingredient.quantity,
-      foodId: ingredient.foodInputState.foodRef?.foodId!,
-    })).filter(ingredient => ingredient.foodId),
-  }
+    ingredientsList: state.ingredients
+      .map((ingredient) => ({
+        quantity: ingredient.quantity,
+        foodId: ingredient.foodInputState.foodRef?.foodId!,
+      }))
+      .filter((ingredient) => ingredient.foodId),
+  };
 }
 
 export function stateFromRecipe(food: Recipe): State {
   return {
     description: food.description,
-    ingredients: food.ingredientsList.map(ingredient => ({
+    ingredients: food.ingredientsList.map((ingredient) => ({
       quantity: ingredient.quantity,
       foodInputState: {
-        foodRef: {foodId: ingredient.foodId, description: 'Loading...'},
+        foodRef: { foodId: ingredient.foodId, description: "Loading..." },
         deselected: false,
       },
       normalizedFood: null,
     })),
-  }
+  };
 }

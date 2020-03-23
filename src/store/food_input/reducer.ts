@@ -13,13 +13,18 @@
 // limitations under the License.
 import { State, Action, ActionType, initialState } from "./types";
 
-export function reducer(state: State=initialState, action: Action): State {
-  switch(action.type) {
+export function reducer(state: State = initialState, action: Action): State {
+  switch (action.type) {
     case ActionType.DESELECT:
-      return {...state, deselected: true};
+      return { ...state, deselected: true };
     case ActionType.SELECT:
-      return {foodRef: action.foodRef, deselected: false};
+      return { foodRef: action.foodRef, deselected: false };
     case ActionType.UPDATE_DESCRIPTION:
-      return state.foodRef ? {...state, foodRef: {...state.foodRef, description: action.description}} : state;
+      return state.foodRef
+        ? {
+            ...state,
+            foodRef: { ...state.foodRef, description: action.description },
+          }
+        : state;
   }
 }

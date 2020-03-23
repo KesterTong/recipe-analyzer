@@ -21,44 +21,63 @@ import { recipeFromState } from "./conversion";
 
 type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
 
-export function loadIngredient(index: number, foodId: string): ThunkResult<Promise<void>> {
+export function loadIngredient(
+  index: number,
+  foodId: string
+): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
-    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientIds) : null;
+    const normalizedFood = food
+      ? await normalizeFood(food, getFood, getState().nutrientIds)
+      : null;
     if (normalizedFood != null) {
-      dispatch({type: ActionType.UPDATE_INGREDIENT_FOOD, index, food: normalizedFood});
+      dispatch({
+        type: ActionType.UPDATE_INGREDIENT_FOOD,
+        index,
+        food: normalizedFood,
+      });
     }
-  }
+  };
 }
 
 export function addIngredient(): Action {
-  return {type: ActionType.ADD_INGREDIENT};
+  return { type: ActionType.ADD_INGREDIENT };
 }
 
 export function deleteIngredient(index: number): Action {
-  return {type: ActionType.DELETE_INGREDIENT, index};
+  return { type: ActionType.DELETE_INGREDIENT, index };
 }
 
 export function updateIngredientAmount(index: number, amount: number): Action {
-  return {type: ActionType.UPDATE_INGREDIENT_AMOUNT, index, amount};
+  return { type: ActionType.UPDATE_INGREDIENT_AMOUNT, index, amount };
 }
 
 export function updateIngredientUnit(index: number, unit: string): Action {
-  return {type: ActionType.UPDATE_INGREDIENT_UNIT, index, unit};
+  return { type: ActionType.UPDATE_INGREDIENT_UNIT, index, unit };
 }
 
 export function deselectIngredient(index: number): Action {
-  return {type: ActionType.DESELECT_INGREDIENT, index};
+  return { type: ActionType.DESELECT_INGREDIENT, index };
 }
 
-export function selectIngredient(index: number, foodRef: FoodRef): ThunkResult<Promise<void>> {
+export function selectIngredient(
+  index: number,
+  foodRef: FoodRef
+): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodRef.foodId);
-    const normalizedFood = food ? await normalizeFood(food, getFood, getState().nutrientIds) : null;
+    const normalizedFood = food
+      ? await normalizeFood(food, getFood, getState().nutrientIds)
+      : null;
     if (normalizedFood != null) {
-      dispatch({type: ActionType.UPDATE_INGREDIENT, index, foodRef, food: normalizedFood});
+      dispatch({
+        type: ActionType.UPDATE_INGREDIENT,
+        index,
+        foodRef,
+        food: normalizedFood,
+      });
     }
-  }
+  };
 }
 
 export function maybeSave(): ThunkResult<Promise<void>> {
@@ -68,5 +87,5 @@ export function maybeSave(): ThunkResult<Promise<void>> {
     if (foodId != null && state.recipeState) {
       return patchFood(foodId, recipeFromState(state.recipeState));
     }
-  }
+  };
 }

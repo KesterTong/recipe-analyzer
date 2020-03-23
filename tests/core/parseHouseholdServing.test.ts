@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { parseHouseholdServing } from '../../core/parseHouseholdServing';
+import { parseHouseholdServing } from "../../core/parseHouseholdServing";
 
-describe('parseHouseholdServing', () => {
-  it('1 cup (240 ml)', () => {
-    expect(parseHouseholdServing('1 cup (240 ml)')).toEqual({
+describe("parseHouseholdServing", () => {
+  it("1 cup (240 ml)", () => {
+    expect(parseHouseholdServing("1 cup (240 ml)")).toEqual({
       servingSize: 240.0,
-      servingSizeUnit: 'ml',
-      householdServingFullText: '1 cup',
+      servingSizeUnit: "ml",
+      householdServingFullText: "1 cup",
     });
   });
-  it('240 ml', () => {
-    expect(parseHouseholdServing('240 ml')).toEqual({
+  it("240 ml", () => {
+    expect(parseHouseholdServing("240 ml")).toEqual({
       servingSize: 240.0,
-      servingSizeUnit: 'ml',
+      servingSizeUnit: "ml",
       householdServingFullText: undefined,
     });
   });
-  it('1 cup', () => {
-    expect(parseHouseholdServing('1 cup')).toEqual(null);
+  it("1 cup", () => {
+    expect(parseHouseholdServing("1 cup")).toEqual(null);
   });
 });

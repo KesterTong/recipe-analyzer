@@ -16,13 +16,13 @@
 export type Nutrients = number[];
 
 export interface NutrientInfo {
-  id: number,
-  name: string,
-  display: boolean,
+  id: number;
+  name: string;
+  display: boolean;
 }
 
 export function scaleNutrients(nutrients: Nutrients, scale: number): Nutrients {
-  return nutrients.map(value => value * scale);
+  return nutrients.map((value) => value * scale);
 }
 
 export function addNutrients(lhs: Nutrients, rhs: Nutrients): Nutrients {

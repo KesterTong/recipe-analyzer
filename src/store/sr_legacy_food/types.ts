@@ -14,6 +14,6 @@
 import { SRLegacyFood } from "../../../core/FoodDataCentral";
 
 export interface State {
-  srLegacyFood: SRLegacyFood,
-  selectedQuantity: number,
+  srLegacyFood: SRLegacyFood;
+  selectedQuantity: number;
 }

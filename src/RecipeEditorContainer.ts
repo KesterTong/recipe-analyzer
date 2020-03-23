@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import { RootState, ThunkDispatch } from "./store";
-import { RecipeEditor } from './RecipeEditor';
-import { updateDescription } from './store/actions';
-import { bindActionCreators } from 'redux';
-import { nutrientsForQuantity } from '../core/Quantity';
+import { RecipeEditor } from "./RecipeEditor";
+import { updateDescription } from "./store/actions";
+import { bindActionCreators } from "redux";
+import { nutrientsForQuantity } from "../core/Quantity";
 import {
   addIngredient,
   deleteIngredient,
@@ -25,45 +25,53 @@ import {
   updateIngredientUnit,
   selectIngredient,
   deselectIngredient,
-} from './store/recipe/actions';
+} from "./store/recipe/actions";
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.recipeState;
   if (recipeState == null) {
     return {
       hasRecipe: false,
-      description: '',
+      description: "",
       nutrientNames: [],
       ingredientsList: [],
-    }
+    };
   }
   return {
     hasRecipe: true,
     description: recipeState.description,
     nutrientNames: state.nutrientNames,
-    ingredientsList: recipeState.ingredients.map(ingredient => {
+    ingredientsList: recipeState.ingredients.map((ingredient) => {
       const food = ingredient.normalizedFood;
       return {
         ...ingredient.foodInputState,
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
-        units: food ? Object.keys(food.servingEquivalentQuantities) : ['g'],
-        nutrients: (food ? nutrientsForQuantity(ingredient.quantity, food) : null) || (state.nutrientIds || []).map(_ => 0),
-      }
+        units: food ? Object.keys(food.servingEquivalentQuantities) : ["g"],
+        nutrients:
+          (food ? nutrientsForQuantity(ingredient.quantity, food) : null) ||
+          (state.nutrientIds || []).map((_) => 0),
+      };
     }),
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators({
-    updateDescription,
-    addIngredient,
-    deleteIngredient,
-    updateIngredientAmount,
-    updateIngredientUnit,
-    selectIngredient,
-    deselectIngredient,
-  }, dispatch);
+  return bindActionCreators(
+    {
+      updateDescription,
+      addIngredient,
+      deleteIngredient,
+      updateIngredientAmount,
+      updateIngredientUnit,
+      selectIngredient,
+      deselectIngredient,
+    },
+    dispatch
+  );
 }
 
-export const RecipeEditorContainer = connect(mapStateToProps, mapDispatchToProps)(RecipeEditor);
+export const RecipeEditorContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RecipeEditor);

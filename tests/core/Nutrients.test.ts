@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { addNutrients, scaleNutrients } from '../../core/Nutrients';
+import { addNutrients, scaleNutrients } from "../../core/Nutrients";
 
-describe('scaleNutrients', () => {
-  it('scaleNutrients', () => {
+describe("scaleNutrients", () => {
+  it("scaleNutrients", () => {
     expect(scaleNutrients([10, 20], 2)).toEqual([20, 40]);
   });
 });
 
-describe('addNutrients', () => {
-  it('addNutrients', () => {
+describe("addNutrients", () => {
+  it("addNutrients", () => {
     expect(addNutrients([10, 20], [5, 2])).toEqual([15, 22]);
   });
 });

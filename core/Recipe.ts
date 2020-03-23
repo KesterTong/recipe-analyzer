@@ -15,8 +15,8 @@
 import { Quantity } from "./Quantity";
 
 export interface Ingredient {
-  quantity: Quantity,
-  foodId: string,
+  quantity: Quantity;
+  foodId: string;
 }
 
 // Note that Ingredient (and Recipe) store their nutritional values,
@@ -25,7 +25,7 @@ export interface Ingredient {
 // This is a form of database normalization since Recipe might be stored
 // in a database and so storing the nutritional values avoids extra lookups.
 export interface Recipe {
-  dataType: 'Recipe';
+  dataType: "Recipe";
   description: string;
   // Note this is distinct from the ingredients field which is a text field
   // used for FDC foods.

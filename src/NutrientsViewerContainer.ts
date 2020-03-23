@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { RootState, BrandedFoodState, RecipeState } from "./store";
-import { connect } from 'react-redux';
-import { ThunkDispatch } from './store/types';
-import { NutrientsViewer } from './NutrientsViewer';
+import { connect } from "react-redux";
+import { ThunkDispatch } from "./store/types";
+import { NutrientsViewer } from "./NutrientsViewer";
 import { SRLegacyFood } from "../core/FoodDataCentral";
 
 function mapStateToProps(state: RootState) {
-  let food: SRLegacyFood | BrandedFoodState | RecipeState | null;  //state.food;
+  let food: SRLegacyFood | BrandedFoodState | RecipeState | null; //state.food;
   //if (food == null || food.dataType == 'Branded Edit' || state.nutrientInfos == null) {
-    return {
-      nutrientNames: [],
-      nutrientValues: [],
-      quantities: ['-'],
-      selectedQuantity: 0,
-    };
+  return {
+    nutrientNames: [],
+    nutrientValues: [],
+    quantities: ["-"],
+    selectedQuantity: 0,
+  };
   // }
   // let quantities: {description: string, servings: number}[];
   // let nutrientsPerServing: Nutrients;
@@ -59,8 +59,13 @@ function mapStateToProps(state: RootState) {
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
   return {
-    setSelectedQuantity: (index:number) => {return },
+    setSelectedQuantity: (index: number) => {
+      return;
+    },
   };
 }
 
-export const NutrientsViewerContainer = connect(mapStateToProps, mapDispatchToProps)(NutrientsViewer);
+export const NutrientsViewerContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(NutrientsViewer);

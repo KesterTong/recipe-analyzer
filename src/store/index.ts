@@ -17,52 +17,62 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import { reducer as brandedFoodReducer } from "./branded_food/reducer";
-import { State as BrandedFoodState} from "./branded_food/types";
+import { State as BrandedFoodState } from "./branded_food/types";
 import { deselect, select, updateDescription } from "./food_input/actions";
 import { reducer as recipeReducer } from "./recipe/reducer";
-import { reducer as srLegacyFoodReducer } from './sr_legacy_food/reducer';
-import { reducer as foodInputReducer } from './food_input/reducer';
+import { reducer as srLegacyFoodReducer } from "./sr_legacy_food/reducer";
+import { reducer as foodInputReducer } from "./food_input/reducer";
 import { stateFromBrandedFood } from "./branded_food/conversion";
-import { State as RecipeState} from "./recipe/types";
-import { stateFromRecipe } from './recipe/conversion';
+import { State as RecipeState } from "./recipe/types";
+import { stateFromRecipe } from "./recipe/conversion";
 import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";
 
-export { RootState, BrandedFoodState, RecipeState, ThunkDispatch, ThunkResult }
+export { RootState, BrandedFoodState, RecipeState, ThunkDispatch, ThunkResult };
 
-function stateFromFood(food: Food): SRLegacyFood | BrandedFoodState | RecipeState {
+function stateFromFood(
+  food: Food
+): SRLegacyFood | BrandedFoodState | RecipeState {
   switch (food.dataType) {
-    case 'Branded':
+    case "Branded":
       return stateFromBrandedFood(food);
-    case 'Recipe':
+    case "Recipe":
       return stateFromRecipe(food);
-    case 'SR Legacy':
+    case "SR Legacy":
       return food;
   }
 }
 
 const rootReducer = combineReducers<RootState, RootAction>({
   selectedFood: (state = initialState.selectedFood, action) => {
-    switch(action.type) {
+    switch (action.type) {
       case ActionType.DESELECT:
         return foodInputReducer(state, deselect());
       case ActionType.SELECT_FOOD:
         return foodInputReducer(state, select(action.foodRef));
       case ActionType.NEW_FOOD:
-        return foodInputReducer(state, select({foodId: action.foodId, description: action.food.description}));
+        return foodInputReducer(
+          state,
+          select({
+            foodId: action.foodId,
+            description: action.food.description,
+          })
+        );
       case ActionType.UPDATE_DESCRIPTION:
         return foodInputReducer(state, updateDescription(action.description));
       case ActionType.UPDATE_FOOD:
-        return foodInputReducer(state, updateDescription(action.food.description));
+        return foodInputReducer(
+          state,
+          updateDescription(action.food.description)
+        );
       default:
         return state;
     }
-    
   },
   nutrientNames: (state = initialState.nutrientNames, action) => {
     switch (action.type) {
       case ActionType.SET_NUTRIENT_INFOS:
-        return action.nutrientInfos.map(nutrientInfo => nutrientInfo.name);
+        return action.nutrientInfos.map((nutrientInfo) => nutrientInfo.name);
       default:
         return state;
     }
@@ -70,7 +80,7 @@ const rootReducer = combineReducers<RootState, RootAction>({
   nutrientIds: (state = initialState.nutrientIds, action) => {
     switch (action.type) {
       case ActionType.SET_NUTRIENT_INFOS:
-        return action.nutrientInfos.map(nutrientInfo => nutrientInfo.id);
+        return action.nutrientInfos.map((nutrientInfo) => nutrientInfo.id);
       default:
         return state;
     }
@@ -80,4 +90,7 @@ const rootReducer = combineReducers<RootState, RootAction>({
   recipeState: recipeReducer,
 });
 
-export const store = createStore(rootReducer, applyMiddleware<ThunkDispatch>(thunk));
+export const store = createStore(
+  rootReducer,
+  applyMiddleware<ThunkDispatch>(thunk)
+);

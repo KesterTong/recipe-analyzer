@@ -11,21 +11,30 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { getFood, insertFood, patchFood } from '../../src/IngredientDatabaseImpl';
-import { store, RootState, BrandedFoodState } from '../../src/store';
-import { select, newRecipe, updateDescription, saveFood } from '../../src/store/actions';
-import { TEST_BRANDED_FOOD } from '../testData';
-import { NEW_RECIPE } from '../../src/store/recipe/conversion';
-import { initialState } from '../../src/store/types';
-import { Edits as BrandedFoodEdits } from '../../src/store/branded_food/types';
+import {
+  getFood,
+  insertFood,
+  patchFood,
+} from "../../src/IngredientDatabaseImpl";
+import { store, RootState, BrandedFoodState } from "../../src/store";
+import {
+  select,
+  newRecipe,
+  updateDescription,
+  saveFood,
+} from "../../src/store/actions";
+import { TEST_BRANDED_FOOD } from "../testData";
+import { NEW_RECIPE } from "../../src/store/recipe/conversion";
+import { initialState } from "../../src/store/types";
+import { Edits as BrandedFoodEdits } from "../../src/store/branded_food/types";
 
-jest.mock('../../src/IngredientDatabaseImpl');
+jest.mock("../../src/IngredientDatabaseImpl");
 
 const _TEST_BRANDED_FOOD_EDITS: BrandedFoodEdits = {
   description: "Plantain Chips",
   foodNutrients: [
-    {amount: "170", id: 1008},
-    {amount: "2", id: 1003},
+    { amount: "170", id: 1008 },
+    { amount: "2", id: 1003 },
   ],
   householdServingFullText: "6 pieces",
   selectedQuantity: 0,
@@ -33,7 +42,7 @@ const _TEST_BRANDED_FOOD_EDITS: BrandedFoodEdits = {
   servingSizeUnit: "g",
 };
 
-describe('actions', () => {
+describe("actions", () => {
   const getFoodMock = getFood as jest.MockedFunction<typeof getFood>;
   const insertFoodMock = insertFood as jest.MockedFunction<typeof insertFood>;
   const patchFoodMock = patchFood as jest.MockedFunction<typeof patchFood>;
@@ -44,18 +53,20 @@ describe('actions', () => {
     patchFoodMock.mockReset();
   });
 
-  it('SelectFood_Branded', async () => {
+  it("SelectFood_Branded", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
-    let actionCompleted = store.dispatch(select({foodId: 'userData/abcdefg', description: 'My Food'}));
+    let actionCompleted = store.dispatch(
+      select({ foodId: "userData/abcdefg", description: "My Food" })
+    );
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       selectedFood: {
         foodRef: {
           foodId: "userData/abcdefg",
-          description: 'My Food',
+          description: "My Food",
         },
         deselected: false,
-      }
+      },
     });
     await actionCompleted;
     expect(store.getState()).toEqual<RootState>({
@@ -63,7 +74,7 @@ describe('actions', () => {
       selectedFood: {
         foodRef: {
           foodId: "userData/abcdefg",
-          description: 'Plantain Chips',
+          description: "Plantain Chips",
         },
         deselected: false,
       },
@@ -72,19 +83,21 @@ describe('actions', () => {
         edits: _TEST_BRANDED_FOOD_EDITS,
       },
     });
-    expect(getFoodMock.mock.calls).toEqual([['userData/abcdefg']]);
+    expect(getFoodMock.mock.calls).toEqual([["userData/abcdefg"]]);
   });
-  
-  it('UpdateDescriptionAndSave', async () => {
+
+  it("UpdateDescriptionAndSave", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
-    await store.dispatch(select({foodId: 'userData/abcdefg', description: 'My Food'}));
-    store.dispatch(updateDescription('New Description'));
+    await store.dispatch(
+      select({ foodId: "userData/abcdefg", description: "My Food" })
+    );
+    store.dispatch(updateDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       selectedFood: {
         foodRef: {
           foodId: "userData/abcdefg",
-          description: 'New Description',
+          description: "New Description",
         },
         deselected: false,
       },
@@ -92,7 +105,7 @@ describe('actions', () => {
         food: TEST_BRANDED_FOOD,
         edits: {
           ..._TEST_BRANDED_FOOD_EDITS,
-          description: 'New Description',
+          description: "New Description",
         },
       },
     });
@@ -102,39 +115,39 @@ describe('actions', () => {
       selectedFood: {
         foodRef: {
           foodId: "userData/abcdefg",
-          description: 'New Description',
+          description: "New Description",
         },
         deselected: false,
       },
       brandedFoodState: {
         food: {
           ...TEST_BRANDED_FOOD,
-          description: 'New Description',
+          description: "New Description",
         },
         edits: {
           ..._TEST_BRANDED_FOOD_EDITS,
-          description: 'New Description',
+          description: "New Description",
         },
       },
-    })
-    expect(getFoodMock.mock.calls).toEqual([['userData/abcdefg']]);
+    });
+    expect(getFoodMock.mock.calls).toEqual([["userData/abcdefg"]]);
     expect(patchFoodMock.mock.calls).toEqual([
       [
-        'userData/abcdefg',
-        {...TEST_BRANDED_FOOD, description: 'New Description'}
-      ]
+        "userData/abcdefg",
+        { ...TEST_BRANDED_FOOD, description: "New Description" },
+      ],
     ]);
   });
-  
-  it('New Recipe', async () => {
-    insertFoodMock.mockResolvedValue('userData/abcdefg');
+
+  it("New Recipe", async () => {
+    insertFoodMock.mockResolvedValue("userData/abcdefg");
     await store.dispatch(newRecipe());
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       selectedFood: {
         foodRef: {
           foodId: "userData/abcdefg",
-          description: 'New Recipe',
+          description: "New Recipe",
         },
         deselected: false,
       },
@@ -143,6 +156,6 @@ describe('actions', () => {
         ingredients: [],
       },
     });
-    expect(insertFoodMock.mock.calls).toEqual([[NEW_RECIPE]])
+    expect(insertFoodMock.mock.calls).toEqual([[NEW_RECIPE]]);
   });
 });

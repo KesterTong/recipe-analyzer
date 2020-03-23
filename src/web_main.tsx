@@ -16,9 +16,9 @@
 import * as firebase from "firebase";
 import * as firebaseui from "firebaseui";
 
-import { firebaseConfig } from './config';
+import { firebaseConfig } from "./config";
 import { getNutrientInfo } from "./IngredientDatabaseImpl";
-import { IngredientBrowser } from './IngredientBrowser';
+import { IngredientBrowser } from "./IngredientBrowser";
 import ReactDOM = require("react-dom");
 import React = require("react");
 import { Provider } from "react-redux";
@@ -31,25 +31,27 @@ firebase.initializeApp(firebaseConfig);
 // Start auth
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-firebase.auth().onAuthStateChanged(function(user) {
+firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
-    getNutrientInfo().then(nutrientInfos => 
-      store.dispatch({type: ActionType.SET_NUTRIENT_INFOS, nutrientInfos}));
-    ReactDOM.render(<Provider store={store}>
-      <IngredientBrowser/>
-    </Provider>, document.getElementById('root'));
+    getNutrientInfo().then((nutrientInfos) =>
+      store.dispatch({ type: ActionType.SET_NUTRIENT_INFOS, nutrientInfos })
+    );
+    ReactDOM.render(
+      <Provider store={store}>
+        <IngredientBrowser />
+      </Provider>,
+      document.getElementById("root")
+    );
   } else {
     // User is signed out.
-    ui.start('#firebaseui-auth-container', {
+    ui.start("#firebaseui-auth-container", {
       callbacks: {
-        signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+        signInSuccessWithAuthResult: function (authResult, redirectUrl) {
           return false;
         },
       },
-      signInFlow: 'popup',
-      signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID
-      ],
+      signInFlow: "popup",
+      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
     });
   }
 });

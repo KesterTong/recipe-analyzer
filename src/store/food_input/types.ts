@@ -11,11 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodRef } from '../../../core/FoodRef';
+import { FoodRef } from "../../../core/FoodRef";
 
 export interface State {
-  foodRef: FoodRef | null,
-  deselected: boolean,
+  foodRef: FoodRef | null;
+  deselected: boolean;
 }
 
 export const initialState: State = {
@@ -24,9 +24,9 @@ export const initialState: State = {
 };
 
 export enum ActionType {
-  DESELECT = '@food_input/Deselect',
-  SELECT = '@food_input/Select',
-  UPDATE_DESCRIPTION = '@food_input/UpdateDescription',
+  DESELECT = "@food_input/Deselect",
+  SELECT = "@food_input/Select",
+  UPDATE_DESCRIPTION = "@food_input/UpdateDescription",
 }
 
 export interface Deselect {
@@ -34,13 +34,13 @@ export interface Deselect {
 }
 
 export interface Select {
-  type: ActionType.SELECT,
-  foodRef: FoodRef,
+  type: ActionType.SELECT;
+  foodRef: FoodRef;
 }
 
 export interface UpdateDescription {
-  type: ActionType.UPDATE_DESCRIPTION,
-  description: string,
+  type: ActionType.UPDATE_DESCRIPTION;
+  description: string;
 }
 
 export type Action = Deselect | Select | UpdateDescription;

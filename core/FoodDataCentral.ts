@@ -16,52 +16,52 @@
  * Serving size as printed on USDA label, e.g. "1 cup (220 g)" or "1 scoop (36 ml)".
  */
 export interface HouseholdServing {
-  servingSize: number,
-  servingSizeUnit: string,
-  householdServingFullText?: string,
+  servingSize: number;
+  servingSizeUnit: string;
+  householdServingFullText?: string;
 }
 
 export interface BrandedFood extends HouseholdServing {
-  dataType: 'Branded',
-  description: string,
+  dataType: "Branded";
+  description: string;
   foodNutrients: {
-    nutrient: {id: number},
-    amount?: number,
-  }[],
-  ingredients?: string,
-  brandOwner?: string,
+    nutrient: { id: number };
+    amount?: number;
+  }[];
+  ingredients?: string;
+  brandOwner?: string;
 }
 
 export interface SRLegacyFood {
-  dataType: 'SR Legacy',
-  description: string,
+  dataType: "SR Legacy";
+  description: string;
   foodNutrients: {
-    nutrient: {id: number},
-    amount?: number,
-  }[],
+    nutrient: { id: number };
+    amount?: number;
+  }[];
   foodPortions: {
-    modifier: string,
-    gramWeight: number,
-    amount: number,
-  }[],
+    modifier: string;
+    gramWeight: number;
+    amount: number;
+  }[];
 }
 
 export interface FDCQueryResult {
   foodSearchCriteria: {
-    generalSearchInput: string,
-    pageNumber: number,
-    requireAllWords: boolean
-  },
-  totalHits: number,
-  currentPage: number,
-  totalPages: number,
+    generalSearchInput: string;
+    pageNumber: number;
+    requireAllWords: boolean;
+  };
+  totalHits: number;
+  currentPage: number;
+  totalPages: number;
   foods: {
-    fdcId: number,
-    description: string,
-    dataType: string,
-    gtinUpc: string,
-    brandOwner: string
-    score: number
+    fdcId: number;
+    description: string;
+    dataType: string;
+    gtinUpc: string;
+    brandOwner: string;
+    score: number;
   }[];
 }
 
@@ -70,17 +70,25 @@ export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
 }
 
 export function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
-  return fdcApiUrl('search', fdcApiKey, {
+  return fdcApiUrl("search", fdcApiKey, {
     generalSearchInput: encodeURIComponent(query),
-    includeDataTypeList: 'SR%20Legacy,Branded',
+    includeDataTypeList: "SR%20Legacy,Branded",
   });
 }
 
-function fdcApiUrl(resource: string, fdcApiKey: string, options: {[index: string]: string}): string {
-  let url = 'https://api.nal.usda.gov/fdc/v1/' + encodeURIComponent(resource) + '?api_key=' + fdcApiKey;
-  Object.keys(options).forEach(key => {
-    url += '&' + key + '=' + options[key];
-  })
+function fdcApiUrl(
+  resource: string,
+  fdcApiKey: string,
+  options: { [index: string]: string }
+): string {
+  let url =
+    "https://api.nal.usda.gov/fdc/v1/" +
+    encodeURIComponent(resource) +
+    "?api_key=" +
+    fdcApiKey;
+  Object.keys(options).forEach((key) => {
+    url += "&" + key + "=" + options[key];
+  });
   return url;
 }
 

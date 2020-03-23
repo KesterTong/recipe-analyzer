@@ -14,16 +14,21 @@
 import { State } from "./types";
 import { initialState, RootAction, ActionType } from "../types";
 
-export function reducer(state: State | null = initialState.srLegacyFoodState, action: RootAction): State | null {
-  switch(action.type) {
+export function reducer(
+  state: State | null = initialState.srLegacyFoodState,
+  action: RootAction
+): State | null {
+  switch (action.type) {
     case ActionType.NEW_FOOD:
     case ActionType.UPDATE_FOOD:
-      return action.food?.dataType == 'SR Legacy' && action.food ? {
-        srLegacyFood: action.food,
-        selectedQuantity: 0,
-      } : null;
+      return action.food?.dataType == "SR Legacy" && action.food
+        ? {
+            srLegacyFood: action.food,
+            selectedQuantity: 0,
+          }
+        : null;
     case ActionType.SET_SELECTED_QUANTITY:
-      return state ? {...state, selectedQuantity: action.index} : null;
+      return state ? { ...state, selectedQuantity: action.index } : null;
     default:
       return state;
   }

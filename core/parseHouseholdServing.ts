@@ -18,9 +18,9 @@ import { parseQuantity } from "./parseQuantity";
 
 /**
  * Parse the serving size unit from a USDA label.
- * 
+ *
  * E.g. "30 ml" or "1 cup (230 g)" or "1 scoop (36 ml)".
- * 
+ *
  * Note that "1 cup" is not allowed since the gram or ml
  * equivalent must be specified.
  */
@@ -35,7 +35,10 @@ export function parseHouseholdServing(text: string): HouseholdServing | null {
     metricUnits = parseQuantity(match[2]);
     customaryUnitsText = match[1].trim();
   }
-  if (metricUnits == null || (metricUnits.unit != 'g' && metricUnits.unit != 'ml')) {
+  if (
+    metricUnits == null ||
+    (metricUnits.unit != "g" && metricUnits.unit != "ml")
+  ) {
     return null;
   }
   return {

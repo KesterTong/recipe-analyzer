@@ -12,69 +12,83 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as React from 'react';
+import * as React from "react";
 
-import { Form, Navbar, Container, Spinner, Button } from 'react-bootstrap';
+import { Form, Navbar, Container, Spinner, Button } from "react-bootstrap";
 
-import { IngredientSearcher } from './IngredientSearcher';
-import { BrandedFoodEditor } from './BrandedFoodEditor';
-import { select, saveFood, newBrandedFood, newRecipe, deselect } from './store/actions';
-import { RootState } from './store';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { SRLegacyFoodViewer } from './SRLegacyFoodView';
-import { RecipeEditorContainer } from './RecipeEditorContainer';
-import { ThunkDispatch } from './store/types';
-import { FoodRef } from '../core/FoodRef';
+import { IngredientSearcher } from "./IngredientSearcher";
+import { BrandedFoodEditor } from "./BrandedFoodEditor";
+import {
+  select,
+  saveFood,
+  newBrandedFood,
+  newRecipe,
+  deselect,
+} from "./store/actions";
+import { RootState } from "./store";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { SRLegacyFoodViewer } from "./SRLegacyFoodView";
+import { RecipeEditorContainer } from "./RecipeEditorContainer";
+import { ThunkDispatch } from "./store/types";
+import { FoodRef } from "../core/FoodRef";
 
 interface IngredientBrowserProps {
-  foodRef: FoodRef | null,
-  deselected: boolean,
-  select(foodRef: FoodRef): void,
-  deselect(): void,
-  saveFood: () => void,
-  newBrandedFood: () => void,
-  newRecipe: () => void,
-};
-
-const IngredientBrowserView: React.SFC<IngredientBrowserProps> = props => {
-  return <React.Fragment>
-    <Navbar bg="light" expand="lg">
-      <Form inline>
-        <IngredientSearcher
-          foodRef={props.foodRef}
-          deselected={props.deselected}
-          select={props.select}
-          deselect={props.deselect}
-          />
-        &nbsp;
-        <Button onClick={props.saveFood}>Save</Button>
-        &nbsp;
-        <Button onClick={props.newBrandedFood}>New Custom Food</Button>
-        &nbsp;
-        <Button onClick={props.newRecipe}>New Recipe</Button>
-      </Form>
-    </Navbar>
-    <Container>
-      <BrandedFoodEditor/>
-      <RecipeEditorContainer/>
-      <SRLegacyFoodViewer/>
-    </Container>
-  </React.Fragment>;
+  foodRef: FoodRef | null;
+  deselected: boolean;
+  select(foodRef: FoodRef): void;
+  deselect(): void;
+  saveFood: () => void;
+  newBrandedFood: () => void;
+  newRecipe: () => void;
 }
+
+const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
+  return (
+    <React.Fragment>
+      <Navbar bg="light" expand="lg">
+        <Form inline>
+          <IngredientSearcher
+            foodRef={props.foodRef}
+            deselected={props.deselected}
+            select={props.select}
+            deselect={props.deselect}
+          />
+          &nbsp;
+          <Button onClick={props.saveFood}>Save</Button>
+          &nbsp;
+          <Button onClick={props.newBrandedFood}>New Custom Food</Button>
+          &nbsp;
+          <Button onClick={props.newRecipe}>New Recipe</Button>
+        </Form>
+      </Navbar>
+      <Container>
+        <BrandedFoodEditor />
+        <RecipeEditorContainer />
+        <SRLegacyFoodViewer />
+      </Container>
+    </React.Fragment>
+  );
+};
 
 function mapStateToProps(state: RootState) {
   return state.selectedFood;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators({
-    deselect,
-    select,
-    saveFood,
-    newBrandedFood,
-    newRecipe,
-  }, dispatch);
+  return bindActionCreators(
+    {
+      deselect,
+      select,
+      saveFood,
+      newBrandedFood,
+      newRecipe,
+    },
+    dispatch
+  );
 }
 
-export const IngredientBrowser = connect(mapStateToProps, mapDispatchToProps)(IngredientBrowserView);
+export const IngredientBrowser = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(IngredientBrowserView);

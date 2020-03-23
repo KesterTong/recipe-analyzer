@@ -14,10 +14,13 @@
 
 import { HouseholdServing } from "./FoodDataCentral";
 
-export function printHouseholdServing(householdServing: HouseholdServing): string {
-  let result = householdServing.servingSize + ' ' + householdServing.servingSizeUnit;
+export function printHouseholdServing(
+  householdServing: HouseholdServing
+): string {
+  let result =
+    householdServing.servingSize + " " + householdServing.servingSizeUnit;
   if (householdServing.householdServingFullText) {
-    result = householdServing.householdServingFullText + ' (' + result + ')';
+    result = householdServing.householdServingFullText + " (" + result + ")";
   }
   return result;
 }

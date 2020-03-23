@@ -18,23 +18,23 @@ import { patchFood } from "../../IngredientDatabaseImpl";
 import { BrandedFood } from "../../../core/FoodDataCentral";
 
 export function updateAfterSave(food: BrandedFood): Action {
-  return {type: ActionType.UPDATE_AFTER_SAVE, food};
+  return { type: ActionType.UPDATE_AFTER_SAVE, food };
 }
 
 export function updateServingSize(servingSize: string): Action {
-  return {type: ActionType.UPDATE_SERVING_SIZE, servingSize};
+  return { type: ActionType.UPDATE_SERVING_SIZE, servingSize };
 }
 
 export function updateServingSizeUnit(servingSizeUnit: string): Action {
-  return {type: ActionType.UPDATE_SERVING_SIZE_UNIT, servingSizeUnit};
+  return { type: ActionType.UPDATE_SERVING_SIZE_UNIT, servingSizeUnit };
 }
 
 export function updateHouseholdUnit(householdUnit: string): Action {
-  return {type: ActionType.UPDATE_HOUSEHOLD_UNIT, householdUnit};
+  return { type: ActionType.UPDATE_HOUSEHOLD_UNIT, householdUnit };
 }
 
 export function updateNutrientValue(nutrientId: number, value: string): Action {
-  return {type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value};
+  return { type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value };
 }
 
 export function maybeSave(): ThunkResult<Promise<void>> {
@@ -46,5 +46,5 @@ export function maybeSave(): ThunkResult<Promise<void>> {
       await patchFood(foodId, food);
       dispatch(updateAfterSave(food));
     }
-  }
+  };
 }

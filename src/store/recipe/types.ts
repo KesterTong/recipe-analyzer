@@ -14,65 +14,72 @@
 import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
-import { State as FoodInputState } from '../food_input/types';
+import { State as FoodInputState } from "../food_input/types";
 
 export interface State {
-  description: string,
+  description: string;
   ingredients: {
-    quantity: Quantity,
-    foodInputState: FoodInputState,
-    normalizedFood: NormalizedFood | null,
+    quantity: Quantity;
+    foodInputState: FoodInputState;
+    normalizedFood: NormalizedFood | null;
   }[];
 }
 
 export enum ActionType {
-  UPDATE_DESCRIPTION = '@recipe/UpdateDescription',
-  ADD_INGREDIENT = '@recipe/AddIngredient',
-  DELETE_INGREDIENT = '@recipe/DeleteIngredient',
-  UPDATE_INGREDIENT_AMOUNT = '@recipe/UpdateIngredientAmount',
-  UPDATE_INGREDIENT_UNIT = '@recipe/UpdateIngredientUnit',
-  UPDATE_INGREDIENT = '@recipe/UpdateIngredient',
-  UPDATE_INGREDIENT_FOOD = '@recipe/UpdateIngredientFood',
-  DESELECT_INGREDIENT = '@recipe/DeselectIngredient',
+  UPDATE_DESCRIPTION = "@recipe/UpdateDescription",
+  ADD_INGREDIENT = "@recipe/AddIngredient",
+  DELETE_INGREDIENT = "@recipe/DeleteIngredient",
+  UPDATE_INGREDIENT_AMOUNT = "@recipe/UpdateIngredientAmount",
+  UPDATE_INGREDIENT_UNIT = "@recipe/UpdateIngredientUnit",
+  UPDATE_INGREDIENT = "@recipe/UpdateIngredient",
+  UPDATE_INGREDIENT_FOOD = "@recipe/UpdateIngredientFood",
+  DESELECT_INGREDIENT = "@recipe/DeselectIngredient",
 }
 
 export interface AddIngredient {
-  type: ActionType.ADD_INGREDIENT,
+  type: ActionType.ADD_INGREDIENT;
 }
 
 export interface DeleteIngredient {
-  type: ActionType.DELETE_INGREDIENT,
-  index: number,
+  type: ActionType.DELETE_INGREDIENT;
+  index: number;
 }
 
 export interface UpdateIngredientAmount {
-  type: ActionType.UPDATE_INGREDIENT_AMOUNT,
-  index: number,
-  amount: number,
+  type: ActionType.UPDATE_INGREDIENT_AMOUNT;
+  index: number;
+  amount: number;
 }
 
 export interface UpdateIngredientUnit {
-  type: ActionType.UPDATE_INGREDIENT_UNIT,
-  index: number,
-  unit: string,
+  type: ActionType.UPDATE_INGREDIENT_UNIT;
+  index: number;
+  unit: string;
 }
 
 export interface UpdateIngredient {
-  type: ActionType.UPDATE_INGREDIENT,
-  index: number,
-  foodRef: FoodRef,
-  food: NormalizedFood,
+  type: ActionType.UPDATE_INGREDIENT;
+  index: number;
+  foodRef: FoodRef;
+  food: NormalizedFood;
 }
 
 export interface UpdateIngredientFood {
-  type: ActionType.UPDATE_INGREDIENT_FOOD,
-  index: number,
-  food: NormalizedFood,
+  type: ActionType.UPDATE_INGREDIENT_FOOD;
+  index: number;
+  food: NormalizedFood;
 }
 
 export interface DeselectIngredient {
-  type: ActionType.DESELECT_INGREDIENT,
-  index: number,
+  type: ActionType.DESELECT_INGREDIENT;
+  index: number;
 }
 
-export type Action = AddIngredient | DeleteIngredient | UpdateIngredientAmount | UpdateIngredientUnit | UpdateIngredient | UpdateIngredientFood | DeselectIngredient;
+export type Action =
+  | AddIngredient
+  | DeleteIngredient
+  | UpdateIngredientAmount
+  | UpdateIngredientUnit
+  | UpdateIngredient
+  | UpdateIngredientFood
+  | DeselectIngredient;

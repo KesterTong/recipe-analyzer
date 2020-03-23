@@ -12,25 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { State } from './types';
-import { BrandedFood } from '../../../core/FoodDataCentral';
+import { State } from "./types";
+import { BrandedFood } from "../../../core/FoodDataCentral";
 
 export const NEW_BRANDED_FOOD: BrandedFood = {
-  dataType: 'Branded',
-  description: 'New Food',
+  dataType: "Branded",
+  description: "New Food",
   servingSize: 100,
-  servingSizeUnit: 'g',
-  householdServingFullText: '1 serving',
+  servingSizeUnit: "g",
+  householdServingFullText: "1 serving",
   foodNutrients: [
-    {nutrient: {id: 1008}, amount: 0},
-    {nutrient: {id: 1003}, amount: 0},
+    { nutrient: { id: 1008 }, amount: 0 },
+    { nutrient: { id: 1003 }, amount: 0 },
   ],
 };
 
 export function stateFromBrandedFood(food: BrandedFood): State {
-  let foodNutrients = food.foodNutrients.map(nutrient => ({
+  let foodNutrients = food.foodNutrients.map((nutrient) => ({
     id: nutrient.nutrient.id,
-    amount: ((nutrient.amount || 0) * food.servingSize / 100).toString(),
+    amount: (((nutrient.amount || 0) * food.servingSize) / 100).toString(),
   }));
   return {
     food,
@@ -38,26 +38,26 @@ export function stateFromBrandedFood(food: BrandedFood): State {
       description: food.description,
       servingSize: food.servingSize.toString(),
       servingSizeUnit: food.servingSizeUnit,
-      householdServingFullText: food.householdServingFullText || '',
+      householdServingFullText: food.householdServingFullText || "",
       foodNutrients,
       selectedQuantity: 0,
     },
-  }
+  };
 }
 
 export function brandedFoodFromState(state: State): BrandedFood {
   let edits = state.edits;
   let servingSize = Number(edits.servingSize);
-  let foodNutrients = edits.foodNutrients.map(nutrient => ({
-    nutrient: {id: nutrient.id},
-    amount: Number(nutrient.amount) * 100 / servingSize,
+  let foodNutrients = edits.foodNutrients.map((nutrient) => ({
+    nutrient: { id: nutrient.id },
+    amount: (Number(nutrient.amount) * 100) / servingSize,
   }));
   return {
-    dataType: 'Branded',
+    dataType: "Branded",
     description: edits.description,
     servingSize,
     servingSizeUnit: edits.servingSizeUnit,
     householdServingFullText: edits.householdServingFullText,
     foodNutrients,
-  }
+  };
 }

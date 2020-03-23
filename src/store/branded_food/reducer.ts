@@ -17,41 +17,49 @@ import { stateFromBrandedFood } from "./conversion";
 import { initialState } from "../types";
 
 export function editsReducer(edits: Edits, action: RootAction): Edits {
-  switch (action.type) {   
+  switch (action.type) {
     case RootActionType.UPDATE_DESCRIPTION:
-      return {...edits, description: action.description};
+      return { ...edits, description: action.description };
     case RootActionType.SET_SELECTED_QUANTITY:
-      return {...edits, selectedQuantity: action.index};  
+      return { ...edits, selectedQuantity: action.index };
     case ActionType.UPDATE_SERVING_SIZE:
-      return {...edits, servingSize: action.servingSize};
+      return { ...edits, servingSize: action.servingSize };
     case ActionType.UPDATE_SERVING_SIZE_UNIT:
-      return {...edits, servingSizeUnit: action.servingSizeUnit};
+      return { ...edits, servingSizeUnit: action.servingSizeUnit };
     case ActionType.UPDATE_HOUSEHOLD_UNIT:
-      return {...edits, householdServingFullText: action.householdUnit};
+      return { ...edits, householdServingFullText: action.householdUnit };
     case ActionType.UPDATE_NUTRIENT_VALUE:
       return {
         ...edits,
-        foodNutrients: edits.foodNutrients.map(nutrient =>
-          nutrient.id == action.nutrientId ? {...nutrient, amount: action.value} : nutrient),
-      }
+        foodNutrients: edits.foodNutrients.map((nutrient) =>
+          nutrient.id == action.nutrientId
+            ? { ...nutrient, amount: action.value }
+            : nutrient
+        ),
+      };
     default:
       return edits;
   }
 }
 
-export function reducer(state: State | null = initialState.brandedFoodState, action: RootAction): State | null {
+export function reducer(
+  state: State | null = initialState.brandedFoodState,
+  action: RootAction
+): State | null {
   switch (action.type) {
     case RootActionType.NEW_FOOD:
     case RootActionType.UPDATE_FOOD:
-      return action.food?.dataType == 'Branded' ? stateFromBrandedFood(action.food) : null;
+      return action.food?.dataType == "Branded"
+        ? stateFromBrandedFood(action.food)
+        : null;
     case ActionType.UPDATE_AFTER_SAVE:
-      return state ? {...state, food: action.food} : state;
+      return state ? { ...state, food: action.food } : state;
     default:
       if (state == null) {
         return state;
       } else {
         const newEdits = editsReducer(state.edits, action);
-        return newEdits != state.edits ? {...state, edits: newEdits} : state;
+        return newEdits != state.edits ? { ...state, edits: newEdits } : state;
       }
   }
 }

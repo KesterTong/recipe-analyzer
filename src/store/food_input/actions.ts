@@ -15,13 +15,13 @@ import { Action, ActionType } from "./types";
 import { FoodRef } from "../../../core/FoodRef";
 
 export function deselect(): Action {
-  return {type: ActionType.DESELECT};
+  return { type: ActionType.DESELECT };
 }
 
 export function select(foodRef: FoodRef): Action {
-  return {type: ActionType.SELECT, foodRef};
+  return { type: ActionType.SELECT, foodRef };
 }
 
 export function updateDescription(description: string): Action {
-  return {type: ActionType.UPDATE_DESCRIPTION, description};
+  return { type: ActionType.UPDATE_DESCRIPTION, description };
 }
