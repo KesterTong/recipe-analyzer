@@ -11,7 +11,7 @@
     "run": "ts-node index.ts",
     "test": "jest",
     "build": "webpack",
-    "format": "prettier --write ."
+    "format": "prettier --write **/*.{ts,tsx}"
   },
   "repository": {
     "type": "git",
