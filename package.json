@@ -10,7 +10,8 @@
   "scripts": {
     "run": "ts-node index.ts",
     "test": "jest",
-    "build": "webpack"
+    "build": "webpack",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,7 @@
     "@types/jest": "^25.1.4",
     "@types/node": "^13.1.7",
     "jest": "^25.1.0",
+    "prettier": "2.0.1",
     "source-map-loader": "^0.2.4",
     "ts-jest": "^25.2.1",
     "ts-loader": "^6.2.1",
