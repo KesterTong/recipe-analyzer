@@ -29,7 +29,7 @@ export function nutrientsForQuantity(
   let unitsPerServing = foodData.servingEquivalentQuantities[quantity.unit];
   if (unitsPerServing == undefined) {
     // TODO: Display original unit as well as canonicalized unit in error.
-    throw("Could not determine nutrients for quantity " + quantity.unit);
+    throw "Could not determine nutrients for quantity " + quantity.unit;
   }
   var servings = quantity.amount / unitsPerServing;
   return scaleNutrients(foodData.nutrientsPerServing, servings);
