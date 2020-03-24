@@ -11,13 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 import * as React from "react";
 
 import { Form, Navbar, Container, Button, Spinner } from "react-bootstrap";
 
 import { FoodInput } from "./FoodInput";
-import { BrandedFoodEditor } from "./BrandedFoodEditor";
+import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { SRLegacyFoodViewer } from "./SRLegacyFoodView";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
 import { FoodRef } from "../core/FoodRef";
@@ -52,7 +51,7 @@ export const Main: React.SFC<MainProps> = (props) => {
       </Navbar>
       <Container>
         {props.loading ? <Spinner animation="border"></Spinner> : null}
-        <BrandedFoodEditor />
+        <BrandedFoodEditorContainer />
         <RecipeEditorContainer />
         <SRLegacyFoodViewer />
       </Container>
