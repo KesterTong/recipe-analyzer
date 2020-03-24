@@ -17,9 +17,8 @@ import {
   ActionType,
   ThunkDispatch,
   ThunkResult,
-  LoadingState,
 } from "./types";
-import { createStore, applyMiddleware, combineReducers } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import { reducer as brandedFoodReducer } from "./branded_food/reducer";
@@ -30,6 +29,7 @@ import { stateFromBrandedFood } from "./branded_food/conversion";
 import { State as RecipeState } from "./recipe/types";
 import { stateFromRecipe } from "./recipe/conversion";
 import { selectFoodRef } from "./selectors";
+import { Food } from "../../core/Food";
 
 export {
   RootState,
@@ -40,91 +40,82 @@ export {
   selectFoodRef,
 };
 
-const rootReducer = combineReducers<RootState, RootAction>({
-  foodId: (state = initialState.foodId, action) => {
-    switch (action.type) {
-      case ActionType.DESELECT:
-        return state;
-      case ActionType.SELECT_FOOD:
-        return action.foodRef.foodId;
-      case ActionType.NEW_FOOD:
-        return action.foodId;
-      default:
-        return state;
-    }
-  },
-  deselected: (state = initialState.deselected, action) => {
-    switch (action.type) {
-      case ActionType.DESELECT:
-        return true;
-      case ActionType.SELECT_FOOD:
-      case ActionType.NEW_FOOD:
-      case ActionType.UPDATE_RECIPE:
-        return false;
-      default:
-        return state;
-    }
-  },
-  nutrientNames: (state = initialState.nutrientNames, action) => {
-    switch (action.type) {
-      case ActionType.SET_NUTRIENT_INFOS:
-        return action.nutrientInfos.map((nutrientInfo) => nutrientInfo.name);
-      default:
-        return state;
-    }
-  },
-  nutrientIds: (state = initialState.nutrientIds, action) => {
-    switch (action.type) {
-      case ActionType.SET_NUTRIENT_INFOS:
-        return action.nutrientInfos.map((nutrientInfo) => nutrientInfo.id);
-      default:
-        return state;
-    }
-  },
-  foodState: (
-    state = null,
-    action
-  ):
-    | SRLegacyFoodState
-    | RecipeState
-    | BrandedFoodState
-    | LoadingState
-    | null => {
-    switch (action.type) {
-      case ActionType.SELECT_FOOD:
-        return {
+function foodStateFromFood(
+  food: Food
+): RecipeState | BrandedFoodState | SRLegacyFoodState {
+  switch (food.dataType) {
+    case "Branded":
+      return stateFromBrandedFood(food);
+    case "Recipe":
+      return stateFromRecipe(food);
+    case "SR Legacy":
+      return {
+        stateType: "SRLegacyFood",
+        food: food,
+        selectedQuantity: 0,
+      };
+  }
+}
+
+function rootReducer(
+  state: RootState = initialState,
+  action: RootAction
+): RootState {
+  switch (action.type) {
+    case ActionType.DESELECT:
+      return { ...state, deselected: true };
+    case ActionType.SELECT_FOOD:
+      return {
+        ...state,
+        foodId: action.foodRef.foodId,
+        deselected: false,
+        foodState: {
           stateType: "Loading",
           food: { description: action.foodRef.description },
-        };
-      case ActionType.NEW_FOOD:
-      case ActionType.UPDATE_FOOD:
-        switch (action.food.dataType) {
-          case "Branded":
-            return stateFromBrandedFood(action.food);
-          case "Recipe":
-            return stateFromRecipe(action.food);
-          case "SR Legacy":
-            return {
-              stateType: "SRLegacyFood",
-              food: action.food,
-              selectedQuantity: 0,
-            };
-        }
-      case ActionType.UPDATE_BRANDED_FOOD:
-        if (state?.stateType != "BrandedFoodEdit") {
-          return state;
-        }
-        return brandedFoodReducer(state, action.action);
-      case ActionType.UPDATE_RECIPE:
-        if (state?.stateType != "RecipeEdit") {
-          return state;
-        }
-        return recipeReducer(state, action.action);
-      default:
+        },
+      };
+    case ActionType.NEW_FOOD:
+      return {
+        ...state,
+        foodId: action.foodId,
+        deselected: false,
+        foodState: foodStateFromFood(action.food),
+      };
+    case ActionType.UPDATE_FOOD:
+      return {
+        ...state,
+        foodState: foodStateFromFood(action.food),
+      };
+    case ActionType.UPDATE_BRANDED_FOOD:
+      if (state.foodState?.stateType != "BrandedFoodEdit") {
         return state;
-    }
-  },
-});
+      }
+      return {
+        ...state,
+        foodState: brandedFoodReducer(state.foodState, action.action),
+      };
+    case ActionType.UPDATE_RECIPE:
+      if (state.foodState?.stateType != "RecipeEdit") {
+        return state;
+      }
+      return {
+        ...state,
+        foodState: recipeReducer(state.foodState, action.action),
+      };
+    case ActionType.SET_NUTRIENT_INFOS:
+      return {
+        ...state,
+        nutrientIds: action.nutrientInfos.map(
+          (nutrientInfo) => nutrientInfo.id
+        ),
+        nutrientNames: action.nutrientInfos.map(
+          (nutrientInfo) => nutrientInfo.name
+        ),
+      };
+    default:
+      return state;
+  }
+}
 
 export const store = createStore(
   rootReducer,
