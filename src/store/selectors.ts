@@ -16,5 +16,11 @@ import { RootState } from "./types";
 import { FoodRef } from "../../core/FoodRef";
 
 export function selectFoodRef(state: RootState): FoodRef | null {
-  return state.selectedFood.deselected ? null : state.selectedFood.foodRef;
+  if (state.deselected || state.foodId == null) {
+    return null;
+  }
+  return {
+    foodId: state.foodId,
+    description: state.foodState?.food?.description || "Loading...",
+  };
 }

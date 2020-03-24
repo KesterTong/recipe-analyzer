@@ -12,7 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootAction, ActionType, ThunkDispatch, ThunkResult } from "./types";
+import {
+  RootAction,
+  ActionType,
+  ThunkDispatch,
+  ThunkResult,
+  LoadingState,
+} from "./types";
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
@@ -33,7 +39,14 @@ import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";
 import { selectFoodRef } from "./selectors";
 
-export { RootState, BrandedFoodState, RecipeState, ThunkDispatch, ThunkResult, selectFoodRef };
+export {
+  RootState,
+  BrandedFoodState,
+  RecipeState,
+  ThunkDispatch,
+  ThunkResult,
+  selectFoodRef,
+};
 
 function stateFromFood(
   food: Food
@@ -49,47 +62,26 @@ function stateFromFood(
 }
 
 const rootReducer = combineReducers<RootState, RootAction>({
-  selectedFood: (state = initialState.selectedFood, action) => {
+  foodId: (state = initialState.foodId, action) => {
     switch (action.type) {
       case ActionType.DESELECT:
-        return { ...state, deselected: true };
+        return state;
       case ActionType.SELECT_FOOD:
-        return { foodRef: action.foodRef, deselected: false };
+        return action.foodRef.foodId;
       case ActionType.NEW_FOOD:
-        return {
-          foodRef: {
-            foodId: action.foodId,
-            description: action.food.description,
-          },
-          deselected: false,
-        };
+        return action.foodId;
+      default:
+        return state;
+    }
+  },
+  deselected: (state = initialState.deselected, action) => {
+    switch (action.type) {
+      case ActionType.DESELECT:
+        return true;
+      case ActionType.SELECT_FOOD:
+      case ActionType.NEW_FOOD:
       case ActionType.UPDATE_RECIPE:
-        if (action.action.type != RecipeActionType.UPDATE_DESCRIPTION) {
-          return state;
-        }
-        return {
-          ...state,
-          foodRef: state.foodRef
-            ? { ...state.foodRef, description: action.action.description }
-            : null,
-        };
-      case ActionType.UPDATE_BRANDED_FOOD:
-        if (action.action.type != BrandedFoodActionType.UPDATE_DESCRIPTION) {
-          return state;
-        }
-        return {
-          ...state,
-          foodRef: state.foodRef
-            ? { ...state.foodRef, description: action.action.description }
-            : null,
-        };
-      case ActionType.UPDATE_FOOD:
-        return {
-          ...state,
-          foodRef: state.foodRef
-            ? { ...state.foodRef, description: action.food.description }
-            : null,
-        };
+        return false;
       default:
         return state;
     }
@@ -113,10 +105,18 @@ const rootReducer = combineReducers<RootState, RootAction>({
   foodState: (
     state = null,
     action
-  ): SRLegacyFoodState | RecipeState | BrandedFoodState | null => {
+  ):
+    | SRLegacyFoodState
+    | RecipeState
+    | BrandedFoodState
+    | LoadingState
+    | null => {
     switch (action.type) {
       case ActionType.SELECT_FOOD:
-        return null;
+        return {
+          stateType: "Loading",
+          food: { description: action.foodRef.description },
+        };
       case ActionType.NEW_FOOD:
       case ActionType.UPDATE_FOOD:
         switch (action.food.dataType) {

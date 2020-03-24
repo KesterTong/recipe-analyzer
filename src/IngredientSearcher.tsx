@@ -20,10 +20,9 @@ export class IngredientSearcher extends React.Component<
 
   render() {
     let foodRef = this.props.foodRef;
-    let selected =
-      foodRef
-        ? [{ label: foodRef.description, value: foodRef.foodId }]
-        : [];
+    let selected = foodRef
+      ? [{ label: foodRef.description, value: foodRef.foodId }]
+      : [];
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
         this.props.select({

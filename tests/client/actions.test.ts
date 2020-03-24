@@ -52,24 +52,18 @@ describe("actions", () => {
     );
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      selectedFood: {
-        foodRef: {
-          foodId: "userData/abcdefg",
+      foodId: "userData/abcdefg",
+      foodState: {
+        stateType: "Loading",
+        food: {
           description: "My Food",
         },
-        deselected: false,
       },
     });
     await actionCompleted;
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      selectedFood: {
-        foodRef: {
-          foodId: "userData/abcdefg",
-          description: "Plantain Chips",
-        },
-        deselected: false,
-      },
+      foodId: "userData/abcdefg",
       foodState: {
         stateType: "BrandedFood",
         food: TEST_BRANDED_FOOD,
@@ -87,13 +81,7 @@ describe("actions", () => {
     store.dispatch(updateBrandedFoodDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      selectedFood: {
-        foodRef: {
-          foodId: "userData/abcdefg",
-          description: "New Description",
-        },
-        deselected: false,
-      },
+      foodId: "userData/abcdefg",
       foodState: {
         stateType: "BrandedFood",
         food: TEST_BRANDED_FOOD,
@@ -106,13 +94,7 @@ describe("actions", () => {
     await store.dispatch(saveFood());
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      selectedFood: {
-        foodRef: {
-          foodId: "userData/abcdefg",
-          description: "New Description",
-        },
-        deselected: false,
-      },
+      foodId: "userData/abcdefg",
       foodState: {
         stateType: "BrandedFood",
         food: {
@@ -139,13 +121,7 @@ describe("actions", () => {
     await store.dispatch(newRecipe());
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      selectedFood: {
-        foodRef: {
-          foodId: "userData/abcdefg",
-          description: "New Recipe",
-        },
-        deselected: false,
-      },
+      foodId: "userData/abcdefg",
       foodState: {
         stateType: "Recipe",
         food: NEW_RECIPE,

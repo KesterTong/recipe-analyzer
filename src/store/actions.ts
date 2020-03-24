@@ -49,9 +49,9 @@ export function newFood(foodId: string, food: Food): RootAction {
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const state = getState();
-    const foodRef = state.selectedFood.foodRef;
-    if (foodRef == null) {
-      throw "foodRef was null.  This should never happen when saveFood is called.";
+    const foodId = state.foodId;
+    if (foodId == null) {
+      throw "foodId was null.  This should never happen when saveFood is called.";
     }
     let food: Food;
     if (state.foodState?.stateType == "BrandedFood") {
@@ -61,9 +61,9 @@ export function saveFood(): ThunkResult<Promise<void>> {
     } else if (state.foodState?.stateType == "SRLegacyFood") {
       food = state.foodState.food;
     } else {
-      throw "Illegal state: foodRef was not null but {brandedFood|srLegacyFood|recipe}State were all null";
+      throw "Illegal state: foodId was not null but was null";
     }
-    await patchFood(foodRef.foodId, food);
+    await patchFood(foodId, food);
     dispatch(updateAfterSave(food));
   };
 }
@@ -73,7 +73,7 @@ export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
     dispatch(select(foodRef));
     try {
       const food = await getFood(foodRef.foodId);
-      if (getState().selectedFood.foodRef?.foodId != foodRef.foodId) {
+      if (getState().foodId != foodRef.foodId) {
         return;
       }
       dispatch(updateFood(food));

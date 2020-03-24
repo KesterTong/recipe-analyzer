@@ -24,8 +24,10 @@ import { FoodRef } from "../../core/FoodRef";
 
 // State of a food whose description may be known but nothing else.
 export interface LoadingState {
-  stateType: 'Loading';
-  description: string | null;
+  stateType: "Loading";
+  food: {
+    description: string | null;
+  };
 }
 
 // Constraints on RootState
@@ -36,17 +38,21 @@ export interface LoadingState {
 //  - If any of srLegacyFoodState, recipeState or BrandedFoodState is
 //    non-null then selectedFood.foodRef should be non-null.
 export interface RootState {
-  selectedFood: {
-    foodRef: FoodRef | null;
-    deselected: boolean;
-  };
-  foodState: SRLegacyFoodState | RecipeState | BrandedFoodState | null;
+  foodId: string | null;
+  deselected: boolean;
+  foodState:
+    | SRLegacyFoodState
+    | RecipeState
+    | BrandedFoodState
+    | LoadingState
+    | null;
   nutrientNames: string[];
   nutrientIds: number[];
 }
 
 export const initialState: RootState = {
-  selectedFood: { foodRef: null, deselected: false },
+  foodId: null,
+  deselected: false,
   foodState: null,
   nutrientNames: [],
   nutrientIds: [],
