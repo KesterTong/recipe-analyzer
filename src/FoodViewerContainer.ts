@@ -16,32 +16,21 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { nutrientsFromFoodDetails } from "../core/normalizeFood";
 import { scaleNutrients } from "../core/Nutrients";
-import { FoodViewerProps, FoodViewer } from "./FoodViewer";
+import { FoodViewer } from "./FoodViewer";
 import { setSelectedQuantity } from "./store/food_view/actions";
-import { SRLegacyFood } from "../core/FoodDataCentral";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
+import { selectQuantities } from "./store/food_view/selectors";
 
 function mapStateToProps(state: RootState) {
-  if (
-    state.foodState?.stateType != "FoodView" ||
-    state.foodState.food.dataType != "SR Legacy"
-  ) {
+  if (state.foodState?.stateType != "FoodView") {
     return null;
   }
-  let quantities: { description: string; servings: number }[];
-  quantities = [{ description: "100 g", servings: 1 }];
+  const quantities = selectQuantities(state.foodState);
   const food = state.foodState.food;
-  food.foodPortions.forEach((portion) => {
-    let description =
-      portion.amount.toString() +
-      " " +
-      portion.modifier +
-      " (" +
-      portion.gramWeight +
-      " g)";
-    quantities.push({ description, servings: portion.gramWeight / 100 });
-  });
-  let nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientIds);
+  let nutrientsPerServing =
+    food.dataType == "Recipe"
+      ? []
+      : nutrientsFromFoodDetails(food, state.nutrientIds);
   let scale = quantities[state.foodState.selectedQuantity].servings;
   return {
     srLegacyFood: state.foodState.food,
