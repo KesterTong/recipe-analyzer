@@ -18,11 +18,12 @@ import { TEST_BRANDED_FOOD } from "../testData";
 import { NEW_RECIPE } from "../../src/store/recipe/conversion";
 import { initialState } from "../../src/store/types";
 import { updateDescription as updateBrandedFoodDescription } from "../../src/store/branded_food/actions";
-import { Edits as BrandedFoodEdits } from "../../src/store/branded_food/types";
+import { State as BrandedFoodEdits } from "../../src/store/branded_food/types";
 
 jest.mock("../../src/database");
 
 const _TEST_BRANDED_FOOD_EDITS: BrandedFoodEdits = {
+  stateType: "BrandedFoodEdit",
   description: "Plantain Chips",
   foodNutrients: [
     { amount: "170", id: 1008 },
@@ -64,11 +65,7 @@ describe("actions", () => {
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       foodId: "userData/abcdefg",
-      foodState: {
-        stateType: "BrandedFood",
-        food: TEST_BRANDED_FOOD,
-        edits: _TEST_BRANDED_FOOD_EDITS,
-      },
+      foodState: _TEST_BRANDED_FOOD_EDITS,
     });
     expect(getFoodMock.mock.calls).toEqual([["userData/abcdefg"]]);
   });
@@ -83,12 +80,8 @@ describe("actions", () => {
       ...initialState,
       foodId: "userData/abcdefg",
       foodState: {
-        stateType: "BrandedFood",
-        food: TEST_BRANDED_FOOD,
-        edits: {
-          ..._TEST_BRANDED_FOOD_EDITS,
-          description: "New Description",
-        },
+        ..._TEST_BRANDED_FOOD_EDITS,
+        description: "New Description",
       },
     });
     await store.dispatch(saveFood());
@@ -96,15 +89,8 @@ describe("actions", () => {
       ...initialState,
       foodId: "userData/abcdefg",
       foodState: {
-        stateType: "BrandedFood",
-        food: {
-          ...TEST_BRANDED_FOOD,
-          description: "New Description",
-        },
-        edits: {
-          ..._TEST_BRANDED_FOOD_EDITS,
-          description: "New Description",
-        },
+        ..._TEST_BRANDED_FOOD_EDITS,
+        description: "New Description",
       },
     });
     expect(getFoodMock.mock.calls).toEqual([["userData/abcdefg"]]);
@@ -123,12 +109,9 @@ describe("actions", () => {
       ...initialState,
       foodId: "userData/abcdefg",
       foodState: {
-        stateType: "Recipe",
-        food: NEW_RECIPE,
-        edits: {
-          description: "New Recipe",
-          ingredients: [],
-        },
+        stateType: "RecipeEdit",
+        description: "New Recipe",
+        ingredients: [],
       },
     });
     expect(insertFoodMock.mock.calls).toEqual([[NEW_RECIPE]]);

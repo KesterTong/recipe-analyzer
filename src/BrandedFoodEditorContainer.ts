@@ -26,7 +26,7 @@ import { RootAction } from "./store/types";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 
 function mapStateToProps(state: RootState) {
-  if (state.foodState?.stateType != "BrandedFood") {
+  if (state.foodState?.stateType != "BrandedFoodEdit") {
     return {
       hasBrandedFood: false,
       description: "",
@@ -36,7 +36,7 @@ function mapStateToProps(state: RootState) {
       nutrients: [],
     };
   }
-  const edits = state.foodState.edits;
+  const edits = state.foodState;
   const nutrientsById: { [index: number]: string } = {};
   edits.foodNutrients.forEach(({ id, amount }) => {
     nutrientsById[id] = amount;

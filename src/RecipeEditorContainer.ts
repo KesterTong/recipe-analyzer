@@ -30,7 +30,7 @@ import {
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.foodState;
-  if (recipeState?.stateType != "Recipe") {
+  if (recipeState?.stateType != "RecipeEdit") {
     return {
       hasRecipe: false,
       description: "",
@@ -38,7 +38,7 @@ function mapStateToProps(state: RootState) {
       ingredientsList: [],
     };
   }
-  const edits = recipeState.edits;
+  const edits = recipeState;
   return {
     hasRecipe: true,
     description: edits.description,

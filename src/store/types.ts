@@ -92,11 +92,6 @@ export interface UpdateFood {
   food: Food;
 }
 
-export interface UpdateAfterSave {
-  type: ActionType.UPDATE_AFTER_SAVE;
-  food: Food;
-}
-
 export interface SetSelectedQuantity {
   type: ActionType.SET_SELECTED_QUANTITY;
   index: number;
@@ -118,7 +113,6 @@ export type RootAction =
   | SelectFood
   | NewFood
   | UpdateFood
-  | UpdateAfterSave
   | SetSelectedQuantity
   | UpdateBrandedFood
   | UpdateRecipe;

@@ -131,36 +131,16 @@ const rootReducer = combineReducers<RootState, RootAction>({
               selectedQuantity: 0,
             };
         }
-      case ActionType.UPDATE_AFTER_SAVE:
-        switch (state?.stateType) {
-          case "BrandedFood":
-            return action.food.dataType == "Branded"
-              ? { ...state, food: action.food }
-              : state;
-          case "Recipe":
-            return action.food.dataType == "Recipe"
-              ? { ...state, food: action.food }
-              : state;
-          case "SRLegacyFood":
-            return action.food.dataType == "SR Legacy"
-              ? { ...state, food: action.food }
-              : state;
-          default:
-            return state;
-        }
       case ActionType.UPDATE_BRANDED_FOOD:
-        if (state?.stateType != "BrandedFood") {
+        if (state?.stateType != "BrandedFoodEdit") {
           return state;
         }
-        return {
-          ...state,
-          edits: brandedFoodReducer(state.edits, action.action),
-        };
+        return brandedFoodReducer(state, action.action);
       case ActionType.UPDATE_RECIPE:
-        if (state?.stateType != "Recipe") {
+        if (state?.stateType != "RecipeEdit") {
           return state;
         }
-        return { ...state, edits: recipeReducer(state.edits, action.action) };
+        return recipeReducer(state, action.action);
       default:
         return state;
     }

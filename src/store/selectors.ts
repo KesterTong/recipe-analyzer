@@ -19,8 +19,21 @@ export function selectFoodRef(state: RootState): FoodRef | null {
   if (state.deselected || state.foodId == null) {
     return null;
   }
+  let description: string;
+  switch (state.foodState?.stateType) {
+    case "BrandedFoodEdit":
+    case "RecipeEdit":
+      description = state.foodState.description;
+      break;
+    case "SRLegacyFood":
+    case "Loading":
+      description = state.foodState.food.description || "Loading...";
+      break;
+    default:
+      throw "Illegal state: foodId was not null but foodState was null";
+  }
   return {
     foodId: state.foodId,
-    description: state.foodState?.food?.description || "Loading...",
+    description,
   };
 }

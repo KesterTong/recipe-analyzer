@@ -24,15 +24,10 @@ export interface Ingredient {
   normalizedFood: NormalizedFood | null;
 }
 
-export interface Edits {
+export interface State {
+  stateType: "RecipeEdit";
   description: string;
   ingredients: (Ingredient | null)[];
-}
-
-export interface State {
-  stateType: "Recipe";
-  food: Recipe;
-  edits: Edits;
 }
 
 export enum ActionType {

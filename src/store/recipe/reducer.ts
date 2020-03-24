@@ -11,57 +11,57 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { ActionType, Edits, Ingredient, Action } from "./types";
+import { ActionType, State, Ingredient, Action } from "./types";
 
 function updateIngredient(
-  edits: Edits,
+  state: State,
   updateIndex: number,
   updateFn: (ingredient: Ingredient) => Ingredient
 ) {
   return {
-    ...edits,
-    ingredients: edits.ingredients.map((ingredient, index) =>
+    ...state,
+    ingredients: state.ingredients.map((ingredient, index) =>
       index == updateIndex && ingredient ? updateFn(ingredient) : ingredient
     ),
   };
 }
 
-export function reducer(edits: Edits, action: Action): Edits {
+export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case ActionType.UPDATE_DESCRIPTION:
-      return { ...edits, description: action.description };
+      return { ...state, description: action.description };
     case ActionType.ADD_INGREDIENT:
       return {
-        ...edits,
-        ingredients: edits.ingredients.concat([null]),
+        ...state,
+        ingredients: state.ingredients.concat([null]),
       };
     case ActionType.DELETE_INGREDIENT:
       return {
-        ...edits,
-        ingredients: edits.ingredients.filter(
+        ...state,
+        ingredients: state.ingredients.filter(
           (_, index) => index != action.index
         ),
       };
     case ActionType.UPDATE_INGREDIENT_AMOUNT:
-      return updateIngredient(edits, action.index, (ingredient) => ({
+      return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
         quantity: { ...ingredient.quantity, amount: action.amount },
       }));
     case ActionType.UPDATE_INGREDIENT_UNIT:
-      return updateIngredient(edits, action.index, (ingredient) => ({
+      return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
         quantity: { ...ingredient.quantity, unit: action.unit },
       }));
     case ActionType.UPDATE_INGREDIENT_FOOD:
-      return updateIngredient(edits, action.index, (ingredient) => ({
+      return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
         description: action.description,
         normalizedFood: action.food,
       }));
     case ActionType.SELECT_INGREDIENT:
       return {
-        ...edits,
-        ingredients: edits.ingredients.map((ingredient, index) => {
+        ...state,
+        ingredients: state.ingredients.map((ingredient, index) => {
           if (index != action.index) {
             return ingredient;
           }
@@ -77,7 +77,7 @@ export function reducer(edits: Edits, action: Action): Edits {
         }),
       };
     case ActionType.DESELECT_INGREDIENT:
-      return updateIngredient(edits, action.index, (ingredient) => ({
+      return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
         deselected: true,
       }));

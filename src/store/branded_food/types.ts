@@ -14,19 +14,14 @@ import { BrandedFood } from "../../../core/FoodDataCentral";
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface Edits {
+export interface State {
+  stateType: "BrandedFoodEdit";
   servingSize: string;
   servingSizeUnit: string;
   householdServingFullText: string;
   description: string;
   foodNutrients: { id: number; amount: string }[];
   selectedQuantity: number;
-}
-
-export interface State {
-  stateType: "BrandedFood";
-  food: BrandedFood;
-  edits: Edits;
 }
 
 export enum ActionType {

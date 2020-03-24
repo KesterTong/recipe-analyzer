@@ -11,22 +11,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { ActionType, Action, Edits } from "./types";
+import { ActionType, Action, State } from "./types";
 
-export function reducer(edits: Edits, action: Action): Edits {
+export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case ActionType.UPDATE_DESCRIPTION:
-      return { ...edits, description: action.description };
+      return { ...state, description: action.description };
     case ActionType.UPDATE_SERVING_SIZE:
-      return { ...edits, servingSize: action.servingSize };
+      return { ...state, servingSize: action.servingSize };
     case ActionType.UPDATE_SERVING_SIZE_UNIT:
-      return { ...edits, servingSizeUnit: action.servingSizeUnit };
+      return { ...state, servingSizeUnit: action.servingSizeUnit };
     case ActionType.UPDATE_HOUSEHOLD_UNIT:
-      return { ...edits, householdServingFullText: action.householdUnit };
+      return { ...state, householdServingFullText: action.householdUnit };
     case ActionType.UPDATE_NUTRIENT_VALUE:
       return {
-        ...edits,
-        foodNutrients: edits.foodNutrients.map((nutrient) =>
+        ...state,
+        foodNutrients: state.foodNutrients.map((nutrient) =>
           nutrient.id == action.nutrientId
             ? { ...nutrient, amount: action.value }
             : nutrient

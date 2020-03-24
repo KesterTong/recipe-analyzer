@@ -22,10 +22,6 @@ import {
 } from "./branded_food/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
-export function updateAfterSave(food: Food): RootAction {
-  return { type: ActionType.UPDATE_AFTER_SAVE, food };
-}
-
 export function setSelectedQuantity(index: number): RootAction {
   return { type: ActionType.SET_SELECTED_QUANTITY, index };
 }
@@ -47,16 +43,16 @@ export function newFood(foodId: string, food: Food): RootAction {
 }
 
 export function saveFood(): ThunkResult<Promise<void>> {
-  return async (dispatch, getState) => {
+  return async (_, getState) => {
     const state = getState();
     const foodId = state.foodId;
     if (foodId == null) {
       throw "foodId was null.  This should never happen when saveFood is called.";
     }
     let food: Food;
-    if (state.foodState?.stateType == "BrandedFood") {
+    if (state.foodState?.stateType == "BrandedFoodEdit") {
       food = brandedFoodFromState(state.foodState);
-    } else if (state.foodState?.stateType == "Recipe") {
+    } else if (state.foodState?.stateType == "RecipeEdit") {
       food = recipeFromState(state.foodState);
     } else if (state.foodState?.stateType == "SRLegacyFood") {
       food = state.foodState.food;
@@ -64,7 +60,6 @@ export function saveFood(): ThunkResult<Promise<void>> {
       throw "Illegal state: foodId was not null but was null";
     }
     await patchFood(foodId, food);
-    dispatch(updateAfterSave(food));
   };
 }
 
