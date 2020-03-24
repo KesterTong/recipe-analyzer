@@ -19,6 +19,8 @@ export function reducer(
   action: RootAction
 ): State | null {
   switch (action.type) {
+    case ActionType.SELECT_FOOD:
+      return null;
     case ActionType.NEW_FOOD:
     case ActionType.UPDATE_FOOD:
       return action.food?.dataType == "SR Legacy" && action.food

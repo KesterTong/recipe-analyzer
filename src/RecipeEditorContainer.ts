@@ -37,11 +37,12 @@ function mapStateToProps(state: RootState) {
       ingredientsList: [],
     };
   }
+  const edits = recipeState.edits;
   return {
     hasRecipe: true,
-    description: recipeState.description,
+    description: edits.description,
     nutrientNames: state.nutrientNames,
-    ingredientsList: recipeState.ingredients.map((ingredient) => {
+    ingredientsList: edits.ingredients.map((ingredient) => {
       const food = ingredient.normalizedFood;
       return {
         ...ingredient.foodInputState,

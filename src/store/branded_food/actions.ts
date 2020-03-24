@@ -17,10 +17,6 @@ import { brandedFoodFromState } from "./conversion";
 import { patchFood } from "../../database";
 import { BrandedFood } from "../../../core/FoodDataCentral";
 
-export function updateAfterSave(food: BrandedFood): Action {
-  return { type: ActionType.UPDATE_AFTER_SAVE, food };
-}
-
 export function updateServingSize(servingSize: string): Action {
   return { type: ActionType.UPDATE_SERVING_SIZE, servingSize };
 }
@@ -35,16 +31,4 @@ export function updateHouseholdUnit(householdUnit: string): Action {
 
 export function updateNutrientValue(nutrientId: number, value: string): Action {
   return { type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value };
-}
-
-export function maybeSave(): ThunkResult<Promise<void>> {
-  return async (dispatch, getState) => {
-    let state = getState();
-    let foodId = state.selectedFood.foodRef?.foodId;
-    if (foodId != null && state.brandedFoodState) {
-      const food = brandedFoodFromState(state.brandedFoodState);
-      await patchFood(foodId, food);
-      dispatch(updateAfterSave(food));
-    }
-  };
 }

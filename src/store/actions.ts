@@ -11,17 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { getFood, insertFood } from "../database";
+import { getFood, insertFood, patchFood } from "../database";
 import { Food } from "../../core/Food";
 import { RootAction, ThunkResult, ActionType } from "./types";
-import { NEW_RECIPE } from "./recipe/conversion";
-import { maybeSave as maybeSaveBrandedFood } from "./branded_food/actions";
-import { loadIngredient, maybeSave as maybeSaveRecipe } from "./recipe/actions";
-import { NEW_BRANDED_FOOD } from "./branded_food/conversion";
+import { NEW_RECIPE, recipeFromState } from "./recipe/conversion";
+import { loadIngredient } from "./recipe/actions";
+import {
+  NEW_BRANDED_FOOD,
+  brandedFoodFromState,
+} from "./branded_food/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
 export function updateDescription(description: string): RootAction {
   return { type: ActionType.UPDATE_DESCRIPTION, description };
+}
+
+export function updateAfterSave(food: Food): RootAction {
+  return { type: ActionType.UPDATE_AFTER_SAVE, food };
 }
 
 export function setSelectedQuantity(index: number): RootAction {
@@ -45,9 +51,24 @@ export function newFood(foodId: string, food: Food): RootAction {
 }
 
 export function saveFood(): ThunkResult<Promise<void>> {
-  return async (dispatch) => {
-    await dispatch(maybeSaveBrandedFood());
-    await dispatch(maybeSaveRecipe());
+  return async (dispatch, getState) => {
+    const state = getState();
+    const foodRef = state.selectedFood.foodRef;
+    if (foodRef == null) {
+      throw "foodRef was null.  This should never happen when saveFood is called.";
+    }
+    let food: Food;
+    if (state.brandedFoodState) {
+      food = brandedFoodFromState(state.brandedFoodState);
+    } else if (state.recipeState) {
+      food = recipeFromState(state.recipeState);
+    } else if (state.srLegacyFoodState) {
+      food = state.srLegacyFoodState.srLegacyFood;
+    } else {
+      throw "Illegal state: foodRef was not null but {brandedFood|srLegacyFood|recipe}State were all null";
+    }
+    await patchFood(foodRef.foodId, food);
+    dispatch(updateAfterSave(food));
   };
 }
 

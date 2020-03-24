@@ -29,16 +29,10 @@ export interface State {
 }
 
 export enum ActionType {
-  UPDATE_AFTER_SAVE = "@branded_food/UpdateAfterSave",
   UPDATE_SERVING_SIZE = "@branded_food/UpdateServingSize",
   UPDATE_SERVING_SIZE_UNIT = "@branded_food/UpdateServingSizeUnit",
   UPDATE_HOUSEHOLD_UNIT = "@branded_food/UpdateHouseholdUnit",
   UPDATE_NUTRIENT_VALUE = "@branded_food/UpdateNutrientValue",
-}
-
-export interface UpdateAfterSave {
-  type: ActionType.UPDATE_AFTER_SAVE;
-  food: BrandedFood;
 }
 
 export interface UpdateServingSize {
@@ -63,7 +57,6 @@ export interface UpdateNutrientValue {
 }
 
 export type Action =
-  | UpdateAfterSave
   | UpdateServingSize
   | UpdateServingSizeUnit
   | UpdateHouseholdUnit

@@ -26,6 +26,13 @@ import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { FoodRef } from "../../core/FoodRef";
 
+// Constraints on RootState
+//
+//  - Only one  of srLegacyFoodState, recipeState or BrandedFoodState
+//    should be non-null.
+//
+//  - If any of srLegacyFoodState, recipeState or BrandedFoodState is
+//    non-null then selectedFood.foodRef should be non-null.
 export interface RootState {
   selectedFood: FoodInputState;
   srLegacyFoodState: SRLegacyFoodState | null;
@@ -51,6 +58,7 @@ export enum ActionType {
   NEW_FOOD = "@NewFood",
   UPDATE_FOOD = "@UpdateFood",
   UPDATE_DESCRIPTION = "@UpdateDescription",
+  UPDATE_AFTER_SAVE = "@UpdateAfterSave",
   SET_SELECTED_QUANTITY = "@SetSelectedQuantity",
 }
 
@@ -85,6 +93,11 @@ export interface UpdateDescription {
   description: string;
 }
 
+export interface UpdateAfterSave {
+  type: ActionType.UPDATE_AFTER_SAVE;
+  food: Food;
+}
+
 export interface SetSelectedQuantity {
   type: ActionType.SET_SELECTED_QUANTITY;
   index: number;
@@ -97,6 +110,7 @@ export type RootAction =
   | NewFood
   | UpdateFood
   | UpdateDescription
+  | UpdateAfterSave
   | SetSelectedQuantity
   | BrandedFoodAction
   | RecipeAction;

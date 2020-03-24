@@ -148,8 +148,11 @@ describe("actions", () => {
         deselected: false,
       },
       recipeState: {
-        description: "New Recipe",
-        ingredients: [],
+        food: NEW_RECIPE,
+        edits: {
+          description: "New Recipe",
+          ingredients: [],
+        },
       },
     });
     expect(insertFoodMock.mock.calls).toEqual([[NEW_RECIPE]]);

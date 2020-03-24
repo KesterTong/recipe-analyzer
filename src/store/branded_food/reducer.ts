@@ -47,13 +47,17 @@ export function reducer(
   action: RootAction
 ): State | null {
   switch (action.type) {
+    case RootActionType.SELECT_FOOD:
+      return null;
     case RootActionType.NEW_FOOD:
     case RootActionType.UPDATE_FOOD:
       return action.food?.dataType == "Branded"
         ? stateFromBrandedFood(action.food)
         : null;
-    case ActionType.UPDATE_AFTER_SAVE:
-      return state ? { ...state, food: action.food } : state;
+    case RootActionType.UPDATE_AFTER_SAVE:
+      return state && action.food?.dataType == "Branded"
+        ? { ...state, food: action.food }
+        : state;
     default:
       if (state == null) {
         return state;

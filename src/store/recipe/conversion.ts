@@ -21,10 +21,11 @@ export const NEW_RECIPE: Recipe = {
 };
 
 export function recipeFromState(state: State): Recipe {
+  const edits = state.edits;
   return {
     dataType: "Recipe",
-    description: state.description,
-    ingredientsList: state.ingredients
+    description: edits.description,
+    ingredientsList: edits.ingredients
       .map((ingredient) => ({
         quantity: ingredient.quantity,
         foodId: ingredient.foodInputState.foodRef?.foodId!,
@@ -34,7 +35,7 @@ export function recipeFromState(state: State): Recipe {
 }
 
 export function stateFromRecipe(food: Recipe): State {
-  return {
+  const edits = {
     description: food.description,
     ingredients: food.ingredientsList.map((ingredient) => ({
       quantity: ingredient.quantity,
@@ -45,4 +46,5 @@ export function stateFromRecipe(food: Recipe): State {
       normalizedFood: null,
     })),
   };
+  return { food, edits };
 }

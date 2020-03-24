@@ -75,21 +75,11 @@ export function loadAndSelectIngredient(
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodRef.foodId);
-    const normalizedFood = food
-      ? await normalizeFood(food, getFood, getState().nutrientIds)
-      : null;
-    if (normalizedFood != null) {
-      dispatch(selectIngredient(index, foodRef, normalizedFood));
-    }
-  };
-}
-
-export function maybeSave(): ThunkResult<Promise<void>> {
-  return async (_, getState) => {
-    let state = getState();
-    let foodId = state.selectedFood.foodRef?.foodId;
-    if (foodId != null && state.recipeState) {
-      return patchFood(foodId, recipeFromState(state.recipeState));
-    }
+    const normalizedFood = await normalizeFood(
+      food,
+      getFood,
+      getState().nutrientIds
+    );
+    dispatch(selectIngredient(index, foodRef, normalizedFood));
   };
 }

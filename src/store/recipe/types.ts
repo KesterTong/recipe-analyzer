@@ -15,14 +15,20 @@ import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
 import { State as FoodInputState } from "../food_input/types";
+import { Recipe } from "../../../core/Recipe";
 
-export interface State {
+export interface Edits {
   description: string;
   ingredients: {
     quantity: Quantity;
     foodInputState: FoodInputState;
     normalizedFood: NormalizedFood | null;
   }[];
+}
+
+export interface State {
+  food: Recipe;
+  edits: Edits;
 }
 
 export enum ActionType {
