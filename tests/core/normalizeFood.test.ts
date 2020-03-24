@@ -25,7 +25,7 @@ import {
 import { Food } from "../../core/Food";
 
 describe("normalizeFood", () => {
-  function getFood(_: string): Promise<Food> {
+  function getFood(foodId: string): Promise<Food> {
     return Promise.resolve(TEST_BRANDED_FOOD);
   }
 
