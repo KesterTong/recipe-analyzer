@@ -14,7 +14,7 @@
 import * as React from "react";
 
 import { Form, Table, Button } from "react-bootstrap";
-import { IngredientSearcher } from "./IngredientSearcher";
+import { FoodInput } from "./FoodInput";
 import { FoodRef } from "../core/FoodRef";
 import { addNutrients } from "../core/Nutrients";
 
@@ -98,7 +98,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
               </td>
               <td className="col-6">
                 {
-                  <IngredientSearcher
+                  <FoodInput
                     key={index}
                     foodRef={ingredient.foodRef}
                     select={(foodRef) =>

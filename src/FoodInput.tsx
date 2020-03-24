@@ -4,15 +4,13 @@ import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { searchFoods } from "./database";
 import { FoodRef } from "../core/FoodRef";
 
-export interface IngredientSearcherProps {
+export interface FoodInputProps {
   foodRef: FoodRef | null;
   select(foodRef: FoodRef): void;
   deselect(): void;
 }
 
-export class IngredientSearcher extends React.Component<
-  IngredientSearcherProps
-> {
+export class FoodInput extends React.Component<FoodInputProps> {
   state = {
     isLoading: false,
     options: [],

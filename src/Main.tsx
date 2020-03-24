@@ -16,7 +16,7 @@ import * as React from "react";
 
 import { Form, Navbar, Container, Button, Spinner } from "react-bootstrap";
 
-import { IngredientSearcher } from "./IngredientSearcher";
+import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 import { SRLegacyFoodViewer } from "./SRLegacyFoodView";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
@@ -37,7 +37,7 @@ export const Main: React.SFC<MainProps> = (props) => {
     <React.Fragment>
       <Navbar bg="light" expand="lg">
         <Form inline>
-          <IngredientSearcher
+          <FoodInput
             foodRef={props.foodRef}
             select={props.select}
             deselect={props.deselect}
