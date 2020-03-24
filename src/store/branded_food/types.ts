@@ -24,6 +24,7 @@ export interface Edits {
 }
 
 export interface State {
+  stateType: "BrandedFood";
   food: BrandedFood;
   edits: Edits;
 }

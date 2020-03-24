@@ -20,7 +20,8 @@ import { reducer as brandedFoodReducer } from "./branded_food/reducer";
 import { State as BrandedFoodState } from "./branded_food/types";
 import { deselect, select, updateDescription } from "./food_input/actions";
 import { reducer as recipeReducer } from "./recipe/reducer";
-import { reducer as srLegacyFoodReducer } from "./sr_legacy_food/reducer";
+import { reducer as srLegacyReducer } from "./sr_legacy_food/reducer";
+import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
 import { reducer as foodInputReducer } from "./food_input/reducer";
 import { stateFromBrandedFood } from "./branded_food/conversion";
 import { State as RecipeState } from "./recipe/types";
@@ -85,9 +86,58 @@ const rootReducer = combineReducers<RootState, RootAction>({
         return state;
     }
   },
-  srLegacyFoodState: srLegacyFoodReducer,
-  brandedFoodState: brandedFoodReducer,
-  recipeState: recipeReducer,
+  foodState: (
+    state = null,
+    action
+  ): SRLegacyFoodState | RecipeState | BrandedFoodState | null => {
+    switch (action.type) {
+      case ActionType.SELECT_FOOD:
+        return null;
+      case ActionType.NEW_FOOD:
+      case ActionType.UPDATE_FOOD:
+        switch (action.food.dataType) {
+          case "Branded":
+            return stateFromBrandedFood(action.food);
+          case "Recipe":
+            return stateFromRecipe(action.food);
+          case "SR Legacy":
+            return {
+              stateType: "SRLegacyFood",
+              food: action.food,
+              selectedQuantity: 0,
+            };
+        }
+      case ActionType.UPDATE_AFTER_SAVE:
+        switch (state?.stateType) {
+          case "BrandedFood":
+            return action.food.dataType == "Branded"
+              ? { ...state, food: action.food }
+              : state;
+          case "Recipe":
+            return action.food.dataType == "Recipe"
+              ? { ...state, food: action.food }
+              : state;
+          case "SRLegacyFood":
+            return action.food.dataType == "SR Legacy"
+              ? { ...state, food: action.food }
+              : state;
+          default:
+            return state;
+        }
+      default:
+        if (state == null) {
+          return state;
+        }
+        switch (state.stateType) {
+          case "BrandedFood":
+            return { ...state, edits: brandedFoodReducer(state.edits, action) };
+          case "Recipe":
+            return { ...state, edits: recipeReducer(state.edits, action) };
+          case "SRLegacyFood":
+            return srLegacyReducer(state, action);
+        }
+    }
+  },
 });
 
 export const store = createStore(

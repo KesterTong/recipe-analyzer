@@ -35,18 +35,14 @@ import { FoodRef } from "../../core/FoodRef";
 //    non-null then selectedFood.foodRef should be non-null.
 export interface RootState {
   selectedFood: FoodInputState;
-  srLegacyFoodState: SRLegacyFoodState | null;
-  recipeState: RecipeState | null;
-  brandedFoodState: BrandedFoodState | null;
+  foodState: SRLegacyFoodState | RecipeState | BrandedFoodState | null;
   nutrientNames: string[];
   nutrientIds: number[];
 }
 
 export const initialState: RootState = {
   selectedFood: foodInputInitialState,
-  srLegacyFoodState: null,
-  recipeState: null,
-  brandedFoodState: null,
+  foodState: null,
   nutrientNames: [],
   nutrientIds: [],
 };

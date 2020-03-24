@@ -12,23 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { State } from "./types";
-import { initialState, RootAction, ActionType } from "../types";
+import { RootAction, ActionType } from "../types";
 
 export function reducer(
-  state: State | null = initialState.srLegacyFoodState,
+  state: State | null = null,
   action: RootAction
 ): State | null {
   switch (action.type) {
-    case ActionType.SELECT_FOOD:
-      return null;
-    case ActionType.NEW_FOOD:
-    case ActionType.UPDATE_FOOD:
-      return action.food?.dataType == "SR Legacy" && action.food
-        ? {
-            srLegacyFood: action.food,
-            selectedQuantity: 0,
-          }
-        : null;
     case ActionType.SET_SELECTED_QUANTITY:
       return state ? { ...state, selectedQuantity: action.index } : null;
     default:

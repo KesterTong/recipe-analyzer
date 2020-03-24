@@ -33,6 +33,7 @@ export function stateFromBrandedFood(food: BrandedFood): State {
     amount: (((nutrient.amount || 0) * food.servingSize) / 100).toString(),
   }));
   return {
+    stateType: "BrandedFood",
     food,
     edits: {
       description: food.description,

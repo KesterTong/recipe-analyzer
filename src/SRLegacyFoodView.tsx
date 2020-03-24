@@ -56,12 +56,12 @@ const SRLegacyFoodViewerView: React.SFC<SRLegacyFoodViewerProps> = (props) => {
 
 function mapStateToProps(state: RootState) {
   let srLegacyFoodProps: SRLegacyFoodProps | null;
-  if (state.srLegacyFoodState == null) {
+  if (state.foodState?.stateType != "SRLegacyFood") {
     srLegacyFoodProps = null;
   } else {
     let quantities: { description: string; servings: number }[];
     quantities = [{ description: "100 g", servings: 1 }];
-    const food = state.srLegacyFoodState.srLegacyFood;
+    const food = state.foodState.food;
     food.foodPortions.forEach((portion) => {
       let description =
         portion.amount.toString() +
@@ -73,14 +73,14 @@ function mapStateToProps(state: RootState) {
       quantities.push({ description, servings: portion.gramWeight / 100 });
     });
     let nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientIds);
-    let scale = quantities[state.srLegacyFoodState.selectedQuantity].servings;
+    let scale = quantities[state.foodState.selectedQuantity].servings;
     srLegacyFoodProps = {
-      srLegacyFood: state.srLegacyFoodState.srLegacyFood,
+      srLegacyFood: state.foodState.food,
       viewerProps: {
         nutrientNames: state.nutrientNames,
         nutrientValues: scaleNutrients(nutrientsPerServing, scale),
         quantities: quantities.map((quantity) => quantity.description),
-        selectedQuantity: state.srLegacyFoodState.selectedQuantity,
+        selectedQuantity: state.foodState.selectedQuantity,
       },
     };
   }

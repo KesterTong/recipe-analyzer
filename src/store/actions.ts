@@ -58,12 +58,12 @@ export function saveFood(): ThunkResult<Promise<void>> {
       throw "foodRef was null.  This should never happen when saveFood is called.";
     }
     let food: Food;
-    if (state.brandedFoodState) {
-      food = brandedFoodFromState(state.brandedFoodState);
-    } else if (state.recipeState) {
-      food = recipeFromState(state.recipeState);
-    } else if (state.srLegacyFoodState) {
-      food = state.srLegacyFoodState.srLegacyFood;
+    if (state.foodState?.stateType == "BrandedFood") {
+      food = brandedFoodFromState(state.foodState);
+    } else if (state.foodState?.stateType == "Recipe") {
+      food = recipeFromState(state.foodState);
+    } else if (state.foodState?.stateType == "SRLegacyFood") {
+      food = state.foodState.food;
     } else {
       throw "Illegal state: foodRef was not null but {brandedFood|srLegacyFood|recipe}State were all null";
     }

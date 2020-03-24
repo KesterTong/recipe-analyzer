@@ -27,6 +27,7 @@ export interface Edits {
 }
 
 export interface State {
+  stateType: "Recipe";
   food: Recipe;
   edits: Edits;
 }

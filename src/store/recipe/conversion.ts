@@ -46,5 +46,5 @@ export function stateFromRecipe(food: Recipe): State {
       normalizedFood: null,
     })),
   };
-  return { food, edits };
+  return { stateType: "Recipe", food, edits };
 }

@@ -28,8 +28,8 @@ import {
 } from "./store/recipe/actions";
 
 function mapStateToProps(state: RootState) {
-  const recipeState = state.recipeState;
-  if (recipeState == null) {
+  const recipeState = state.foodState;
+  if (recipeState?.stateType != "Recipe") {
     return {
       hasRecipe: false,
       description: "",

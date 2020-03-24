@@ -74,7 +74,8 @@ describe("actions", () => {
         },
         deselected: false,
       },
-      brandedFoodState: {
+      foodState: {
+        stateType: "BrandedFood",
         food: TEST_BRANDED_FOOD,
         edits: _TEST_BRANDED_FOOD_EDITS,
       },
@@ -97,7 +98,8 @@ describe("actions", () => {
         },
         deselected: false,
       },
-      brandedFoodState: {
+      foodState: {
+        stateType: "BrandedFood",
         food: TEST_BRANDED_FOOD,
         edits: {
           ..._TEST_BRANDED_FOOD_EDITS,
@@ -115,7 +117,8 @@ describe("actions", () => {
         },
         deselected: false,
       },
-      brandedFoodState: {
+      foodState: {
+        stateType: "BrandedFood",
         food: {
           ...TEST_BRANDED_FOOD,
           description: "New Description",
@@ -147,7 +150,8 @@ describe("actions", () => {
         },
         deselected: false,
       },
-      recipeState: {
+      foodState: {
+        stateType: "Recipe",
         food: NEW_RECIPE,
         edits: {
           description: "New Recipe",
