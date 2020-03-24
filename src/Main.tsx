@@ -18,22 +18,11 @@ import { Form, Navbar, Container, Button, Spinner } from "react-bootstrap";
 
 import { IngredientSearcher } from "./IngredientSearcher";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
-import {
-  selectAndLoad,
-  saveFood,
-  newBrandedFood,
-  newRecipe,
-  deselect,
-} from "./store/actions";
-import { RootState, selectFoodRef } from "./store";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
 import { SRLegacyFoodViewer } from "./SRLegacyFoodView";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
-import { ThunkDispatch } from "./store/types";
 import { FoodRef } from "../core/FoodRef";
 
-interface IngredientBrowserProps {
+interface MainProps {
   loading: boolean;
   foodRef: FoodRef | null;
   select(foodRef: FoodRef): void;
@@ -43,7 +32,7 @@ interface IngredientBrowserProps {
   newRecipe: () => void;
 }
 
-const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
+export const Main: React.SFC<MainProps> = (props) => {
   return (
     <React.Fragment>
       <Navbar bg="light" expand="lg">
@@ -70,28 +59,3 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
     </React.Fragment>
   );
 };
-
-function mapStateToProps(state: RootState) {
-  return {
-    foodRef: selectFoodRef(state),
-    loading: state.foodId != null && state.foodState?.stateType == "Loading",
-  };
-}
-
-function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      deselect,
-      select: selectAndLoad,
-      saveFood,
-      newBrandedFood,
-      newRecipe,
-    },
-    dispatch
-  );
-}
-
-export const IngredientBrowser = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(IngredientBrowserView);

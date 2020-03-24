@@ -18,7 +18,7 @@ import * as firebaseui from "firebaseui";
 
 import { firebaseConfig } from "./config";
 import { getNutrientInfo } from "./database";
-import { IngredientBrowser } from "./IngredientBrowser";
+import { MainContainer } from "./MainContainer";
 import ReactDOM = require("react-dom");
 import React = require("react");
 import { Provider } from "react-redux";
@@ -38,7 +38,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     );
     ReactDOM.render(
       <Provider store={store}>
-        <IngredientBrowser />
+        <MainContainer />
       </Provider>,
       document.getElementById("root")
     );
