@@ -19,7 +19,7 @@ import { Form, Navbar, Container, Spinner, Button } from "react-bootstrap";
 import { IngredientSearcher } from "./IngredientSearcher";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 import {
-  select,
+  selectAndLoad,
   saveFood,
   newBrandedFood,
   newRecipe,
@@ -79,7 +79,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
       deselect,
-      select,
+      select: selectAndLoad,
       saveFood,
       newBrandedFood,
       newRecipe,

@@ -14,7 +14,7 @@
 import { getFood, insertFood, patchFood } from "../../src/database";
 import { store, RootState, BrandedFoodState } from "../../src/store";
 import {
-  select,
+  selectAndLoad,
   newRecipe,
   updateDescription,
   saveFood,
@@ -52,7 +52,7 @@ describe("actions", () => {
   it("SelectFood_Branded", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     let actionCompleted = store.dispatch(
-      select({ foodId: "userData/abcdefg", description: "My Food" })
+      selectAndLoad({ foodId: "userData/abcdefg", description: "My Food" })
     );
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
@@ -85,7 +85,7 @@ describe("actions", () => {
   it("UpdateDescriptionAndSave", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     await store.dispatch(
-      select({ foodId: "userData/abcdefg", description: "My Food" })
+      selectAndLoad({ foodId: "userData/abcdefg", description: "My Food" })
     );
     store.dispatch(updateDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({

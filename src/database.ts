@@ -29,14 +29,14 @@ export async function getNutrientInfo(): Promise<NutrientInfo[]> {
   return JSON.parse(documentData.data()?.value);
 }
 
-export async function getFood(foodId: string): Promise<Food | null> {
+export async function getFood(foodId: string): Promise<Food> {
   const documentData = await firebase.firestore().doc(foodId).get();
   let data = documentData.data();
   if (data) {
     return <Food>JSON.parse(data.data);
   }
   if (!foodId.startsWith("fdcData/")) {
-    return null;
+    throw "Custom food " + +" not found";
   }
   let fdcId = Number(foodId.substr(8, foodId.length - 8));
   let foodData = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));

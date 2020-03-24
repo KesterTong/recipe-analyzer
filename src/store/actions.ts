@@ -11,16 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { patchFood, getFood, insertFood } from "../database";
+import { getFood, insertFood } from "../database";
 import { Food } from "../../core/Food";
 import { RootAction, ThunkResult, ActionType } from "./types";
-import { recipeFromState, NEW_RECIPE } from "./recipe/conversion";
+import { NEW_RECIPE } from "./recipe/conversion";
 import { maybeSave as maybeSaveBrandedFood } from "./branded_food/actions";
 import { loadIngredient, maybeSave as maybeSaveRecipe } from "./recipe/actions";
-import {
-  brandedFoodFromState,
-  NEW_BRANDED_FOOD,
-} from "./branded_food/conversion";
+import { NEW_BRANDED_FOOD } from "./branded_food/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
 export function updateDescription(description: string): RootAction {
@@ -31,6 +28,22 @@ export function setSelectedQuantity(index: number): RootAction {
   return { type: ActionType.SET_SELECTED_QUANTITY, index };
 }
 
+export function deselect(): RootAction {
+  return { type: ActionType.DESELECT };
+}
+
+export function select(foodRef: FoodRef): RootAction {
+  return { type: ActionType.SELECT_FOOD, foodRef };
+}
+
+export function updateFood(food: Food): RootAction {
+  return { type: ActionType.UPDATE_FOOD, food };
+}
+
+export function newFood(foodId: string, food: Food): RootAction {
+  return { type: ActionType.NEW_FOOD, foodId, food };
+}
+
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (dispatch) => {
     await dispatch(maybeSaveBrandedFood());
@@ -38,41 +51,40 @@ export function saveFood(): ThunkResult<Promise<void>> {
   };
 }
 
-export function deselect(): RootAction {
-  return { type: ActionType.DESELECT };
-}
-
-export function select(foodRef: FoodRef): ThunkResult<Promise<void>> {
+export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch({ type: ActionType.SELECT_FOOD, foodRef });
-    const food = await getFood(foodRef.foodId);
-    if (food == null) {
-      // TODO: handle this error.
-      return;
+    dispatch(select(foodRef));
+    try {
+      const food = await getFood(foodRef.foodId);
+      if (getState().selectedFood.foodRef?.foodId != foodRef.foodId) {
+        return;
+      }
+      dispatch(updateFood(food));
+      if (food.dataType != "Recipe") {
+        return;
+      }
+      await Promise.all(
+        food.ingredientsList.map((ingredient, index) => {
+          dispatch(loadIngredient(index, ingredient.foodId));
+        })
+      );
+    } catch (err) {
+      // TODO: display a warning to user.
+      console.log(err);
     }
-    if (getState().selectedFood.foodRef?.foodId != foodRef.foodId) {
-      return;
-    }
-    dispatch({ type: ActionType.UPDATE_FOOD, foodId: foodRef.foodId, food });
-    if (food.dataType == "Recipe") {
-      food.ingredientsList.forEach((ingredient, index) => {
-        dispatch(loadIngredient(index, ingredient.foodId));
-      });
-    }
-  };
-}
-
-function newFood(food: Food): ThunkResult<Promise<void>> {
-  return async (dispatch) => {
-    let foodId = await insertFood(food);
-    dispatch({ type: ActionType.NEW_FOOD, foodId, food });
   };
 }
 
 export function newBrandedFood(): ThunkResult<Promise<void>> {
-  return (dispatch) => dispatch(newFood(NEW_BRANDED_FOOD));
+  return async (dispatch) => {
+    const foodId = await insertFood(NEW_BRANDED_FOOD);
+    dispatch(newFood(foodId, NEW_BRANDED_FOOD));
+  };
 }
 
 export function newRecipe(): ThunkResult<Promise<void>> {
-  return (dispatch) => dispatch(newFood(NEW_RECIPE));
+  return async (dispatch) => {
+    const foodId = await insertFood(NEW_RECIPE);
+    dispatch(newFood(foodId, NEW_RECIPE));
+  };
 }
