@@ -15,7 +15,6 @@
 import { Nutrients } from "./Nutrients";
 
 export interface NormalizedFood {
-  description: string;
   nutrientsPerServing: Nutrients;
   // amount and unit of serving equivalent quantities,
   // represented as a dict.

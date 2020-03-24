@@ -44,15 +44,16 @@ function mapStateToProps(state: RootState) {
     description: edits.description,
     nutrientNames: state.nutrientNames,
     ingredientsList: edits.ingredients.map((ingredient) => {
-      const food = ingredient.normalizedFood;
+      const food = ingredient?.normalizedFood;
       return {
         foodRef: selectFoodRef(ingredient),
-        amount: ingredient.quantity.amount,
-        unit: ingredient.quantity.unit,
-        units: food ? Object.keys(food.servingEquivalentQuantities) : ["g"],
+        amount: ingredient ? ingredient.quantity.amount : 0,
+        unit: ingredient ? ingredient.quantity.unit : "",
+        units: food ? Object.keys(food.servingEquivalentQuantities) : [""],
         nutrients:
-          (food ? nutrientsForQuantity(ingredient.quantity, food) : null) ||
-          (state.nutrientIds || []).map((_) => 0),
+          (food && ingredient
+            ? nutrientsForQuantity(ingredient.quantity, food)
+            : null) || (state.nutrientIds || []).map((_) => 0),
       };
     }),
   };

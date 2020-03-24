@@ -14,8 +14,12 @@
 import { FoodRef } from "../../../core/FoodRef";
 import { Ingredient } from "./types";
 
-export function selectFoodRef(ingredient: Ingredient): FoodRef | null {
-  return ingredient.foodInputState.deselected
-    ? null
-    : ingredient.foodInputState.foodRef;
+export function selectFoodRef(ingredient: Ingredient | null): FoodRef | null {
+  if (ingredient == null || ingredient.deselected) {
+    return null;
+  }
+  return {
+    foodId: ingredient.foodId,
+    description: ingredient.description || "Loading...",
+  };
 }

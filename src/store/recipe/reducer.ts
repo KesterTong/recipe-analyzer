@@ -21,7 +21,7 @@ function updateIngredient(
   return {
     ...edits,
     ingredients: edits.ingredients.map((ingredient, index) =>
-      index == updateIndex ? updateFn(ingredient) : ingredient
+      index == updateIndex && ingredient ? updateFn(ingredient) : ingredient
     ),
   };
 }
@@ -33,16 +33,7 @@ export function reducer(edits: Edits, action: Action): Edits {
     case ActionType.ADD_INGREDIENT:
       return {
         ...edits,
-        ingredients: edits.ingredients.concat([
-          {
-            quantity: {
-              amount: 100,
-              unit: "g",
-            },
-            foodInputState: { foodRef: null, deselected: false },
-            normalizedFood: null,
-          },
-        ]),
+        ingredients: edits.ingredients.concat([null]),
       };
     case ActionType.DELETE_INGREDIENT:
       return {
@@ -64,32 +55,31 @@ export function reducer(edits: Edits, action: Action): Edits {
     case ActionType.UPDATE_INGREDIENT_FOOD:
       return updateIngredient(edits, action.index, (ingredient) => ({
         ...ingredient,
+        description: action.description,
         normalizedFood: action.food,
-        foodInputState: {
-          ...ingredient.foodInputState,
-          foodRef: ingredient.foodInputState.foodRef
-            ? {
-                ...ingredient.foodInputState.foodRef,
-                description: action.food.description,
-              }
-            : null,
-        },
       }));
     case ActionType.SELECT_INGREDIENT:
-      return updateIngredient(edits, action.index, (_) => ({
-        quantity: action.food.servingEquivalentQuantities["g"]
-          ? { amount: 100, unit: "g" }
-          : { amount: 1, unit: "serving" },
-        foodInputState: {
-          foodRef: action.foodRef,
-          deselected: false,
-        },
-        normalizedFood: action.food,
-      }));
+      return {
+        ...edits,
+        ingredients: edits.ingredients.map((ingredient, index) => {
+          if (index != action.index) {
+            return ingredient;
+          }
+          return {
+            quantity: action.food.servingEquivalentQuantities["g"]
+              ? { amount: 100, unit: "g" }
+              : { amount: 1, unit: "serving" },
+            foodId: action.foodRef.foodId,
+            deselected: false,
+            description: action.foodRef.description,
+            normalizedFood: action.food,
+          };
+        }),
+      };
     case ActionType.DESELECT_INGREDIENT:
       return updateIngredient(edits, action.index, (ingredient) => ({
         ...ingredient,
-        foodInputState: { ...ingredient.foodInputState, deselected: true },
+        deselected: true,
       }));
   }
 }

@@ -35,7 +35,6 @@ export async function normalizeFood(
     nutrientIds
   );
   return {
-    description: food.description,
     nutrientsPerServing,
     servingEquivalentQuantities: servingEquivalentQuantities(food),
   };

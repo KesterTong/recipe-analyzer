@@ -20,17 +20,19 @@ export const NEW_RECIPE: Recipe = {
   ingredientsList: [],
 };
 
+function filterNulls<T>(array: (T | null)[]): T[] {
+  return <T[]>array.filter((value) => value == null);
+}
+
 export function recipeFromState(state: State): Recipe {
   const edits = state.edits;
   return {
     dataType: "Recipe",
     description: edits.description,
-    ingredientsList: edits.ingredients
-      .map((ingredient) => ({
-        quantity: ingredient.quantity,
-        foodId: ingredient.foodInputState.foodRef?.foodId!,
-      }))
-      .filter((ingredient) => ingredient.foodId),
+    ingredientsList: filterNulls(edits.ingredients).map((ingredient) => ({
+      quantity: ingredient.quantity,
+      foodId: ingredient.foodId,
+    })),
   };
 }
 
@@ -39,10 +41,9 @@ export function stateFromRecipe(food: Recipe): State {
     description: food.description,
     ingredients: food.ingredientsList.map((ingredient) => ({
       quantity: ingredient.quantity,
-      foodInputState: {
-        foodRef: { foodId: ingredient.foodId, description: "Loading..." },
-        deselected: false,
-      },
+      foodId: ingredient.foodId,
+      deselected: false,
+      description: null,
       normalizedFood: null,
     })),
   };

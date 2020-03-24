@@ -18,16 +18,15 @@ import { Recipe } from "../../../core/Recipe";
 
 export interface Ingredient {
   quantity: Quantity;
-  foodInputState: {
-    foodRef: FoodRef | null;
-    deselected: boolean;
-  };
+  foodId: string;
+  deselected: boolean;
+  description: string | null;
   normalizedFood: NormalizedFood | null;
 }
 
 export interface Edits {
   description: string;
-  ingredients: Ingredient[];
+  ingredients: (Ingredient | null)[];
 }
 
 export interface State {
@@ -88,6 +87,7 @@ export interface UpdateIngredientUnit {
 export interface UpdateIngredientFood {
   type: ActionType.UPDATE_INGREDIENT_FOOD;
   index: number;
+  description: string;
   food: NormalizedFood;
 }
 

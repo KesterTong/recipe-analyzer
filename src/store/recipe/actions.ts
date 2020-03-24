@@ -73,11 +73,13 @@ export function updateIngredientUnit(index: number, unit: string): RootAction {
 
 export function updateIngredientFood(
   index: number,
+  description: string,
   food: NormalizedFood
 ): RootAction {
   return makeRootAction({
     type: ActionType.UPDATE_INGREDIENT_FOOD,
     index,
+    description,
     food,
   });
 }
@@ -92,7 +94,7 @@ export function loadIngredient(
       ? await normalizeFood(food, getFood, getState().nutrientIds)
       : null;
     if (normalizedFood != null) {
-      dispatch(updateIngredientFood(index, normalizedFood));
+      dispatch(updateIngredientFood(index, food.description, normalizedFood));
     }
   };
 }
