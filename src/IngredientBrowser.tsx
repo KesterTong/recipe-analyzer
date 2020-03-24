@@ -14,7 +14,7 @@
 
 import * as React from "react";
 
-import { Form, Navbar, Container, Button } from "react-bootstrap";
+import { Form, Navbar, Container, Button, Spinner } from "react-bootstrap";
 
 import { IngredientSearcher } from "./IngredientSearcher";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
@@ -34,6 +34,7 @@ import { ThunkDispatch } from "./store/types";
 import { FoodRef } from "../core/FoodRef";
 
 interface IngredientBrowserProps {
+  loading: boolean;
   foodRef: FoodRef | null;
   select(foodRef: FoodRef): void;
   deselect(): void;
@@ -61,6 +62,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
         </Form>
       </Navbar>
       <Container>
+        {props.loading ? <Spinner animation="border"></Spinner> : null}
         <BrandedFoodEditor />
         <RecipeEditorContainer />
         <SRLegacyFoodViewer />
@@ -72,6 +74,7 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
 function mapStateToProps(state: RootState) {
   return {
     foodRef: selectFoodRef(state),
+    loading: state.foodId != null && state.foodState?.stateType == "Loading",
   };
 }
 
