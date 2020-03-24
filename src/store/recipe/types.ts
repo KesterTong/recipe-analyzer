@@ -14,7 +14,6 @@
 import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
-import { Recipe } from "../../../core/Recipe";
 
 export interface Ingredient {
   quantity: Quantity;
