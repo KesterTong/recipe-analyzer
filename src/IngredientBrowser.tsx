@@ -14,7 +14,7 @@
 
 import * as React from "react";
 
-import { Form, Navbar, Container, Spinner, Button } from "react-bootstrap";
+import { Form, Navbar, Container, Button } from "react-bootstrap";
 
 import { IngredientSearcher } from "./IngredientSearcher";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
@@ -25,7 +25,7 @@ import {
   newRecipe,
   deselect,
 } from "./store/actions";
-import { RootState } from "./store";
+import { RootState, selectFoodRef } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { SRLegacyFoodViewer } from "./SRLegacyFoodView";
@@ -35,7 +35,6 @@ import { FoodRef } from "../core/FoodRef";
 
 interface IngredientBrowserProps {
   foodRef: FoodRef | null;
-  deselected: boolean;
   select(foodRef: FoodRef): void;
   deselect(): void;
   saveFood: () => void;
@@ -50,7 +49,6 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
         <Form inline>
           <IngredientSearcher
             foodRef={props.foodRef}
-            deselected={props.deselected}
             select={props.select}
             deselect={props.deselect}
           />
@@ -72,7 +70,9 @@ const IngredientBrowserView: React.SFC<IngredientBrowserProps> = (props) => {
 };
 
 function mapStateToProps(state: RootState) {
-  return state.selectedFood;
+  return {
+    foodRef: selectFoodRef(state),
+  };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {

@@ -45,7 +45,7 @@ function mapStateToProps(state: RootState) {
     ingredientsList: edits.ingredients.map((ingredient) => {
       const food = ingredient.normalizedFood;
       return {
-        ...ingredient.foodInputState,
+        foodRef: ingredient.foodInputState.deselected ? null : ingredient.foodInputState.foodRef,
         amount: ingredient.quantity.amount,
         unit: ingredient.quantity.unit,
         units: food ? Object.keys(food.servingEquivalentQuantities) : ["g"],

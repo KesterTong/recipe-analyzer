@@ -31,8 +31,9 @@ import {
 import { stateFromRecipe } from "./recipe/conversion";
 import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";
+import { selectFoodRef } from "./selectors";
 
-export { RootState, BrandedFoodState, RecipeState, ThunkDispatch, ThunkResult };
+export { RootState, BrandedFoodState, RecipeState, ThunkDispatch, ThunkResult, selectFoodRef };
 
 function stateFromFood(
   food: Food

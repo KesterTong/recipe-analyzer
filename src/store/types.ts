@@ -22,6 +22,12 @@ import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { FoodRef } from "../../core/FoodRef";
 
+// State of a food whose description may be known but nothing else.
+export interface LoadingState {
+  stateType: 'Loading';
+  description: string | null;
+}
+
 // Constraints on RootState
 //
 //  - Only one  of srLegacyFoodState, recipeState or BrandedFoodState

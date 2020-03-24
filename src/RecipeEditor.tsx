@@ -27,7 +27,6 @@ export interface RecipeEditorProps {
     unit: string;
     units: string[];
     foodRef: FoodRef | null;
-    deselected: boolean;
     nutrients: number[];
   }[];
   updateDescription(value: string): void;
@@ -102,7 +101,6 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
                   <IngredientSearcher
                     key={index}
                     foodRef={ingredient.foodRef}
-                    deselected={ingredient.deselected}
                     select={(foodRef) =>
                       props.loadAndSelectIngredient(index, foodRef)
                     }

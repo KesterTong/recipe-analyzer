@@ -6,7 +6,6 @@ import { FoodRef } from "../core/FoodRef";
 
 export interface IngredientSearcherProps {
   foodRef: FoodRef | null;
-  deselected: boolean;
   select(foodRef: FoodRef): void;
   deselect(): void;
 }
@@ -21,9 +20,8 @@ export class IngredientSearcher extends React.Component<
 
   render() {
     let foodRef = this.props.foodRef;
-    let deselected = this.props.deselected;
     let selected =
-      foodRef && !deselected
+      foodRef
         ? [{ label: foodRef.description, value: foodRef.foodId }]
         : [];
     let onChange = (selected: { label: string; value: string }[]) => {
