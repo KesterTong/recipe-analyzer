@@ -14,12 +14,14 @@
 import { FoodRef } from "../../../core/FoodRef";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 import { Quantity } from "../../../core/Quantity";
-import { State as FoodInputState } from "../food_input/types";
 import { Recipe } from "../../../core/Recipe";
 
 export interface Ingredient {
   quantity: Quantity;
-  foodInputState: FoodInputState;
+  foodInputState: {
+    foodRef: FoodRef | null;
+    deselected: boolean;
+  };
   normalizedFood: NormalizedFood | null;
 }
 

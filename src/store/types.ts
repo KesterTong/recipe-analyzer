@@ -18,10 +18,6 @@ import {
 } from "./branded_food/types";
 import { State as RecipeState, Action as RecipeAction } from "./recipe/types";
 import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
-import {
-  State as FoodInputState,
-  initialState as foodInputInitialState,
-} from "./food_input/types";
 import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { FoodRef } from "../../core/FoodRef";
@@ -34,14 +30,17 @@ import { FoodRef } from "../../core/FoodRef";
 //  - If any of srLegacyFoodState, recipeState or BrandedFoodState is
 //    non-null then selectedFood.foodRef should be non-null.
 export interface RootState {
-  selectedFood: FoodInputState;
+  selectedFood: {
+    foodRef: FoodRef | null;
+    deselected: boolean;
+  };
   foodState: SRLegacyFoodState | RecipeState | BrandedFoodState | null;
   nutrientNames: string[];
   nutrientIds: number[];
 }
 
 export const initialState: RootState = {
-  selectedFood: foodInputInitialState,
+  selectedFood: { foodRef: null, deselected: false },
   foodState: null,
   nutrientNames: [],
   nutrientIds: [],

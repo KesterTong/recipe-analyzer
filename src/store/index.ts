@@ -21,10 +21,8 @@ import {
   State as BrandedFoodState,
   ActionType as BrandedFoodActionType,
 } from "./branded_food/types";
-import { deselect, select, updateDescription } from "./food_input/actions";
 import { reducer as recipeReducer } from "./recipe/reducer";
 import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
-import { reducer as foodInputReducer } from "./food_input/reducer";
 import { stateFromBrandedFood } from "./branded_food/conversion";
 import {
   State as RecipeState,
@@ -53,38 +51,44 @@ const rootReducer = combineReducers<RootState, RootAction>({
   selectedFood: (state = initialState.selectedFood, action) => {
     switch (action.type) {
       case ActionType.DESELECT:
-        return foodInputReducer(state, deselect());
+        return { ...state, deselected: true };
       case ActionType.SELECT_FOOD:
-        return foodInputReducer(state, select(action.foodRef));
+        return { foodRef: action.foodRef, deselected: false };
       case ActionType.NEW_FOOD:
-        return foodInputReducer(
-          state,
-          select({
+        return {
+          foodRef: {
             foodId: action.foodId,
             description: action.food.description,
-          })
-        );
+          },
+          deselected: false,
+        };
       case ActionType.UPDATE_RECIPE:
         if (action.action.type != RecipeActionType.UPDATE_DESCRIPTION) {
           return state;
         }
-        return foodInputReducer(
-          state,
-          updateDescription(action.action.description)
-        );
+        return {
+          ...state,
+          foodRef: state.foodRef
+            ? { ...state.foodRef, description: action.action.description }
+            : null,
+        };
       case ActionType.UPDATE_BRANDED_FOOD:
         if (action.action.type != BrandedFoodActionType.UPDATE_DESCRIPTION) {
           return state;
         }
-        return foodInputReducer(
-          state,
-          updateDescription(action.action.description)
-        );
+        return {
+          ...state,
+          foodRef: state.foodRef
+            ? { ...state.foodRef, description: action.action.description }
+            : null,
+        };
       case ActionType.UPDATE_FOOD:
-        return foodInputReducer(
-          state,
-          updateDescription(action.food.description)
-        );
+        return {
+          ...state,
+          foodRef: state.foodRef
+            ? { ...state.foodRef, description: action.food.description }
+            : null,
+        };
       default:
         return state;
     }

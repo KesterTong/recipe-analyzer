@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { ActionType, Edits, Ingredient, Action } from "./types";
-import { reducer as foodInputReducer } from "../food_input/reducer";
-import { select, updateDescription, deselect } from "../food_input/actions";
-import { initialState as foodInputInitialiState } from "../food_input/types";
 
 function updateIngredient(
   edits: Edits,
@@ -42,7 +39,7 @@ export function reducer(edits: Edits, action: Action): Edits {
               amount: 100,
               unit: "g",
             },
-            foodInputState: foodInputInitialiState,
+            foodInputState: { foodRef: null, deselected: false },
             normalizedFood: null,
           },
         ]),
@@ -68,23 +65,31 @@ export function reducer(edits: Edits, action: Action): Edits {
       return updateIngredient(edits, action.index, (ingredient) => ({
         ...ingredient,
         normalizedFood: action.food,
-        foodInputState: foodInputReducer(
-          ingredient.foodInputState,
-          updateDescription(action.food.description)
-        ),
+        foodInputState: {
+          ...ingredient.foodInputState,
+          foodRef: ingredient.foodInputState.foodRef
+            ? {
+                ...ingredient.foodInputState.foodRef,
+                description: action.food.description,
+              }
+            : null,
+        },
       }));
     case ActionType.SELECT_INGREDIENT:
       return updateIngredient(edits, action.index, (_) => ({
         quantity: action.food.servingEquivalentQuantities["g"]
           ? { amount: 100, unit: "g" }
           : { amount: 1, unit: "serving" },
-        foodInputState: foodInputReducer(undefined, select(action.foodRef)),
+        foodInputState: {
+          foodRef: action.foodRef,
+          deselected: false,
+        },
         normalizedFood: action.food,
       }));
     case ActionType.DESELECT_INGREDIENT:
       return updateIngredient(edits, action.index, (ingredient) => ({
         ...ingredient,
-        foodInputState: foodInputReducer(undefined, deselect()),
+        foodInputState: { ...ingredient.foodInputState, deselected: true },
       }));
   }
 }
