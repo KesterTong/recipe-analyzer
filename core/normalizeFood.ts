@@ -26,7 +26,7 @@ import { Recipe } from "./Recipe";
 
 export async function normalizeFood(
   food: Food,
-  getFood: (foodId: string) => Promise<Food | null>,
+  getFood: (foodId: string) => Promise<Food>,
   nutrientIds: number[]
 ): Promise<NormalizedFood> {
   const nutrientsPerServing = await nutrientsPerServingForFood(
@@ -43,7 +43,7 @@ export async function normalizeFood(
 
 function nutrientsPerServingForFood(
   food: Food,
-  getFood: (foodId: string) => Promise<Food | null>,
+  getFood: (foodId: string) => Promise<Food>,
   nutrientIds: number[]
 ): Promise<Nutrients> {
   switch (food.dataType) {
@@ -57,18 +57,18 @@ function nutrientsPerServingForFood(
 
 async function nutrientsForRecipe(
   food: Recipe,
-  getFood: (foodId: string) => Promise<Food | null>,
+  getFood: (foodId: string) => Promise<Food>,
   nutrientIds: number[]
 ): Promise<Nutrients> {
   const nutrients = await Promise.all(
     food.ingredientsList.map(async (ingredient) => {
       const subFood = await getFood(ingredient.foodId);
       const normalizedSubFood = await normalizeFood(
-        subFood!,
+        subFood,
         getFood,
         nutrientIds
       );
-      return nutrientsForQuantity(ingredient.quantity, normalizedSubFood)!;
+      return nutrientsForQuantity(ingredient.quantity, normalizedSubFood);
     })
   );
   return nutrients.reduce(addNutrients);

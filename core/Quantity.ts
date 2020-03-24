@@ -23,12 +23,13 @@ export interface Quantity {
 export function nutrientsForQuantity(
   quantity: Quantity,
   foodData: NormalizedFood
-): Nutrients | null {
+): Nutrients {
   quantity = canonicalizeQuantity(quantity);
   // The number of units of the quantity per serving.
   let unitsPerServing = foodData.servingEquivalentQuantities[quantity.unit];
-  if (unitsPerServing == null) {
-    return null;
+  if (unitsPerServing == undefined) {
+    // TODO: Display original unit as well as canonicalized unit in error.
+    throw("Could not determine nutrients for quantity " + quantity.unit);
   }
   var servings = quantity.amount / unitsPerServing;
   return scaleNutrients(foodData.nutrientsPerServing, servings);
