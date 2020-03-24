@@ -23,20 +23,12 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import { reducer as brandedFoodReducer } from "./branded_food/reducer";
-import {
-  State as BrandedFoodState,
-  ActionType as BrandedFoodActionType,
-} from "./branded_food/types";
+import { State as BrandedFoodState } from "./branded_food/types";
 import { reducer as recipeReducer } from "./recipe/reducer";
 import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
 import { stateFromBrandedFood } from "./branded_food/conversion";
-import {
-  State as RecipeState,
-  ActionType as RecipeActionType,
-} from "./recipe/types";
+import { State as RecipeState } from "./recipe/types";
 import { stateFromRecipe } from "./recipe/conversion";
-import { SRLegacyFood } from "../../core/FoodDataCentral";
-import { Food } from "../../core/Food";
 import { selectFoodRef } from "./selectors";
 
 export {
@@ -47,19 +39,6 @@ export {
   ThunkResult,
   selectFoodRef,
 };
-
-function stateFromFood(
-  food: Food
-): SRLegacyFood | BrandedFoodState | RecipeState {
-  switch (food.dataType) {
-    case "Branded":
-      return stateFromBrandedFood(food);
-    case "Recipe":
-      return stateFromRecipe(food);
-    case "SR Legacy":
-      return food;
-  }
-}
 
 const rootReducer = combineReducers<RootState, RootAction>({
   foodId: (state = initialState.foodId, action) => {
