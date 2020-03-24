@@ -15,7 +15,7 @@ import { ActionType, Action } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
 
 function makeRootAction(action: Action): RootAction {
-  return { type: RootActionType.UPDATE_BRANDED_FOOD, action };
+  return { type: RootActionType.UPDATE_BRANDED_FOOD_EDIT_STATE, action };
 }
 
 export function updateDescription(description: string): RootAction {

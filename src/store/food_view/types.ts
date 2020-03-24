@@ -11,10 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { SRLegacyFood } from "../../../core/FoodDataCentral";
+import { Food } from "../../../core/Food";
 
 export interface State {
-  stateType: "SRLegacyFood";
-  food: SRLegacyFood;
+  stateType: "FoodView";
+  food: Food;
   selectedQuantity: number;
 }
+
+export enum ActionType {
+  SET_SELECTED_QUANTITY = "@SetSelectedQuantity",
+}
+
+export interface SetSelectedQuantity {
+  type: ActionType.SET_SELECTED_QUANTITY;
+  index: number;
+}
+
+export type Action = SetSelectedQuantity;

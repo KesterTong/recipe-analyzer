@@ -20,7 +20,7 @@ import { ThunkResult } from "../types";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 
 function makeRootAction(action: Action): RootAction {
-  return { type: RootActionType.UPDATE_RECIPE, action };
+  return { type: RootActionType.UPDATE_RECIPE_EDIT_STATE, action };
 }
 
 export function updateDescription(description: string): RootAction {

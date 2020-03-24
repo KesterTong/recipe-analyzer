@@ -25,7 +25,7 @@ export function selectFoodRef(state: RootState): FoodRef | null {
     case "RecipeEdit":
       description = state.foodState.description;
       break;
-    case "SRLegacyFood":
+    case "FoodView":
     case "Loading":
       description = state.foodState.food.description || "Loading...";
       break;

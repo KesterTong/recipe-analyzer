@@ -13,11 +13,17 @@
 // limitations under the License.
 import { NutrientInfo } from "../../core/Nutrients";
 import {
-  State as BrandedFoodState,
-  Action as BrandedFoodAction,
+  State as BrandedFoodEditState,
+  Action as BrandedFoodEditAction,
 } from "./branded_food_edit/types";
-import { State as RecipeState, Action as RecipeAction } from "./recipe_edit/types";
-import { State as SRLegacyFoodState } from "./food_view/types";
+import {
+  State as RecipeEditState,
+  Action as RecipeEditAction,
+} from "./recipe_edit/types";
+import {
+  State as FoodViewState,
+  Action as FoodViewAction,
+} from "./food_view/types";
 import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { FoodRef } from "../../core/FoodRef";
@@ -37,9 +43,9 @@ export interface RootState {
   foodId: string | null;
   deselected: boolean;
   foodState:
-    | SRLegacyFoodState
-    | RecipeState
-    | BrandedFoodState
+    | FoodViewState
+    | RecipeEditState
+    | BrandedFoodEditState
     | LoadingState
     | null;
   nutrientNames: string[];
@@ -61,9 +67,9 @@ export enum ActionType {
   NEW_FOOD = "@NewFood",
   UPDATE_FOOD = "@UpdateFood",
   UPDATE_AFTER_SAVE = "@UpdateAfterSave",
-  SET_SELECTED_QUANTITY = "@SetSelectedQuantity",
-  UPDATE_BRANDED_FOOD = "@UpdateBrandedFood",
-  UPDATE_RECIPE = "@UpdateRecipe",
+  UPDATE_FOOD_VIEW_STATE = "@UpdateFoodViewState",
+  UPDATE_BRANDED_FOOD_EDIT_STATE = "@UpdateBrandedFoodEditState",
+  UPDATE_RECIPE_EDIT_STATE = "@UpdateRecipeEditState",
 }
 
 export interface SetNutrientInfos {
@@ -92,19 +98,19 @@ export interface UpdateFood {
   food: Food;
 }
 
-export interface SetSelectedQuantity {
-  type: ActionType.SET_SELECTED_QUANTITY;
-  index: number;
+export interface UpdateFoodViewState {
+  type: ActionType.UPDATE_FOOD_VIEW_STATE;
+  action: FoodViewAction;
 }
 
-export interface UpdateBrandedFood {
-  type: ActionType.UPDATE_BRANDED_FOOD;
-  action: BrandedFoodAction;
+export interface UpdateBrandedFoodEditState {
+  type: ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE;
+  action: BrandedFoodEditAction;
 }
 
-export interface UpdateRecipe {
-  type: ActionType.UPDATE_RECIPE;
-  action: RecipeAction;
+export interface UpdateRecipeEditState {
+  type: ActionType.UPDATE_RECIPE_EDIT_STATE;
+  action: RecipeEditAction;
 }
 
 export type RootAction =
@@ -113,9 +119,9 @@ export type RootAction =
   | SelectFood
   | NewFood
   | UpdateFood
-  | SetSelectedQuantity
-  | UpdateBrandedFood
-  | UpdateRecipe;
+  | UpdateFoodViewState
+  | UpdateBrandedFoodEditState
+  | UpdateRecipeEditState;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

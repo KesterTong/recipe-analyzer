@@ -11,16 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { State, Action, ActionType } from "./types";
+import { ActionType, Action } from "./types";
+import { RootAction, ActionType as RootActionType } from "../types";
 
-export function reducer(
-  state: State | null = null,
-  action: Action
-): State | null {
-  switch (action.type) {
-    case ActionType.SET_SELECTED_QUANTITY:
-      return state ? { ...state, selectedQuantity: action.index } : null;
-    default:
-      return state;
-  }
+function makeRootAction(action: Action): RootAction {
+  return { type: RootActionType.UPDATE_FOOD_VIEW_STATE, action };
+}
+
+export function setSelectedQuantity(index: number): RootAction {
+  return makeRootAction({ type: ActionType.SET_SELECTED_QUANTITY, index });
 }

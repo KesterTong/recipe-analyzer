@@ -17,7 +17,7 @@ import { Form, Navbar, Container, Button, Spinner } from "react-bootstrap";
 
 import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
-import { SRLegacyFoodViewer } from "./SRLegacyFoodView";
+import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
 import { FoodRef } from "../core/FoodRef";
 
@@ -53,7 +53,7 @@ export const Main: React.SFC<MainProps> = (props) => {
         {props.loading ? <Spinner animation="border"></Spinner> : null}
         <BrandedFoodEditorContainer />
         <RecipeEditorContainer />
-        <SRLegacyFoodViewer />
+        <FoodViewerContainer />
       </Container>
     </React.Fragment>
   );

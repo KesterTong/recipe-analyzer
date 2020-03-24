@@ -12,12 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  RootAction,
-  ActionType,
-  ThunkDispatch,
-  ThunkResult,
-} from "./types";
+import { RootAction, ActionType, ThunkDispatch, ThunkResult } from "./types";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
@@ -50,7 +45,7 @@ function foodStateFromFood(
       return stateFromRecipe(food);
     case "SR Legacy":
       return {
-        stateType: "SRLegacyFood",
+        stateType: "FoodView",
         food: food,
         selectedQuantity: 0,
       };
@@ -86,7 +81,7 @@ function rootReducer(
         ...state,
         foodState: foodStateFromFood(action.food),
       };
-    case ActionType.UPDATE_BRANDED_FOOD:
+    case ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE:
       if (state.foodState?.stateType != "BrandedFoodEdit") {
         return state;
       }
@@ -94,7 +89,7 @@ function rootReducer(
         ...state,
         foodState: brandedFoodReducer(state.foodState, action.action),
       };
-    case ActionType.UPDATE_RECIPE:
+    case ActionType.UPDATE_RECIPE_EDIT_STATE:
       if (state.foodState?.stateType != "RecipeEdit") {
         return state;
       }

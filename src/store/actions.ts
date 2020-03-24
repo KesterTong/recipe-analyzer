@@ -22,10 +22,6 @@ import {
 } from "./branded_food_edit/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
-export function setSelectedQuantity(index: number): RootAction {
-  return { type: ActionType.SET_SELECTED_QUANTITY, index };
-}
-
 export function deselect(): RootAction {
   return { type: ActionType.DESELECT };
 }
@@ -54,7 +50,7 @@ export function saveFood(): ThunkResult<Promise<void>> {
       food = brandedFoodFromState(state.foodState);
     } else if (state.foodState?.stateType == "RecipeEdit") {
       food = recipeFromState(state.foodState);
-    } else if (state.foodState?.stateType == "SRLegacyFood") {
+    } else if (state.foodState?.stateType == "FoodView") {
       food = state.foodState.food;
     } else {
       throw "Illegal state: foodId was not null but was null";
