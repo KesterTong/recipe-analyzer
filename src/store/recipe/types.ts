@@ -17,13 +17,15 @@ import { Quantity } from "../../../core/Quantity";
 import { State as FoodInputState } from "../food_input/types";
 import { Recipe } from "../../../core/Recipe";
 
+export interface Ingredient {
+  quantity: Quantity;
+  foodInputState: FoodInputState;
+  normalizedFood: NormalizedFood | null;
+}
+
 export interface Edits {
   description: string;
-  ingredients: {
-    quantity: Quantity;
-    foodInputState: FoodInputState;
-    normalizedFood: NormalizedFood | null;
-  }[];
+  ingredients: Ingredient[];
 }
 
 export interface State {
