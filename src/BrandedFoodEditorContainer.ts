@@ -24,17 +24,11 @@ import {
 } from "./store/branded_food_edit/actions";
 import { RootAction } from "./store/types";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
+import { mergeIfStatePropsNotNull } from "./TypesUtil";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "BrandedFoodEdit") {
-    return {
-      hasBrandedFood: false,
-      description: "",
-      householdServingFullText: "",
-      servingSize: "",
-      servingSizeUnit: "",
-      nutrients: [],
-    };
+    return null;
   }
   const edits = state.foodState;
   const nutrientsById: { [index: number]: string } = {};
@@ -42,7 +36,6 @@ function mapStateToProps(state: RootState) {
     nutrientsById[id] = amount;
   });
   return {
-    hasBrandedFood: true,
     description: edits.description,
     householdServingFullText: edits.householdServingFullText || "",
     servingSize: edits.servingSize,
@@ -72,5 +65,6 @@ function mapDispatchToProps(
 
 export const BrandedFoodEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeIfStatePropsNotNull
 )(BrandedFoodEditor);

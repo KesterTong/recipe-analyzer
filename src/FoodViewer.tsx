@@ -14,9 +14,9 @@
 import { SRLegacyFood } from "../core/FoodDataCentral";
 import * as React from "react";
 import { NutrientsViewer } from "./NutrientsViewer";
+import { isNonEmpty } from "./TypesUtil";
 
 export interface FoodViewerProps {
-  hasSRLegacyFood: boolean;
   srLegacyFood: SRLegacyFood;
   viewerProps: {
     nutrientNames: string[];
@@ -27,8 +27,10 @@ export interface FoodViewerProps {
   setSelectedQuantity: (index: number) => void;
 }
 
-export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
-  if (!props.hasSRLegacyFood) {
+export const FoodViewer: React.FunctionComponent<FoodViewerProps | {}> = (
+  props
+) => {
+  if (!isNonEmpty(props)) {
     return null;
   }
   // TODO new id instead of description for key.

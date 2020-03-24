@@ -15,9 +15,9 @@
 import * as React from "react";
 
 import { Form, Col } from "react-bootstrap";
+import { isNonEmpty } from "./TypesUtil";
 
-interface BrandedFoodEditorProps {
-  hasBrandedFood: boolean;
+export interface BrandedFoodEditorProps {
   description: string;
   householdServingFullText: string;
   servingSize: string;
@@ -30,8 +30,10 @@ interface BrandedFoodEditorProps {
   updateNutrientValue(id: number, value: string): void;
 }
 
-export const BrandedFoodEditor: React.SFC<BrandedFoodEditorProps> = (props) => {
-  if (!props.hasBrandedFood) {
+export const BrandedFoodEditor: React.FunctionComponent<
+  BrandedFoodEditorProps | {}
+> = (props) => {
+  if (!isNonEmpty(props)) {
     return null;
   }
   return (

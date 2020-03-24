@@ -17,9 +17,9 @@ import { Form, Table, Button } from "react-bootstrap";
 import { FoodInput } from "./FoodInput";
 import { FoodRef } from "../core/FoodRef";
 import { addNutrients } from "../core/Nutrients";
+import { isNonEmpty } from "./TypesUtil";
 
 export interface RecipeEditorProps {
-  hasRecipe: boolean;
   description: string;
   nutrientNames: string[];
   ingredientsList: {
@@ -39,10 +39,10 @@ export interface RecipeEditorProps {
   deleteIngredient(index: number): void;
 }
 
-export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
+export const RecipeEditor: React.FunctionComponent<RecipeEditorProps | {}> = (
   props
 ) => {
-  if (!props.hasRecipe) {
+  if (!isNonEmpty(props)) {
     return null;
   }
   return (

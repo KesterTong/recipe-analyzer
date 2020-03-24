@@ -19,38 +19,14 @@ import { scaleNutrients } from "../core/Nutrients";
 import { FoodViewerProps, FoodViewer } from "./FoodViewer";
 import { setSelectedQuantity } from "./store/food_view/actions";
 import { SRLegacyFood } from "../core/FoodDataCentral";
+import { mergeIfStatePropsNotNull } from "./TypesUtil";
 
-interface StateProps {
-  hasSRLegacyFood: boolean;
-  srLegacyFood: SRLegacyFood;
-  viewerProps: {
-    nutrientNames: string[];
-    nutrientValues: number[];
-    quantities: string[];
-    selectedQuantity: number;
-  };
-}
-
-function mapStateToProps(state: RootState): StateProps {
+function mapStateToProps(state: RootState) {
   if (
     state.foodState?.stateType != "FoodView" ||
     state.foodState.food.dataType != "SR Legacy"
   ) {
-    return {
-      hasSRLegacyFood: false,
-      srLegacyFood: {
-        dataType: "SR Legacy",
-        description: "",
-        foodNutrients: [],
-        foodPortions: [],
-      },
-      viewerProps: {
-        nutrientNames: [],
-        nutrientValues: [],
-        quantities: [],
-        selectedQuantity: 0,
-      },
-    };
+    return null;
   }
   let quantities: { description: string; servings: number }[];
   quantities = [{ description: "100 g", servings: 1 }];
@@ -68,7 +44,6 @@ function mapStateToProps(state: RootState): StateProps {
   let nutrientsPerServing = nutrientsFromFoodDetails(food, state.nutrientIds);
   let scale = quantities[state.foodState.selectedQuantity].servings;
   return {
-    hasSRLegacyFood: true,
     srLegacyFood: state.foodState.food,
     viewerProps: {
       nutrientNames: state.nutrientNames,
@@ -90,5 +65,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
 
 export const FoodViewerContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeIfStatePropsNotNull
 )(FoodViewer);

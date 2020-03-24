@@ -27,20 +27,15 @@ import {
   loadAndSelectIngredient,
   deselectIngredient,
 } from "./store/recipe_edit/actions";
+import { mergeIfStatePropsNotNull } from "./TypesUtil";
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.foodState;
   if (recipeState?.stateType != "RecipeEdit") {
-    return {
-      hasRecipe: false,
-      description: "",
-      nutrientNames: [],
-      ingredientsList: [],
-    };
+    return null;
   }
   const edits = recipeState;
   return {
-    hasRecipe: true,
     description: edits.description,
     nutrientNames: state.nutrientNames,
     ingredientsList: edits.ingredients.map((ingredient) => {
@@ -76,5 +71,6 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
 
 export const RecipeEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mergeIfStatePropsNotNull
 )(RecipeEditor);
