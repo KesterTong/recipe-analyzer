@@ -32,11 +32,7 @@ export interface LoadingState {
 
 // Constraints on RootState
 //
-//  - Only one  of srLegacyFoodState, recipeState or BrandedFoodState
-//    should be non-null.
-//
-//  - If any of srLegacyFoodState, recipeState or BrandedFoodState is
-//    non-null then selectedFood.foodRef should be non-null.
+//  - If foodState is non-null then foodId should be non-null.
 export interface RootState {
   foodId: string | null;
   deselected: boolean;
