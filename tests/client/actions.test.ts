@@ -12,16 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { getFood, insertFood, patchFood } from "../../src/database";
-import { store, RootState, BrandedFoodState } from "../../src/store";
-import {
-  selectAndLoad,
-  newRecipe,
-  updateDescription,
-  saveFood,
-} from "../../src/store/actions";
+import { store, RootState } from "../../src/store";
+import { selectAndLoad, newRecipe, saveFood } from "../../src/store/actions";
 import { TEST_BRANDED_FOOD } from "../testData";
 import { NEW_RECIPE } from "../../src/store/recipe/conversion";
 import { initialState } from "../../src/store/types";
+import { updateDescription as updateBrandedFoodDescription } from "../../src/store/branded_food/actions";
 import { Edits as BrandedFoodEdits } from "../../src/store/branded_food/types";
 
 jest.mock("../../src/database");
@@ -88,7 +84,7 @@ describe("actions", () => {
     await store.dispatch(
       selectAndLoad({ foodId: "userData/abcdefg", description: "My Food" })
     );
-    store.dispatch(updateDescription("New Description"));
+    store.dispatch(updateBrandedFoodDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       selectedFood: {

@@ -17,7 +17,7 @@ import * as React from "react";
 import { Form, Col } from "react-bootstrap";
 import { RootState } from "./store";
 import { connect } from "react-redux";
-import { updateDescription } from "./store/actions";
+import { updateDescription } from "./store/branded_food/actions";
 import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import {

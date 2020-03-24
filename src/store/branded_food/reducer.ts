@@ -11,15 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { ActionType, Edits } from "./types";
-import { RootAction, ActionType as RootActionType } from "../types";
+import { ActionType, Action, Edits } from "./types";
 
-export function reducer(edits: Edits, action: RootAction): Edits {
+export function reducer(edits: Edits, action: Action): Edits {
   switch (action.type) {
-    case RootActionType.UPDATE_DESCRIPTION:
+    case ActionType.UPDATE_DESCRIPTION:
       return { ...edits, description: action.description };
-    case RootActionType.SET_SELECTED_QUANTITY:
-      return { ...edits, selectedQuantity: action.index };
     case ActionType.UPDATE_SERVING_SIZE:
       return { ...edits, servingSize: action.servingSize };
     case ActionType.UPDATE_SERVING_SIZE_UNIT:
@@ -35,7 +32,5 @@ export function reducer(edits: Edits, action: RootAction): Edits {
             : nutrient
         ),
       };
-    default:
-      return edits;
   }
 }

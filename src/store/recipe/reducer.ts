@@ -11,10 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { ActionType, Edits, Ingredient } from "./types";
-import { RootAction, ActionType as RootActionType } from "../types";
+import { ActionType, Edits, Ingredient, Action } from "./types";
 import { reducer as foodInputReducer } from "../food_input/reducer";
-import { select, deselect, updateDescription } from "../food_input/actions";
+import { select, updateDescription, deselect } from "../food_input/actions";
 import { initialState as foodInputInitialiState } from "../food_input/types";
 
 function updateIngredient(
@@ -30,9 +29,9 @@ function updateIngredient(
   };
 }
 
-export function reducer(edits: Edits, action: RootAction): Edits {
+export function reducer(edits: Edits, action: Action): Edits {
   switch (action.type) {
-    case RootActionType.UPDATE_DESCRIPTION:
+    case ActionType.UPDATE_DESCRIPTION:
       return { ...edits, description: action.description };
     case ActionType.ADD_INGREDIENT:
       return {
@@ -85,9 +84,7 @@ export function reducer(edits: Edits, action: RootAction): Edits {
     case ActionType.DESELECT_INGREDIENT:
       return updateIngredient(edits, action.index, (ingredient) => ({
         ...ingredient,
-        deselected: true,
+        foodInputState: foodInputReducer(undefined, deselect()),
       }));
-    default:
-      return edits;
   }
 }

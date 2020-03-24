@@ -15,7 +15,7 @@
 import { connect } from "react-redux";
 import { RootState, ThunkDispatch } from "./store";
 import { RecipeEditor } from "./RecipeEditor";
-import { updateDescription } from "./store/actions";
+import { updateDescription } from "./store/recipe/actions";
 import { bindActionCreators } from "redux";
 import { nutrientsForQuantity } from "../core/Quantity";
 import {

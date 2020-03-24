@@ -13,45 +13,73 @@
 // limitations under the License.
 import { FoodRef } from "../../../core/FoodRef";
 import { Action, ActionType } from "./types";
-import { getFood, patchFood } from "../../database";
+import { RootAction, ActionType as RootActionType } from "../types";
+import { getFood } from "../../database";
 import { normalizeFood } from "../../../core/normalizeFood";
 import { ThunkResult } from "../types";
-import { recipeFromState } from "./conversion";
 import { NormalizedFood } from "../../../core/NormalizedFood";
 
-export function addIngredient(): Action {
-  return { type: ActionType.ADD_INGREDIENT };
+function makeRootAction(action: Action): RootAction {
+  return { type: RootActionType.UPDATE_RECIPE, action };
 }
 
-export function deleteIngredient(index: number): Action {
-  return { type: ActionType.DELETE_INGREDIENT, index };
+export function updateDescription(description: string): RootAction {
+  return makeRootAction({ type: ActionType.UPDATE_DESCRIPTION, description });
+}
+
+export function addIngredient(): RootAction {
+  return makeRootAction({ type: ActionType.ADD_INGREDIENT });
+}
+
+export function deleteIngredient(index: number): RootAction {
+  return makeRootAction({ type: ActionType.DELETE_INGREDIENT, index });
 }
 
 export function selectIngredient(
   index: number,
   foodRef: FoodRef,
   food: NormalizedFood
-): Action {
-  return { type: ActionType.SELECT_INGREDIENT, index, foodRef, food };
+): RootAction {
+  return makeRootAction({
+    type: ActionType.SELECT_INGREDIENT,
+    index,
+    foodRef,
+    food,
+  });
 }
 
-export function deselectIngredient(index: number): Action {
-  return { type: ActionType.DESELECT_INGREDIENT, index };
+export function deselectIngredient(index: number): RootAction {
+  return makeRootAction({ type: ActionType.DESELECT_INGREDIENT, index });
 }
 
-export function updateIngredientAmount(index: number, amount: number): Action {
-  return { type: ActionType.UPDATE_INGREDIENT_AMOUNT, index, amount };
+export function updateIngredientAmount(
+  index: number,
+  amount: number
+): RootAction {
+  return makeRootAction({
+    type: ActionType.UPDATE_INGREDIENT_AMOUNT,
+    index,
+    amount,
+  });
 }
 
-export function updateIngredientUnit(index: number, unit: string): Action {
-  return { type: ActionType.UPDATE_INGREDIENT_UNIT, index, unit };
+export function updateIngredientUnit(index: number, unit: string): RootAction {
+  return makeRootAction({
+    type: ActionType.UPDATE_INGREDIENT_UNIT,
+    index,
+    unit,
+  });
 }
 
 export function updateIngredientFood(
   index: number,
   food: NormalizedFood
-): Action {
-  return { type: ActionType.UPDATE_INGREDIENT_FOOD, index, food };
+): RootAction {
+  return makeRootAction({
+    type: ActionType.UPDATE_INGREDIENT_FOOD,
+    index,
+    food,
+  });
 }
 
 export function loadIngredient(

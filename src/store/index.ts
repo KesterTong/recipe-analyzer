@@ -17,14 +17,19 @@ import { createStore, applyMiddleware, combineReducers } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import { reducer as brandedFoodReducer } from "./branded_food/reducer";
-import { State as BrandedFoodState } from "./branded_food/types";
+import {
+  State as BrandedFoodState,
+  ActionType as BrandedFoodActionType,
+} from "./branded_food/types";
 import { deselect, select, updateDescription } from "./food_input/actions";
 import { reducer as recipeReducer } from "./recipe/reducer";
-import { reducer as srLegacyReducer } from "./sr_legacy_food/reducer";
 import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
 import { reducer as foodInputReducer } from "./food_input/reducer";
 import { stateFromBrandedFood } from "./branded_food/conversion";
-import { State as RecipeState } from "./recipe/types";
+import {
+  State as RecipeState,
+  ActionType as RecipeActionType,
+} from "./recipe/types";
 import { stateFromRecipe } from "./recipe/conversion";
 import { SRLegacyFood } from "../../core/FoodDataCentral";
 import { Food } from "../../core/Food";
@@ -59,8 +64,22 @@ const rootReducer = combineReducers<RootState, RootAction>({
             description: action.food.description,
           })
         );
-      case ActionType.UPDATE_DESCRIPTION:
-        return foodInputReducer(state, updateDescription(action.description));
+      case ActionType.UPDATE_RECIPE:
+        if (action.action.type != RecipeActionType.UPDATE_DESCRIPTION) {
+          return state;
+        }
+        return foodInputReducer(
+          state,
+          updateDescription(action.action.description)
+        );
+      case ActionType.UPDATE_BRANDED_FOOD:
+        if (action.action.type != BrandedFoodActionType.UPDATE_DESCRIPTION) {
+          return state;
+        }
+        return foodInputReducer(
+          state,
+          updateDescription(action.action.description)
+        );
       case ActionType.UPDATE_FOOD:
         return foodInputReducer(
           state,
@@ -124,18 +143,21 @@ const rootReducer = combineReducers<RootState, RootAction>({
           default:
             return state;
         }
-      default:
-        if (state == null) {
+      case ActionType.UPDATE_BRANDED_FOOD:
+        if (state?.stateType != "BrandedFood") {
           return state;
         }
-        switch (state.stateType) {
-          case "BrandedFood":
-            return { ...state, edits: brandedFoodReducer(state.edits, action) };
-          case "Recipe":
-            return { ...state, edits: recipeReducer(state.edits, action) };
-          case "SRLegacyFood":
-            return srLegacyReducer(state, action);
+        return {
+          ...state,
+          edits: brandedFoodReducer(state.edits, action.action),
+        };
+      case ActionType.UPDATE_RECIPE:
+        if (state?.stateType != "Recipe") {
+          return state;
         }
+        return { ...state, edits: recipeReducer(state.edits, action.action) };
+      default:
+        return state;
     }
   },
 });

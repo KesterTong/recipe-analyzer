@@ -22,10 +22,6 @@ import {
 } from "./branded_food/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
-export function updateDescription(description: string): RootAction {
-  return { type: ActionType.UPDATE_DESCRIPTION, description };
-}
-
 export function updateAfterSave(food: Food): RootAction {
   return { type: ActionType.UPDATE_AFTER_SAVE, food };
 }

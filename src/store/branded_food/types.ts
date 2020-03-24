@@ -30,10 +30,16 @@ export interface State {
 }
 
 export enum ActionType {
+  UPDATE_DESCRIPTION = "@branded_food/UpdateDescription",
   UPDATE_SERVING_SIZE = "@branded_food/UpdateServingSize",
   UPDATE_SERVING_SIZE_UNIT = "@branded_food/UpdateServingSizeUnit",
   UPDATE_HOUSEHOLD_UNIT = "@branded_food/UpdateHouseholdUnit",
   UPDATE_NUTRIENT_VALUE = "@branded_food/UpdateNutrientValue",
+}
+
+export interface UpdateDescription {
+  type: ActionType.UPDATE_DESCRIPTION;
+  description: string;
 }
 
 export interface UpdateServingSize {
@@ -58,6 +64,7 @@ export interface UpdateNutrientValue {
 }
 
 export type Action =
+  | UpdateDescription
   | UpdateServingSize
   | UpdateServingSizeUnit
   | UpdateHouseholdUnit

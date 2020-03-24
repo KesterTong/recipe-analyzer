@@ -35,6 +35,7 @@ export interface State {
 }
 
 export enum ActionType {
+  UPDATE_DESCRIPTION = "@branded_food/UpdateDescription",
   ADD_INGREDIENT = "@recipe/AddIngredient",
   DELETE_INGREDIENT = "@recipe/DeleteIngredient",
   SELECT_INGREDIENT = "@recipe/SelectIngredient",
@@ -42,6 +43,11 @@ export enum ActionType {
   UPDATE_INGREDIENT_AMOUNT = "@recipe/UpdateIngredientAmount",
   UPDATE_INGREDIENT_UNIT = "@recipe/UpdateIngredientUnit",
   UPDATE_INGREDIENT_FOOD = "@recipe/UpdateIngredientFood",
+}
+
+export interface UpdateDescription {
+  type: ActionType.UPDATE_DESCRIPTION;
+  description: string;
 }
 
 export interface AddIngredient {
@@ -84,6 +90,7 @@ export interface UpdateIngredientFood {
 }
 
 export type Action =
+  | UpdateDescription
   | AddIngredient
   | DeleteIngredient
   | SelectIngredient

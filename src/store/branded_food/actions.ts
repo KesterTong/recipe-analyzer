@@ -11,24 +11,42 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Action, ActionType } from "./types";
-import { ThunkResult } from "..";
-import { brandedFoodFromState } from "./conversion";
-import { patchFood } from "../../database";
-import { BrandedFood } from "../../../core/FoodDataCentral";
+import { ActionType, Action } from "./types";
+import { RootAction, ActionType as RootActionType } from "../types";
 
-export function updateServingSize(servingSize: string): Action {
-  return { type: ActionType.UPDATE_SERVING_SIZE, servingSize };
+function makeRootAction(action: Action): RootAction {
+  return { type: RootActionType.UPDATE_BRANDED_FOOD, action };
 }
 
-export function updateServingSizeUnit(servingSizeUnit: string): Action {
-  return { type: ActionType.UPDATE_SERVING_SIZE_UNIT, servingSizeUnit };
+export function updateDescription(description: string): RootAction {
+  return makeRootAction({ type: ActionType.UPDATE_DESCRIPTION, description });
 }
 
-export function updateHouseholdUnit(householdUnit: string): Action {
-  return { type: ActionType.UPDATE_HOUSEHOLD_UNIT, householdUnit };
+export function updateServingSize(servingSize: string): RootAction {
+  return makeRootAction({ type: ActionType.UPDATE_SERVING_SIZE, servingSize });
 }
 
-export function updateNutrientValue(nutrientId: number, value: string): Action {
-  return { type: ActionType.UPDATE_NUTRIENT_VALUE, nutrientId, value };
+export function updateServingSizeUnit(servingSizeUnit: string): RootAction {
+  return makeRootAction({
+    type: ActionType.UPDATE_SERVING_SIZE_UNIT,
+    servingSizeUnit,
+  });
+}
+
+export function updateHouseholdUnit(householdUnit: string): RootAction {
+  return makeRootAction({
+    type: ActionType.UPDATE_HOUSEHOLD_UNIT,
+    householdUnit,
+  });
+}
+
+export function updateNutrientValue(
+  nutrientId: number,
+  value: string
+): RootAction {
+  return makeRootAction({
+    type: ActionType.UPDATE_NUTRIENT_VALUE,
+    nutrientId,
+    value,
+  });
 }
