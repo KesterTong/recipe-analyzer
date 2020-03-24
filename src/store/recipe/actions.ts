@@ -15,11 +15,44 @@ import { FoodRef } from "../../../core/FoodRef";
 import { Action, ActionType } from "./types";
 import { getFood, patchFood } from "../../database";
 import { normalizeFood } from "../../../core/normalizeFood";
-import { RootState } from "..";
-import { ThunkAction } from "redux-thunk";
+import { ThunkResult } from "../types";
 import { recipeFromState } from "./conversion";
+import { NormalizedFood } from "../../../core/NormalizedFood";
 
-type ThunkResult<R> = ThunkAction<R, RootState, undefined, Action>;
+export function addIngredient(): Action {
+  return { type: ActionType.ADD_INGREDIENT };
+}
+
+export function deleteIngredient(index: number): Action {
+  return { type: ActionType.DELETE_INGREDIENT, index };
+}
+
+export function selectIngredient(
+  index: number,
+  foodRef: FoodRef,
+  food: NormalizedFood
+): Action {
+  return { type: ActionType.SELECT_INGREDIENT, index, foodRef, food };
+}
+
+export function deselectIngredient(index: number): Action {
+  return { type: ActionType.DESELECT_INGREDIENT, index };
+}
+
+export function updateIngredientAmount(index: number, amount: number): Action {
+  return { type: ActionType.UPDATE_INGREDIENT_AMOUNT, index, amount };
+}
+
+export function updateIngredientUnit(index: number, unit: string): Action {
+  return { type: ActionType.UPDATE_INGREDIENT_UNIT, index, unit };
+}
+
+export function updateIngredientFood(
+  index: number,
+  food: NormalizedFood
+): Action {
+  return { type: ActionType.UPDATE_INGREDIENT_FOOD, index, food };
+}
 
 export function loadIngredient(
   index: number,
@@ -31,36 +64,12 @@ export function loadIngredient(
       ? await normalizeFood(food, getFood, getState().nutrientIds)
       : null;
     if (normalizedFood != null) {
-      dispatch({
-        type: ActionType.UPDATE_INGREDIENT_FOOD,
-        index,
-        food: normalizedFood,
-      });
+      dispatch(updateIngredientFood(index, normalizedFood));
     }
   };
 }
 
-export function addIngredient(): Action {
-  return { type: ActionType.ADD_INGREDIENT };
-}
-
-export function deleteIngredient(index: number): Action {
-  return { type: ActionType.DELETE_INGREDIENT, index };
-}
-
-export function updateIngredientAmount(index: number, amount: number): Action {
-  return { type: ActionType.UPDATE_INGREDIENT_AMOUNT, index, amount };
-}
-
-export function updateIngredientUnit(index: number, unit: string): Action {
-  return { type: ActionType.UPDATE_INGREDIENT_UNIT, index, unit };
-}
-
-export function deselectIngredient(index: number): Action {
-  return { type: ActionType.DESELECT_INGREDIENT, index };
-}
-
-export function selectIngredient(
+export function loadAndSelectIngredient(
   index: number,
   foodRef: FoodRef
 ): ThunkResult<Promise<void>> {
@@ -70,12 +79,7 @@ export function selectIngredient(
       ? await normalizeFood(food, getFood, getState().nutrientIds)
       : null;
     if (normalizedFood != null) {
-      dispatch({
-        type: ActionType.UPDATE_INGREDIENT,
-        index,
-        foodRef,
-        food: normalizedFood,
-      });
+      dispatch(selectIngredient(index, foodRef, normalizedFood));
     }
   };
 }

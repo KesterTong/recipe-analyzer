@@ -34,7 +34,7 @@ export interface RecipeEditorProps {
   addIngredient(foodRef: FoodRef): void;
   updateIngredientAmount(index: number, amount: number): void;
   updateIngredientUnit(index: number, unit: string): void;
-  selectIngredient(index: number, foodRef: FoodRef): void;
+  loadAndSelectIngredient(index: number, foodRef: FoodRef): void;
   deselectIngredient(index: number): void;
   addIngredient(): void;
   deleteIngredient(index: number): void;
@@ -103,7 +103,9 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
                     key={index}
                     foodRef={ingredient.foodRef}
                     deselected={ingredient.deselected}
-                    select={(foodRef) => props.selectIngredient(index, foodRef)}
+                    select={(foodRef) =>
+                      props.loadAndSelectIngredient(index, foodRef)
+                    }
                     deselect={() => props.deselectIngredient(index)}
                   />
                 }

@@ -112,7 +112,7 @@ export function reducer(
             })),
           }
         : null;
-    case ActionType.UPDATE_INGREDIENT:
+    case ActionType.SELECT_INGREDIENT:
       return state
         ? {
             ...state,

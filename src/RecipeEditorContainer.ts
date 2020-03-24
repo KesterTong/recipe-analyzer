@@ -23,7 +23,7 @@ import {
   deleteIngredient,
   updateIngredientAmount,
   updateIngredientUnit,
-  selectIngredient,
+  loadAndSelectIngredient,
   deselectIngredient,
 } from "./store/recipe/actions";
 
@@ -64,7 +64,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
       deleteIngredient,
       updateIngredientAmount,
       updateIngredientUnit,
-      selectIngredient,
+      loadAndSelectIngredient,
       deselectIngredient,
     },
     dispatch
