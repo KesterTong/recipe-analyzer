@@ -36,7 +36,7 @@ export async function getFood(foodId: string): Promise<Food> {
     return <Food>JSON.parse(data.data);
   }
   if (!foodId.startsWith("fdcData/")) {
-    throw "Custom food " + +" not found";
+    throw "Custom food " + foodId + " not found";
   }
   let fdcId = Number(foodId.substr(8, foodId.length - 8));
   let foodData = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
