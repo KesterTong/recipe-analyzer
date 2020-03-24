@@ -15,9 +15,9 @@ import { NutrientInfo } from "../../core/Nutrients";
 import {
   State as BrandedFoodState,
   Action as BrandedFoodAction,
-} from "./branded_food/types";
-import { State as RecipeState, Action as RecipeAction } from "./recipe/types";
-import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
+} from "./branded_food_edit/types";
+import { State as RecipeState, Action as RecipeAction } from "./recipe_edit/types";
+import { State as SRLegacyFoodState } from "./food_view/types";
 import { Food } from "../../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { FoodRef } from "../../core/FoodRef";

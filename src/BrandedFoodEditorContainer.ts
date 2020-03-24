@@ -13,7 +13,7 @@
 // limitations under the License.
 import { RootState } from "./store";
 import { connect } from "react-redux";
-import { updateDescription } from "./store/branded_food/actions";
+import { updateDescription } from "./store/branded_food_edit/actions";
 import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import {
@@ -21,7 +21,7 @@ import {
   updateServingSizeUnit,
   updateHouseholdUnit,
   updateNutrientValue,
-} from "./store/branded_food/actions";
+} from "./store/branded_food_edit/actions";
 import { RootAction } from "./store/types";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 

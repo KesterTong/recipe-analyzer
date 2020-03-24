@@ -15,8 +15,8 @@
 import { connect } from "react-redux";
 import { RootState, ThunkDispatch } from "./store";
 import { RecipeEditor } from "./RecipeEditor";
-import { updateDescription } from "./store/recipe/actions";
-import { selectFoodRef } from "./store/recipe/selectors";
+import { updateDescription } from "./store/recipe_edit/actions";
+import { selectFoodRef } from "./store/recipe_edit/selectors";
 import { bindActionCreators } from "redux";
 import { nutrientsForQuantity } from "../core/Quantity";
 import {
@@ -26,7 +26,7 @@ import {
   updateIngredientUnit,
   loadAndSelectIngredient,
   deselectIngredient,
-} from "./store/recipe/actions";
+} from "./store/recipe_edit/actions";
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.foodState;

@@ -21,13 +21,13 @@ import {
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
-import { reducer as brandedFoodReducer } from "./branded_food/reducer";
-import { State as BrandedFoodState } from "./branded_food/types";
-import { reducer as recipeReducer } from "./recipe/reducer";
-import { State as SRLegacyFoodState } from "./sr_legacy_food/types";
-import { stateFromBrandedFood } from "./branded_food/conversion";
-import { State as RecipeState } from "./recipe/types";
-import { stateFromRecipe } from "./recipe/conversion";
+import { reducer as brandedFoodReducer } from "./branded_food_edit/reducer";
+import { State as BrandedFoodState } from "./branded_food_edit/types";
+import { reducer as recipeReducer } from "./recipe_edit/reducer";
+import { State as SRLegacyFoodState } from "./food_view/types";
+import { stateFromBrandedFood } from "./branded_food_edit/conversion";
+import { State as RecipeState } from "./recipe_edit/types";
+import { stateFromRecipe } from "./recipe_edit/conversion";
 import { selectFoodRef } from "./selectors";
 import { Food } from "../../core/Food";
 

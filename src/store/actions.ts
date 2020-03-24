@@ -14,12 +14,12 @@
 import { getFood, insertFood, patchFood } from "../database";
 import { Food } from "../../core/Food";
 import { RootAction, ThunkResult, ActionType } from "./types";
-import { NEW_RECIPE, recipeFromState } from "./recipe/conversion";
-import { loadIngredient } from "./recipe/actions";
+import { NEW_RECIPE, recipeFromState } from "./recipe_edit/conversion";
+import { loadIngredient } from "./recipe_edit/actions";
 import {
   NEW_BRANDED_FOOD,
   brandedFoodFromState,
-} from "./branded_food/conversion";
+} from "./branded_food_edit/conversion";
 import { FoodRef } from "../../core/FoodRef";
 
 export function setSelectedQuantity(index: number): RootAction {

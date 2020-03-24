@@ -15,10 +15,10 @@ import { getFood, insertFood, patchFood } from "../../src/database";
 import { store, RootState } from "../../src/store";
 import { selectAndLoad, newRecipe, saveFood } from "../../src/store/actions";
 import { TEST_BRANDED_FOOD } from "../testData";
-import { NEW_RECIPE } from "../../src/store/recipe/conversion";
+import { NEW_RECIPE } from "../../src/store/recipe_edit/conversion";
 import { initialState } from "../../src/store/types";
-import { updateDescription as updateBrandedFoodDescription } from "../../src/store/branded_food/actions";
-import { State as BrandedFoodEdits } from "../../src/store/branded_food/types";
+import { updateDescription as updateBrandedFoodDescription } from "../../src/store/branded_food_edit/actions";
+import { State as BrandedFoodEdits } from "../../src/store/branded_food_edit/types";
 
 jest.mock("../../src/database");
 
