@@ -21,7 +21,7 @@ export const NEW_RECIPE: Recipe = {
 };
 
 function filterNulls<T>(array: (T | null)[]): T[] {
-  return <T[]>array.filter((value) => value == null);
+  return <T[]>array.filter((value) => value != null);
 }
 
 export function recipeFromState(state: State): Recipe {
