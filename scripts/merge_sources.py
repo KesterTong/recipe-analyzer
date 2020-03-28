@@ -36,13 +36,15 @@ def _convert_unit(unit):
 
 
 def _convert_nutrient(nutrient):
-    return {
+    result = {
         'id': int(nutrient.id),
         'name': nutrient.name,
         'unitName': _convert_unit(nutrient.unit_name),
-        'rank': int(nutrient.rank),
         'number': nutrient.nutrient_nbr
     }
+    if nutrient.rank:
+        result['rank'] = int(nutrient.rank)
+    return result
 
 
 def _convert_food_nutrient(food_nutrient, nutrients):
@@ -101,8 +103,7 @@ def merge_sources(raw_data):
     # Skip nutrients with rank '' because it's not clear how to handle them.
     nutrients = {
         nutrient.id: _convert_nutrient(nutrient)
-        for nutrient in raw_data.nutrients
-        if nutrient.rank != ''}
+        for nutrient in raw_data.nutrients}
 
     food_nutrients = defaultdict(list)
     for food_nutrient in raw_data.food_nutrients:
