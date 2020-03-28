@@ -97,6 +97,7 @@ def merge_sources(raw_data):
     Returns:
         A list of JSON-like objects.
     """
+    print('merging raw data rows')
     # Convert branded_food_data.foods to dict for merging.
     foods = {food.fdc_id: food for food in raw_data.foods}
     # Convert nutrients to a dict for merging.
