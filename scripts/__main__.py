@@ -33,16 +33,12 @@ if __name__ == '__main__':
             test       run integration tests
 
         Args for test:
-            --raw_data_dir      directory containing raw data
-            --golden_data_dir   directory containing golden FDC API data
+            --test_data_dir     directory containing test data
         """)
     parser.add_argument('command', help='the command to run')
-    parser.add_argument('--raw_data_dir', help='directory containing raw data')
     parser.add_argument(
-        '--golden_data_dir',
-        help='directory containing golden FDC API data')
+        '--test_data_dir',
+        help='directory containing test data')
     args = parser.parse_args()
-    test_case = IntegrationTest(
-        raw_data_dir=args.raw_data_dir,
-        golden_data_dir=args.golden_data_dir)
+    test_case = IntegrationTest(test_data_dir=args.test_data_dir)
     test_case.test_load_and_merge()

@@ -69,16 +69,15 @@ _MISSING_KEYS = [
 
 class IntegrationTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
-        self.raw_data_dir = kwargs.pop('raw_data_dir')
-        self.golden_data_dir = kwargs.pop('golden_data_dir')
+        self.test_data_dir = kwargs.pop('test_data_dir')
         super(IntegrationTest, self).__init__(*args, **kwargs)
 
     def test_load_and_merge(self):
 
-        raw_data = load_raw_data(self.raw_data_dir)
+        raw_data = load_raw_data(self.test_data_dir)
         merged_data = merge_sources(raw_data)
 
-        with open(os.path.join(self.golden_data_dir, '356425.json')) as f:
+        with open(os.path.join(self.test_data_dir, '356425.json')) as f:
             expected = json.load(f)
 
         expected = _remove_keys(expected, _MISSING_KEYS)
