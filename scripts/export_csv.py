@@ -18,6 +18,7 @@ import os
 
 from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
+from .units_convertor import UnitsConvertor
 
 
 # A mapping from JSON format to a column
@@ -31,7 +32,7 @@ FieldColumn = namedtuple(
 # 100 g or 100 ml.
 NutrientColumn = namedtuple(
     'NutrientColumn',
-    ['nutrient_name', 'name', 'column_unit'])
+    ['nutrient_name', 'name', 'unit'])
 
 
 COLUMNS = [
@@ -46,6 +47,14 @@ COLUMNS = [
     NutrientColumn('Protein', 'proteins_100g', 'g'),
 ]
 
+_UNITS_CONVERTOR = UnitsConvertor([
+    UnitsConvertor.UnitDefinition('kJ', 1.0, 'kJ'),
+    UnitsConvertor.UnitDefinition('kcal', 4.184, 'kJ'),
+    UnitsConvertor.UnitDefinition('g', 1.0, 'g'),
+    UnitsConvertor.UnitDefinition('mg', 0.001, 'g'),
+    UnitsConvertor.UnitDefinition('IU', 0.00067, 'g'),
+])
+
 
 def _extract_column_value(column, item, nutrients_by_name):
     if isinstance(column, FieldColumn):
@@ -55,19 +64,12 @@ def _extract_column_value(column, item, nutrients_by_name):
             nutrient = nutrients_by_name[column.nutrient_name]
         except KeyError:
             return ''
-        unit = nutrient['nutrient']['unitName']
-        if unit == 'kcal' and column.column_unit == 'kJ':
-            scale = 4.184
-        elif unit == 'g' and column.column_unit == 'g':
-            scale = 1.0
-        elif unit == 'mg' and column.column_unit == 'g':
-            scale = 0.001
-        elif unit == 'IU' and column.column_unit == 'g':
-            scale = 0.00067
-        else:
-            raise ValueError(
-                'Could not convert unit %s to %s' % (unit, column.output_unit))
-        return str(nutrient['amount'] * scale)
+        
+        amount = _UNITS_CONVERTOR.convert_quantity_to_unit(
+            nutrient['amount'],
+            nutrient['nutrient']['unitName'],
+            column.unit)
+        return str(amount)
     else:
         assert False, 'bad type for column'
 
