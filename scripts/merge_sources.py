@@ -57,6 +57,8 @@ def _convert_food_nutrient(food_nutrient, nutrients):
 
 
 def _merge(branded_food, food, food_nutrients, nutrients):
+    # LI = Label Insights.  It's useful to know that all
+    # branded foods are based on this source.
     assert food.data_type == 'branded_food'
     assert food.fdc_id == branded_food.fdc_id
     for food_nutrient in food_nutrients:
@@ -71,6 +73,7 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         'tableAliasName': 'branded_food',
         'brandOwner': branded_food.brand_owner,
         'gtinUpc': branded_food.gtin_upc,
+        'dataSource': branded_food.data_source,
         'ingredients': branded_food.ingredients,
         'servingSize': float(branded_food.serving_size),
         'servingSizeUnit': branded_food.serving_size_unit,
