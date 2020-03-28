@@ -14,7 +14,6 @@
 """Functions to export merged data to CSV format."""
 from collections import namedtuple
 import csv
-import itertools
 import os
 
 from .load_raw_data import load_raw_data
@@ -47,6 +46,7 @@ COLUMNS = [
     NutrientColumn('Protein', 'proteins_100g', 'g'),
 ]
 
+
 def _extract_column_value(column, item, nutrients_by_name):
     if isinstance(column, FieldColumn):
         return item[column.field]
@@ -57,7 +57,7 @@ def _extract_column_value(column, item, nutrients_by_name):
             return ''
         unit = nutrient['nutrient']['unitName']
         if unit == 'kcal' and column.column_unit == 'kJ':
-            scale = 4.184 
+            scale = 4.184
         elif unit == 'g' and column.column_unit == 'g':
             scale = 1.0
         elif unit == 'mg' and column.column_unit == 'g':
@@ -65,10 +65,12 @@ def _extract_column_value(column, item, nutrients_by_name):
         elif unit == 'IU' and column.column_unit == 'g':
             scale = 0.00067
         else:
-            raise ValueError('Could not convert unit %s to %s' % (unit, column.output_unit))
+            raise ValueError(
+                'Could not convert unit %s to %s' % (unit, column.output_unit))
         return str(nutrient['amount'] * scale)
     else:
         assert False, 'bad type for column'
+
 
 def _export(merged_data, columns, csv_writer):
     """Export merged data to CSV format.
@@ -78,7 +80,7 @@ def _export(merged_data, columns, csv_writer):
         column_mappings: A list of `ColumnMapping`s.  Columns will be written
             in this order.
     """
-    print ('writing merged data to CSV file')
+    print('writing merged data to CSV file')
     csv_writer.writerow(column.name for column in columns)
     for item in merged_data:
         nutrients_by_name = {
@@ -92,6 +94,7 @@ def _export(merged_data, columns, csv_writer):
 def export_csv(raw_data_dir, merged_data_dir):
     raw_data = load_raw_data(raw_data_dir)
     merged_data = merge_sources(raw_data)
-    with open(os.path.join(merged_data_dir, 'merged.csv'), 'w', newline='') as f:
+    merged_data_csv_file = os.path.join(merged_data_dir, 'merged.csv')
+    with open(merged_data_csv_file, 'w', newline='') as f:
         csv_writer = csv.writer(f,  quoting=csv.QUOTE_ALL)
         _export(merged_data, COLUMNS, csv_writer)
