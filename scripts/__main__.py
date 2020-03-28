@@ -19,6 +19,7 @@ https://fdc.nal.usda.gov/download-datasets.html
 This utility current loads the data and tests the correctness of
 the library.
 """
+import argparse
 import os
 import pathlib
 
@@ -26,10 +27,25 @@ from .integration_test import IntegrationTest
 
 
 if __name__ == '__main__':
-    testdata_dir = os.path.join(
-        pathlib.Path(__file__).absolute().parent, 'testdata')
-    raw_data_dir = os.path.join(testdata_dir, 'fdc_data')
+    parser = argparse.ArgumentParser(
+        description='Utilities for importing the USDA Branded Foods database',
+        usage="""scripts <command> [<args>]
+
+        Available commands:
+            test       run integration tests
+            fetch      download objects and refs from another repository
+        
+        Args for test:
+            --raw_data_dir      directory containing raw data
+            --golden_data_dir   directory containing golden FDC API data
+        """)
+    parser.add_argument('command', help='the command to run')
+    parser.add_argument('--raw_data_dir', help='directory containing raw data')
+    parser.add_argument(
+        '--golden_data_dir',
+        help='directory containing golden FDC API data')
+    args = parser.parse_args()
     test_case = IntegrationTest(
-        raw_data_dir=raw_data_dir,
-        golden_data_dir=testdata_dir)
+        raw_data_dir=args.raw_data_dir,
+        golden_data_dir=args.golden_data_dir)
     test_case.test_load_and_merge()
