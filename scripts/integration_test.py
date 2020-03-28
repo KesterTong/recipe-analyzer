@@ -18,6 +18,7 @@ https://fdc.nal.usda.gov/download-datasets.html
 """
 import json
 import os
+import re
 import unittest
 
 from .load_raw_data import load_raw_data
@@ -71,6 +72,35 @@ _MISSING_KEYS = [
 _FDC_IDS = [
     '356425',
 ]
+
+
+def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
+    # Construct a regex like '"123"|"456"'.  Using the quotes helps to
+    # avoid matchig a row where the fdc_id is a substring of another id,
+    # which can happen.
+    filter_regex = re.compile('|'.join('"%s"' % id for id in _FDC_IDS))
+    def copy_and_filter(filename, filter):
+        """Copy and CSV file and optinally filter."""
+        input_filename = os.path.join(raw_data_dir, filename)
+        output_filename = os.path.join(test_data_dir, filename)
+        with open(input_filename) as fin:
+            with open(output_filename, 'w') as fout:
+                line = fin.readline()
+                fout.write(line)
+                while True:
+                    line = fin.readline()
+                    if not line:
+                        break
+                    if filter and not filter_regex.search(line):
+                        continue
+                    print (line)
+                    fout.write(line)
+    copy_and_filter('branded_food.csv', True)
+    copy_and_filter('food_nutrient.csv', True)
+    copy_and_filter('food_attribute.csv', True)
+    copy_and_filter('food_update_log_entry.csv', True)
+    copy_and_filter('food.csv', True)
+    copy_and_filter('nutrient.csv', False)
 
 
 class IntegrationTest(unittest.TestCase):
