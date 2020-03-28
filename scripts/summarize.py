@@ -11,14 +11,33 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from contextlib import contextmanager
+import csv
+import os
+
 from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
 
 
-def summarize(raw_data_dir):
-    raw_data = load_raw_data(raw_data_dir)
-    merged_data = merge_sources(raw_data)
+def write_categories(merged_data, csv_writer):
     print('generating categories')
     categories = sorted(set(
         item['brandedFoodCategory'] for item in merged_data))
-    print(categories)
+    csv_writer.writerow(['category'])
+    for category in categories:
+        csv_writer.writerow([category])
+
+
+def summarize(raw_data_dir, summary_dir):
+    raw_data = load_raw_data(raw_data_dir)
+    merged_data = merge_sources(raw_data)
+
+    # Use a generator for this helper function so we can use it in
+    # a `with` statement.
+    @contextmanager
+    def summary_writer(filename):
+        with open(os.path.join(summary_dir, filename), 'w', newline='') as f:
+            yield csv.writer(f)
+
+    with summary_writer('category.csv') as csv_writer:
+        write_categories(merged_data, csv_writer)

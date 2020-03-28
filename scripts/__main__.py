@@ -38,6 +38,7 @@ if __name__ == '__main__':
 
         Args for summarize:
             --raw_data_dir      directory containing raw FDC data
+            --summary_dir       directory to write summmary data to
 
         Args for create_test_data:
             --raw_data_dir      directory containing raw FDC data
@@ -52,6 +53,9 @@ if __name__ == '__main__':
         '--raw_data_dir',
         help='directory containing raw FDC data')
     parser.add_argument(
+        '--summary_dir',
+        help='directory to write summary data to')
+    parser.add_argument(
         '--fdc_api_key',
         help='API key to call FDC API')
     parser.add_argument(
@@ -59,7 +63,9 @@ if __name__ == '__main__':
         help='directory containing test data')
     args = parser.parse_args()
     if args.command == 'summarize':
-        summarize(raw_data_dir=args.raw_data_dir)
+        summarize(
+            raw_data_dir=args.raw_data_dir,
+            summary_dir=args.summary_dir)
     elif args.command == 'test':
         test_case = IntegrationTest(test_data_dir=args.test_data_dir)
         test_case.test_load_and_merge()
