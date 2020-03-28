@@ -18,11 +18,11 @@ https://fdc.nal.usda.gov/download-datasets.html
 """
 import json
 import os
-import pathlib
 import unittest
 
 from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
+
 
 def _remove_keys(obj, keys_to_remove):
     """Remove the given fields from a JSON-like object.
@@ -66,6 +66,7 @@ _MISSING_KEYS = [
     'changes',
 ]
 
+
 class IntegrationTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         self.raw_data_dir = kwargs.pop('raw_data_dir')
@@ -86,12 +87,3 @@ class IntegrationTest(unittest.TestCase):
         self.assertMultiLineEqual(
             json.dumps(expected, indent=2, sort_keys=True),
             json.dumps(merged_data[0], indent=2, sort_keys=True))
-
-if __name__ == '__main__':
-    testdata_dir = os.path.join(
-        pathlib.Path(__file__).absolute().parent, 'testdata')
-    raw_data_dir = os.path.join(testdata_dir, 'fdc_data')
-    test_case = IntegrationTest(
-        raw_data_dir=raw_data_dir,
-        golden_data_dir=testdata_dir)
-    test_case.test_load_and_merge()
