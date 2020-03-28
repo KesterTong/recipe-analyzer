@@ -66,6 +66,12 @@ _MISSING_KEYS = [
     'changes',
 ]
 
+# Sample of FDC ids used for testing.  This is the first
+# row of `branded_foods.csv` and a random sample.
+_FDC_IDS = [
+    '356425',
+]
+
 
 class IntegrationTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
@@ -76,13 +82,19 @@ class IntegrationTest(unittest.TestCase):
 
         raw_data = load_raw_data(self.test_data_dir)
         merged_data = merge_sources(raw_data)
+        merged_data = {str(item['fdcId']): item for item in merged_data}
 
-        with open(os.path.join(self.test_data_dir, '356425.json')) as f:
-            expected = json.load(f)
+        for fdc_id in _FDC_IDS:
+            print ('validating food with fdc_id: %s' % fdc_id)
+            actual = merged_data[fdc_id]
 
-        expected = _remove_keys(expected, _MISSING_KEYS)
+            filename = os.path.join(self.test_data_dir, fdc_id + '.json')
+            with open(filename) as f:
+                expected = json.load(f)
 
-        self.maxDiff = None
-        self.assertMultiLineEqual(
-            json.dumps(expected, indent=2, sort_keys=True),
-            json.dumps(merged_data[0], indent=2, sort_keys=True))
+            expected = _remove_keys(expected, _MISSING_KEYS)
+
+            self.maxDiff = None
+            self.assertMultiLineEqual(
+                json.dumps(expected, indent=2, sort_keys=True),
+                json.dumps(actual, indent=2, sort_keys=True))
