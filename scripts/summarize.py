@@ -23,22 +23,23 @@ from .merge_sources import merge_sources
 
 def write_values_and_frequencies(merged_data, field, csv_writer):
     print('generating values and frequencies for field: %s' % field)
-    categories = Counter(
-        item[field] for item in merged_data)
+    values = Counter(item[field] for item in merged_data)
     csv_writer.writerow([field, 'frequency'])
-    for value, frequency in categories.most_common():
+    for value, frequency in values.most_common():
         csv_writer.writerow([value, str(frequency)])
 
 
-def write_nutrient_values_and_frequencies(merged_data, csv_writer):
+def write_nutrients_and_frequencies(merged_data, csv_writer):
     print('generating values and frequencies for nutrients')
-    categories = Counter(
-        (nutrient['nutrient']['name'], nutrient['nutrient']['unitName'])
+    nutrients = Counter(
+        (nutrient['nutrient']['id'],
+         nutrient['nutrient']['name'],
+         nutrient['nutrient']['unitName'])
         for item in merged_data for nutrient in item['foodNutrients'])
-    csv_writer.writerow(['nutrient', 'unit', 'frequency'])
+    csv_writer.writerow(['id', 'name', 'unit', 'frequency'])
     scale = 1.0 / float(len(merged_data))
-    for (name, unitName), frequency in categories.most_common():
-        csv_writer.writerow([name, unitName, str(frequency * scale)])
+    for (id, name, unitName), frequency in nutrients.most_common():
+        csv_writer.writerow([id, name, unitName, str(frequency * scale)])
 
 
 def summarize(raw_data_dir, summary_dir):
@@ -63,5 +64,5 @@ def summarize(raw_data_dir, summary_dir):
     # Generate unique values and frequencies for nutrients, where
     # frequencies are normalized by the total number of branded foods.
     with summary_writer('nutrient.csv') as csv_writer:
-        write_nutrient_values_and_frequencies(
+        write_nutrients_and_frequencies(
             merged_data, csv_writer)
