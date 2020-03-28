@@ -169,6 +169,10 @@ _FDC_IDS = [
     '730120',
     '738648',
     '741658',
+    # These ensure full coverage for all nutrient units.
+    '356425',
+    '356544',
+    '370154',
 ]
 
 # URL for FoodDataCentral API.
