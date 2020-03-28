@@ -29,6 +29,8 @@ def _convert_date_format(publication_date):
 def _convert_unit(unit):
     if unit == 'IU':
         return 'IU'
+    elif unit == 'UG':
+        return '\u00b5g'
     else:
         return unit.lower()
 
