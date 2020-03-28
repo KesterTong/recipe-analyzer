@@ -58,7 +58,7 @@ def summarize(raw_data_dir, summary_dir):
     with summary_writer('data_source.csv') as csv_writer:
         write_values_and_frequencies(
             merged_data, 'dataSource', csv_writer)
-    
+
     # Generate unique values and frequencies for nutrients, where
     # frequencies are normalized by the total number of branded foods.
     with summary_writer('nutrient.csv') as csv_writer:
