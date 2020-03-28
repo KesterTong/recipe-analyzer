@@ -20,8 +20,6 @@ This utility current loads the data and tests the correctness of
 the library.
 """
 import argparse
-import os
-import pathlib
 
 from .integration_test import IntegrationTest
 
@@ -34,7 +32,7 @@ if __name__ == '__main__':
         Available commands:
             test       run integration tests
             fetch      download objects and refs from another repository
-        
+
         Args for test:
             --raw_data_dir      directory containing raw data
             --golden_data_dir   directory containing golden FDC API data
