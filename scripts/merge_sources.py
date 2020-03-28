@@ -56,7 +56,10 @@ def _merge(branded_food, food, food_nutrients, nutrients):
     return {
         'foodClass': 'Branded', 
         'description': food.description,
-        'foodNutrients': [_convert_food_nutrient(food_nutrient, nutrients) for food_nutrient in food_nutrients],
+        'foodNutrients': [
+            _convert_food_nutrient(food_nutrient, nutrients)
+            for food_nutrient in food_nutrients
+            if food_nutrient.nutrient_id in nutrients],
         'tableAliasName': 'branded_food',
         'brandOwner': branded_food.brand_owner,
         'gtinUpc': branded_food.gtin_upc,
