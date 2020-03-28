@@ -25,20 +25,23 @@ def _convert_date_format(publication_date):
     dt = datetime.strptime(publication_date, '%Y-%m-%d')
     return '%d/%d/%d' % (dt.month, dt.day, dt.year)
 
+
 def _convert_unit(unit):
     if unit == 'IU':
         return 'IU'
     else:
         return unit.lower()
 
+
 def _convert_nutrient(nutrient):
-    return  {
+    return {
         'id': int(nutrient.id),
         'name': nutrient.name,
         'unitName': _convert_unit(nutrient.unit_name),
         'rank': int(nutrient.rank),
         'number': nutrient.nutrient_nbr
     }
+
 
 def _convert_food_nutrient(food_nutrient, nutrients):
     return {
@@ -48,13 +51,14 @@ def _convert_food_nutrient(food_nutrient, nutrients):
         "amount": float(food_nutrient.amount)
     }
 
+
 def _merge(branded_food, food, food_nutrients, nutrients):
     assert food.data_type == 'branded_food'
     assert food.fdc_id == branded_food.fdc_id
     for food_nutrient in food_nutrients:
         assert food_nutrient.fdc_id == branded_food.fdc_id
     return {
-        'foodClass': 'Branded', 
+        'foodClass': 'Branded',
         'description': food.description,
         'foodNutrients': [
             _convert_food_nutrient(food_nutrient, nutrients)
@@ -70,7 +74,7 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         'brandedFoodCategory': branded_food.branded_food_category,
         'fdcId': int(branded_food.fdc_id),
         'dataType': 'Branded',
-        'publicationDate': _convert_date_format(food.publication_date), 
+        'publicationDate': _convert_date_format(food.publication_date),
         'foodPortions': [],
     }
 
