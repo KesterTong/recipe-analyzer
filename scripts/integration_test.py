@@ -20,6 +20,7 @@ import json
 import os
 import re
 import unittest
+import urllib.request
 
 from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
@@ -71,7 +72,11 @@ _MISSING_KEYS = [
 # row of `branded_foods.csv` and a random sample.
 _FDC_IDS = [
     '356425',
+    '356426',
 ]
+
+# URL for FoodDataCentral API.
+_FDC_API_URL = 'https://api.nal.usda.gov/fdc/v1/'
 
 
 def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
@@ -105,6 +110,16 @@ def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
 
     for fdc_id in _FDC_IDS:
         print('Downloading golden data for fdc_id: %s' % fdc_id)
+        # Typically we should escape URL params but here we know they
+        # don't need escaping.
+        url = _FDC_API_URL + fdc_id + '?API_KEY=' + fdc_api_key
+        # NOTE: if you get an error message containing
+        # CERTIFICATE_VERIFY_FAILED and are using OSX,
+        # see https://stackoverflow.com/a/42334357.
+        response = urllib.request.urlopen(url)
+        filename = os.path.join(test_data_dir, fdc_id + '.json')
+        with open(filename, 'w') as f:
+            f.write(response.read().decode('utf8'))
 
 
 class IntegrationTest(unittest.TestCase):
