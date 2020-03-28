@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from collections import Counter
 from contextlib import contextmanager
 import csv
 import os
@@ -21,11 +22,11 @@ from .merge_sources import merge_sources
 
 def write_categories(merged_data, csv_writer):
     print('generating categories')
-    categories = sorted(set(
-        item['brandedFoodCategory'] for item in merged_data))
-    csv_writer.writerow(['category'])
-    for category in categories:
-        csv_writer.writerow([category])
+    categories = Counter(
+        item['brandedFoodCategory'] for item in merged_data)
+    csv_writer.writerow(['category', 'frequency'])
+    for category, frequency in categories.most_common():
+        csv_writer.writerow([category, str(frequency)])
 
 
 def summarize(raw_data_dir, summary_dir):
@@ -37,7 +38,7 @@ def summarize(raw_data_dir, summary_dir):
     @contextmanager
     def summary_writer(filename):
         with open(os.path.join(summary_dir, filename), 'w', newline='') as f:
-            yield csv.writer(f)
+            yield csv.writer(f,  quoting=csv.QUOTE_ALL)
 
     with summary_writer('category.csv') as csv_writer:
         write_categories(merged_data, csv_writer)
