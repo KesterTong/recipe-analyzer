@@ -80,7 +80,19 @@ def _merge(branded_food, food, food_nutrients, nutrients):
 
 
 def merge_sources(raw_data):
-    """Merge all the sources in branded_food_data."""
+    """Merge all the sources in raw_data.
+
+    Each field in raw_data represents a single CSV file.  This function
+    merges these into a single list, where each element of the list is
+    a JSON-like object containing the same data as the output of the
+    FoodDataCentral API.
+
+    Args:
+        raw_data: A `RawData`.
+
+    Returns:
+        A list of JSON-like objects.
+    """
     # Convert branded_food_data.foods to dict for merging.
     foods = {food.fdc_id: food for food in raw_data.foods}
     # Convert nutrients to a dict for merging.

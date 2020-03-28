@@ -51,6 +51,25 @@ def _load_data_file(data_dir, filename, data_cls):
 
 
 def load_raw_data(data_dir):
+    """Load raw CSV data.
+
+    Loads raw CSV data, converting to RawData.  RawData is a
+    namedtuple where each field represents a CSV file.  Each
+    file is represented as a list of `namedtuple`s, where the
+    `namedtuple` for each entry has fields that have the same
+    names as the column names.
+
+    The raw data format represents data parsed from CSV files
+    available for download from
+    https://fdc.nal.usda.gov/download-datasets.html
+
+    For efficiency it's best to download just the Branded Food
+    data, unzip it, then also download the
+    "Supporting data for Downloads" and copy the needed files
+    from there into the directory containing Branded Food data.
+    Currently from the supporting data, only nutrient.csv is
+    used.
+    """
     return RawData(
         branded_foods=_load_data_file(
             data_dir, 'branded_food.csv', BrandedFood),
