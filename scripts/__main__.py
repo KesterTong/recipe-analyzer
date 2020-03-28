@@ -21,6 +21,7 @@ the library.
 """
 import argparse
 
+from .export_csv import export_csv
 from .integration_test import create_test_data
 from .integration_test import IntegrationTest
 from .summarize import summarize
@@ -33,12 +34,17 @@ if __name__ == '__main__':
 
         Available commands:
             summarize           print summary information
+            export_csv          export raw data to merged CSV format
             create_test_data    create data for integration tests
             test                run integration tests
 
         Args for summarize:
             --raw_data_dir      directory containing raw FDC data
             --summary_dir       directory to write summmary data to
+
+        Args for export_csv
+            --raw_data_dir      directory containing raw FDC data
+            --merged_data_dir   directory to write merged CSV data to
 
         Args for create_test_data:
             --raw_data_dir      directory containing raw FDC data
@@ -56,6 +62,9 @@ if __name__ == '__main__':
         '--summary_dir',
         help='directory to write summary data to')
     parser.add_argument(
+        '--merged_data_dir',
+        help='directory to write merged CSV data to')
+    parser.add_argument(
         '--fdc_api_key',
         help='API key to call FDC API')
     parser.add_argument(
@@ -66,6 +75,10 @@ if __name__ == '__main__':
         summarize(
             raw_data_dir=args.raw_data_dir,
             summary_dir=args.summary_dir)
+    elif args.command == 'export_csv':
+        export_csv(
+            raw_data_dir=args.raw_data_dir,
+            merged_data_dir=args.merged_data_dir)
     elif args.command == 'test':
         test_case = IntegrationTest(test_data_dir=args.test_data_dir)
         test_case.test_load_and_merge()
