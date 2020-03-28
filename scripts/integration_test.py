@@ -61,8 +61,6 @@ _MISSING_KEYS = [
     'foodNutrientDerivation',
     'foodComponents',
     'foodAttributes',
-    'modifiedDate',
-    'availableDate',
     'labelNutrients',
     'foodUpdateLog',
     'changes',

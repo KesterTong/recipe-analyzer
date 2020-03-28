@@ -20,9 +20,11 @@ from collections import defaultdict
 from datetime import datetime
 
 
-def _convert_date_format(publication_date):
+def _convert_date_format(d):
     """Convert from file format to API format."""
-    dt = datetime.strptime(publication_date, '%Y-%m-%d')
+    if not d:
+        return None
+    dt = datetime.strptime(d, '%Y-%m-%d')
     return '%d/%d/%d' % (dt.month, dt.day, dt.year)
 
 
@@ -35,16 +37,19 @@ def _convert_unit(unit):
         return unit.lower()
 
 
+def _remove_nones(obj):
+    """Return a new object ommitting keys whose value is none."""
+    return {key: value for key, value in obj.items() if value is not None}
+
+
 def _convert_nutrient(nutrient):
-    result = {
+    return _remove_nones({
         'id': int(nutrient.id),
         'name': nutrient.name,
         'unitName': _convert_unit(nutrient.unit_name),
-        'number': nutrient.nutrient_nbr
-    }
-    if nutrient.rank:
-        result['rank'] = int(nutrient.rank)
-    return result
+        'number': nutrient.nutrient_nbr,
+        'rank': int(nutrient.rank) if nutrient.rank else None
+    })
 
 
 def _convert_food_nutrient(food_nutrient, nutrients):
@@ -61,9 +66,10 @@ def _merge(branded_food, food, food_nutrients, nutrients):
     # branded foods are based on this source.
     assert food.data_type == 'branded_food'
     assert food.fdc_id == branded_food.fdc_id
+    assert food.publication_date
     for food_nutrient in food_nutrients:
         assert food_nutrient.fdc_id == branded_food.fdc_id
-    return {
+    return _remove_nones({
         'foodClass': 'Branded',
         'description': food.description,
         'foodNutrients': [
@@ -75,6 +81,8 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         'gtinUpc': branded_food.gtin_upc,
         'dataSource': branded_food.data_source,
         'ingredients': branded_food.ingredients,
+        'modifiedDate': _convert_date_format(branded_food.modified_date),
+        'availableDate': _convert_date_format(branded_food.available_date),
         'servingSize': float(branded_food.serving_size),
         'servingSizeUnit': branded_food.serving_size_unit,
         'householdServingFullText': branded_food.household_serving_fulltext,
@@ -83,7 +91,7 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         'dataType': 'Branded',
         'publicationDate': _convert_date_format(food.publication_date),
         'foodPortions': [],
-    }
+    })
 
 
 def merge_sources(raw_data):
