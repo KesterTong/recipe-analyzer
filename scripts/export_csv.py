@@ -64,7 +64,7 @@ def _extract_column_value(column, item, nutrients_by_name):
             nutrient = nutrients_by_name[column.nutrient_name]
         except KeyError:
             return ''
-        
+
         amount = _UNITS_CONVERTOR.convert_quantity_to_unit(
             nutrient['amount'],
             nutrient['nutrient']['unitName'],
