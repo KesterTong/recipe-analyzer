@@ -19,33 +19,79 @@ https://fdc.nal.usda.gov/download-datasets.html
 import json
 import os
 import pathlib
+import unittest
 
 from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
 
+def _remove_keys(obj, keys_to_remove):
+    """Remove the given fields from a JSON-like object.
 
-def _assert_subobject(subobj, obj, path):
-    if isinstance(subobj, list):
-        assert isinstance(obj, list)
-        assert len(subobj) == len(obj)
-        for index, (subobj_item, obj_item) in enumerate(zip(subobj, obj)):
-            _assert_subobject(subobj_item, obj_item, path + '.' + str(index))
-    elif isinstance(subobj, dict):
-        assert isinstance(obj, dict)
-        for key, value in subobj.items():
-            _assert_subobject(value, obj[key], path + '.' + key)
+    Traverses `obj` and removes the given keys at any nesting depth.
+
+    Examples:
+
+    _strip_keys({'a': [{'a': 0, 'b': 1}], 'b': 2}, ['a']) ==
+    {'b': 2}
+
+    _strip_keys({'a': [{'a': 0, 'b': 1}], 'b': 2}, ['b']) ==
+    {'a': [{'a': 0}]}
+
+    Args:
+        obj: A JSON-like object
+        keys_to_remove: A list of keys
+
+    Returns:
+        A copy of `obj` with the given fields removed at any nesting depth.
+    """
+    if isinstance(obj, list):
+        return [_remove_keys(item, keys_to_remove) for item in obj]
+    elif isinstance(obj, dict):
+        return {
+            key: _remove_keys(value, keys_to_remove)
+            for key, value in obj.items() if key not in keys_to_remove}
     else:
-        assert subobj == obj, (path, subobj, obj)
+        return obj
 
+
+# Keys that are missing from the output data.
+_MISSING_KEYS = [
+    'foodNutrientDerivation',
+    'foodComponents',
+    'foodAttributes',
+    'dataSource',
+    'modifiedDate',
+    'availableDate',
+    'labelNutrients',
+    'changes',
+]
+
+class IntegrationTest(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        self.raw_data_dir = kwargs.pop('raw_data_dir')
+        self.golden_data_dir = kwargs.pop('golden_data_dir')
+        super(IntegrationTest, self).__init__(*args, **kwargs)
+
+    def test_load_and_merge(self):
+
+        raw_data = load_raw_data(self.raw_data_dir)
+        merged_data = merge_sources(raw_data)
+
+        with open(os.path.join(self.golden_data_dir, '356425.json')) as f:
+            expected = json.load(f)
+
+        expected = _remove_keys(expected, _MISSING_KEYS)
+
+        self.maxDiff = None
+        self.assertMultiLineEqual(
+            json.dumps(expected, indent=2, sort_keys=True),
+            json.dumps(merged_data[0], indent=2, sort_keys=True))
 
 if __name__ == '__main__':
     testdata_dir = os.path.join(
         pathlib.Path(__file__).absolute().parent, 'testdata')
-    fdc_data_dir = os.path.join(testdata_dir, 'fdc_data')
-
-    raw_data = load_raw_data(fdc_data_dir)
-    merged_data = merge_sources(raw_data)
-
-    with open(os.path.join(testdata_dir, '356425.json')) as f:
-        expected = json.load(f)
-        _assert_subobject(merged_data[0], expected, '345425')
+    raw_data_dir = os.path.join(testdata_dir, 'fdc_data')
+    test_case = IntegrationTest(
+        raw_data_dir=raw_data_dir,
+        golden_data_dir=testdata_dir)
+    test_case.test_load_and_merge()
