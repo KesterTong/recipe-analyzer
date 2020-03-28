@@ -20,13 +20,13 @@ from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
 
 
-def write_categories(merged_data, csv_writer):
-    print('generating categories')
+def write_values_and_frequencies(merged_data, field, csv_writer):
+    print('generating values and frequencies for field: %s' % field)
     categories = Counter(
-        item['brandedFoodCategory'] for item in merged_data)
-    csv_writer.writerow(['category', 'frequency'])
-    for category, frequency in categories.most_common():
-        csv_writer.writerow([category, str(frequency)])
+        item[field] for item in merged_data)
+    csv_writer.writerow([field, 'frequency'])
+    for value, frequency in categories.most_common():
+        csv_writer.writerow([value, str(frequency)])
 
 
 def summarize(raw_data_dir, summary_dir):
@@ -41,4 +41,9 @@ def summarize(raw_data_dir, summary_dir):
             yield csv.writer(f,  quoting=csv.QUOTE_ALL)
 
     with summary_writer('category.csv') as csv_writer:
-        write_categories(merged_data, csv_writer)
+        write_values_and_frequencies(
+            merged_data, 'brandedFoodCategory', csv_writer)
+
+    with summary_writer('data_source.csv') as csv_writer:
+        write_values_and_frequencies(
+            merged_data, 'dataSource', csv_writer)
