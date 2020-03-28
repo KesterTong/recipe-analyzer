@@ -23,6 +23,7 @@ import argparse
 
 from .integration_test import create_test_data
 from .integration_test import IntegrationTest
+from .summarize import summarize
 
 
 if __name__ == '__main__':
@@ -31,8 +32,12 @@ if __name__ == '__main__':
         usage="""scripts <command> [<args>]
 
         Available commands:
+            summarize           print summary information
             create_test_data    create data for integration tests
             test                run integration tests
+
+        Args for summarize:
+            --raw_data_dir      directory containing raw FDC data
 
         Args for create_test_data:
             --raw_data_dir      directory containing raw FDC data
@@ -53,7 +58,9 @@ if __name__ == '__main__':
         '--test_data_dir',
         help='directory containing test data')
     args = parser.parse_args()
-    if args.command == 'test':
+    if args.command == 'summarize':
+        summarize(raw_data_dir=args.raw_data_dir)
+    elif args.command == 'test':
         test_case = IntegrationTest(test_data_dir=args.test_data_dir)
         test_case.test_load_and_merge()
     elif args.command == 'create_test_data':
