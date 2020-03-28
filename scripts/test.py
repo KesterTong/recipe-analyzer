@@ -16,7 +16,6 @@
 The Branded Foods database is available at
 https://fdc.nal.usda.gov/download-datasets.html
 """
-import argparse
 import json
 import os
 import pathlib
@@ -25,28 +24,23 @@ from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
 
 
-def _assert_subobject(subobj, obj, path=None):
+def _assert_subobject(subobj, obj, path):
     if isinstance(subobj, list):
         assert isinstance(obj, list)
         assert len(subobj) == len(obj)
         for index, (subobj_item, obj_item) in enumerate(zip(subobj, obj)):
-            _assert_subobject(
-                subobj_item,
-                obj_item,
-                str(index) if path is None else path + '.' + str(index))
+            _assert_subobject(subobj_item, obj_item, path + '.' + str(index))
     elif isinstance(subobj, dict):
         assert isinstance(obj, dict)
         for key, value in subobj.items():
-            _assert_subobject(
-                value,
-                obj[key],
-                key if path is None else path + '.' + key)
+            _assert_subobject(value, obj[key], path + '.' + key)
     else:
         assert subobj == obj, (path, subobj, obj)
 
 
 if __name__ == '__main__':
-    testdata_dir = os.path.join(pathlib.Path(__file__).absolute().parent, 'testdata')
+    testdata_dir = os.path.join(
+        pathlib.Path(__file__).absolute().parent, 'testdata')
     fdc_data_dir = os.path.join(testdata_dir, 'fdc_data')
 
     raw_data = load_raw_data(fdc_data_dir)
@@ -54,4 +48,4 @@ if __name__ == '__main__':
 
     with open(os.path.join(testdata_dir, '356425.json')) as f:
         expected = json.load(f)
-        _assert_subobject(merged_data[0], expected)
+        _assert_subobject(merged_data[0], expected, '345425')
