@@ -39,7 +39,7 @@ def _load_data_file(data_dir, filename, data_cls):
     Returns:
         A list of dicts, whose keys are the column names.
     """
-    print('loading file %s' % filename)
+    print('loading file: %s' % filename)
     with open(os.path.join(data_dir, filename)) as f:
         reader = csv.reader(f)
         header_row = next(reader)

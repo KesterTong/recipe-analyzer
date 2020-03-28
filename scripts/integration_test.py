@@ -82,6 +82,7 @@ def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
 
     def copy_and_filter(filename, filter):
         """Copy and CSV file and optinally filter."""
+        print('Creating test data file: %s' % filename)
         input_filename = os.path.join(raw_data_dir, filename)
         output_filename = os.path.join(test_data_dir, filename)
         with open(input_filename) as fin:
@@ -101,6 +102,9 @@ def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
     copy_and_filter('food_update_log_entry.csv', True)
     copy_and_filter('food.csv', True)
     copy_and_filter('nutrient.csv', False)
+
+    for fdc_id in _FDC_IDS:
+        print('Downloading golden data for fdc_id: %s' % fdc_id)
 
 
 class IntegrationTest(unittest.TestCase):
