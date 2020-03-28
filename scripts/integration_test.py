@@ -79,6 +79,7 @@ def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
     # avoid matchig a row where the fdc_id is a substring of another id,
     # which can happen.
     filter_regex = re.compile('|'.join('"%s"' % id for id in _FDC_IDS))
+
     def copy_and_filter(filename, filter):
         """Copy and CSV file and optinally filter."""
         input_filename = os.path.join(raw_data_dir, filename)
@@ -93,7 +94,6 @@ def create_test_data(raw_data_dir, fdc_api_key, test_data_dir):
                         break
                     if filter and not filter_regex.search(line):
                         continue
-                    print (line)
                     fout.write(line)
     copy_and_filter('branded_food.csv', True)
     copy_and_filter('food_nutrient.csv', True)
@@ -115,7 +115,7 @@ class IntegrationTest(unittest.TestCase):
         merged_data = {str(item['fdcId']): item for item in merged_data}
 
         for fdc_id in _FDC_IDS:
-            print ('validating food with fdc_id: %s' % fdc_id)
+            print('validating food with fdc_id: %s' % fdc_id)
             actual = merged_data[fdc_id]
 
             filename = os.path.join(self.test_data_dir, fdc_id + '.json')
