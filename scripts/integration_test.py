@@ -173,6 +173,7 @@ _FDC_IDS = [
     '356425',
     '356544',
     '370154',
+    '398115',
 ]
 
 # URL for FoodDataCentral API.

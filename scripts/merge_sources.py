@@ -28,19 +28,16 @@ def _convert_date_format(d):
     return '%d/%d/%d' % (dt.month, dt.day, dt.year)
 
 
-def _convert_unit(unit):
-    # NOTE: this code doesn't have good test coverage.
-    # Would be good to find test data for each unit.
-    # It would also be better to do this with a constant
-    # dict mapping old units to new units.
-    if unit == 'IU':
-        return 'IU'
-    elif unit == 'UG':
-        return '\u00b5g'
-    elif unit == 'kJ':
-        return 'kJ'
-    else:
-        return unit.lower()
+_NEW_UNIT_NAMES = {
+    'G': 'g',
+    'UG': '\u00b5g',
+    'IU': 'IU',
+    'kJ': 'kJ',
+    'MG_ATE': 'mg_ATE',
+    'MG': 'mg',
+    'KCAL': 'kcal',
+}
+_UNKNOWN_UNIT = 'UNKNOWN_UNIT'
 
 
 def _remove_nones(obj):
@@ -52,13 +49,17 @@ def _convert_nutrient(nutrient):
     return _remove_nones({
         'id': int(nutrient.id),
         'name': nutrient.name,
-        'unitName': _convert_unit(nutrient.unit_name),
+        'unitName': _NEW_UNIT_NAMES.get(nutrient.unit_name, _UNKNOWN_UNIT),
         'number': nutrient.nutrient_nbr,
         'rank': int(nutrient.rank) if nutrient.rank else None
     })
 
 
 def _convert_food_nutrient(food_nutrient, nutrients):
+    # In order to ensure that _NEW_UNIT_NAMES covers all nutrients that
+    # are used in the Branded Food data, we check here for _UNKNOWN_UNIT
+    assert nutrients[food_nutrient.nutrient_id]['unitName'] != _UNKNOWN_UNIT, \
+        food_nutrient
     return {
         "type": "FoodNutrient",
         "id": int(food_nutrient.id),
