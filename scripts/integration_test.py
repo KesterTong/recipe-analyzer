@@ -109,7 +109,6 @@ class IntegrationTest(unittest.TestCase):
         super(IntegrationTest, self).__init__(*args, **kwargs)
 
     def test_load_and_merge(self):
-
         raw_data = load_raw_data(self.test_data_dir)
         merged_data = merge_sources(raw_data)
         merged_data = {str(item['fdcId']): item for item in merged_data}
