@@ -31,7 +31,6 @@ if __name__ == '__main__':
 
         Available commands:
             test       run integration tests
-            fetch      download objects and refs from another repository
 
         Args for test:
             --raw_data_dir      directory containing raw data
