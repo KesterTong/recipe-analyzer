@@ -29,10 +29,16 @@ def _convert_date_format(d):
 
 
 def _convert_unit(unit):
+    # NOTE: this code doesn't have good test coverage.
+    # Would be good to find test data for each unit.
+    # It would also be better to do this with a constant
+    # dict mapping old units to new units.
     if unit == 'IU':
         return 'IU'
     elif unit == 'UG':
         return '\u00b5g'
+    elif unit == 'kJ':
+        return 'kJ'
     else:
         return unit.lower()
 
@@ -62,8 +68,6 @@ def _convert_food_nutrient(food_nutrient, nutrients):
 
 
 def _merge(branded_food, food, food_nutrients, nutrients):
-    # LI = Label Insights.  It's useful to know that all
-    # branded foods are based on this source.
     assert food.data_type == 'branded_food'
     assert food.fdc_id == branded_food.fdc_id
     assert food.publication_date
