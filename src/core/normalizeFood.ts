@@ -18,7 +18,7 @@ import {
   nutrientsForQuantity,
 } from "./Quantity";
 import { Nutrients, addNutrients } from "./Nutrients";
-import { FDCFood, SRLegacyFood, HouseholdServing } from "./FoodDataCentral";
+import { FDCFood, SRLegacyFood, BrandedFood } from "./FoodDataCentral";
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
 import { NormalizedFood } from "./NormalizedFood";
@@ -138,7 +138,7 @@ function SRLegacyServingEquivalentQuantities(
 }
 
 function brandedServingEquivalentQuantities(
-  foodDetails: HouseholdServing
+  foodDetails: BrandedFood
 ): Quantity[] {
   let result: Quantity[] = [
     {

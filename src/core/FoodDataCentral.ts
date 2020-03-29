@@ -12,18 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Serving size as printed on USDA label, e.g. "1 cup (220 g)" or "1 scoop (36 ml)".
- */
-export interface HouseholdServing {
+export interface BrandedFood {
+  dataType: "Branded";
+  description: string;
   servingSize: number;
   servingSizeUnit: string;
   householdServingFullText?: string;
-}
-
-export interface BrandedFood extends HouseholdServing {
-  dataType: "Branded";
-  description: string;
   foodNutrients: {
     nutrient: { id: number };
     amount?: number;
