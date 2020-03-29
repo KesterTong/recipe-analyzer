@@ -51,6 +51,10 @@
       "field": "servingSize"
     },
     {
+      "name": "serving_size_unit",
+      "field": "servingSizeUnit"
+    },
+    {
       "name": "energy-kcal_100g",
       "nutrient_id": 1008,
       "scale": 1.0
