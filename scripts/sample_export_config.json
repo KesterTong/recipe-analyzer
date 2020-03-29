@@ -25,9 +25,9 @@
       "field": "servingSize"
     },
     {
-      "name": "energy_100g",
+      "name": "energy-kcal_100g",
       "nutrient_id": 1008,
-      "scale": 4.184
+      "scale": 1.0
     },
     {
       "name": "proteins_100g",
