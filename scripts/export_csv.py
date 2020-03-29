@@ -14,66 +14,52 @@
 """Functions to export merged data to CSV format."""
 from collections import namedtuple
 import csv
+import json
 import os
 
 from .load_raw_data import load_raw_data
 from .merge_sources import merge_sources
-from .units_convertor import UnitsConvertor
 
 
 # A mapping from JSON format to a column
-FieldColumn = namedtuple(
-    'FieldColumn',
-    ['field', 'name', 'value_mapping'])
+FieldColumn = namedtuple('FieldColumn', ['name', 'field'])
 
 
-# A mapping from a nutrient value to a column.  It is assumed that
-# each output column represents the quantity of the nutrient for
-# 100 g or 100 ml.
+# A mapping from a nutrient value to a column.  Nutrients with
+# matching id will be added to this column with amount (in
+# the units for that nutrient id) scaled by `scale`.
 NutrientColumn = namedtuple(
     'NutrientColumn',
-    ['nutrient_name', 'name', 'unit'])
+    ['name', 'nutrient_id', 'scale'])
+
+ExportConfig = namedtuple('ExportConfig', ['columns'])
 
 
-COLUMNS = [
-    FieldColumn('gtinUpc', 'code', None),
-    FieldColumn('description', 'product_name', None),
-    FieldColumn('householdServingFullText', 'quantity', None),
-    FieldColumn('brandedFoodCategory', 'categories', None),
-    FieldColumn('ingredients', 'ingredients_text', None),
-    # NOTE: docs say "serving size in g" but data might be in ml.
-    FieldColumn('servingSize', 'serving_size', None),
-    NutrientColumn('Energy', 'energy_100g', 'kJ'),
-    NutrientColumn('Protein', 'proteins_100g', 'g'),
-]
-
-_UNITS_CONVERTOR = UnitsConvertor([
-    UnitsConvertor.UnitDefinition('kJ', 1.0, 'kJ'),
-    UnitsConvertor.UnitDefinition('kcal', 4.184, 'kJ'),
-    UnitsConvertor.UnitDefinition('g', 1.0, 'g'),
-    UnitsConvertor.UnitDefinition('mg', 0.001, 'g'),
-    UnitsConvertor.UnitDefinition('IU', 0.00067, 'g'),
-])
+def _column_config_from_json(obj):
+    if 'field' in obj:
+        return FieldColumn(**obj)
+    else:
+        return NutrientColumn(**obj)
 
 
-def _extract_column_value(column, item, nutrients_by_name):
+def _export_config_from_json(obj):
+    return ExportConfig(
+        columns=list(map(_column_config_from_json, obj['columns'])))
+
+
+def _extract_column_value(column, item, nutrients_by_id):
     if isinstance(column, FieldColumn):
         return item[column.field]
     elif isinstance(column, NutrientColumn):
         try:
-            nutrient = nutrients_by_name[column.nutrient_name]
+            return str(nutrients_by_id[column.nutrient_id] * column.scale)
         except KeyError:
             return ''
-        amount = _UNITS_CONVERTOR.convert_quantity_to_unit(
-            nutrient['amount'],
-            nutrient['nutrient']['unitName'],
-            column.unit)
-        return str(amount)
     else:
         assert False, 'bad type for column'
 
 
-def _export(merged_data, columns, csv_writer):
+def _export(merged_data, export_config, csv_writer):
     """Export merged data to CSV format.
 
     Args:
@@ -82,20 +68,23 @@ def _export(merged_data, columns, csv_writer):
             in this order.
     """
     print('writing merged data to CSV file')
+    columns = export_config.columns
     csv_writer.writerow(column.name for column in columns)
     for item in merged_data:
         nutrients_by_name = {
-            nutrient['nutrient']['name']: nutrient
+            nutrient['nutrient']['id']: nutrient['amount']
             for nutrient in item['foodNutrients']}
         csv_writer.writerow(
             _extract_column_value(column, item, nutrients_by_name)
             for column in columns)
 
 
-def export_csv(raw_data_dir, merged_data_dir):
+def export_csv(raw_data_dir, export_config_file, merged_data_dir):
+    with open(export_config_file) as f:
+        export_config = _export_config_from_json(json.load(f))
     raw_data = load_raw_data(raw_data_dir)
     merged_data = merge_sources(raw_data)
     merged_data_csv_file = os.path.join(merged_data_dir, 'merged.csv')
     with open(merged_data_csv_file, 'w', newline='') as f:
         csv_writer = csv.writer(f,  quoting=csv.QUOTE_ALL)
-        _export(merged_data, COLUMNS, csv_writer)
+        _export(merged_data, export_config, csv_writer)

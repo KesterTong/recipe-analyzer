@@ -1,0 +1,53 @@
+{
+  "columns": [
+    {
+      "name": "code",
+      "field": "gtinUpc"
+    },
+    {
+      "name": "product_name",
+      "field": "description"
+    },
+    {
+      "name": "quantity",
+      "field": "householdServingFullText"
+    },
+    {
+      "name": "categories",
+      "field": "brandedFoodCategory"
+    },
+    {
+      "name": "ingredients_text",
+      "field": "ingredients"
+    },
+    {
+      "name": "serving_size",
+      "field": "servingSize"
+    },
+    {
+      "name": "energy_100g",
+      "nutrient_id": 1008,
+      "scale": 4.184
+    },
+    {
+      "name": "proteins_100g",
+      "nutrient_id": 1003,
+      "scale": 1.0
+    },
+    {
+      "name": "carbohydrates_100g",
+      "nutrient_id": 1005,
+      "scale": 1.0
+    },
+    {
+      "name": "sugars_100g",
+      "nutrient_id": 2000,
+      "scale": 1.0
+    },
+    {
+      "name": "fat_100g",
+      "nutrient_id": 1004,
+      "scale": 1.0
+    }
+  ]
+}

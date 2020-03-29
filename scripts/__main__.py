@@ -33,26 +33,27 @@ if __name__ == '__main__':
         usage="""scripts <command> [<args>]
 
         Available commands:
-            summarize           print summary information
-            export_csv          export raw data to merged CSV format
-            create_test_data    create data for integration tests
-            test                run integration tests
+            summarize               print summary information
+            export_csv              export raw data to merged CSV format
+            create_test_data        create data for integration tests
+            test                    run integration tests
 
         Args for summarize:
-            --raw_data_dir      directory containing raw FDC data
-            --summary_dir       directory to write summmary data to
+            --raw_data_dir          directory containing raw FDC data
+            --summary_dir           directory to write summmary data to
 
         Args for export_csv
-            --raw_data_dir      directory containing raw FDC data
-            --merged_data_dir   directory to write merged CSV data to
+            --raw_data_dir          directory containing raw FDC data
+            --export_config_file    file containing export config
+            --merged_data_dir       directory to write merged CSV data to
 
         Args for create_test_data:
-            --raw_data_dir      directory containing raw FDC data
-            --fdc_api_key       API key to call FDC API
-            --test_data_dir     directory to write test data to
+            --raw_data_dir          directory containing raw FDC data
+            --fdc_api_key           API key to call FDC API
+            --test_data_dir         directory to write test data to
 
         Args for test:
-            --test_data_dir     directory containing test data
+            --test_data_dir         directory containing test data
         """)
     parser.add_argument('command', help='the command to run')
     parser.add_argument(
@@ -61,6 +62,9 @@ if __name__ == '__main__':
     parser.add_argument(
         '--summary_dir',
         help='directory to write summary data to')
+    parser.add_argument(
+        '--export_config_file',
+        help='file containing export config')
     parser.add_argument(
         '--merged_data_dir',
         help='directory to write merged CSV data to')
@@ -78,6 +82,7 @@ if __name__ == '__main__':
     elif args.command == 'export_csv':
         export_csv(
             raw_data_dir=args.raw_data_dir,
+            export_config_file=args.export_config_file,
             merged_data_dir=args.merged_data_dir)
     elif args.command == 'test':
         test_case = IntegrationTest(test_data_dir=args.test_data_dir)
