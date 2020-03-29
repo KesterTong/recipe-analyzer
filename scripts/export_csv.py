@@ -11,7 +11,18 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Functions to export merged data to CSV format."""
+"""Functions to export merged data to CSV format.
+
+A note on significant digits:
+
+The raw CSV files never contain trailing zeros, e.g. 5.00 or 1.50 or even 5.0.
+In order to replicate the original CSV data in the output as closely as
+possible we use the '%g' format string for all numeric output.  This will
+result in the identical output except for a nutrient field where the scale is
+not 1.0.  But in this case it will result in an output which is as close as
+possible, e.g. if scale=0.001 (for converting g to mg) then 50 will be converted
+to 0.05.
+"""
 from collections import namedtuple
 import csv
 import json
@@ -49,10 +60,11 @@ def _export_config_from_json(obj):
 
 def _extract_column_value(column, item, nutrients_by_id):
     if isinstance(column, FieldColumn):
-        return item[column.field]
+        value = item[column.field] 
+        return value if isinstance(value, str) else '%g' % value
     elif isinstance(column, NutrientColumn):
         try:
-            return str(nutrients_by_id[column.nutrient_id] * column.scale)
+            return '%g' % (nutrients_by_id[column.nutrient_id] * column.scale)
         except KeyError:
             return ''
     else:
