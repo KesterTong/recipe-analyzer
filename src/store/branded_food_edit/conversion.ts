@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { State } from "./types";
-import { BrandedFood } from "../../../core/FoodDataCentral";
+import { BrandedFood } from "../../core/FoodDataCentral";
 
 // TODO: don't hardcode nutrients.
 export const NEW_BRANDED_FOOD: BrandedFood = {

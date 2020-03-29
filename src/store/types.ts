@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { NutrientInfo } from "../../core/Nutrients";
+import { NutrientInfo } from "../core/Nutrients";
 import {
   State as BrandedFoodEditState,
   Action as BrandedFoodEditAction,
@@ -24,9 +24,9 @@ import {
   State as FoodViewState,
   Action as FoodViewAction,
 } from "./food_view/types";
-import { Food } from "../../core/Food";
+import { Food } from "../core/Food";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { FoodRef } from "../../core/FoodRef";
+import { FoodRef } from "../core/FoodRef";
 
 // State of a food whose description may be known but nothing else.
 export interface LoadingState {

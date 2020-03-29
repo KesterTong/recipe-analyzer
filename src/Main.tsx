@@ -19,7 +19,7 @@ import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
-import { FoodRef } from "../core/FoodRef";
+import { FoodRef } from "./core/FoodRef";
 
 interface MainProps {
   loading: boolean;

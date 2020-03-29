@@ -14,8 +14,8 @@
 import { RootState, ThunkDispatch } from "./store";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { nutrientsFromFoodDetails } from "../core/normalizeFood";
-import { scaleNutrients } from "../core/Nutrients";
+import { nutrientsFromFoodDetails } from "./core/normalizeFood";
+import { scaleNutrients } from "./core/Nutrients";
 import { FoodViewer } from "./FoodViewer";
 import { setSelectedQuantity } from "./store/food_view/actions";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";

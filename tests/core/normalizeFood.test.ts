@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { normalizeFood } from "../../core/normalizeFood";
+import { normalizeFood } from "../../src/core/normalizeFood";
 import {
   TEST_SR_LEGACY_FOOD,
   TEST_SR_LEGACY_FOOD_NORMALIZED,
@@ -21,7 +21,7 @@ import {
   TEST_RECIPE,
   TEST_RECIPE_NORMALIZED,
 } from "../testData";
-import { Food } from "../../core/Food";
+import { Food } from "../../src/core/Food";
 
 describe("normalizeFood", () => {
   function getFood(foodId: string): Promise<Food> {

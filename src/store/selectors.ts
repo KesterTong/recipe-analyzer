@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { RootState } from "./types";
-import { FoodRef } from "../../core/FoodRef";
+import { FoodRef } from "../core/FoodRef";
 
 export function selectFoodRef(state: RootState): FoodRef | null {
   if (state.deselected || state.foodId == null) {

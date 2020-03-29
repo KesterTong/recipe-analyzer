@@ -13,14 +13,14 @@
 // limitations under the License.
 import * as firebase from "firebase";
 
-import { NutrientInfo } from "../core/Nutrients";
-import { FoodRef } from "../core/FoodRef";
-import { Food } from "../core/Food";
+import { NutrientInfo } from "./core/Nutrients";
+import { FoodRef } from "./core/FoodRef";
+import { Food } from "./core/Food";
 import {
   searchFdcFoodsUrl,
   FDCQueryResult,
   getFdcFoodUrl,
-} from "../core/FoodDataCentral";
+} from "./core/FoodDataCentral";
 import { FDC_API_KEY } from "./config";
 
 export async function getNutrientInfo(): Promise<NutrientInfo[]> {

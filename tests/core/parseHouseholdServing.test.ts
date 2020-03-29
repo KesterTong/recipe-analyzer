@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { parseHouseholdServing } from "../../core/parseHouseholdServing";
+import { parseHouseholdServing } from "../../src/core/parseHouseholdServing";
 
 describe("parseHouseholdServing", () => {
   it("1 cup (240 ml)", () => {

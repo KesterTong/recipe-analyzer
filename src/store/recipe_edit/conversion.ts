@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { State } from "./types";
-import { Recipe } from "../../../core/Recipe";
+import { Recipe } from "../../core/Recipe";
 
 export const NEW_RECIPE: Recipe = {
   dataType: "Recipe",

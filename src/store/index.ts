@@ -24,7 +24,7 @@ import { stateFromBrandedFood } from "./branded_food_edit/conversion";
 import { State as RecipeState } from "./recipe_edit/types";
 import { stateFromRecipe } from "./recipe_edit/conversion";
 import { selectFoodRef } from "./selectors";
-import { Food } from "../../core/Food";
+import { Food } from "../core/Food";
 
 export {
   RootState,

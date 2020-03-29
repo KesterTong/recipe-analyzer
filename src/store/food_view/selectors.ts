@@ -13,7 +13,7 @@
 // limitations under the License.
 import { State } from "./types";
 import { createSelector } from "reselect";
-import { getDisplayQuantities } from "../../../core/getDisplayQuantities";
+import { getDisplayQuantities } from "../../core/getDisplayQuantities";
 
 export const selectQuantities = createSelector(
   (state: State) => state.food,

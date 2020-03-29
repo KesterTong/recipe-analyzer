@@ -18,7 +18,7 @@ import { RecipeEditor } from "./RecipeEditor";
 import { updateDescription } from "./store/recipe_edit/actions";
 import { selectFoodRef } from "./store/recipe_edit/selectors";
 import { bindActionCreators } from "redux";
-import { nutrientsForQuantity } from "../core/Quantity";
+import { nutrientsForQuantity } from "./core/Quantity";
 import {
   addIngredient,
   deleteIngredient,

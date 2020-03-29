@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { parseQuantity } from "../../core/parseQuantity";
+import { parseQuantity } from "../../src/core/parseQuantity";
 
 describe("parseQuantity", () => {
   it("no unit", () => {

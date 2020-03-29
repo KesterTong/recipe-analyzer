@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { addNutrients, scaleNutrients } from "../../core/Nutrients";
+import { addNutrients, scaleNutrients } from "../../src/core/Nutrients";
 
 describe("scaleNutrients", () => {
   it("scaleNutrients", () => {

@@ -15,8 +15,8 @@ import * as React from "react";
 
 import { Form, Table, Button } from "react-bootstrap";
 import { FoodInput } from "./FoodInput";
-import { FoodRef } from "../core/FoodRef";
-import { addNutrients } from "../core/Nutrients";
+import { FoodRef } from "./core/FoodRef";
+import { addNutrients } from "./core/Nutrients";
 import { isNonEmpty } from "./TypesUtil";
 
 export interface RecipeEditorProps {

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { getDisplayQuantities } from "../../core/getDisplayQuantities";
+import { getDisplayQuantities } from "../../src/core/getDisplayQuantities";
 import {
   TEST_SR_LEGACY_FOOD,
   TEST_BRANDED_FOOD,

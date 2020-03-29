@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { printHouseholdServing } from "../../core/printHouseholdServing";
+import { printHouseholdServing } from "../../src/core/printHouseholdServing";
 
 describe("printHouseholdServing", () => {
   it("1 cup (240 ml)", () => {

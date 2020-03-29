@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { getFood, insertFood, patchFood } from "../database";
-import { Food } from "../../core/Food";
+import { Food } from "../core/Food";
 import { RootAction, ThunkResult, ActionType } from "./types";
 import { NEW_RECIPE, recipeFromState } from "./recipe_edit/conversion";
 import { loadIngredient } from "./recipe_edit/actions";
@@ -20,7 +20,7 @@ import {
   NEW_BRANDED_FOOD,
   brandedFoodFromState,
 } from "./branded_food_edit/conversion";
-import { FoodRef } from "../../core/FoodRef";
+import { FoodRef } from "../core/FoodRef";
 
 export function deselect(): RootAction {
   return { type: ActionType.DESELECT };

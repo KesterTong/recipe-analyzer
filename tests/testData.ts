@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NormalizedFood } from "../core/NormalizedFood";
-import { Food } from "../core/Food";
-import { BrandedFood } from "../core/FoodDataCentral";
+import { NormalizedFood } from "../src/core/NormalizedFood";
+import { Food } from "../src/core/Food";
+import { BrandedFood } from "../src/core/FoodDataCentral";
 
 export const TEST_SR_LEGACY_FOOD: Food = {
   description: "Bananas",
