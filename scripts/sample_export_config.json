@@ -1,4 +1,6 @@
 {
+  "floatFormat": "%g",
+  "dateFormat": "%Y-%m-%dT%H:%M:%SZ",
   "columns": [
     {
       "name": "code",
@@ -15,6 +17,18 @@
     {
       "name": "data_source",
       "field": "dataSource"
+    },
+    {
+      "name": "modifie_date",
+      "field": "modifiedDate"
+    },
+    {
+      "name": "available_date",
+      "field": "availableDate"
+    },
+    {
+      "name": "publication_date",
+      "field": "publicationDate"
     },
     {
       "name": "quantity",

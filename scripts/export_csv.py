@@ -20,11 +20,12 @@ In order to replicate the original CSV data in the output as closely as
 possible we use the '%g' format string for all numeric output.  This will
 result in the identical output except for a nutrient field where the scale is
 not 1.0.  But in this case it will result in an output which is as close as
-possible, e.g. if scale=0.001 (for converting g to mg) then 50 will be converted
-to 0.05.
+possible, e.g. if scale=0.001 (for converting g to mg) then 50 will be
+converted to 0.05.
 """
 from collections import namedtuple
 import csv
+from datetime import datetime
 import json
 import os
 
@@ -43,7 +44,13 @@ NutrientColumn = namedtuple(
     'NutrientColumn',
     ['name', 'nutrient_id', 'scale'])
 
-ExportConfig = namedtuple('ExportConfig', ['columns'])
+ExportConfig = namedtuple(
+    'ExportConfig',
+    ['columns', 'float_format', 'date_format'])
+
+
+_FLOAT_FIELDS = ['servingSize']
+_DATE_FIELDS = ['modifiedDate', 'availableDate', 'publicationDate']
 
 
 def _column_config_from_json(obj):
@@ -55,18 +62,28 @@ def _column_config_from_json(obj):
 
 def _export_config_from_json(obj):
     return ExportConfig(
-        columns=list(map(_column_config_from_json, obj['columns'])))
+        columns=list(map(_column_config_from_json, obj['columns'])),
+        float_format=obj['floatFormat'],
+        date_format=obj['dateFormat'])
 
 
-def _extract_column_value(column, item, nutrients_by_id):
+def _extract_column_value(column, item, nutrients_by_id, float_format,
+                          date_format):
     if isinstance(column, FieldColumn):
-        value = item[column.field] 
-        return value if isinstance(value, str) else '%g' % value
+        value = item[column.field]
+        if column.field in _FLOAT_FIELDS:
+            return float_format % value
+        elif column.field in _DATE_FIELDS:
+            dt = datetime.strptime(value, '%m/%d/%Y')
+            return dt.strftime(date_format)
+        else:
+            return value
     elif isinstance(column, NutrientColumn):
         try:
-            return '%g' % (nutrients_by_id[column.nutrient_id] * column.scale)
+            scaled_value = nutrients_by_id[column.nutrient_id] * column.scale
         except KeyError:
             return ''
+        return float_format % scaled_value
     else:
         assert False, 'bad type for column'
 
@@ -87,7 +104,12 @@ def _export(merged_data, export_config, csv_writer):
             nutrient['nutrient']['id']: nutrient['amount']
             for nutrient in item['foodNutrients']}
         csv_writer.writerow(
-            _extract_column_value(column, item, nutrients_by_name)
+            _extract_column_value(
+                column,
+                item,
+                nutrients_by_name,
+                float_format=export_config.float_format,
+                date_format=export_config.date_format)
             for column in columns)
 
 
