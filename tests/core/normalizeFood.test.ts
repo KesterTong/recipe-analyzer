@@ -21,7 +21,6 @@ import {
   TEST_RECIPE,
   TEST_RECIPE_NORMALIZED,
 } from "../testData";
-
 import { Food } from "../../core/Food";
 
 describe("normalizeFood", () => {
