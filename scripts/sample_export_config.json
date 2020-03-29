@@ -5,8 +5,16 @@
       "field": "gtinUpc"
     },
     {
+      "name": "fdc_id",
+      "field": "fdcId"
+    },
+    {
       "name": "product_name",
       "field": "description"
+    },
+    {
+      "name": "data_source",
+      "field": "dataSource"
     },
     {
       "name": "quantity",
@@ -15,6 +23,10 @@
     {
       "name": "categories",
       "field": "brandedFoodCategory"
+    },
+    {
+      "name": "brands",
+      "field": "brandOwner"
     },
     {
       "name": "ingredients_text",
