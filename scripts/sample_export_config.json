@@ -48,6 +48,41 @@
       "name": "fat_100g",
       "nutrient_id": 1004,
       "scale": 1.0
+    },
+    {
+      "name": "saturated-fat_100g",
+      "nutrient_id": 1258,
+      "scale": 1.0
+    },
+    {
+      "name": "monounsaturated-fat_100g",
+      "nutrient_id": 1292,
+      "scale": 1.0
+    },
+    {
+      "name": "polyunsaturated-fat_100g",
+      "nutrient_id": 1293,
+      "scale": 1.0
+    },
+    {
+      "name": "trans-fat_100g",
+      "nutrient_id": 1257,
+      "scale": 1.0
+    },
+    {
+      "name": "cholesterol_100g",
+      "nutrient_id": 1253,
+      "scale": 0.001
+    },
+    {
+      "name": "fiber_100g",
+      "nutrient_id": 1079,
+      "scale": 1.0
+    },
+    {
+      "name": "sodium_100g",
+      "nutrient_id": 1093,
+      "scale": 0.001
     }
   ]
 }
