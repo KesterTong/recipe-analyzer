@@ -25,6 +25,7 @@ import {
 import { RootAction } from "./store/types";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
+import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "BrandedFoodEdit") {
@@ -32,6 +33,7 @@ function mapStateToProps(state: RootState) {
   }
   const edits = state.foodState;
   const nutrientsById: { [index: number]: string } = {};
+  const nutrientNames = selectNutrientNames(state);
   edits.foodNutrients.forEach(({ id, amount }) => {
     nutrientsById[id] = amount;
   });
@@ -40,9 +42,9 @@ function mapStateToProps(state: RootState) {
     householdServingFullText: edits.householdServingFullText || "",
     servingSize: edits.servingSize,
     servingSizeUnit: edits.servingSizeUnit,
-    nutrients: state.nutrientIds.map((id, index) => ({
+    nutrients: selectNutrientIds(state).map((id, index) => ({
       id,
-      description: state.nutrientNames[index],
+      description: nutrientNames[index],
       value: nutrientsById[id],
     })),
   };

@@ -28,7 +28,8 @@ import {
   deselectIngredient,
 } from "./store/recipe_edit/actions";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
-import { getIngredientUnits } from "./core/getIngredientUnits.test";
+import { getIngredientUnits } from "./core/getIngredientUnits";
+import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.foodState;
@@ -38,7 +39,7 @@ function mapStateToProps(state: RootState) {
   const edits = recipeState;
   return {
     description: edits.description,
-    nutrientNames: state.nutrientNames,
+    nutrientNames: selectNutrientNames(state),
     ingredientsList: edits.ingredients.map((ingredient) => {
       const food = ingredient?.normalizedFood;
       return {
@@ -51,7 +52,7 @@ function mapStateToProps(state: RootState) {
         nutrients:
           (food && ingredient
             ? nutrientsForQuantity(ingredient.quantity, food)
-            : null) || (state.nutrientIds || []).map((_) => 0),
+            : null) || selectNutrientIds(state).map((_) => 0),
       };
     }),
   };

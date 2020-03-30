@@ -91,7 +91,11 @@ export function loadIngredient(
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
     const normalizedFood = food
-      ? await normalizeFood(food, getFood, getState().nutrientIds)
+      ? await normalizeFood(
+          food,
+          getFood,
+          getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
+        )
       : null;
     if (normalizedFood != null) {
       dispatch(updateIngredientFood(index, food.description, normalizedFood));
@@ -108,7 +112,7 @@ export function loadAndSelectIngredient(
     const normalizedFood = await normalizeFood(
       food,
       getFood,
-      getState().nutrientIds
+      getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
     dispatch(selectIngredient(index, foodRef, normalizedFood));
   };

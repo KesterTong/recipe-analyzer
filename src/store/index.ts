@@ -100,12 +100,7 @@ function rootReducer(
     case ActionType.SET_NUTRIENT_INFOS:
       return {
         ...state,
-        nutrientIds: action.nutrientInfos.map(
-          (nutrientInfo) => nutrientInfo.id
-        ),
-        nutrientNames: action.nutrientInfos.map(
-          (nutrientInfo) => nutrientInfo.name
-        ),
+        config: { ...state.config, nutrientInfos: action.nutrientInfos },
       };
     default:
       return state;

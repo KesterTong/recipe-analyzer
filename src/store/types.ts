@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { NutrientInfo } from "../core/Nutrients";
 import {
   State as BrandedFoodEditState,
   Action as BrandedFoodEditAction,
@@ -36,6 +35,12 @@ export interface LoadingState {
   };
 }
 
+export interface NutrientInfo {
+  id: number;
+  name: string;
+  display: boolean;
+}
+
 // Constraints on RootState
 //
 //  - If foodState is non-null then foodId should be non-null.
@@ -48,16 +53,18 @@ export interface RootState {
     | BrandedFoodEditState
     | LoadingState
     | null;
-  nutrientNames: string[];
-  nutrientIds: number[];
+  config: {
+    nutrientInfos: NutrientInfo[];
+  };
 }
 
 export const initialState: RootState = {
   foodId: null,
   deselected: false,
   foodState: null,
-  nutrientNames: [],
-  nutrientIds: [],
+  config: {
+    nutrientInfos: [],
+  },
 };
 
 export enum ActionType {

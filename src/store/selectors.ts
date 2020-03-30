@@ -14,6 +14,7 @@
 
 import { RootState } from "./types";
 import { FoodRef } from "../core/FoodRef";
+import { createSelector } from "reselect";
 
 export function selectFoodRef(state: RootState): FoodRef | null {
   if (state.deselected || state.foodId == null) {
@@ -37,3 +38,13 @@ export function selectFoodRef(state: RootState): FoodRef | null {
     description,
   };
 }
+
+export const selectNutrientIds = createSelector(
+  (state: RootState) => state.config.nutrientInfos,
+  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
+);
+
+export const selectNutrientNames = createSelector(
+  (state: RootState) => state.config.nutrientInfos,
+  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.name)
+);
