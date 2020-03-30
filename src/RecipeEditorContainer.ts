@@ -28,6 +28,7 @@ import {
   deselectIngredient,
 } from "./store/recipe_edit/actions";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
+import { getIngredientUnits } from "./core/getIngredientUnits.test";
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.foodState;
@@ -44,7 +45,9 @@ function mapStateToProps(state: RootState) {
         foodRef: selectFoodRef(ingredient),
         amount: ingredient ? ingredient.quantity.amount : 0,
         unit: ingredient ? ingredient.quantity.unit : "",
-        units: food ? Object.keys(food.servingEquivalentQuantities) : [""],
+        units: food
+          ? getIngredientUnits(food.servingEquivalentQuantities)
+          : [""],
         nutrients:
           (food && ingredient
             ? nutrientsForQuantity(ingredient.quantity, food)
