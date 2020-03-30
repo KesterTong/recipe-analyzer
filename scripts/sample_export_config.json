@@ -19,7 +19,7 @@
       "field": "dataSource"
     },
     {
-      "name": "modifie_date",
+      "name": "modified_date",
       "field": "modifiedDate"
     },
     {
