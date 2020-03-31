@@ -14,12 +14,14 @@
 import { RootState, ThunkDispatch } from "./store";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { nutrientsFromFoodDetails } from "./core/normalizeFood";
 import { scaleNutrients } from "./core/Nutrients";
 import { FoodViewer } from "./FoodViewer";
 import { setSelectedQuantity } from "./store/food_view/actions";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
-import { selectQuantities } from "./store/food_view/selectors";
+import {
+  selectQuantities,
+  selectNutrientsPerServing,
+} from "./store/food_view/selectors";
 import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
@@ -27,16 +29,17 @@ function mapStateToProps(state: RootState) {
     return null;
   }
   const quantities = selectQuantities(state.foodState);
-  const food = state.foodState.food;
-  let nutrientsPerServing =
-    food.dataType == "Recipe"
-      ? []
-      : nutrientsFromFoodDetails(food, selectNutrientIds(state));
+  const nutrientIds = selectNutrientIds(state);
+  const nutrientNames = selectNutrientNames(state);
+  let nutrientsPerServing = selectNutrientsPerServing(
+    state.foodState,
+    nutrientIds
+  );
   let scale = quantities[state.foodState.selectedQuantity].servings;
   return {
     srLegacyFood: state.foodState.food,
     viewerProps: {
-      nutrientNames: selectNutrientNames(state),
+      nutrientNames,
       nutrientValues: scaleNutrients(nutrientsPerServing, scale),
       quantities: quantities.map((quantity) => quantity.description),
       selectedQuantity: state.foodState.selectedQuantity,

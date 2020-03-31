@@ -14,8 +14,21 @@
 import { State } from "./types";
 import { createSelector } from "reselect";
 import { getDisplayQuantities } from "../../core/getDisplayQuantities";
+import { Food } from "../../core/Food";
+import { nutrientsPerServingForFDCFood } from "../../core/FoodDataCentral";
 
 export const selectQuantities = createSelector(
   (state: State) => state.food,
   getDisplayQuantities
+);
+
+export const selectNutrientsPerServing = createSelector(
+  [
+    (state: State, _: number[]) => state.food,
+    (_: State, nutrientIds: number[]) => nutrientIds,
+  ],
+  (food: Food, nutrientIds: number[]) =>
+    food.dataType == "Recipe"
+      ? []
+      : nutrientsPerServingForFDCFood(food, nutrientIds)
 );

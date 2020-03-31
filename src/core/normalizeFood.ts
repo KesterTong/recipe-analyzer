@@ -18,7 +18,12 @@ import {
   nutrientsForQuantity,
 } from "./Quantity";
 import { Nutrients, addNutrients } from "./Nutrients";
-import { FDCFood, SRLegacyFood, BrandedFood } from "./FoodDataCentral";
+import {
+  FDCFood,
+  SRLegacyFood,
+  BrandedFood,
+  nutrientsPerServingForFDCFood,
+} from "./FoodDataCentral";
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
 import { NormalizedFood } from "./NormalizedFood";
@@ -48,7 +53,7 @@ function nutrientsPerServingForFood(
   switch (food.dataType) {
     case "SR Legacy":
     case "Branded":
-      return Promise.resolve(nutrientsFromFoodDetails(food, nutrientIds));
+      return Promise.resolve(nutrientsPerServingForFDCFood(food, nutrientIds));
     case "Recipe":
       return nutrientsForRecipe(food, getFood, nutrientIds);
   }
@@ -71,24 +76,6 @@ async function nutrientsForRecipe(
     })
   );
   return nutrients.reduce(addNutrients);
-}
-
-export function nutrientsFromFoodDetails(
-  foodDetails: FDCFood,
-  nutrientsToDisplay: number[]
-): Nutrients {
-  let nutrientsById: { [id: number]: number } = {};
-  for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
-    var foodNutrient = foodDetails.foodNutrients[i];
-    var nutrientId = foodNutrient.nutrient.id;
-    var nutrientAmount = foodNutrient.amount || 0;
-    // Only include nutrients that will be displayed, in order to reduce
-    // the computational cost of adding up and scaling nutrients.
-    if (nutrientsToDisplay.indexOf(nutrientId) != -1) {
-      nutrientsById[nutrientId] = nutrientAmount;
-    }
-  }
-  return nutrientsToDisplay.map((id) => nutrientsById[id] || 0);
 }
 
 export function servingEquivalentQuantities(
