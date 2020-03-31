@@ -20,6 +20,7 @@ import { reducer as brandedFoodReducer } from "./branded_food_edit/reducer";
 import { State as BrandedFoodState } from "./branded_food_edit/types";
 import { reducer as recipeReducer } from "./recipe_edit/reducer";
 import { State as SRLegacyFoodState } from "./food_view/types";
+import { reducer as foodViewReducer } from "./food_view/reducer";
 import { stateFromBrandedFood } from "./branded_food_edit/conversion";
 import { State as RecipeState } from "./recipe_edit/types";
 import { stateFromRecipe } from "./recipe_edit/conversion";
@@ -80,6 +81,14 @@ function rootReducer(
       return {
         ...state,
         foodState: foodStateFromFood(action.food),
+      };
+    case ActionType.UPDATE_FOOD_VIEW_STATE:
+      if (state.foodState?.stateType != "FoodView") {
+        return state;
+      }
+      return {
+        ...state,
+        foodState: foodViewReducer(state.foodState, action.action),
       };
     case ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE:
       if (state.foodState?.stateType != "BrandedFoodEdit") {
