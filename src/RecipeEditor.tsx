@@ -15,7 +15,7 @@ import * as React from "react";
 
 import { Form, Table, Button } from "react-bootstrap";
 import { FoodInput } from "./FoodInput";
-import { FoodRef } from "./core/FoodRef";
+import { QueryResult } from "./database";
 import { addNutrients } from "./core/Nutrients";
 import { isNonEmpty } from "./TypesUtil";
 
@@ -26,14 +26,14 @@ export interface RecipeEditorProps {
     amount: number;
     unit: string;
     units: string[];
-    foodRef: FoodRef | null;
+    QueryResult: QueryResult | null;
     nutrients: number[];
   }[];
   updateDescription(value: string): void;
-  addIngredient(foodRef: FoodRef): void;
+  addIngredient(QueryResult: QueryResult): void;
   updateIngredientAmount(index: number, amount: number): void;
   updateIngredientUnit(index: number, unit: string): void;
-  loadAndSelectIngredient(index: number, foodRef: FoodRef): void;
+  loadAndSelectIngredient(index: number, QueryResult: QueryResult): void;
   deselectIngredient(index: number): void;
   addIngredient(): void;
   deleteIngredient(index: number): void;
@@ -100,9 +100,9 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps | {}> = (
                 {
                   <FoodInput
                     key={index}
-                    foodRef={ingredient.foodRef}
-                    select={(foodRef) =>
-                      props.loadAndSelectIngredient(index, foodRef)
+                    QueryResult={ingredient.QueryResult}
+                    select={(QueryResult) =>
+                      props.loadAndSelectIngredient(index, QueryResult)
                     }
                     deselect={() => props.deselectIngredient(index)}
                   />

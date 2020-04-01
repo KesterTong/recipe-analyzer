@@ -19,12 +19,12 @@ import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
-import { FoodRef } from "./core/FoodRef";
+import { QueryResult } from "./database";
 
 interface MainProps {
   loading: boolean;
-  foodRef: FoodRef | null;
-  selectAndLoad(foodRef: FoodRef): void;
+  QueryResult: QueryResult | null;
+  selectAndLoad(QueryResult: QueryResult): void;
   deselect(): void;
   saveFood: () => void;
   newBrandedFood: () => void;
@@ -37,7 +37,7 @@ export const Main: React.SFC<MainProps> = (props) => {
       <Navbar bg="light" expand="lg">
         <Form inline>
           <FoodInput
-            foodRef={props.foodRef}
+            QueryResult={props.QueryResult}
             select={props.selectAndLoad}
             deselect={props.deselect}
           />

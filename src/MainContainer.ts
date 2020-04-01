@@ -11,14 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { actions, selectFoodRef, RootState, ThunkDispatch } from "./store";
+import { actions, selectQueryResult, RootState, ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
   return {
-    foodRef: selectFoodRef(state),
+    QueryResult: selectQueryResult(state),
     loading: state.foodId != null && state.foodState?.stateType == "Loading",
   };
 }

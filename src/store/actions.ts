@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { getFood, insertFood, patchFood } from "../database";
+import { QueryResult, getFood, insertFood, patchFood } from "../database";
 import { Food } from "../core";
 import { RootAction, ThunkResult, ActionType } from "./types";
 import {
@@ -20,14 +20,13 @@ import {
   actions as recipe_edit_actions,
 } from "./recipe_edit";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food_edit";
-import { FoodRef } from "../core/FoodRef";
 
 export function deselect(): RootAction {
   return { type: ActionType.DESELECT };
 }
 
-export function select(foodRef: FoodRef): RootAction {
-  return { type: ActionType.SELECT_FOOD, foodRef };
+export function select(QueryResult: QueryResult): RootAction {
+  return { type: ActionType.SELECT_FOOD, QueryResult };
 }
 
 export function updateFood(food: Food): RootAction {
@@ -59,12 +58,14 @@ export function saveFood(): ThunkResult<Promise<void>> {
   };
 }
 
-export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
+export function selectAndLoad(
+  QueryResult: QueryResult
+): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(select(foodRef));
+    dispatch(select(QueryResult));
     try {
-      const food = await getFood(foodRef.foodId);
-      if (getState().foodId != foodRef.foodId) {
+      const food = await getFood(QueryResult.foodId);
+      if (getState().foodId != QueryResult.foodId) {
         return;
       }
       dispatch(updateFood(food));

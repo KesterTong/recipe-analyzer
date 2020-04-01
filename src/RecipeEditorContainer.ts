@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 import { RootState, ThunkDispatch } from "./store";
 import { RecipeEditor } from "./RecipeEditor";
 import { selectNutrientNames, selectNutrientIds } from "./store";
-import { actions, selectFoodRef } from "./store/recipe_edit";
+import { actions, selectQueryResult } from "./store/recipe_edit";
 import { bindActionCreators } from "redux";
 import { nutrientsForQuantity } from "./core/Quantity";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
@@ -34,7 +34,7 @@ function mapStateToProps(state: RootState) {
     ingredientsList: edits.ingredients.map((ingredient) => {
       const food = ingredient?.normalizedFood;
       return {
-        foodRef: selectFoodRef(ingredient),
+        QueryResult: selectQueryResult(ingredient),
         amount: ingredient ? ingredient.quantity.amount : 0,
         unit: ingredient ? ingredient.quantity.unit : "",
         units: food

@@ -25,7 +25,7 @@ import {
 } from "./food_view/types";
 import { Food } from "../core";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { FoodRef } from "../core/FoodRef";
+import { QueryResult } from "../database";
 
 // State of a food whose description may be known but nothing else.
 export interface LoadingState {
@@ -90,7 +90,7 @@ export interface Deselect {
 
 export interface SelectFood {
   type: ActionType.SELECT_FOOD;
-  foodRef: FoodRef;
+  QueryResult: QueryResult;
 }
 
 export interface NewFood {

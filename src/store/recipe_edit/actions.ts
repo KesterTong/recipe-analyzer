@@ -11,10 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodRef } from "../../core/FoodRef";
+import { QueryResult, getFood } from "../../database";
 import { Action, ActionType } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
-import { getFood } from "../../database";
 import { normalizeFood } from "../../core/normalizeFood";
 import { ThunkResult } from "../types";
 import { NormalizedFood } from "../../core/NormalizedFood";
@@ -37,13 +36,13 @@ export function deleteIngredient(index: number): RootAction {
 
 export function selectIngredient(
   index: number,
-  foodRef: FoodRef,
+  QueryResult: QueryResult,
   food: NormalizedFood
 ): RootAction {
   return makeRootAction({
     type: ActionType.SELECT_INGREDIENT,
     index,
-    foodRef,
+    QueryResult,
     food,
   });
 }
@@ -105,15 +104,15 @@ export function loadIngredient(
 
 export function loadAndSelectIngredient(
   index: number,
-  foodRef: FoodRef
+  QueryResult: QueryResult
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    const food = await getFood(foodRef.foodId);
+    const food = await getFood(QueryResult.foodId);
     const normalizedFood = await normalizeFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(selectIngredient(index, foodRef, normalizedFood));
+    dispatch(selectIngredient(index, QueryResult, normalizedFood));
   };
 }

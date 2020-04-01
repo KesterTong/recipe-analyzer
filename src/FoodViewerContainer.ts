@@ -41,7 +41,7 @@ function mapStateToProps(state: RootState) {
   );
   let scale = quantities[state.foodState.selectedQuantity].servings;
   return {
-    srLegacyFood: state.foodState.food,
+    food: state.foodState.food,
     viewerProps: {
       nutrientNames,
       nutrientValues: scaleNutrients(nutrientsPerServing, scale),
