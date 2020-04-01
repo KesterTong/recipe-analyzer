@@ -29,9 +29,9 @@ export interface BrandedFoodEditorProps {
   updateNutrientValue(id: number, value: string): void;
 }
 
-export const BrandedFoodEditor: React.FunctionComponent<
-  BrandedFoodEditorProps
-> = (props) => {
+export const BrandedFoodEditor: React.FunctionComponent<BrandedFoodEditorProps> = (
+  props
+) => {
   if (props.description === undefined) {
     return null;
   }

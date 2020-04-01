@@ -28,9 +28,7 @@ export interface FoodViewerProps {
 
 export const NO_DISPLAY = {} as FoodViewerProps;
 
-export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (
-  props
-) => {
+export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
   if (props.food === undefined) {
     return null;
   }
