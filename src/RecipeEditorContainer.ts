@@ -18,31 +18,40 @@ import { RecipeEditor } from "./RecipeEditor";
 import { selectNutrientNames, selectNutrientIds } from "./store";
 import { actions, selectQueryResult } from "./store/recipe_edit";
 import { bindActionCreators } from "redux";
-import { nutrientsForQuantity, getIngredientUnits } from "./core";
+import { nutrientsForQuantity, getIngredientUnits, addNutrients } from "./core";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;
   if (foodState?.stateType != "RecipeEdit") {
     return <typeof result>{};
   }
+  const nutrientNames = selectNutrientNames(state);
+  const ingredientsList = foodState.ingredients.map((ingredient) => {
+    const food = ingredient?.normalizedFood;
+    return {
+      queryResult: selectQueryResult(ingredient),
+      amount: ingredient ? ingredient.quantity.amount : 0,
+      unit: ingredient ? ingredient.quantity.unit : "",
+      units: food
+        ? getIngredientUnits(food.servingEquivalentQuantities)
+        : [""],
+      nutrients:
+        (food && ingredient
+          ? nutrientsForQuantity(ingredient.quantity, food)
+          : null) || selectNutrientIds(state).map((_) => 0),
+    };
+  });
+  const totalNutrients = ingredientsList
+  .map((ingredient) => ingredient.nutrients)
+  .reduce(
+    addNutrients,
+    nutrientNames.map(() => 0)
+  )
   const result = {
     description: foodState.description,
-    nutrientNames: selectNutrientNames(state),
-    ingredientsList: foodState.ingredients.map((ingredient) => {
-      const food = ingredient?.normalizedFood;
-      return {
-        queryResult: selectQueryResult(ingredient),
-        amount: ingredient ? ingredient.quantity.amount : 0,
-        unit: ingredient ? ingredient.quantity.unit : "",
-        units: food
-          ? getIngredientUnits(food.servingEquivalentQuantities)
-          : [""],
-        nutrients:
-          (food && ingredient
-            ? nutrientsForQuantity(ingredient.quantity, food)
-            : null) || selectNutrientIds(state).map((_) => 0),
-      };
-    }),
+    nutrientNames,
+    ingredientsList,
+    totalNutrients,
   };
   return result;
 }

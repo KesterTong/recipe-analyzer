@@ -16,11 +16,11 @@ import * as React from "react";
 import { Form, Table, Button } from "react-bootstrap";
 import { FoodInput } from "./FoodInput";
 import { QueryResult } from "./database";
-import { addNutrients } from "./core/Nutrients";
 
 export interface RecipeEditorProps {
   description: string;
   nutrientNames: string[];
+  totalNutrients: number[];
   ingredientsList: {
     amount: number;
     unit: string;
@@ -121,12 +121,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             <td className="col-1"></td>
             <td className="col-2"></td>
             <td className="col-6">Total</td>
-            {props.ingredientsList
-              .map((ingredient) => ingredient.nutrients)
-              .reduce(
-                addNutrients,
-                props.nutrientNames.map(() => 0)
-              )
+            {props.totalNutrients
               .map((value) => (
                 <td className="col-1">{value.toFixed(1)}</td>
               ))}
