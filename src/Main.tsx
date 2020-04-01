@@ -24,7 +24,7 @@ import { FoodRef } from "./core/FoodRef";
 interface MainProps {
   loading: boolean;
   foodRef: FoodRef | null;
-  select(foodRef: FoodRef): void;
+  selectAndLoad(foodRef: FoodRef): void;
   deselect(): void;
   saveFood: () => void;
   newBrandedFood: () => void;
@@ -38,7 +38,7 @@ export const Main: React.SFC<MainProps> = (props) => {
         <Form inline>
           <FoodInput
             foodRef={props.foodRef}
-            select={props.select}
+            select={props.selectAndLoad}
             deselect={props.deselect}
           />
           &nbsp;

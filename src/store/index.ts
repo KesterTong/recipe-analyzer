@@ -12,36 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootAction, ActionType, ThunkDispatch, ThunkResult } from "./types";
+import { RootAction, ActionType, ThunkDispatch } from "./types";
+import * as branded_food_edit from "./branded_food_edit";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
-import { reducer as brandedFoodReducer } from "./branded_food_edit/reducer";
-import { State as BrandedFoodState } from "./branded_food_edit/types";
 import { reducer as recipeReducer } from "./recipe_edit/reducer";
 import { State as SRLegacyFoodState } from "./food_view/types";
 import { reducer as foodViewReducer } from "./food_view/reducer";
-import { stateFromBrandedFood } from "./branded_food_edit/conversion";
 import { State as RecipeState } from "./recipe_edit/types";
 import { stateFromRecipe } from "./recipe_edit/conversion";
-import { selectFoodRef } from "./selectors";
 import { Food } from "../core/Food";
 
-export {
-  RootState,
-  BrandedFoodState,
-  RecipeState,
-  ThunkDispatch,
-  ThunkResult,
-  selectFoodRef,
-};
+export * from "./types";
+export * from "./selectors";
 
 function foodStateFromFood(
   food: Food
-): RecipeState | BrandedFoodState | SRLegacyFoodState {
+): RecipeState | branded_food_edit.State | SRLegacyFoodState {
   switch (food.dataType) {
     case "Branded":
-      return stateFromBrandedFood(food);
+      return branded_food_edit.stateFromBrandedFood(food);
     case "Recipe":
       return stateFromRecipe(food);
     case "SR Legacy":
@@ -96,7 +87,7 @@ function rootReducer(
       }
       return {
         ...state,
-        foodState: brandedFoodReducer(state.foodState, action.action),
+        foodState: branded_food_edit.reducer(state.foodState, action.action),
       };
     case ActionType.UPDATE_RECIPE_EDIT_STATE:
       if (state.foodState?.stateType != "RecipeEdit") {

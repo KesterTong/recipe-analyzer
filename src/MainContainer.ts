@@ -11,17 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import {
-  selectAndLoad,
-  saveFood,
-  newBrandedFood,
-  newRecipe,
-  deselect,
-} from "./store/actions";
-import { RootState, selectFoodRef } from "./store";
+import * as actions from "./store/actions";
+import { selectFoodRef, RootState, ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { ThunkDispatch } from "./store/types";
 import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
@@ -32,16 +25,7 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      deselect,
-      select: selectAndLoad,
-      saveFood,
-      newBrandedFood,
-      newRecipe,
-    },
-    dispatch
-  );
+  return bindActionCreators(actions, dispatch);
 }
 
 export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);

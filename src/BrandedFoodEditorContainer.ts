@@ -13,16 +13,9 @@
 // limitations under the License.
 import { RootState } from "./store";
 import { connect } from "react-redux";
-import { updateDescription } from "./store/branded_food_edit/actions";
+import * as actions from "./store/branded_food_edit/actions";
 import { bindActionCreators } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import {
-  updateServingSize,
-  updateServingSizeUnit,
-  updateHouseholdUnit,
-  updateNutrientValue,
-} from "./store/branded_food_edit/actions";
-import { RootAction } from "./store/types";
+import { ThunkDispatch } from "./store";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
 import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
@@ -50,19 +43,8 @@ function mapStateToProps(state: RootState) {
   };
 }
 
-function mapDispatchToProps(
-  dispatch: ThunkDispatch<RootState, null, RootAction>
-) {
-  return bindActionCreators(
-    {
-      updateDescription,
-      updateServingSize,
-      updateServingSizeUnit,
-      updateHouseholdUnit,
-      updateNutrientValue,
-    },
-    dispatch
-  );
+function mapDispatchToProps(dispatch: ThunkDispatch) {
+  return bindActionCreators(actions, dispatch);
 }
 
 export const BrandedFoodEditorContainer = connect(
