@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootAction, ActionType, ThunkDispatch } from "./types";
+import { createStore, applyMiddleware } from "redux";
+import thunk from "redux-thunk";
+import { Food } from "../core";
+import * as actions from "./actions";
 import * as branded_food_edit from "./branded_food_edit";
 import * as food_view from "./food_view";
 import * as recipe_edit from "./recipe_edit";
-import { createStore, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { RootState, initialState } from "./types";
-import * as actions from "./actions";
-import { Food } from "../core";
+import {
+  RootState,
+  RootAction,
+  ActionType,
+  ThunkDispatch,
+  initialState,
+} from "./types";
 
 export { actions };
 export * from "./types";

@@ -52,7 +52,7 @@ export interface FDCQueryFood {
   gtinUpc: string;
   brandOwner: string;
   score: number;
-};
+}
 
 export interface FDCQueryResult {
   foodSearchCriteria: {
