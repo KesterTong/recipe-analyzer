@@ -34,6 +34,24 @@ export interface Recipe {
   ingredientsList: Ingredient[];
 }
 
+/**
+ * Get a list of ingredient units to display.
+ */
+export function getIngredientUnits(servingEquivalentQuantities: {
+  [index: string]: number;
+}): string[] {
+  let result = Object.keys(servingEquivalentQuantities).filter(
+    (unit) => unit != "g" && unit != "ml"
+  );
+  if (servingEquivalentQuantities["g"] !== undefined) {
+    result = result.concat(["g", "oz", "lb", "kg"]);
+  }
+  if (servingEquivalentQuantities["ml"] !== undefined) {
+    result = result.concat(["tsp", "tbsp", "cup"]);
+  }
+  return result;
+}
+
 // Used to compute ingredient quantity
 export function nutrientsForQuantity(
   quantity: Quantity,
