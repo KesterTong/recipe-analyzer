@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { QueryResult } from "../../database";
-import { NormalizedFood } from "../../core/NormalizedFood";
+import { NormalizedFood } from "../../core";
 import { Quantity } from "../../core/Quantity";
 
 export interface Ingredient {

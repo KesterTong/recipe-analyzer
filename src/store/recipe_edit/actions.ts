@@ -11,12 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { NormalizedFood, normalizeFood } from "../../core";
 import { QueryResult, getFood } from "../../database";
-import { Action, ActionType } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
-import { normalizeFood } from "../../core/normalizeFood";
+import { Action, ActionType } from "./types";
 import { ThunkResult } from "../types";
-import { NormalizedFood } from "../../core/NormalizedFood";
 
 function makeRootAction(action: Action): RootAction {
   return { type: RootActionType.UPDATE_RECIPE_EDIT_STATE, action };
