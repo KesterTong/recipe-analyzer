@@ -11,11 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { State } from "./types";
 import { createSelector } from "reselect";
-import { getDisplayQuantities } from "../../core/getDisplayQuantities";
-import { Food } from "../../core";
+import { Food, getDisplayQuantities } from "../../core";
 import { nutrientsPerServingForFDCFood } from "../../core/FoodDataCentral";
+import { State } from "./types";
 
 export const selectQuantities = createSelector(
   (state: State) => state.food,
@@ -27,6 +26,7 @@ export const selectNutrientsPerServing = createSelector(
     (state: State, _: number[]) => state.food,
     (_: State, nutrientIds: number[]) => nutrientIds,
   ],
+  // TODO: Compute nutrientsPerServing in an action and do so for recipes too.
   (food: Food, nutrientIds: number[]) =>
     food.dataType == "Recipe"
       ? []
