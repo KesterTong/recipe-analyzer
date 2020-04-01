@@ -23,7 +23,7 @@ import {
   State as FoodViewState,
   Action as FoodViewAction,
 } from "./food_view/types";
-import { Food } from "../core/Food";
+import { Food } from "../core";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { FoodRef } from "../core/FoodRef";
 

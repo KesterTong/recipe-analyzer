@@ -15,7 +15,7 @@ import * as firebase from "firebase";
 
 import { NutrientInfo } from "./store";
 import { FoodRef } from "./core/FoodRef";
-import { Food } from "./core/Food";
+import { Food } from "./core";
 import {
   searchFdcFoodsUrl,
   FDCQueryResult,

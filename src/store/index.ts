@@ -20,7 +20,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
 import * as actions from "./actions";
-import { Food } from "../core/Food";
+import { Food } from "../core";
 
 export { actions };
 export * from "./types";

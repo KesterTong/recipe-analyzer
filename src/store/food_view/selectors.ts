@@ -14,7 +14,7 @@
 import { State } from "./types";
 import { createSelector } from "reselect";
 import { getDisplayQuantities } from "../../core/getDisplayQuantities";
-import { Food } from "../../core/Food";
+import { Food } from "../../core";
 import { nutrientsPerServingForFDCFood } from "../../core/FoodDataCentral";
 
 export const selectQuantities = createSelector(

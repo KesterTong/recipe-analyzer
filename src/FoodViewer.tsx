@@ -11,13 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { SRLegacyFood } from "./core/FoodDataCentral";
+import { Food } from "./core";
 import * as React from "react";
 import { NutrientsViewer } from "./NutrientsViewer";
 import { isNonEmpty } from "./TypesUtil";
 
 export interface FoodViewerProps {
-  srLegacyFood: SRLegacyFood;
+  food: Food;
   viewerProps: {
     nutrientNames: string[];
     nutrientValues: number[];
@@ -33,10 +33,9 @@ export const FoodViewer: React.FunctionComponent<FoodViewerProps | {}> = (
   if (!isNonEmpty(props)) {
     return null;
   }
-  // TODO new id instead of description for key.
   return (
     <React.Fragment>
-      <h1>{props.srLegacyFood.description}</h1>
+      <h1>{props.food.description}</h1>
       <h2>Nutrients</h2>
       <NutrientsViewer
         {...props.viewerProps}

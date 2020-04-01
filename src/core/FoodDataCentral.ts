@@ -42,6 +42,18 @@ export interface SRLegacyFood {
   }[];
 }
 
+export type FDCFood = BrandedFood | SRLegacyFood;
+
+// TODO: check if these fields are always present.
+export interface FDCQueryFood {
+  fdcId: number;
+  description: string;
+  dataType: string;
+  gtinUpc: string;
+  brandOwner: string;
+  score: number;
+};
+
 export interface FDCQueryResult {
   foodSearchCriteria: {
     generalSearchInput: string;
@@ -51,14 +63,7 @@ export interface FDCQueryResult {
   totalHits: number;
   currentPage: number;
   totalPages: number;
-  foods: {
-    fdcId: number;
-    description: string;
-    dataType: string;
-    gtinUpc: string;
-    brandOwner: string;
-    score: number;
-  }[];
+  foods: FDCQueryFood[];
 }
 
 export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
@@ -105,5 +110,3 @@ export function nutrientsPerServingForFDCFood(
   }
   return nutrientsToDisplay.map((id) => nutrientsById[id] || 0);
 }
-
-export type FDCFood = BrandedFood | SRLegacyFood;

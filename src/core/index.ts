@@ -11,21 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Food } from "../../core";
 
-export interface State {
-  stateType: "FoodView";
-  food: Food;
-  selectedQuantity: number;
-}
-
-export enum ActionType {
-  SET_SELECTED_QUANTITY = "@SetSelectedQuantity",
-}
-
-export interface SetSelectedQuantity {
-  type: ActionType.SET_SELECTED_QUANTITY;
-  index: number;
-}
-
-export type Action = SetSelectedQuantity;
+export * from './Food';
+export * from './FoodDataCentral';
+export * from './Recipe';

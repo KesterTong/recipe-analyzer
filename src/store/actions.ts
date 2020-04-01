@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { getFood, insertFood, patchFood } from "../database";
-import { Food } from "../core/Food";
+import { Food } from "../core";
 import { RootAction, ThunkResult, ActionType } from "./types";
 import {
   NEW_RECIPE,
