@@ -16,12 +16,12 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { scaleNutrients } from "./core/Nutrients";
 import { FoodViewer } from "./FoodViewer";
-import { actions } from "./store/food_view";
-import { mergeIfStatePropsNotNull } from "./TypesUtil";
 import {
+  actions,
   selectQuantities,
   selectNutrientsPerServing,
-} from "./store/food_view/selectors";
+} from "./store/food_view";
+import { mergeIfStatePropsNotNull } from "./TypesUtil";
 import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
