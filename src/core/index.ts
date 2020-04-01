@@ -18,5 +18,5 @@ export * from "./NormalizedFood";
 export * from "./Nutrients";
 export * from "./Recipe";
 
-export { getDisplayQuantities } from "./getDisplayQuantities"
+export { getDisplayQuantities } from "./getDisplayQuantities";
 export { normalizeFood } from "./normalizeFood";

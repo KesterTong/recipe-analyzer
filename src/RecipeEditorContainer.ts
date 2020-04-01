@@ -30,12 +30,12 @@ function mapStateToProps(state: RootState) {
     const food = ingredient?.normalizedFood;
     return {
       queryResult: selectQueryResult(ingredient),
-      amount: ingredient ? ingredient.quantity.amount : 0,
-      unit: ingredient ? ingredient.quantity.unit : "",
+      amount: ingredient ? ingredient.amount : 0,
+      unit: ingredient ? ingredient.unit : "",
       units: food ? getIngredientUnits(food.servingEquivalentQuantities) : [""],
       nutrients:
         (food && ingredient
-          ? nutrientsForQuantity(ingredient.quantity, food)
+          ? nutrientsForQuantity(ingredient.amount, ingredient.unit, food)
           : null) || selectNutrientIds(state).map((_) => 0),
     };
   });

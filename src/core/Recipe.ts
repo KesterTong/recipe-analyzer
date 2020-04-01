@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "./Quantity";
 import { NormalizedFood } from "./NormalizedFood";
 import { Nutrients, scaleNutrients } from "./Nutrients";
+import { canonicalizeQuantity } from "./Quantity";
 
 export interface Ingredient {
-  quantity: Quantity;
+  quantity: { amount: number; unit: string };
   foodId: string;
 }
 
@@ -54,15 +54,17 @@ export function getIngredientUnits(servingEquivalentQuantities: {
 
 // Used to compute ingredient quantity
 export function nutrientsForQuantity(
-  quantity: Quantity,
+  amount: number,
+  unit: string,
   foodData: NormalizedFood
 ): Nutrients {
+  [amount, unit] = canonicalizeQuantity(amount, unit);
   // The number of units of the quantity per serving.
-  let unitsPerServing = foodData.servingEquivalentQuantities[quantity.unit];
+  let unitsPerServing = foodData.servingEquivalentQuantities[unit];
   if (unitsPerServing == undefined) {
     // TODO: Display original unit as well as canonicalized unit in error.
-    throw "Could not determine nutrients for quantity " + quantity.unit;
+    throw "Could not determine nutrients for quantity " + unit;
   }
-  var servings = quantity.amount / unitsPerServing;
+  var servings = amount / unitsPerServing;
   return scaleNutrients(foodData.nutrientsPerServing, servings);
 }

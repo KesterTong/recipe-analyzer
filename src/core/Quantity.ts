@@ -15,20 +15,17 @@
 import { NormalizedFood } from "./NormalizedFood";
 import { Nutrients, scaleNutrients } from "./Nutrients";
 
-export interface Quantity {
-  amount: number;
-  unit: string;
-}
-
 /**
  * Transform a quantity by
  *  - Converting mass units to 'g' and volume units to 'ml'.
  *  - Removing trailing 's' to alllow plural and singular forms.
  *  - Convert to lowercase.
  */
-export function canonicalizeQuantity(quantity: Quantity): Quantity {
-  var amount = quantity.amount;
-  var unit = quantity.unit.toLowerCase().replace(/(\w*)s$/, "$1");
+export function canonicalizeQuantity(
+  amount: number,
+  unit: string
+): [number, string] {
+  unit = unit.toLowerCase().replace(/(\w*)s$/, "$1");
   const gramEquivalentByUnit: { [index: string]: number } = {
     oz: 28.35,
     lb: 453.59,
@@ -48,16 +45,10 @@ export function canonicalizeQuantity(quantity: Quantity): Quantity {
   };
 
   if (gramEquivalentByUnit[unit]) {
-    return {
-      amount: amount * gramEquivalentByUnit[unit],
-      unit: "g",
-    };
+    return [amount * gramEquivalentByUnit[unit], "g"];
   }
   if (mlEquivalentByUnit[unit]) {
-    return {
-      amount: amount * mlEquivalentByUnit[unit],
-      unit: "ml",
-    };
+    return [amount * mlEquivalentByUnit[unit], "ml"];
   }
-  return { amount: amount, unit: unit };
+  return [amount, unit];
 }

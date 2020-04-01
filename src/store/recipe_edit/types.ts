@@ -13,10 +13,10 @@
 // limitations under the License.
 import { QueryResult } from "../../database";
 import { NormalizedFood } from "../../core";
-import { Quantity } from "../../core/Quantity";
 
 export interface Ingredient {
-  quantity: Quantity;
+  amount: number;
+  unit: string;
   foodId: string;
   deselected: boolean;
   description: string | null;

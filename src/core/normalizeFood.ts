@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity, canonicalizeQuantity } from "./Quantity";
+import { canonicalizeQuantity } from "./Quantity";
 import { Nutrients, addNutrients } from "./Nutrients";
 import {
-  FDCFood,
   SRLegacyFood,
   BrandedFood,
   nutrientsPerServingForFDCFood,
@@ -68,71 +67,57 @@ async function nutrientsForRecipe(
         getFood,
         nutrientIds
       );
-      return nutrientsForQuantity(ingredient.quantity, normalizedSubFood);
+      const { amount, unit } = ingredient.quantity;
+      return nutrientsForQuantity(amount, unit, normalizedSubFood);
     })
   );
   return nutrients.reduce(addNutrients);
 }
 
 export function servingEquivalentQuantities(food: Food) {
-  let servingEquivalentQuantities: Quantity[];
   switch (food.dataType) {
     case "SR Legacy":
-      servingEquivalentQuantities = SRLegacyServingEquivalentQuantities(food);
-      break;
+      return SRLegacyServingEquivalentQuantities(food);
     case "Branded":
-      servingEquivalentQuantities = brandedServingEquivalentQuantities(food);
-      break;
+      return brandedServingEquivalentQuantities(food);
     case "Recipe":
-      servingEquivalentQuantities = [{ amount: 1, unit: "serving" }];
-      break;
+      return { serving: 1 };
   }
-  let result: { [index: string]: number } = {};
-  servingEquivalentQuantities.forEach((quantity) => {
-    quantity = canonicalizeQuantity(quantity);
-    result[quantity.unit] = quantity.amount;
-  });
-  return result;
 }
 
 function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) {
   // A serving is 100g for SR Legacy data.
-  var servingEquivalentQuantities: Quantity[] = [
-    {
-      amount: 100.0,
-      unit: "g",
-    },
-  ];
+  let result: { [index: string]: number } = {
+    g: 100.0,
+  };
   // Add in other measures
-  for (var i = 0; i < foodDetails.foodPortions.length; i++) {
-    var foodPortion = foodDetails.foodPortions[i];
+  for (let i = 0; i < foodDetails.foodPortions.length; i++) {
+    const foodPortion = foodDetails.foodPortions[i];
+    const [amount, unit] = canonicalizeQuantity(
+      foodPortion.amount,
+      foodPortion.modifier
+    );
     // The gram weight is for `amount` of `unitName` so for
     // a single unit of `unitName` we divide by `amount`.
-    servingEquivalentQuantities.push({
-      amount: (100.0 * foodPortion.amount) / foodPortion.gramWeight,
-      unit: foodPortion.modifier,
-    });
+    result[unit] = (100.0 * amount) / foodPortion.gramWeight;
   }
-  return servingEquivalentQuantities;
+  return result;
 }
 
 function brandedServingEquivalentQuantities(foodDetails: BrandedFood) {
-  let result: Quantity[] = [
-    {
-      amount: 100.0,
-      unit: foodDetails.servingSizeUnit,
-    },
-  ];
+  let result: { [index: string]: number } = {
+    [foodDetails.servingSizeUnit]: 100.0,
+  };
   let householdServingQuantity =
     foodDetails.householdServingFullText == null
       ? null
       : parseQuantity(foodDetails.householdServingFullText);
   if (householdServingQuantity != null) {
-    result.push({
-      amount:
-        (100.0 * householdServingQuantity.amount) / foodDetails.servingSize,
-      unit: householdServingQuantity.unit,
-    });
+    const [amount, unit] = canonicalizeQuantity(
+      householdServingQuantity[0],
+      householdServingQuantity[1]
+    );
+    result[unit] = (100.0 * amount) / foodDetails.servingSize;
   }
   return result;
 }
