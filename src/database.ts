@@ -14,12 +14,7 @@
 import * as firebase from "firebase";
 
 import { NutrientInfo } from "./store";
-import { Food } from "./core";
-import {
-  searchFdcFoodsUrl,
-  FDCQueryResult,
-  getFdcFoodUrl,
-} from "./core/FoodDataCentral";
+import { Food, searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl } from "./core";
 import { FDC_API_KEY } from "./config";
 
 export async function getNutrientInfo(): Promise<NutrientInfo[]> {
