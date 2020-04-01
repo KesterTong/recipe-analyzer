@@ -121,10 +121,9 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             <td className="col-1"></td>
             <td className="col-2"></td>
             <td className="col-6">Total</td>
-            {props.totalNutrients
-              .map((value) => (
-                <td className="col-1">{value.toFixed(1)}</td>
-              ))}
+            {props.totalNutrients.map((value) => (
+              <td className="col-1">{value.toFixed(1)}</td>
+            ))}
             <td className="col-1">
               <Button onClick={props.addIngredient}>Add</Button>
             </td>

@@ -32,9 +32,7 @@ function mapStateToProps(state: RootState) {
       queryResult: selectQueryResult(ingredient),
       amount: ingredient ? ingredient.quantity.amount : 0,
       unit: ingredient ? ingredient.quantity.unit : "",
-      units: food
-        ? getIngredientUnits(food.servingEquivalentQuantities)
-        : [""],
+      units: food ? getIngredientUnits(food.servingEquivalentQuantities) : [""],
       nutrients:
         (food && ingredient
           ? nutrientsForQuantity(ingredient.quantity, food)
@@ -42,11 +40,11 @@ function mapStateToProps(state: RootState) {
     };
   });
   const totalNutrients = ingredientsList
-  .map((ingredient) => ingredient.nutrients)
-  .reduce(
-    addNutrients,
-    nutrientNames.map(() => 0)
-  )
+    .map((ingredient) => ingredient.nutrients)
+    .reduce(
+      addNutrients,
+      nutrientNames.map(() => 0)
+    );
   const result = {
     description: foodState.description,
     nutrientNames,
