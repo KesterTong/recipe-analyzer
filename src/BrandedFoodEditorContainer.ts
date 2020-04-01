@@ -15,10 +15,9 @@ import { RootState } from "./store";
 import { connect } from "react-redux";
 import { actions } from "./store/branded_food_edit";
 import { bindActionCreators } from "redux";
-import { ThunkDispatch } from "./store";
+import { ThunkDispatch, selectNutrientNames, selectNutrientIds } from "./store";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
-import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "BrandedFoodEdit") {

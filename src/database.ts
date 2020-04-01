@@ -13,7 +13,7 @@
 // limitations under the License.
 import * as firebase from "firebase";
 
-import { NutrientInfo } from "./store/types";
+import { NutrientInfo } from "./store";
 import { FoodRef } from "./core/FoodRef";
 import { Food } from "./core/Food";
 import {

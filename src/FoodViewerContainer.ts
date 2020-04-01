@@ -11,18 +11,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RootState, ThunkDispatch } from "./store";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { scaleNutrients } from "./core/Nutrients";
 import { FoodViewer } from "./FoodViewer";
+import {
+  RootState,
+  ThunkDispatch,
+  selectNutrientNames,
+  selectNutrientIds,
+} from "./store";
 import {
   actions,
   selectQuantities,
   selectNutrientsPerServing,
 } from "./store/food_view";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
-import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "FoodView") {
