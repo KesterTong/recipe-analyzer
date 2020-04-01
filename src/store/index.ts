@@ -14,27 +14,26 @@
 
 import { RootAction, ActionType, ThunkDispatch } from "./types";
 import * as branded_food_edit from "./branded_food_edit";
+import * as food_view from "./food_view";
+import * as recipe_edit from "./recipe_edit";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { RootState, initialState } from "./types";
-import { reducer as recipeReducer } from "./recipe_edit/reducer";
-import { State as SRLegacyFoodState } from "./food_view/types";
-import { reducer as foodViewReducer } from "./food_view/reducer";
-import { State as RecipeState } from "./recipe_edit/types";
-import { stateFromRecipe } from "./recipe_edit/conversion";
+import * as actions from "./actions";
 import { Food } from "../core/Food";
 
+export { actions };
 export * from "./types";
 export * from "./selectors";
 
 function foodStateFromFood(
   food: Food
-): RecipeState | branded_food_edit.State | SRLegacyFoodState {
+): recipe_edit.State | branded_food_edit.State | food_view.State {
   switch (food.dataType) {
     case "Branded":
       return branded_food_edit.stateFromBrandedFood(food);
     case "Recipe":
-      return stateFromRecipe(food);
+      return recipe_edit.stateFromRecipe(food);
     case "SR Legacy":
       return {
         stateType: "FoodView",
@@ -79,7 +78,7 @@ function rootReducer(
       }
       return {
         ...state,
-        foodState: foodViewReducer(state.foodState, action.action),
+        foodState: food_view.reducer(state.foodState, action.action),
       };
     case ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE:
       if (state.foodState?.stateType != "BrandedFoodEdit") {
@@ -95,7 +94,7 @@ function rootReducer(
       }
       return {
         ...state,
-        foodState: recipeReducer(state.foodState, action.action),
+        foodState: recipe_edit.reducer(state.foodState, action.action),
       };
     case ActionType.SET_NUTRIENT_INFOS:
       return {

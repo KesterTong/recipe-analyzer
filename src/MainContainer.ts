@@ -11,8 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import * as actions from "./store/actions";
-import { selectFoodRef, RootState, ThunkDispatch } from "./store";
+import { actions, selectFoodRef, RootState, ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";

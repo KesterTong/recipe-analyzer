@@ -16,7 +16,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { scaleNutrients } from "./core/Nutrients";
 import { FoodViewer } from "./FoodViewer";
-import { setSelectedQuantity } from "./store/food_view/actions";
+import { actions } from "./store/food_view";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
 import {
   selectQuantities,
@@ -48,12 +48,7 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      setSelectedQuantity,
-    },
-    dispatch
-  );
+  return bindActionCreators(actions, dispatch);
 }
 
 export const FoodViewerContainer = connect(

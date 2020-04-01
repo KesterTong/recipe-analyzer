@@ -15,21 +15,12 @@
 import { connect } from "react-redux";
 import { RootState, ThunkDispatch } from "./store";
 import { RecipeEditor } from "./RecipeEditor";
-import { updateDescription } from "./store/recipe_edit/actions";
-import { selectFoodRef } from "./store/recipe_edit/selectors";
+import { selectNutrientNames, selectNutrientIds } from "./store";
+import { actions, selectFoodRef } from "./store/recipe_edit";
 import { bindActionCreators } from "redux";
 import { nutrientsForQuantity } from "./core/Quantity";
-import {
-  addIngredient,
-  deleteIngredient,
-  updateIngredientAmount,
-  updateIngredientUnit,
-  loadAndSelectIngredient,
-  deselectIngredient,
-} from "./store/recipe_edit/actions";
 import { mergeIfStatePropsNotNull } from "./TypesUtil";
 import { getIngredientUnits } from "./core/getIngredientUnits";
-import { selectNutrientNames, selectNutrientIds } from "./store/selectors";
 
 function mapStateToProps(state: RootState) {
   const recipeState = state.foodState;
@@ -59,18 +50,7 @@ function mapStateToProps(state: RootState) {
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      updateDescription,
-      addIngredient,
-      deleteIngredient,
-      updateIngredientAmount,
-      updateIngredientUnit,
-      loadAndSelectIngredient,
-      deselectIngredient,
-    },
-    dispatch
-  );
+  return bindActionCreators(actions, dispatch);
 }
 
 export const RecipeEditorContainer = connect(

@@ -14,9 +14,12 @@
 import { getFood, insertFood, patchFood } from "../database";
 import { Food } from "../core/Food";
 import { RootAction, ThunkResult, ActionType } from "./types";
-import { NEW_RECIPE, recipeFromState } from "./recipe_edit/conversion";
-import { loadIngredient } from "./recipe_edit/actions";
-import * as branded_food_edit from "./branded_food_edit";
+import {
+  NEW_RECIPE,
+  recipeFromState,
+  actions as recipe_edit_actions,
+} from "./recipe_edit";
+import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food_edit";
 import { FoodRef } from "../core/FoodRef";
 
 export function deselect(): RootAction {
@@ -44,7 +47,7 @@ export function saveFood(): ThunkResult<Promise<void>> {
     }
     let food: Food;
     if (state.foodState?.stateType == "BrandedFoodEdit") {
-      food = branded_food_edit.brandedFoodFromState(state.foodState);
+      food = brandedFoodFromState(state.foodState);
     } else if (state.foodState?.stateType == "RecipeEdit") {
       food = recipeFromState(state.foodState);
     } else if (state.foodState?.stateType == "FoodView") {
@@ -70,7 +73,9 @@ export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
       }
       await Promise.all(
         food.ingredientsList.map((ingredient, index) => {
-          dispatch(loadIngredient(index, ingredient.foodId));
+          dispatch(
+            recipe_edit_actions.loadIngredient(index, ingredient.foodId)
+          );
         })
       );
     } catch (err) {
@@ -82,8 +87,8 @@ export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
 
 export function newBrandedFood(): ThunkResult<Promise<void>> {
   return async (dispatch) => {
-    const foodId = await insertFood(branded_food_edit.NEW_BRANDED_FOOD);
-    dispatch(newFood(foodId, branded_food_edit.NEW_BRANDED_FOOD));
+    const foodId = await insertFood(NEW_BRANDED_FOOD);
+    dispatch(newFood(foodId, NEW_BRANDED_FOOD));
   };
 }
 
