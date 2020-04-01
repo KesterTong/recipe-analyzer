@@ -18,7 +18,7 @@ import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
   return {
-    QueryResult: selectQueryResult(state),
+    queryResult: selectQueryResult(state),
     loading: state.foodId != null && state.foodState?.stateType == "Loading",
   };
 }

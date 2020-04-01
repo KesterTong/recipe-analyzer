@@ -14,7 +14,6 @@
 import { Food } from "./core";
 import * as React from "react";
 import { NutrientsViewer } from "./NutrientsViewer";
-import { isNonEmpty } from "./TypesUtil";
 
 export interface FoodViewerProps {
   food: Food;
@@ -27,10 +26,12 @@ export interface FoodViewerProps {
   setSelectedQuantity: (index: number) => void;
 }
 
-export const FoodViewer: React.FunctionComponent<FoodViewerProps | {}> = (
+export const NO_DISPLAY = {} as FoodViewerProps;
+
+export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (
   props
 ) => {
-  if (!isNonEmpty(props)) {
+  if (props.food === undefined) {
     return null;
   }
   return (

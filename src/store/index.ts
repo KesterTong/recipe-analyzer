@@ -58,11 +58,11 @@ function rootReducer(
     case ActionType.SELECT_FOOD:
       return {
         ...state,
-        foodId: action.QueryResult.foodId,
+        foodId: action.queryResult.foodId,
         deselected: false,
         foodState: {
           stateType: "Loading",
-          food: { description: action.QueryResult.description },
+          food: { description: action.queryResult.description },
         },
       };
     case ActionType.NEW_FOOD:

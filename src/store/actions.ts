@@ -25,8 +25,8 @@ export function deselect(): RootAction {
   return { type: ActionType.DESELECT };
 }
 
-export function select(QueryResult: QueryResult): RootAction {
-  return { type: ActionType.SELECT_FOOD, QueryResult };
+export function select(queryResult: QueryResult): RootAction {
+  return { type: ActionType.SELECT_FOOD, queryResult };
 }
 
 export function updateFood(food: Food): RootAction {
@@ -59,13 +59,13 @@ export function saveFood(): ThunkResult<Promise<void>> {
 }
 
 export function selectAndLoad(
-  QueryResult: QueryResult
+  queryResult: QueryResult
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(select(QueryResult));
+    dispatch(select(queryResult));
     try {
-      const food = await getFood(QueryResult.foodId);
-      if (getState().foodId != QueryResult.foodId) {
+      const food = await getFood(queryResult.foodId);
+      if (getState().foodId != queryResult.foodId) {
         return;
       }
       dispatch(updateFood(food));

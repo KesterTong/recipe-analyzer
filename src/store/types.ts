@@ -90,7 +90,7 @@ export interface Deselect {
 
 export interface SelectFood {
   type: ActionType.SELECT_FOOD;
-  QueryResult: QueryResult;
+  queryResult: QueryResult;
 }
 
 export interface NewFood {

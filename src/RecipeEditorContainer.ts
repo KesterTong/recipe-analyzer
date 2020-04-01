@@ -19,22 +19,20 @@ import { selectNutrientNames, selectNutrientIds } from "./store";
 import { actions, selectQueryResult } from "./store/recipe_edit";
 import { bindActionCreators } from "redux";
 import { nutrientsForQuantity } from "./core/Quantity";
-import { mergeIfStatePropsNotNull } from "./TypesUtil";
 import { getIngredientUnits } from "./core/getIngredientUnits";
 
 function mapStateToProps(state: RootState) {
-  const recipeState = state.foodState;
-  if (recipeState?.stateType != "RecipeEdit") {
-    return null;
+  const foodState = state.foodState;
+  if (foodState?.stateType != "RecipeEdit") {
+    return <typeof result>{};
   }
-  const edits = recipeState;
-  return {
-    description: edits.description,
+  const result = {
+    description: foodState.description,
     nutrientNames: selectNutrientNames(state),
-    ingredientsList: edits.ingredients.map((ingredient) => {
+    ingredientsList: foodState.ingredients.map((ingredient) => {
       const food = ingredient?.normalizedFood;
       return {
-        QueryResult: selectQueryResult(ingredient),
+        queryResult: selectQueryResult(ingredient),
         amount: ingredient ? ingredient.quantity.amount : 0,
         unit: ingredient ? ingredient.quantity.unit : "",
         units: food
@@ -47,6 +45,7 @@ function mapStateToProps(state: RootState) {
       };
     }),
   };
+  return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
@@ -55,6 +54,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
 
 export const RecipeEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeIfStatePropsNotNull
+  mapDispatchToProps
 )(RecipeEditor);

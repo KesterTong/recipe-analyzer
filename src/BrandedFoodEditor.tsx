@@ -15,7 +15,6 @@
 import * as React from "react";
 
 import { Form, Col } from "react-bootstrap";
-import { isNonEmpty } from "./TypesUtil";
 
 export interface BrandedFoodEditorProps {
   description: string;
@@ -31,9 +30,9 @@ export interface BrandedFoodEditorProps {
 }
 
 export const BrandedFoodEditor: React.FunctionComponent<
-  BrandedFoodEditorProps | {}
+  BrandedFoodEditorProps
 > = (props) => {
-  if (!isNonEmpty(props)) {
+  if (props.description === undefined) {
     return null;
   }
   return (

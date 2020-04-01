@@ -69,9 +69,9 @@ export function reducer(state: State, action: Action): State {
             quantity: action.food.servingEquivalentQuantities["g"]
               ? { amount: 100, unit: "g" }
               : { amount: 1, unit: "serving" },
-            foodId: action.QueryResult.foodId,
+            foodId: action.queryResult.foodId,
             deselected: false,
-            description: action.QueryResult.description,
+            description: action.queryResult.description,
             normalizedFood: action.food,
           };
         }),

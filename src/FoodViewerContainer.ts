@@ -14,7 +14,7 @@
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { scaleNutrients } from "./core/Nutrients";
-import { FoodViewer } from "./FoodViewer";
+import { FoodViewer, NO_DISPLAY } from "./FoodViewer";
 import {
   RootState,
   ThunkDispatch,
@@ -26,21 +26,20 @@ import {
   selectQuantities,
   selectNutrientsPerServing,
 } from "./store/food_view";
-import { mergeIfStatePropsNotNull } from "./TypesUtil";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "FoodView") {
-    return null;
+    return <typeof result>{};
   }
   const quantities = selectQuantities(state.foodState);
   const nutrientIds = selectNutrientIds(state);
   const nutrientNames = selectNutrientNames(state);
-  let nutrientsPerServing = selectNutrientsPerServing(
+  const nutrientsPerServing = selectNutrientsPerServing(
     state.foodState,
     nutrientIds
   );
-  let scale = quantities[state.foodState.selectedQuantity].servings;
-  return {
+  const scale = quantities[state.foodState.selectedQuantity].servings;
+  const result = {
     food: state.foodState.food,
     viewerProps: {
       nutrientNames,
@@ -49,6 +48,7 @@ function mapStateToProps(state: RootState) {
       selectedQuantity: state.foodState.selectedQuantity,
     },
   };
+  return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
@@ -57,6 +57,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
 
 export const FoodViewerContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeIfStatePropsNotNull
+  mapDispatchToProps
 )(FoodViewer);

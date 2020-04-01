@@ -23,21 +23,21 @@ import { QueryResult } from "./database";
 
 interface MainProps {
   loading: boolean;
-  QueryResult: QueryResult | null;
-  selectAndLoad(QueryResult: QueryResult): void;
+  queryResult: QueryResult | null;
+  selectAndLoad(queryResult: QueryResult): void;
   deselect(): void;
   saveFood: () => void;
   newBrandedFood: () => void;
   newRecipe: () => void;
 }
 
-export const Main: React.SFC<MainProps> = (props) => {
+export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
       <Navbar bg="light" expand="lg">
         <Form inline>
           <FoodInput
-            QueryResult={props.QueryResult}
+            queryResult={props.queryResult}
             select={props.selectAndLoad}
             deselect={props.deselect}
           />

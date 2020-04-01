@@ -36,13 +36,13 @@ export function deleteIngredient(index: number): RootAction {
 
 export function selectIngredient(
   index: number,
-  QueryResult: QueryResult,
+  queryResult: QueryResult,
   food: NormalizedFood
 ): RootAction {
   return makeRootAction({
     type: ActionType.SELECT_INGREDIENT,
     index,
-    QueryResult,
+    queryResult,
     food,
   });
 }
@@ -104,15 +104,15 @@ export function loadIngredient(
 
 export function loadAndSelectIngredient(
   index: number,
-  QueryResult: QueryResult
+  queryResult: QueryResult
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    const food = await getFood(QueryResult.foodId);
+    const food = await getFood(queryResult.foodId);
     const normalizedFood = await normalizeFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(selectIngredient(index, QueryResult, normalizedFood));
+    dispatch(selectIngredient(index, queryResult, normalizedFood));
   };
 }

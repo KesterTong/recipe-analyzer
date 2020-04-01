@@ -57,7 +57,7 @@ export interface DeleteIngredient {
 export interface SelectIngredient {
   type: ActionType.SELECT_INGREDIENT;
   index: number;
-  QueryResult: QueryResult;
+  queryResult: QueryResult;
   food: NormalizedFood;
 }
 

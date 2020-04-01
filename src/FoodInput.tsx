@@ -4,7 +4,7 @@ import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { searchFoods, QueryResult } from "./database";
 
 export interface FoodInputProps {
-  QueryResult: QueryResult | null;
+  queryResult: QueryResult | null;
   select(QueryResult: QueryResult): void;
   deselect(): void;
 }
@@ -16,9 +16,9 @@ export class FoodInput extends React.Component<FoodInputProps> {
   };
 
   render() {
-    let QueryResult = this.props.QueryResult;
-    let selected = QueryResult
-      ? [{ label: QueryResult.description, value: QueryResult.foodId }]
+    let queryResult = this.props.queryResult;
+    let selected = queryResult
+      ? [{ label: queryResult.description, value: queryResult.foodId }]
       : [];
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
