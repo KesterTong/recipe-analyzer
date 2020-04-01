@@ -18,8 +18,7 @@ import { RecipeEditor } from "./RecipeEditor";
 import { selectNutrientNames, selectNutrientIds } from "./store";
 import { actions, selectQueryResult } from "./store/recipe_edit";
 import { bindActionCreators } from "redux";
-import { nutrientsForQuantity } from "./core/Quantity";
-import { getIngredientUnits } from "./core/getIngredientUnits";
+import { nutrientsForQuantity, getIngredientUnits } from "./core";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;

@@ -12,11 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  Quantity,
-  canonicalizeQuantity,
-  nutrientsForQuantity,
-} from "./Quantity";
+import { Quantity, canonicalizeQuantity } from "./Quantity";
 import { Nutrients, addNutrients } from "./Nutrients";
 import {
   FDCFood,
@@ -27,7 +23,7 @@ import {
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
 import { NormalizedFood } from "./NormalizedFood";
-import { Recipe } from "./Recipe";
+import { nutrientsForQuantity, Recipe } from "./Recipe";
 
 export async function normalizeFood(
   food: Food,
@@ -78,9 +74,7 @@ async function nutrientsForRecipe(
   return nutrients.reduce(addNutrients);
 }
 
-export function servingEquivalentQuantities(
-  food: Food
-): { [index: string]: number } {
+export function servingEquivalentQuantities(food: Food) {
   let servingEquivalentQuantities: Quantity[];
   switch (food.dataType) {
     case "SR Legacy":
@@ -101,9 +95,7 @@ export function servingEquivalentQuantities(
   return result;
 }
 
-function SRLegacyServingEquivalentQuantities(
-  foodDetails: SRLegacyFood
-): Quantity[] {
+function SRLegacyServingEquivalentQuantities(foodDetails: SRLegacyFood) {
   // A serving is 100g for SR Legacy data.
   var servingEquivalentQuantities: Quantity[] = [
     {
@@ -124,9 +116,7 @@ function SRLegacyServingEquivalentQuantities(
   return servingEquivalentQuantities;
 }
 
-function brandedServingEquivalentQuantities(
-  foodDetails: BrandedFood
-): Quantity[] {
+function brandedServingEquivalentQuantities(foodDetails: BrandedFood) {
   let result: Quantity[] = [
     {
       amount: 100.0,

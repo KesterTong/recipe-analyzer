@@ -13,6 +13,8 @@
 // limitations under the License.
 
 import { Quantity } from "./Quantity";
+import { NormalizedFood } from "./NormalizedFood";
+import { Nutrients, scaleNutrients } from "./Nutrients";
 
 export interface Ingredient {
   quantity: Quantity;
@@ -30,4 +32,19 @@ export interface Recipe {
   // Note this is distinct from the ingredients field which is a text field
   // used for FDC foods.
   ingredientsList: Ingredient[];
+}
+
+// Used to compute ingredient quantity
+export function nutrientsForQuantity(
+  quantity: Quantity,
+  foodData: NormalizedFood
+): Nutrients {
+  // The number of units of the quantity per serving.
+  let unitsPerServing = foodData.servingEquivalentQuantities[quantity.unit];
+  if (unitsPerServing == undefined) {
+    // TODO: Display original unit as well as canonicalized unit in error.
+    throw "Could not determine nutrients for quantity " + quantity.unit;
+  }
+  var servings = quantity.amount / unitsPerServing;
+  return scaleNutrients(foodData.nutrientsPerServing, servings);
 }

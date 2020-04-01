@@ -15,3 +15,4 @@
 export * from "./Food";
 export * from "./FoodDataCentral";
 export * from "./Recipe";
+export { getIngredientUnits } from "./getIngredientUnits";
