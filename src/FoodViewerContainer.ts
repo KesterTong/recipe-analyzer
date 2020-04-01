@@ -13,7 +13,7 @@
 // limitations under the License.
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { scaleNutrients } from "./core/Nutrients";
+import { scaleNutrients } from "./core";
 import { FoodViewer } from "./FoodViewer";
 import {
   RootState,
