@@ -13,16 +13,14 @@
 // limitations under the License.
 import { Food } from "./core";
 import * as React from "react";
-import { NutrientsViewer } from "./NutrientsViewer";
+import { Form, Table } from "react-bootstrap";
 
 export interface FoodViewerProps {
   food: Food;
-  viewerProps: {
-    nutrientNames: string[];
-    nutrientValues: number[];
-    quantities: string[];
-    selectedQuantity: number;
-  };
+  nutrientNames: string[];
+  nutrientValues: number[];
+  quantities: string[];
+  selectedQuantity: number;
   setSelectedQuantity: (index: number) => void;
 }
 
@@ -36,10 +34,37 @@ export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
     <React.Fragment>
       <h1>{props.food.description}</h1>
       <h2>Nutrients</h2>
-      <NutrientsViewer
-        {...props.viewerProps}
-        setSelectedQuantity={props.setSelectedQuantity}
-      />
+      <Form.Control
+        as="select"
+        value={props.selectedQuantity.toString()}
+        onChange={(event: React.FormEvent) =>
+          props.setSelectedQuantity(
+            Number((event.target as HTMLSelectElement).value)
+          )
+        }
+      >
+        {props.quantities.map((quantity, index) => (
+          <option value={index}>{quantity}</option>
+        ))}
+      </Form.Control>
+      <p>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              {props.nutrientNames.map((nutrientName) => (
+                <th>{nutrientName}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              {props.nutrientValues.map((nutrientValue) => (
+                <td>{nutrientValue}</td>
+              ))}
+            </tr>
+          </tbody>
+        </Table>
+      </p>
     </React.Fragment>
   );
 };
