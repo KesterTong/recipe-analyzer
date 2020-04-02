@@ -11,21 +11,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { memoize } from "lodash";
 import { QueryResult } from "../../database";
 import { Ingredient } from "./types";
 import { Nutrients, nutrientsForQuantity } from "../../core";
+import { createSelector, createSelectorCreator } from "reselect";
 
-export function selectQueryResult(
-  ingredient: Ingredient | null
-): QueryResult | null {
-  if (ingredient == null || ingredient.deselected) {
-    return null;
+const customSelectorCreator = createSelectorCreator(<(...args: any) => any>memoize);
+
+export const selectQueryResult = customSelectorCreator(
+  (ingredient: Ingredient | null) => ingredient,
+  (ingredient: Ingredient | null) => {
+    if (ingredient == null || ingredient.deselected) {
+      return null;
+    }
+    return {
+      foodId: ingredient.foodId,
+      description: ingredient.description || "Loading...",
+    };
   }
-  return {
-    foodId: ingredient.foodId,
-    description: ingredient.description || "Loading...",
-  };
-}
+);
 
 export type LOADING = "LOADING";
 
