@@ -70,15 +70,19 @@ def _export_config_from_json(obj):
 def _extract_column_value(column, item, nutrients_by_id, float_format,
                           date_format):
     if isinstance(column, FieldColumn):
-        value = item.get(column.field)
+        try:
+            value = item[column.field]
+        except KeyError:
+            # Always write empty string for missing fields
+            return ''
         if column.field in _FLOAT_FIELDS:
-            return float_format % (value or 0)
+            return float_format % value
         elif column.field in _DATE_FIELDS:
             dt = datetime.strptime(value, '%m/%d/%Y')
             return dt.strftime(date_format)
         else:
             # String field.
-            return (value or '')
+            return value
     elif isinstance(column, NutrientColumn):
         try:
             scaled_value = nutrients_by_id[column.nutrient_id] * column.scale
