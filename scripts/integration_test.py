@@ -174,6 +174,8 @@ _FDC_IDS = [
     '356544',
     '370154',
     '398115',
+    # For missing serving_size and serving_size_unit.
+    '772410',
 ]
 
 # URL for FoodDataCentral API.
