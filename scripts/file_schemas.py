@@ -31,7 +31,9 @@ BrandedFood = collections.namedtuple(
         'branded_food_category',
         'data_source',
         'modified_date',
-        'available_date'
+        'available_date',
+        'market_country',
+        'discontinued_date'
     ])
 
 
