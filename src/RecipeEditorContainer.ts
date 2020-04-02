@@ -12,13 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { connect } from "react-redux";
-import { RootState, ThunkDispatch } from "./store";
-import { RecipeEditor } from "./RecipeEditor";
-import { selectNutrientNames, selectNutrientIds } from "./store";
-import { actions, selectQueryResult } from "./store/recipe_edit";
 import { bindActionCreators } from "redux";
-import { nutrientsForQuantity, getIngredientUnits, addNutrients } from "./core";
+import { connect } from "react-redux";
+import { RecipeEditor } from "./RecipeEditor";
+import { RootState, ThunkDispatch, selectNutrientNames } from "./store";
+import {
+  actions,
+  selectQueryResult,
+  selectNutrientsForIngredient,
+} from "./store/recipe_edit";
+import { getIngredientUnits, addNutrients, Nutrients } from "./core";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;
@@ -33,14 +36,12 @@ function mapStateToProps(state: RootState) {
       amount: ingredient ? ingredient.amount : 0,
       unit: ingredient ? ingredient.unit : "",
       units: food ? getIngredientUnits(food.servingEquivalentQuantities) : [""],
-      nutrients:
-        (food && ingredient
-          ? nutrientsForQuantity(ingredient.amount, ingredient.unit, food)
-          : null) || selectNutrientIds(state).map((_) => 0),
+      nutrients: selectNutrientsForIngredient(ingredient),
     };
   });
   const totalNutrients = ingredientsList
     .map((ingredient) => ingredient.nutrients)
+    .filter((e): e is Nutrients => e != "LOADING")
     .reduce(
       addNutrients,
       nutrientNames.map(() => 0)

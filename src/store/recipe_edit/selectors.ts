@@ -13,6 +13,7 @@
 // limitations under the License.
 import { QueryResult } from "../../database";
 import { Ingredient } from "./types";
+import { Nutrients, nutrientsForQuantity } from "../../core";
 
 export function selectQueryResult(
   ingredient: Ingredient | null
@@ -24,4 +25,19 @@ export function selectQueryResult(
     foodId: ingredient.foodId,
     description: ingredient.description || "Loading...",
   };
+}
+
+export type LOADING = "LOADING";
+
+export function selectNutrientsForIngredient(
+  ingredient: Ingredient | null
+): Nutrients | LOADING {
+  if (ingredient == null || ingredient.normalizedFood == null) {
+    return "LOADING";
+  }
+  return nutrientsForQuantity(
+    ingredient.amount,
+    ingredient.unit,
+    ingredient.normalizedFood
+  );
 }

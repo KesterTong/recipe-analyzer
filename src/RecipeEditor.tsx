@@ -16,6 +16,7 @@ import * as React from "react";
 import { Form, Table, Button } from "react-bootstrap";
 import { FoodInput } from "./FoodInput";
 import { QueryResult } from "./database";
+import { LOADING } from "./store/recipe_edit";
 
 export interface RecipeEditorProps {
   description: string;
@@ -26,7 +27,7 @@ export interface RecipeEditorProps {
     unit: string;
     units: string[];
     queryResult: QueryResult | null;
-    nutrients: number[];
+    nutrients: number[] | LOADING;
   }[];
   updateDescription(value: string): void;
   addIngredient(QueryResult: QueryResult): void;
@@ -107,9 +108,17 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
                   />
                 }
               </td>
-              {ingredient.nutrients.map((value) => (
-                <td className="col-1">{value.toFixed(1)}</td>
-              ))}
+              {props.nutrientNames.map((_, index) => {
+                const value =
+                  ingredient.nutrients == "LOADING"
+                    ? null
+                    : ingredient.nutrients[index];
+                return (
+                  <td className="col-1">
+                    {value == null ? "..." : value.toFixed(1)}
+                  </td>
+                );
+              })}
               <td className="col-1">
                 <Button onClick={() => props.deleteIngredient(index)}>
                   Delete
