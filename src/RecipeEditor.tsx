@@ -18,17 +18,20 @@ import { FoodInput } from "./FoodInput";
 import { QueryResult } from "./database";
 import { LOADING } from "./store/recipe_edit";
 
+
+export interface IngredientProps {
+  amount: number;
+  unit: string;
+  units: string[];
+  queryResult: QueryResult | null;
+  nutrients: number[] | LOADING;
+}
+
 export interface RecipeEditorProps {
   description: string;
   nutrientNames: string[];
   totalNutrients: number[];
-  ingredientsList: {
-    amount: number;
-    unit: string;
-    units: string[];
-    queryResult: QueryResult | null;
-    nutrients: number[] | LOADING;
-  }[];
+  ingredientsList: IngredientProps[];
   updateDescription(value: string): void;
   addIngredient(QueryResult: QueryResult): void;
   updateIngredientAmount(index: number, amount: number): void;
