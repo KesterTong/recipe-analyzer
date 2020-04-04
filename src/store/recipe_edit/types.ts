@@ -18,7 +18,6 @@ export interface Ingredient {
   unit: string;
   foodId: string;
   deselected: boolean;
-  description: string | null;
   food: Food | null;
   nutrientsPerServing: Nutrients | null;
 }

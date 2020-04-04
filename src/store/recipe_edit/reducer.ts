@@ -55,7 +55,6 @@ export function reducer(state: State, action: Action): State {
     case ActionType.UPDATE_INGREDIENT_FOOD:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
-        description: action.food.description,
         food: action.food,
         nutrientsPerServing: action.nutrientsPerServing,
       }));
@@ -71,7 +70,6 @@ export function reducer(state: State, action: Action): State {
             unit: action.food.dataType == "Recipe" ? "g" : "serving",
             foodId: action.foodId,
             deselected: false,
-            description: action.food.description,
             food: action.food,
             nutrientsPerServing: action.nutrientsPerServing,
           };

@@ -47,7 +47,6 @@ export function stateFromRecipe(food: Recipe): State {
       unit: ingredient.quantity.unit,
       foodId: ingredient.foodId,
       deselected: false,
-      description: null,
       food: null,
       nutrientsPerServing: null,
     })),

@@ -32,7 +32,7 @@ export const selectQueryResult = customSelectorCreator(
     }
     return {
       foodId: ingredient.foodId,
-      description: ingredient.description || "Loading...",
+      description: ingredient.food?.description || "Loading...",
     };
   }
 );
