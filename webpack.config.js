@@ -36,6 +36,7 @@ module.exports = {
     firebase: 'firebase',
     firebaseui: 'firebaseui',
     react: "React",
+    "lodash": "_",
     "redux": "Redux",
     "react-redux": "ReactRedux",
     "react-dom": "ReactDOM",
