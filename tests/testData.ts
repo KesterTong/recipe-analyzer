@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NormalizedFood } from "../src/core/NormalizedFood";
 import { Food } from "../src/core/Food";
 import { BrandedFood } from "../src/core/FoodDataCentral";
 
@@ -43,15 +42,6 @@ export const TEST_SR_LEGACY_FOOD: Food = {
   ],
 };
 
-export const TEST_SR_LEGACY_FOOD_NORMALIZED: NormalizedFood = {
-  nutrientsPerServing: [123, 10],
-  servingEquivalentQuantities: {
-    g: 100.0,
-    ml: 102.86521739130434,
-    "fruit without skin and seed": 0.6578947368421053,
-  },
-};
-
 export const TEST_BRANDED_FOOD: BrandedFood = {
   description: "Plantain Chips",
   dataType: "Branded",
@@ -70,11 +60,6 @@ export const TEST_BRANDED_FOOD: BrandedFood = {
   householdServingFullText: "6 pieces",
 };
 
-export const TEST_BRANDED_FOOD_NORMALIZED: NormalizedFood = {
-  nutrientsPerServing: [425, 5],
-  servingEquivalentQuantities: { g: 100.0, piece: 15.0 },
-};
-
 export const TEST_RECIPE: Food = {
   dataType: "Recipe",
   description: "My Recipe",
@@ -87,9 +72,4 @@ export const TEST_RECIPE: Food = {
       foodId: "userData/id.abc123",
     },
   ],
-};
-
-export const TEST_RECIPE_NORMALIZED: NormalizedFood = {
-  nutrientsPerServing: [212.5, 2.5],
-  servingEquivalentQuantities: { serving: 1.0 },
 };

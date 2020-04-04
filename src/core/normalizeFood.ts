@@ -21,24 +21,7 @@ import {
 } from "./FoodDataCentral";
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
-import { NormalizedFood } from "./NormalizedFood";
 import { nutrientsForQuantity, Recipe } from "./Recipe";
-
-export async function normalizeFood(
-  food: Food,
-  getFood: (foodId: string) => Promise<Food>,
-  nutrientIds: number[]
-): Promise<NormalizedFood> {
-  const nutrientsPerServing = await nutrientsPerServingForFood(
-    food,
-    getFood,
-    nutrientIds
-  );
-  return {
-    nutrientsPerServing,
-    servingEquivalentQuantities: servingEquivalentQuantities(food),
-  };
-}
 
 export async function nutrientsPerServingForFood(
   food: Food,
@@ -62,13 +45,18 @@ async function nutrientsForRecipe(
   const nutrients = await Promise.all(
     food.ingredientsList.map(async (ingredient) => {
       const subFood = await getFood(ingredient.foodId);
-      const normalizedSubFood = await normalizeFood(
+      const nutrientsPerServing = await nutrientsPerServingForFood(
         subFood,
         getFood,
         nutrientIds
       );
       const { amount, unit } = ingredient.quantity;
-      return nutrientsForQuantity(amount, unit, normalizedSubFood);
+      return nutrientsForQuantity(
+        amount,
+        unit,
+        servingEquivalentQuantities(subFood),
+        nutrientsPerServing
+      );
     })
   );
   return nutrients.reduce(addNutrients);

@@ -14,7 +14,6 @@
 
 export * from "./Food";
 export * from "./FoodDataCentral";
-export * from "./NormalizedFood";
 export * from "./Nutrients";
 export * from "./Recipe";
 

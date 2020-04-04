@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NormalizedFood } from "./NormalizedFood";
-import { Nutrients, scaleNutrients } from "./Nutrients";
-
 /**
  * Transform a quantity by
  *  - Converting mass units to 'g' and volume units to 'ml'.

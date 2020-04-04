@@ -12,40 +12,68 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { normalizeFood } from "../../src/core/normalizeFood";
+import {
+  nutrientsPerServingForFood,
+  servingEquivalentQuantities,
+} from "../../src/core/normalizeFood";
 import {
   TEST_SR_LEGACY_FOOD,
-  TEST_SR_LEGACY_FOOD_NORMALIZED,
   TEST_BRANDED_FOOD,
-  TEST_BRANDED_FOOD_NORMALIZED,
   TEST_RECIPE,
-  TEST_RECIPE_NORMALIZED,
 } from "../testData";
 import { Food } from "../../src/core/Food";
 
-describe("normalizeFood", () => {
+describe("nutrientsPerServingForFood", () => {
   function getFood(foodId: string): Promise<Food> {
     return Promise.resolve(TEST_BRANDED_FOOD);
   }
+  const NUTRIENT_IDS = [1008, 1003];
 
-  it("SR Legacy", async () => {
-    const result = await normalizeFood(TEST_SR_LEGACY_FOOD, getFood, [
-      1008,
-      1003,
-    ]);
-    expect(result).toEqual(TEST_SR_LEGACY_FOOD_NORMALIZED);
+  it("SR Legacy Food", async () => {
+    const result = await nutrientsPerServingForFood(
+      TEST_SR_LEGACY_FOOD,
+      getFood,
+      NUTRIENT_IDS
+    );
+    expect(result).toEqual([123, 10]);
   });
 
-  it("Branded", async () => {
-    const result = await normalizeFood(TEST_BRANDED_FOOD, getFood, [
-      1008,
-      1003,
-    ]);
-    expect(result).toEqual(TEST_BRANDED_FOOD_NORMALIZED);
+  it("Branded Food", async () => {
+    const result = await nutrientsPerServingForFood(
+      TEST_BRANDED_FOOD,
+      getFood,
+      NUTRIENT_IDS
+    );
+    expect(result).toEqual([425, 5]);
   });
 
   it("Recipe", async () => {
-    const result = await normalizeFood(TEST_RECIPE, getFood, [1008, 1003]);
-    expect(result).toEqual(TEST_RECIPE_NORMALIZED);
+    const result = await nutrientsPerServingForFood(
+      TEST_RECIPE,
+      getFood,
+      NUTRIENT_IDS
+    );
+    expect(result).toEqual([212.5, 2.5]);
+  });
+});
+
+describe("servingEquivalentQuantities", () => {
+  it("SR Legacy Food", () => {
+    const result = servingEquivalentQuantities(TEST_SR_LEGACY_FOOD);
+    expect(result).toEqual({
+      g: 100.0,
+      ml: 102.86521739130434,
+      "fruit without skin and seed": 0.6578947368421053,
+    });
+  });
+
+  it("Branded Food", () => {
+    const result = servingEquivalentQuantities(TEST_BRANDED_FOOD);
+    expect(result).toEqual({ g: 100.0, piece: 15.0 });
+  });
+
+  it("Recipe", () => {
+    const result = servingEquivalentQuantities(TEST_RECIPE);
+    expect(result).toEqual({ serving: 1.0 });
   });
 });

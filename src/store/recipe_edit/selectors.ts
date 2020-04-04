@@ -57,9 +57,11 @@ export const selectNutrientsForIngredient = customSelectorCreator(
     ) {
       return "LOADING";
     }
-    return nutrientsForQuantity(ingredient.amount, ingredient.unit, {
-      nutrientsPerServing: ingredient.nutrientsPerServing,
-      servingEquivalentQuantities: servingEquivalentQuantities(ingredient.food),
-    });
+    return nutrientsForQuantity(
+      ingredient.amount,
+      ingredient.unit,
+      servingEquivalentQuantities(ingredient.food),
+      ingredient.nutrientsPerServing
+    );
   }
 );
