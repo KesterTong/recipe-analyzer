@@ -34,9 +34,9 @@ export const selectQueryResult = customSelectorCreator(
 
 export type LOADING = "LOADING";
 
-export function selectNutrientsForIngredient(
-  ingredient: Ingredient | null
-): Nutrients | LOADING {
+export const selectNutrientsForIngredient = customSelectorCreator(
+  (ingredient: Ingredient | null) => ingredient,
+  (ingredient: Ingredient | null) => {
   if (ingredient == null || ingredient.normalizedFood == null) {
     return "LOADING";
   }
@@ -45,4 +45,4 @@ export function selectNutrientsForIngredient(
     ingredient.unit,
     ingredient.normalizedFood
   );
-}
+});

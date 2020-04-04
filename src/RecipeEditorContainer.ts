@@ -31,12 +31,13 @@ function mapStateToProps(state: RootState) {
   const nutrientNames = selectNutrientNames(state);
   const ingredientsList = foodState.ingredients.map((ingredient) => {
     const food = ingredient?.normalizedFood;
+    const nutrients: "LOADING" | Nutrients = selectNutrientsForIngredient(ingredient);
     return {
       queryResult: selectQueryResult(ingredient),
       amount: ingredient ? ingredient.amount : 0,
       unit: ingredient ? ingredient.unit : "",
       units: food ? getIngredientUnits(food.servingEquivalentQuantities) : [""],
-      nutrients: selectNutrientsForIngredient(ingredient),
+      nutrients,
     };
   });
   const totalNutrients = ingredientsList
