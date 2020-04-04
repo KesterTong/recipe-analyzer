@@ -15,7 +15,7 @@
       "field": "description"
     },
     {
-      "name": "data_source",
+      "name": "fdc_data_source",
       "field": "dataSource"
     },
     {
@@ -39,7 +39,7 @@
       "field": "brandedFoodCategory"
     },
     {
-      "name": "brands",
+      "name": "brand_owner",
       "field": "brandOwner"
     },
     {
@@ -47,7 +47,7 @@
       "field": "ingredients"
     },
     {
-      "name": "serving_size",
+      "name": "serving_size_value",
       "field": "servingSize"
     },
     {
@@ -113,6 +113,26 @@
       "name": "sodium_100g",
       "nutrient_id": 1093,
       "scale": 0.001
-    }
+    },
+    {
+      "name": "calcium_100g",
+      "nutrient_id": 1087,
+      "scale": 0.001
+    },
+    {
+      "name": "iron_100g",
+      "nutrient_id": 1089,
+      "scale": 0.001
+    },
+    {
+      "name": "vitamin-a_IU_100g",
+      "nutrient_id": 1089,
+      "scale": 1
+    },
+    {
+      "name": "vitamin-C_IU_100g",
+      "nutrient_id": 1089,
+      "scale": 1
+     }
   ]
 }
