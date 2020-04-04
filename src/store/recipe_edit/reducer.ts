@@ -66,8 +66,8 @@ export function reducer(state: State, action: Action): State {
             return ingredient;
           }
           return {
-            amount: action.food.dataType == "Recipe" ? 100 : 1,
-            unit: action.food.dataType == "Recipe" ? "g" : "serving",
+            amount: action.food.dataType == "Recipe" ? 1 : 100,
+            unit: action.food.dataType == "Recipe" ? "serving" : "g",
             foodId: action.foodId,
             deselected: false,
             food: action.food,
