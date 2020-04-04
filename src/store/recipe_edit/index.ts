@@ -11,16 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-import { HouseholdServing } from "./FoodDataCentral";
-
-export function printHouseholdServing(
-  householdServing: HouseholdServing
-): string {
-  let result =
-    householdServing.servingSize + " " + householdServing.servingSizeUnit;
-  if (householdServing.householdServingFullText) {
-    result = householdServing.householdServingFullText + " (" + result + ")";
-  }
-  return result;
-}
+import * as actions from "./actions";
+export { actions };
+export * from "./conversion";
+export * from "./reducer";
+export * from "./types";
+export * from "./selectors";

@@ -12,37 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootAction, ActionType, ThunkDispatch, ThunkResult } from "./types";
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import { RootState, initialState } from "./types";
-import { reducer as brandedFoodReducer } from "./branded_food_edit/reducer";
-import { State as BrandedFoodState } from "./branded_food_edit/types";
-import { reducer as recipeReducer } from "./recipe_edit/reducer";
-import { State as SRLegacyFoodState } from "./food_view/types";
-import { stateFromBrandedFood } from "./branded_food_edit/conversion";
-import { State as RecipeState } from "./recipe_edit/types";
-import { stateFromRecipe } from "./recipe_edit/conversion";
-import { selectFoodRef } from "./selectors";
-import { Food } from "../core/Food";
-
-export {
+import { Food } from "../core";
+import * as actions from "./actions";
+import * as branded_food_edit from "./branded_food_edit";
+import * as food_view from "./food_view";
+import * as recipe_edit from "./recipe_edit";
+import {
   RootState,
-  BrandedFoodState,
-  RecipeState,
+  RootAction,
+  ActionType,
   ThunkDispatch,
-  ThunkResult,
-  selectFoodRef,
-};
+  initialState,
+} from "./types";
+
+export { actions };
+export * from "./types";
+export * from "./selectors";
 
 function foodStateFromFood(
   food: Food
-): RecipeState | BrandedFoodState | SRLegacyFoodState {
+): recipe_edit.State | branded_food_edit.State | food_view.State {
   switch (food.dataType) {
     case "Branded":
-      return stateFromBrandedFood(food);
+      return branded_food_edit.stateFromBrandedFood(food);
     case "Recipe":
-      return stateFromRecipe(food);
+      return recipe_edit.stateFromRecipe(food);
     case "SR Legacy":
       return {
         stateType: "FoodView",
@@ -62,11 +58,11 @@ function rootReducer(
     case ActionType.SELECT_FOOD:
       return {
         ...state,
-        foodId: action.foodRef.foodId,
+        foodId: action.queryResult.foodId,
         deselected: false,
         foodState: {
           stateType: "Loading",
-          food: { description: action.foodRef.description },
+          food: { description: action.queryResult.description },
         },
       };
     case ActionType.NEW_FOOD:
@@ -81,13 +77,21 @@ function rootReducer(
         ...state,
         foodState: foodStateFromFood(action.food),
       };
+    case ActionType.UPDATE_FOOD_VIEW_STATE:
+      if (state.foodState?.stateType != "FoodView") {
+        return state;
+      }
+      return {
+        ...state,
+        foodState: food_view.reducer(state.foodState, action.action),
+      };
     case ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE:
       if (state.foodState?.stateType != "BrandedFoodEdit") {
         return state;
       }
       return {
         ...state,
-        foodState: brandedFoodReducer(state.foodState, action.action),
+        foodState: branded_food_edit.reducer(state.foodState, action.action),
       };
     case ActionType.UPDATE_RECIPE_EDIT_STATE:
       if (state.foodState?.stateType != "RecipeEdit") {
@@ -95,17 +99,12 @@ function rootReducer(
       }
       return {
         ...state,
-        foodState: recipeReducer(state.foodState, action.action),
+        foodState: recipe_edit.reducer(state.foodState, action.action),
       };
     case ActionType.SET_NUTRIENT_INFOS:
       return {
         ...state,
-        nutrientIds: action.nutrientInfos.map(
-          (nutrientInfo) => nutrientInfo.id
-        ),
-        nutrientNames: action.nutrientInfos.map(
-          (nutrientInfo) => nutrientInfo.name
-        ),
+        config: { ...state.config, nutrientInfos: action.nutrientInfos },
       };
     default:
       return state;

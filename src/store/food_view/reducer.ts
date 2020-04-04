@@ -13,13 +13,10 @@
 // limitations under the License.
 import { State, Action, ActionType } from "./types";
 
-export function reducer(
-  state: State | null = null,
-  action: Action
-): State | null {
+export function reducer(state: State, action: Action): State {
   switch (action.type) {
     case ActionType.SET_SELECTED_QUANTITY:
-      return state ? { ...state, selectedQuantity: action.index } : null;
+      return { ...state, selectedQuantity: action.index };
     default:
       return state;
   }

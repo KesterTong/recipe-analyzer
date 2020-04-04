@@ -11,49 +11,49 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RootState, ThunkDispatch } from "./store";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { nutrientsFromFoodDetails } from "./core/normalizeFood";
-import { scaleNutrients } from "./core/Nutrients";
+import { scaleNutrients } from "./core";
 import { FoodViewer } from "./FoodViewer";
-import { setSelectedQuantity } from "./store/food_view/actions";
-import { mergeIfStatePropsNotNull } from "./TypesUtil";
-import { selectQuantities } from "./store/food_view/selectors";
+import {
+  RootState,
+  ThunkDispatch,
+  selectNutrientNames,
+  selectNutrientIds,
+} from "./store";
+import {
+  actions,
+  selectQuantities,
+  selectNutrientsPerServing,
+} from "./store/food_view";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "FoodView") {
-    return null;
+    return <typeof result>{};
   }
   const quantities = selectQuantities(state.foodState);
-  const food = state.foodState.food;
-  let nutrientsPerServing =
-    food.dataType == "Recipe"
-      ? []
-      : nutrientsFromFoodDetails(food, state.nutrientIds);
-  let scale = quantities[state.foodState.selectedQuantity].servings;
-  return {
-    srLegacyFood: state.foodState.food,
-    viewerProps: {
-      nutrientNames: state.nutrientNames,
-      nutrientValues: scaleNutrients(nutrientsPerServing, scale),
-      quantities: quantities.map((quantity) => quantity.description),
-      selectedQuantity: state.foodState.selectedQuantity,
-    },
+  const nutrientIds = selectNutrientIds(state);
+  const nutrientNames = selectNutrientNames(state);
+  const nutrientsPerServing = selectNutrientsPerServing(
+    state.foodState,
+    nutrientIds
+  );
+  const scale = quantities[state.foodState.selectedQuantity].servings;
+  const result = {
+    food: state.foodState.food,
+    nutrientNames,
+    nutrientValues: scaleNutrients(nutrientsPerServing, scale),
+    quantities: quantities.map((quantity) => quantity.description),
+    selectedQuantity: state.foodState.selectedQuantity,
   };
+  return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      setSelectedQuantity,
-    },
-    dispatch
-  );
+  return bindActionCreators(actions, dispatch);
 }
 
 export const FoodViewerContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeIfStatePropsNotNull
+  mapDispatchToProps
 )(FoodViewer);

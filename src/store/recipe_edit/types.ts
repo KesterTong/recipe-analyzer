@@ -11,12 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodRef } from "../../core/FoodRef";
-import { NormalizedFood } from "../../core/NormalizedFood";
-import { Quantity } from "../../core/Quantity";
+import { QueryResult } from "../../database";
+import { NormalizedFood } from "../../core";
 
 export interface Ingredient {
-  quantity: Quantity;
+  amount: number;
+  unit: string;
   foodId: string;
   deselected: boolean;
   description: string | null;
@@ -57,7 +57,7 @@ export interface DeleteIngredient {
 export interface SelectIngredient {
   type: ActionType.SELECT_INGREDIENT;
   index: number;
-  foodRef: FoodRef;
+  queryResult: QueryResult;
   food: NormalizedFood;
 }
 

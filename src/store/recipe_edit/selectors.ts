@@ -11,15 +11,38 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodRef } from "../../core/FoodRef";
+import { memoize } from "lodash";
+import { QueryResult } from "../../database";
 import { Ingredient } from "./types";
+import { Nutrients, nutrientsForQuantity } from "../../core";
+import { createSelector, createSelectorCreator } from "reselect";
 
-export function selectFoodRef(ingredient: Ingredient | null): FoodRef | null {
-  if (ingredient == null || ingredient.deselected) {
-    return null;
+const customSelectorCreator = createSelectorCreator(<(...args: any) => any>memoize);
+
+export const selectQueryResult = customSelectorCreator(
+  (ingredient: Ingredient | null) => ingredient,
+  (ingredient: Ingredient | null) => {
+    if (ingredient == null || ingredient.deselected) {
+      return null;
+    }
+    return {
+      foodId: ingredient.foodId,
+      description: ingredient.description || "Loading...",
+    };
   }
-  return {
-    foodId: ingredient.foodId,
-    description: ingredient.description || "Loading...",
-  };
+);
+
+export type LOADING = "LOADING";
+
+export function selectNutrientsForIngredient(
+  ingredient: Ingredient | null
+): Nutrients | LOADING {
+  if (ingredient == null || ingredient.normalizedFood == null) {
+    return "LOADING";
+  }
+  return nutrientsForQuantity(
+    ingredient.amount,
+    ingredient.unit,
+    ingredient.normalizedFood
+  );
 }

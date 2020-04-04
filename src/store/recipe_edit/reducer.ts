@@ -45,12 +45,12 @@ export function reducer(state: State, action: Action): State {
     case ActionType.UPDATE_INGREDIENT_AMOUNT:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
-        quantity: { ...ingredient.quantity, amount: action.amount },
+        amount: action.amount,
       }));
     case ActionType.UPDATE_INGREDIENT_UNIT:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
-        quantity: { ...ingredient.quantity, unit: action.unit },
+        unit: action.unit,
       }));
     case ActionType.UPDATE_INGREDIENT_FOOD:
       return updateIngredient(state, action.index, (ingredient) => ({
@@ -66,12 +66,13 @@ export function reducer(state: State, action: Action): State {
             return ingredient;
           }
           return {
-            quantity: action.food.servingEquivalentQuantities["g"]
-              ? { amount: 100, unit: "g" }
-              : { amount: 1, unit: "serving" },
-            foodId: action.foodRef.foodId,
+            amount: action.food.servingEquivalentQuantities["g"] ? 100 : 1,
+            unit: action.food.servingEquivalentQuantities["g"]
+              ? "g"
+              : "serving",
+            foodId: action.queryResult.foodId,
             deselected: false,
-            description: action.foodRef.description,
+            description: action.queryResult.description,
             normalizedFood: action.food,
           };
         }),

@@ -12,18 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Serving size as printed on USDA label, e.g. "1 cup (220 g)" or "1 scoop (36 ml)".
- */
-export interface HouseholdServing {
+import { Nutrients } from "./Nutrients";
+
+export interface BrandedFood {
+  dataType: "Branded";
+  description: string;
   servingSize: number;
   servingSizeUnit: string;
   householdServingFullText?: string;
-}
-
-export interface BrandedFood extends HouseholdServing {
-  dataType: "Branded";
-  description: string;
   foodNutrients: {
     nutrient: { id: number };
     amount?: number;
@@ -46,6 +42,18 @@ export interface SRLegacyFood {
   }[];
 }
 
+export type FDCFood = BrandedFood | SRLegacyFood;
+
+// TODO: check if these fields are always present.
+export interface FDCQueryFood {
+  fdcId: number;
+  description: string;
+  dataType: string;
+  gtinUpc: string;
+  brandOwner: string;
+  score: number;
+}
+
 export interface FDCQueryResult {
   foodSearchCriteria: {
     generalSearchInput: string;
@@ -55,14 +63,7 @@ export interface FDCQueryResult {
   totalHits: number;
   currentPage: number;
   totalPages: number;
-  foods: {
-    fdcId: number;
-    description: string;
-    dataType: string;
-    gtinUpc: string;
-    brandOwner: string;
-    score: number;
-  }[];
+  foods: FDCQueryFood[];
 }
 
 export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
@@ -92,4 +93,20 @@ function fdcApiUrl(
   return url;
 }
 
-export type FDCFood = BrandedFood | SRLegacyFood;
+export function nutrientsPerServingForFDCFood(
+  foodDetails: FDCFood,
+  nutrientsToDisplay: number[]
+): Nutrients {
+  let nutrientsById: { [id: number]: number } = {};
+  for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
+    var foodNutrient = foodDetails.foodNutrients[i];
+    var nutrientId = foodNutrient.nutrient.id;
+    var nutrientAmount = foodNutrient.amount || 0;
+    // Only include nutrients that will be displayed, in order to reduce
+    // the computational cost of adding up and scaling nutrients.
+    if (nutrientsToDisplay.indexOf(nutrientId) != -1) {
+      nutrientsById[nutrientId] = nutrientAmount;
+    }
+  }
+  return nutrientsToDisplay.map((id) => nutrientsById[id] || 0);
+}

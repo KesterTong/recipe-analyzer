@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { NutrientInfo } from "../core/Nutrients";
 import {
   State as BrandedFoodEditState,
   Action as BrandedFoodEditAction,
@@ -24,9 +23,9 @@ import {
   State as FoodViewState,
   Action as FoodViewAction,
 } from "./food_view/types";
-import { Food } from "../core/Food";
+import { Food } from "../core";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { FoodRef } from "../core/FoodRef";
+import { QueryResult } from "../database";
 
 // State of a food whose description may be known but nothing else.
 export interface LoadingState {
@@ -34,6 +33,12 @@ export interface LoadingState {
   food: {
     description: string | null;
   };
+}
+
+export interface NutrientInfo {
+  id: number;
+  name: string;
+  display: boolean;
 }
 
 // Constraints on RootState
@@ -48,16 +53,18 @@ export interface RootState {
     | BrandedFoodEditState
     | LoadingState
     | null;
-  nutrientNames: string[];
-  nutrientIds: number[];
+  config: {
+    nutrientInfos: NutrientInfo[];
+  };
 }
 
 export const initialState: RootState = {
   foodId: null,
   deselected: false,
   foodState: null,
-  nutrientNames: [],
-  nutrientIds: [],
+  config: {
+    nutrientInfos: [],
+  },
 };
 
 export enum ActionType {
@@ -83,7 +90,7 @@ export interface Deselect {
 
 export interface SelectFood {
   type: ActionType.SELECT_FOOD;
-  foodRef: FoodRef;
+  queryResult: QueryResult;
 }
 
 export interface NewFood {

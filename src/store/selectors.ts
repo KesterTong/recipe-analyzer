@@ -13,9 +13,10 @@
 // limitations under the License.
 
 import { RootState } from "./types";
-import { FoodRef } from "../core/FoodRef";
+import { QueryResult } from "../database";
+import { createSelector } from "reselect";
 
-export function selectFoodRef(state: RootState): FoodRef | null {
+export function selectQueryResult(state: RootState): QueryResult | null {
   if (state.deselected || state.foodId == null) {
     return null;
   }
@@ -37,3 +38,13 @@ export function selectFoodRef(state: RootState): FoodRef | null {
     description,
   };
 }
+
+export const selectNutrientIds = createSelector(
+  (state: RootState) => state.config.nutrientInfos,
+  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
+);
+
+export const selectNutrientNames = createSelector(
+  (state: RootState) => state.config.nutrientInfos,
+  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.name)
+);

@@ -13,58 +13,40 @@
 // limitations under the License.
 import { RootState } from "./store";
 import { connect } from "react-redux";
-import { updateDescription } from "./store/branded_food_edit/actions";
+import { actions } from "./store/branded_food_edit";
 import { bindActionCreators } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import {
-  updateServingSize,
-  updateServingSizeUnit,
-  updateHouseholdUnit,
-  updateNutrientValue,
-} from "./store/branded_food_edit/actions";
-import { RootAction } from "./store/types";
+import { ThunkDispatch, selectNutrientNames, selectNutrientIds } from "./store";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
-import { mergeIfStatePropsNotNull } from "./TypesUtil";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "BrandedFoodEdit") {
-    return null;
+    return <typeof result>{};
   }
   const edits = state.foodState;
   const nutrientsById: { [index: number]: string } = {};
+  const nutrientNames = selectNutrientNames(state);
   edits.foodNutrients.forEach(({ id, amount }) => {
     nutrientsById[id] = amount;
   });
-  return {
+  const result = {
     description: edits.description,
     householdServingFullText: edits.householdServingFullText || "",
     servingSize: edits.servingSize,
     servingSizeUnit: edits.servingSizeUnit,
-    nutrients: state.nutrientIds.map((id, index) => ({
+    nutrients: selectNutrientIds(state).map((id, index) => ({
       id,
-      description: state.nutrientNames[index],
+      description: nutrientNames[index],
       value: nutrientsById[id],
     })),
   };
+  return result;
 }
 
-function mapDispatchToProps(
-  dispatch: ThunkDispatch<RootState, null, RootAction>
-) {
-  return bindActionCreators(
-    {
-      updateDescription,
-      updateServingSize,
-      updateServingSizeUnit,
-      updateHouseholdUnit,
-      updateNutrientValue,
-    },
-    dispatch
-  );
+function mapDispatchToProps(dispatch: ThunkDispatch) {
+  return bindActionCreators(actions, dispatch);
 }
 
 export const BrandedFoodEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeIfStatePropsNotNull
+  mapDispatchToProps
 )(BrandedFoodEditor);

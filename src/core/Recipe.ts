@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "./Quantity";
+import { NormalizedFood } from "./NormalizedFood";
+import { Nutrients, scaleNutrients } from "./Nutrients";
+import { canonicalizeQuantity } from "./Quantity";
 
 export interface Ingredient {
-  quantity: Quantity;
+  quantity: { amount: number; unit: string };
   foodId: string;
 }
 
@@ -30,4 +32,39 @@ export interface Recipe {
   // Note this is distinct from the ingredients field which is a text field
   // used for FDC foods.
   ingredientsList: Ingredient[];
+}
+
+/**
+ * Get a list of ingredient units to display.
+ */
+export function getIngredientUnits(servingEquivalentQuantities: {
+  [index: string]: number;
+}): string[] {
+  let result = Object.keys(servingEquivalentQuantities).filter(
+    (unit) => unit != "g" && unit != "ml"
+  );
+  if (servingEquivalentQuantities["g"] !== undefined) {
+    result = result.concat(["g", "oz", "lb", "kg"]);
+  }
+  if (servingEquivalentQuantities["ml"] !== undefined) {
+    result = result.concat(["tsp", "tbsp", "cup"]);
+  }
+  return result;
+}
+
+// Used to compute ingredient quantity
+export function nutrientsForQuantity(
+  amount: number,
+  unit: string,
+  foodData: NormalizedFood
+): Nutrients {
+  [amount, unit] = canonicalizeQuantity(amount, unit);
+  // The number of units of the quantity per serving.
+  let unitsPerServing = foodData.servingEquivalentQuantities[unit];
+  if (unitsPerServing == undefined) {
+    // TODO: Display original unit as well as canonicalized unit in error.
+    throw "Could not determine nutrients for quantity " + unit;
+  }
+  var servings = amount / unitsPerServing;
+  return scaleNutrients(foodData.nutrientsPerServing, servings);
 }

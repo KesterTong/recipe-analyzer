@@ -1,12 +1,11 @@
 import * as React from "react";
 
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import { searchFoods } from "./database";
-import { FoodRef } from "./core/FoodRef";
+import { searchFoods, QueryResult } from "./database";
 
 export interface FoodInputProps {
-  foodRef: FoodRef | null;
-  select(foodRef: FoodRef): void;
+  queryResult: QueryResult | null;
+  select(QueryResult: QueryResult): void;
   deselect(): void;
 }
 
@@ -17,9 +16,9 @@ export class FoodInput extends React.Component<FoodInputProps> {
   };
 
   render() {
-    let foodRef = this.props.foodRef;
-    let selected = foodRef
-      ? [{ label: foodRef.description, value: foodRef.foodId }]
+    let queryResult = this.props.queryResult;
+    let selected = queryResult
+      ? [{ label: queryResult.description, value: queryResult.foodId }]
       : [];
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
@@ -49,9 +48,9 @@ export class FoodInput extends React.Component<FoodInputProps> {
   _handleSearch = async (query: string) => {
     this.setState({ isLoading: true });
     const result = await searchFoods(query);
-    const options = result.map((foodRef) => ({
-      label: foodRef.description,
-      value: foodRef.foodId,
+    const options = result.map((QueryResult) => ({
+      label: QueryResult.description,
+      value: QueryResult.foodId,
     }));
     this.setState({ isLoading: false, options });
   };

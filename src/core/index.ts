@@ -12,18 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export function mergeIfStatePropsNotNull<
-  S extends {},
-  D extends {},
-  O extends {}
->(stateProps: S | null, dispatchProps: D, ownProps: O) {
-  return stateProps != null
-    ? { ...ownProps, ...stateProps, ...dispatchProps }
-    : {};
-}
+export * from "./Food";
+export * from "./FoodDataCentral";
+export * from "./NormalizedFood";
+export * from "./Nutrients";
+export * from "./Recipe";
 
-export function isNonEmpty<T extends {}>(
-  value: React.PropsWithChildren<T | {}>
-): value is T {
-  return Object.keys(value).length > 0;
-}
+export { getDisplayQuantities } from "./getDisplayQuantities";
+export { normalizeFood } from "./normalizeFood";

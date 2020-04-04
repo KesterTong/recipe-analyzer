@@ -12,65 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { connect } from "react-redux";
-import { RootState, ThunkDispatch } from "./store";
-import { RecipeEditor } from "./RecipeEditor";
-import { updateDescription } from "./store/recipe_edit/actions";
-import { selectFoodRef } from "./store/recipe_edit/selectors";
 import { bindActionCreators } from "redux";
-import { nutrientsForQuantity } from "./core/Quantity";
+import { connect } from "react-redux";
+import { RecipeEditor } from "./RecipeEditor";
+import { RootState, ThunkDispatch, selectNutrientNames } from "./store";
 import {
-  addIngredient,
-  deleteIngredient,
-  updateIngredientAmount,
-  updateIngredientUnit,
-  loadAndSelectIngredient,
-  deselectIngredient,
-} from "./store/recipe_edit/actions";
-import { mergeIfStatePropsNotNull } from "./TypesUtil";
+  actions,
+  selectQueryResult,
+  selectNutrientsForIngredient,
+} from "./store/recipe_edit";
+import { getIngredientUnits, addNutrients, Nutrients } from "./core";
 
 function mapStateToProps(state: RootState) {
-  const recipeState = state.foodState;
-  if (recipeState?.stateType != "RecipeEdit") {
-    return null;
+  const foodState = state.foodState;
+  if (foodState?.stateType != "RecipeEdit") {
+    return <typeof result>{};
   }
-  const edits = recipeState;
-  return {
-    description: edits.description,
-    nutrientNames: state.nutrientNames,
-    ingredientsList: edits.ingredients.map((ingredient) => {
-      const food = ingredient?.normalizedFood;
-      return {
-        foodRef: selectFoodRef(ingredient),
-        amount: ingredient ? ingredient.quantity.amount : 0,
-        unit: ingredient ? ingredient.quantity.unit : "",
-        units: food ? Object.keys(food.servingEquivalentQuantities) : [""],
-        nutrients:
-          (food && ingredient
-            ? nutrientsForQuantity(ingredient.quantity, food)
-            : null) || (state.nutrientIds || []).map((_) => 0),
-      };
-    }),
+  const nutrientNames = selectNutrientNames(state);
+  const ingredientsList = foodState.ingredients.map((ingredient) => {
+    const food = ingredient?.normalizedFood;
+    return {
+      queryResult: selectQueryResult(ingredient),
+      amount: ingredient ? ingredient.amount : 0,
+      unit: ingredient ? ingredient.unit : "",
+      units: food ? getIngredientUnits(food.servingEquivalentQuantities) : [""],
+      nutrients: selectNutrientsForIngredient(ingredient),
+    };
+  });
+  const totalNutrients = ingredientsList
+    .map((ingredient) => ingredient.nutrients)
+    .filter((e): e is Nutrients => e != "LOADING")
+    .reduce(
+      addNutrients,
+      nutrientNames.map(() => 0)
+    );
+  const result = {
+    description: foodState.description,
+    nutrientNames,
+    ingredientsList,
+    totalNutrients,
   };
+  return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      updateDescription,
-      addIngredient,
-      deleteIngredient,
-      updateIngredientAmount,
-      updateIngredientUnit,
-      loadAndSelectIngredient,
-      deselectIngredient,
-    },
-    dispatch
-  );
+  return bindActionCreators(actions, dispatch);
 }
 
 export const RecipeEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
-  mergeIfStatePropsNotNull
+  mapDispatchToProps
 )(RecipeEditor);

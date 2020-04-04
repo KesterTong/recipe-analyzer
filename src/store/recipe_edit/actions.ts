@@ -11,13 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { FoodRef } from "../../core/FoodRef";
-import { Action, ActionType } from "./types";
+import { NormalizedFood, normalizeFood } from "../../core";
+import { QueryResult, getFood } from "../../database";
 import { RootAction, ActionType as RootActionType } from "../types";
-import { getFood } from "../../database";
-import { normalizeFood } from "../../core/normalizeFood";
+import { Action, ActionType } from "./types";
 import { ThunkResult } from "../types";
-import { NormalizedFood } from "../../core/NormalizedFood";
 
 function makeRootAction(action: Action): RootAction {
   return { type: RootActionType.UPDATE_RECIPE_EDIT_STATE, action };
@@ -37,13 +35,13 @@ export function deleteIngredient(index: number): RootAction {
 
 export function selectIngredient(
   index: number,
-  foodRef: FoodRef,
+  queryResult: QueryResult,
   food: NormalizedFood
 ): RootAction {
   return makeRootAction({
     type: ActionType.SELECT_INGREDIENT,
     index,
-    foodRef,
+    queryResult,
     food,
   });
 }
@@ -91,7 +89,11 @@ export function loadIngredient(
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
     const normalizedFood = food
-      ? await normalizeFood(food, getFood, getState().nutrientIds)
+      ? await normalizeFood(
+          food,
+          getFood,
+          getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
+        )
       : null;
     if (normalizedFood != null) {
       dispatch(updateIngredientFood(index, food.description, normalizedFood));
@@ -101,15 +103,15 @@ export function loadIngredient(
 
 export function loadAndSelectIngredient(
   index: number,
-  foodRef: FoodRef
+  queryResult: QueryResult
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    const food = await getFood(foodRef.foodId);
+    const food = await getFood(queryResult.foodId);
     const normalizedFood = await normalizeFood(
       food,
       getFood,
-      getState().nutrientIds
+      getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(selectIngredient(index, foodRef, normalizedFood));
+    dispatch(selectIngredient(index, queryResult, normalizedFood));
   };
 }

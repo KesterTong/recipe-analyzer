@@ -19,26 +19,26 @@ import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
-import { FoodRef } from "./core/FoodRef";
+import { QueryResult } from "./database";
 
 interface MainProps {
   loading: boolean;
-  foodRef: FoodRef | null;
-  select(foodRef: FoodRef): void;
+  queryResult: QueryResult | null;
+  selectAndLoad(queryResult: QueryResult): void;
   deselect(): void;
   saveFood: () => void;
   newBrandedFood: () => void;
   newRecipe: () => void;
 }
 
-export const Main: React.SFC<MainProps> = (props) => {
+export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
       <Navbar bg="light" expand="lg">
         <Form inline>
           <FoodInput
-            foodRef={props.foodRef}
-            select={props.select}
+            queryResult={props.queryResult}
+            select={props.selectAndLoad}
             deselect={props.deselect}
           />
           &nbsp;

@@ -13,14 +13,8 @@
 // limitations under the License.
 import * as firebase from "firebase";
 
-import { NutrientInfo } from "./core/Nutrients";
-import { FoodRef } from "./core/FoodRef";
-import { Food } from "./core/Food";
-import {
-  searchFdcFoodsUrl,
-  FDCQueryResult,
-  getFdcFoodUrl,
-} from "./core/FoodDataCentral";
+import { NutrientInfo } from "./store";
+import { Food, searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl } from "./core";
 import { FDC_API_KEY } from "./config";
 
 export async function getNutrientInfo(): Promise<NutrientInfo[]> {
@@ -66,7 +60,12 @@ export async function insertFood(food: Food): Promise<string> {
   return documentReference.path;
 }
 
-async function searchCustomFoods(query: string): Promise<FoodRef[]> {
+export interface QueryResult {
+  foodId: string;
+  description: string;
+}
+
+async function searchCustomFoods(query: string): Promise<QueryResult[]> {
   let documentData = await firebase.firestore().collection("userData").get();
   return documentData.docs
     .map((document) => ({
@@ -74,28 +73,22 @@ async function searchCustomFoods(query: string): Promise<FoodRef[]> {
       food: <Food>JSON.parse(document.data().data),
     }))
     .filter((data) => data.food.description.match(query))
-    .map(
-      (data) =>
-        <FoodRef>{
-          foodId: data.foodId,
-          description: data.food.description,
-        }
-    );
+    .map((data) => ({
+      foodId: data.foodId,
+      description: data.food.description,
+    }));
 }
 
-async function searchFdcFoods(query: string): Promise<FoodRef[]> {
+async function searchFdcFoods(query: string): Promise<QueryResult[]> {
   let result = await fetch(searchFdcFoodsUrl(query, FDC_API_KEY));
   let queryResult = (await result.json()) as FDCQueryResult;
-  return queryResult.foods.map(
-    (entry) =>
-      <FoodRef>{
-        foodId: "fdcData/" + entry.fdcId.toString(),
-        description: entry.description,
-      }
-  );
+  return queryResult.foods.map((entry) => ({
+    foodId: "fdcData/" + entry.fdcId.toString(),
+    description: entry.description,
+  }));
 }
 
-export async function searchFoods(query: string): Promise<FoodRef[]> {
+export async function searchFoods(query: string): Promise<QueryResult[]> {
   let customFoods = searchCustomFoods(query);
   let queryResult = searchFdcFoods(query);
   const results = await Promise.all([customFoods, queryResult]);

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { State } from "./types";
-import { Recipe } from "../../core/Recipe";
+import { Recipe } from "../../core";
 
 export const NEW_RECIPE: Recipe = {
   dataType: "Recipe",
@@ -29,7 +29,10 @@ export function recipeFromState(state: State): Recipe {
     dataType: "Recipe",
     description: state.description,
     ingredientsList: filterNulls(state.ingredients).map((ingredient) => ({
-      quantity: ingredient.quantity,
+      quantity: {
+        amount: ingredient.amount,
+        unit: ingredient.unit,
+      },
       foodId: ingredient.foodId,
     })),
   };
@@ -40,7 +43,8 @@ export function stateFromRecipe(food: Recipe): State {
     stateType: "RecipeEdit",
     description: food.description,
     ingredients: food.ingredientsList.map((ingredient) => ({
-      quantity: ingredient.quantity,
+      amount: ingredient.quantity.amount,
+      unit: ingredient.quantity.unit,
       foodId: ingredient.foodId,
       deselected: false,
       description: null,

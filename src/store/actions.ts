@@ -11,23 +11,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { getFood, insertFood, patchFood } from "../database";
-import { Food } from "../core/Food";
+import { QueryResult, getFood, insertFood, patchFood } from "../database";
+import { Food } from "../core";
 import { RootAction, ThunkResult, ActionType } from "./types";
-import { NEW_RECIPE, recipeFromState } from "./recipe_edit/conversion";
-import { loadIngredient } from "./recipe_edit/actions";
 import {
-  NEW_BRANDED_FOOD,
-  brandedFoodFromState,
-} from "./branded_food_edit/conversion";
-import { FoodRef } from "../core/FoodRef";
+  NEW_RECIPE,
+  recipeFromState,
+  actions as recipe_edit_actions,
+} from "./recipe_edit";
+import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food_edit";
 
 export function deselect(): RootAction {
   return { type: ActionType.DESELECT };
 }
 
-export function select(foodRef: FoodRef): RootAction {
-  return { type: ActionType.SELECT_FOOD, foodRef };
+export function select(queryResult: QueryResult): RootAction {
+  return { type: ActionType.SELECT_FOOD, queryResult };
 }
 
 export function updateFood(food: Food): RootAction {
@@ -59,12 +58,14 @@ export function saveFood(): ThunkResult<Promise<void>> {
   };
 }
 
-export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
+export function selectAndLoad(
+  queryResult: QueryResult
+): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(select(foodRef));
+    dispatch(select(queryResult));
     try {
-      const food = await getFood(foodRef.foodId);
-      if (getState().foodId != foodRef.foodId) {
+      const food = await getFood(queryResult.foodId);
+      if (getState().foodId != queryResult.foodId) {
         return;
       }
       dispatch(updateFood(food));
@@ -73,7 +74,9 @@ export function selectAndLoad(foodRef: FoodRef): ThunkResult<Promise<void>> {
       }
       await Promise.all(
         food.ingredientsList.map((ingredient, index) => {
-          dispatch(loadIngredient(index, ingredient.foodId));
+          dispatch(
+            recipe_edit_actions.loadIngredient(index, ingredient.foodId)
+          );
         })
       );
     } catch (err) {

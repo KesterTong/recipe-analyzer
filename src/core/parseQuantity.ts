@@ -11,12 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Quantity } from "./Quantity";
 
 /**
  * Parse a quantity, e.g. "1 cup"
  */
-export function parseQuantity(text: string): Quantity | null {
+export function parseQuantity(text: string): [number, string] | null {
   const fractionValueBySymbol: { [index: string]: number } = {
     "": 0,
     "½": 1 / 2,
@@ -44,10 +43,9 @@ export function parseQuantity(text: string): Quantity | null {
   if (match == null) {
     return null;
   }
-  return {
-    amount:
-      Number(match[2] || (match[3] ? 0.0 : 1.0)) +
+  return [
+    Number(match[2] || (match[3] ? 0.0 : 1.0)) +
       fractionValueBySymbol[match[3]],
-    unit: match[4].trim() || "serving",
-  };
+    match[4].trim() || "serving",
+  ];
 }
