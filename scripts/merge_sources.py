@@ -74,10 +74,6 @@ def _merge(branded_food, food, food_nutrients, nutrients):
     assert food.publication_date
     for food_nutrient in food_nutrients:
         assert food_nutrient.fdc_id == branded_food.fdc_id
-    try:
-        float(branded_food.serving_size)
-    except:
-        print(branded_food)
     return _remove_nones({
         'foodClass': 'Branded',
         'description': food.description,
