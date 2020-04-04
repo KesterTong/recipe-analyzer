@@ -22,32 +22,31 @@ import { Food } from "./Food";
 export function getDisplayQuantities(food: Food) {
   switch (food.dataType) {
     case "Branded":
+      const hhs = food.householdServingFullText!;
+      const s = food.servingSize.toString();
+      const su = food.servingSizeUnit;
       return [
         {
-          description:
-            food.householdServingFullText! +
-            " (" +
-            food.servingSize +
-            " " +
-            food.servingSizeUnit +
-            ")",
+          description: `${hhs} (${s} ${su})`,
           servings: food.servingSize,
         },
-        { description: "100 " + food.servingSizeUnit, servings: 1 },
+        {
+          description: `100 ${food.servingSizeUnit}`,
+          servings: 1,
+        },
       ];
     case "Recipe":
       return [{ description: "1 serving", servings: 1 }];
     case "SR Legacy":
       let quantities = [{ description: "100 g", servings: 1 }];
       food.foodPortions.forEach((portion) => {
-        let description =
-          portion.amount.toString() +
-          " " +
-          portion.modifier +
-          " (" +
-          portion.gramWeight +
-          " g)";
-        quantities.push({ description, servings: portion.gramWeight / 100 });
+        const a = portion.amount.toString();
+        const m = portion.modifier;
+        const gw = portion.gramWeight;
+        quantities.push({
+          description: `${a} ${m} (${gw} g)`,
+          servings: portion.gramWeight / 100,
+        });
       });
       return quantities;
   }
