@@ -40,7 +40,7 @@ export async function normalizeFood(
   };
 }
 
-function nutrientsPerServingForFood(
+export async function nutrientsPerServingForFood(
   food: Food,
   getFood: (foodId: string) => Promise<Food>,
   nutrientIds: number[]

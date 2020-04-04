@@ -55,8 +55,9 @@ export function reducer(state: State, action: Action): State {
     case ActionType.UPDATE_INGREDIENT_FOOD:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
-        description: action.description,
-        normalizedFood: action.food,
+        description: action.food.description,
+        food: action.food,
+        nutrientsPerServing: action.nutrientsPerServing,
       }));
     case ActionType.SELECT_INGREDIENT:
       return {
@@ -66,14 +67,13 @@ export function reducer(state: State, action: Action): State {
             return ingredient;
           }
           return {
-            amount: action.food.servingEquivalentQuantities["g"] ? 100 : 1,
-            unit: action.food.servingEquivalentQuantities["g"]
-              ? "g"
-              : "serving",
-            foodId: action.queryResult.foodId,
+            amount: action.food.dataType == "Recipe" ? 100 : 1,
+            unit: action.food.dataType == "Recipe" ? "g" : "serving",
+            foodId: action.foodId,
             deselected: false,
-            description: action.queryResult.description,
-            normalizedFood: action.food,
+            description: action.food.description,
+            food: action.food,
+            nutrientsPerServing: action.nutrientsPerServing,
           };
         }),
       };

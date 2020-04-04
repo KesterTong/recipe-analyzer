@@ -48,7 +48,8 @@ export function stateFromRecipe(food: Recipe): State {
       foodId: ingredient.foodId,
       deselected: false,
       description: null,
-      normalizedFood: null,
+      food: null,
+      nutrientsPerServing: null,
     })),
   };
 }

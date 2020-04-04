@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { NormalizedFood, normalizeFood } from "../../core";
+import { nutrientsPerServingForFood, Food, Nutrients } from "../../core";
 import { QueryResult, getFood } from "../../database";
 import { RootAction, ActionType as RootActionType } from "../types";
 import { Action, ActionType } from "./types";
@@ -35,14 +35,16 @@ export function deleteIngredient(index: number): RootAction {
 
 export function selectIngredient(
   index: number,
-  queryResult: QueryResult,
-  food: NormalizedFood
+  foodId: string,
+  food: Food,
+  nutrientsPerServing: Nutrients
 ): RootAction {
   return makeRootAction({
     type: ActionType.SELECT_INGREDIENT,
     index,
-    queryResult,
+    foodId,
     food,
+    nutrientsPerServing,
   });
 }
 
@@ -71,14 +73,14 @@ export function updateIngredientUnit(index: number, unit: string): RootAction {
 
 export function updateIngredientFood(
   index: number,
-  description: string,
-  food: NormalizedFood
+  food: Food,
+  nutrientsPerServing: Nutrients
 ): RootAction {
   return makeRootAction({
     type: ActionType.UPDATE_INGREDIENT_FOOD,
     index,
-    description,
     food,
+    nutrientsPerServing,
   });
 }
 
@@ -88,15 +90,15 @@ export function loadIngredient(
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
-    const normalizedFood = food
-      ? await normalizeFood(
+    const nutrientsPerServing = food
+      ? await nutrientsPerServingForFood(
           food,
           getFood,
           getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
         )
       : null;
-    if (normalizedFood != null) {
-      dispatch(updateIngredientFood(index, food.description, normalizedFood));
+    if (nutrientsPerServing != null) {
+      dispatch(updateIngredientFood(index, food, nutrientsPerServing));
     }
   };
 }
@@ -107,11 +109,13 @@ export function loadAndSelectIngredient(
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(queryResult.foodId);
-    const normalizedFood = await normalizeFood(
+    const nutrientsPerServing = await nutrientsPerServingForFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(selectIngredient(index, queryResult, normalizedFood));
+    dispatch(
+      selectIngredient(index, queryResult.foodId, food, nutrientsPerServing)
+    );
   };
 }

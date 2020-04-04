@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { QueryResult } from "../../database";
-import { NormalizedFood } from "../../core";
+import { NormalizedFood, Recipe, Nutrients, Food } from "../../core";
 
 export interface Ingredient {
   amount: number;
@@ -20,7 +20,8 @@ export interface Ingredient {
   foodId: string;
   deselected: boolean;
   description: string | null;
-  normalizedFood: NormalizedFood | null;
+  food: Food | null;
+  nutrientsPerServing: Nutrients | null;
 }
 
 export interface State {
@@ -57,8 +58,9 @@ export interface DeleteIngredient {
 export interface SelectIngredient {
   type: ActionType.SELECT_INGREDIENT;
   index: number;
-  queryResult: QueryResult;
-  food: NormalizedFood;
+  foodId: string;
+  food: Food;
+  nutrientsPerServing: Nutrients;
 }
 
 export interface DeselectIngredient {
@@ -81,8 +83,8 @@ export interface UpdateIngredientUnit {
 export interface UpdateIngredientFood {
   type: ActionType.UPDATE_INGREDIENT_FOOD;
   index: number;
-  description: string;
-  food: NormalizedFood;
+  food: Food;
+  nutrientsPerServing: Nutrients;
 }
 
 export type Action =

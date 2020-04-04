@@ -30,15 +30,17 @@ function mapStateToProps(state: RootState) {
     return <typeof result>{};
   }
   const nutrientNames = selectNutrientNames(state);
-  const ingredientsList = foodState.ingredients.map<IngredientProps>((ingredient) => {
-    return {
-      queryResult: selectQueryResult(ingredient),
-      amount: ingredient ? ingredient.amount : 0,
-      unit: ingredient ? ingredient.unit : "",
-      units: selectIngredientUnits(ingredient),
-      nutrients: selectNutrientsForIngredient(ingredient),
-    };
-  });
+  const ingredientsList = foodState.ingredients.map<IngredientProps>(
+    (ingredient) => {
+      return {
+        queryResult: selectQueryResult(ingredient),
+        amount: ingredient ? ingredient.amount : 0,
+        unit: ingredient ? ingredient.unit : "",
+        units: selectIngredientUnits(ingredient),
+        nutrients: selectNutrientsForIngredient(ingredient),
+      };
+    }
+  );
   const totalNutrients = ingredientsList
     .map((ingredient) => ingredient.nutrients)
     .filter((e): e is Nutrients => e != "LOADING")

@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { memoize } from "lodash";
-import { QueryResult } from "../../database";
+import { createSelectorCreator } from "reselect";
 import { Ingredient } from "./types";
-import { Nutrients, nutrientsForQuantity, getIngredientUnits } from "../../core";
-import { createSelector, createSelectorCreator } from "reselect";
+import {
+  nutrientsForQuantity,
+  getIngredientUnits,
+  servingEquivalentQuantities,
+} from "../../core";
 
-const customSelectorCreator = createSelectorCreator(<(...args: any) => any>memoize);
+const customSelectorCreator = createSelectorCreator(
+  <(...args: any) => any>memoize
+);
 
 export const selectQueryResult = customSelectorCreator(
   (ingredient: Ingredient | null) => ingredient,
@@ -34,20 +39,27 @@ export const selectQueryResult = customSelectorCreator(
 
 export const selectIngredientUnits = customSelectorCreator(
   (ingredient: Ingredient | null) => ingredient,
-  (ingredient: Ingredient | null) => ingredient && ingredient.normalizedFood ? getIngredientUnits(ingredient.normalizedFood.servingEquivalentQuantities) : [""]
-)
+  (ingredient: Ingredient | null) =>
+    ingredient && ingredient.food
+      ? getIngredientUnits(servingEquivalentQuantities(ingredient.food))
+      : [""]
+);
 
 export type LOADING = "LOADING";
 
 export const selectNutrientsForIngredient = customSelectorCreator(
   (ingredient: Ingredient | null) => ingredient,
   (ingredient: Ingredient | null) => {
-  if (ingredient == null || ingredient.normalizedFood == null) {
-    return "LOADING";
+    if (
+      ingredient == null ||
+      ingredient.food == null ||
+      ingredient.nutrientsPerServing == null
+    ) {
+      return "LOADING";
+    }
+    return nutrientsForQuantity(ingredient.amount, ingredient.unit, {
+      nutrientsPerServing: ingredient.nutrientsPerServing,
+      servingEquivalentQuantities: servingEquivalentQuantities(ingredient.food),
+    });
   }
-  return nutrientsForQuantity(
-    ingredient.amount,
-    ingredient.unit,
-    ingredient.normalizedFood
-  );
-});
+);
