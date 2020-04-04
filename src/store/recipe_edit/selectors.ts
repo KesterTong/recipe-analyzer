@@ -14,7 +14,7 @@
 import { memoize } from "lodash";
 import { QueryResult } from "../../database";
 import { Ingredient } from "./types";
-import { Nutrients, nutrientsForQuantity } from "../../core";
+import { Nutrients, nutrientsForQuantity, getIngredientUnits } from "../../core";
 import { createSelector, createSelectorCreator } from "reselect";
 
 const customSelectorCreator = createSelectorCreator(<(...args: any) => any>memoize);
@@ -31,6 +31,11 @@ export const selectQueryResult = customSelectorCreator(
     };
   }
 );
+
+export const selectIngredientUnits = customSelectorCreator(
+  (ingredient: Ingredient | null) => ingredient,
+  (ingredient: Ingredient | null) => ingredient && ingredient.normalizedFood ? getIngredientUnits(ingredient.normalizedFood.servingEquivalentQuantities) : [""]
+)
 
 export type LOADING = "LOADING";
 
