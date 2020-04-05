@@ -16,6 +16,7 @@ import * as firebase from "firebase";
 import { NutrientInfo } from "./store";
 import { Food, searchFdcFoodsUrl, FDCQueryResult, getFdcFoodUrl } from "./core";
 import { FDC_API_KEY } from "./config";
+import { memoize } from "lodash";
 
 export async function getNutrientInfo(): Promise<NutrientInfo[]> {
   let settings = firebase.firestore().collection("settings");
@@ -23,20 +24,24 @@ export async function getNutrientInfo(): Promise<NutrientInfo[]> {
   return JSON.parse(documentData.data()?.value);
 }
 
+const fetchJson = memoize(async (url: string) => {
+  let response = await fetch(url);
+  return response.json();
+});
+
+// TODO: maybe only memoize FDC data?
 export async function getFood(foodId: string): Promise<Food> {
-  const documentData = await firebase.firestore().doc(foodId).get();
-  let data = documentData.data();
-  if (data) {
+  if (foodId.startsWith("fdcData/")) {
+    let fdcId = Number(foodId.substr(8, foodId.length - 8));
+    return fetchJson(getFdcFoodUrl(fdcId, FDC_API_KEY));
+  } else {
+    const documentData = await firebase.firestore().doc(foodId).get();
+    let data = documentData.data();
+    if (!data) {
+      throw Error("Food ${foodId} not found");
+    }
     return <Food>JSON.parse(data.data);
   }
-  if (!foodId.startsWith("fdcData/")) {
-    throw "Custom food " + foodId + " not found";
-  }
-  let fdcId = Number(foodId.substr(8, foodId.length - 8));
-  let foodData = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
-  let result = foodData.json();
-  result.then((food) => patchFood(foodId, food));
-  return result;
 }
 
 export function patchFood(foodId: string, food: Food): Promise<void> {
