@@ -14,30 +14,20 @@
 import * as React from "react";
 
 import { Form, Table, Button } from "react-bootstrap";
-import { FoodInput } from "./FoodInput";
 import { QueryResult } from "./database";
-import { LOADING } from "./store/recipe_edit";
-
-export interface IngredientProps {
-  amount: number;
-  unit: string;
-  units: string[];
-  queryResult: QueryResult | null;
-  nutrients: number[] | LOADING;
-}
+import { IngredientEditorProps, IngredientEditor } from "./IngredientEditor";
 
 export interface RecipeEditorProps {
   description: string;
   nutrientNames: string[];
   totalNutrients: number[];
-  ingredientsList: IngredientProps[];
+  ingredientsList: IngredientEditorProps[];
   updateDescription(value: string): void;
-  addIngredient(QueryResult: QueryResult): void;
+  addIngredient(): void;
   updateIngredientAmount(index: number, amount: number): void;
   updateIngredientUnit(index: number, unit: string): void;
   loadAndSelectIngredient(index: number, queryResult: QueryResult): void;
   deselectIngredient(index: number): void;
-  addIngredient(): void;
   deleteIngredient(index: number): void;
 }
 
@@ -73,60 +63,21 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
         </thead>
         <tbody>
           {props.ingredientsList.map((ingredient, index) => (
-            <tr className="d-flex">
-              <td className="col-1">
-                <Form.Control
-                  value={ingredient.amount.toString()}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    props.updateIngredientAmount(
-                      index,
-                      Number(event.target.value)
-                    )
-                  }
-                />
-              </td>
-              <td className="col-2">
-                <Form.Control
-                  value={ingredient.unit}
-                  as="select"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    props.updateIngredientUnit(index, event.target.value)
-                  }
-                >
-                  {ingredient.units.map((unit) => (
-                    <option>{unit}</option>
-                  ))}
-                </Form.Control>
-              </td>
-              <td className="col-6">
-                {
-                  <FoodInput
-                    key={index}
-                    queryResult={ingredient.queryResult}
-                    select={(QueryResult) =>
-                      props.loadAndSelectIngredient(index, QueryResult)
-                    }
-                    deselect={() => props.deselectIngredient(index)}
-                  />
-                }
-              </td>
-              {props.nutrientNames.map((_, index) => {
-                const value =
-                  ingredient.nutrients == "LOADING"
-                    ? null
-                    : ingredient.nutrients[index];
-                return (
-                  <td className="col-1">
-                    {value == null ? "..." : value.toFixed(1)}
-                  </td>
-                );
-              })}
-              <td className="col-1">
-                <Button onClick={() => props.deleteIngredient(index)}>
-                  Delete
-                </Button>
-              </td>
-            </tr>
+            <IngredientEditor
+              {...ingredient}
+              updateIngredientAmount={(amount) =>
+                props.updateIngredientAmount(index, amount)
+              }
+              updateIngredientUnit={(unit) =>
+                props.updateIngredientUnit(index, unit)
+              }
+              loadAndSelectIngredient={(queryResult) =>
+                props.loadAndSelectIngredient(index, queryResult)
+              }
+              deselectIngredient={() => props.deselectIngredient(index)}
+              deleteIngredient={() => props.deleteIngredient(index)}
+              nutrientNames={props.nutrientNames}
+            />
           ))}
           <tr className="d-flex">
             <td className="col-1"></td>
