@@ -36,8 +36,8 @@ function mapStateToProps(state: RootState, ownProps: { index: number }) {
   }
   const result = {
     queryResult: selectQueryResult(ingredient),
-    amount: ingredient ? ingredient.amount : 0,
-    unit: ingredient ? ingredient.unit : "",
+    amount: ingredient ? ingredient.amount : null,
+    unit: ingredient ? ingredient.unit : null,
     units: selectIngredientUnits(ingredient),
     nutrients: <"LOADING" | Nutrients>selectNutrientsForIngredient(ingredient),
     nutrientNames: selectNutrientNames(state),

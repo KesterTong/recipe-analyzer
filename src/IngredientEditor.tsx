@@ -18,8 +18,8 @@ import { FoodInput } from "./FoodInput";
 import { Form, Button } from "react-bootstrap";
 
 export interface IngredientEditorProps {
-  amount: number;
-  unit: string;
+  amount: number | null;
+  unit: string | null;
   units: string[];
   queryResult: QueryResult | null;
   nutrients: number[] | LOADING;
@@ -37,7 +37,8 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
   <tr className="d-flex">
     <td className="col-1">
       <Form.Control
-        value={props.amount.toString()}
+        disabled={props.amount === null}
+        value={props.amount === null ? "" : props.amount.toString()}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
           props.updateIngredientAmount(Number(event.target.value))
         }
@@ -45,7 +46,8 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
     </td>
     <td className="col-2">
       <Form.Control
-        value={props.unit}
+        disabled={props.unit === null}
+        value={props.unit || ""}
         as="select"
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
           props.updateIngredientUnit(event.target.value)
