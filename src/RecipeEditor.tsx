@@ -14,21 +14,15 @@
 import * as React from "react";
 
 import { Form, Table, Button } from "react-bootstrap";
-import { QueryResult } from "./database";
-import { IngredientEditorProps, IngredientEditor } from "./IngredientEditor";
+import { IngredientEditorContainer } from "./IngredientEditorContainer";
 
 export interface RecipeEditorProps {
   description: string;
   nutrientNames: string[];
   totalNutrients: number[];
-  ingredientsList: IngredientEditorProps[];
+  numIngredients: number;
   updateDescription(value: string): void;
   addIngredient(): void;
-  updateIngredientAmount(index: number, amount: number): void;
-  updateIngredientUnit(index: number, unit: string): void;
-  loadAndSelectIngredient(index: number, queryResult: QueryResult): void;
-  deselectIngredient(index: number): void;
-  deleteIngredient(index: number): void;
 }
 
 export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
@@ -62,22 +56,8 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
           <th className="col-1"></th>
         </thead>
         <tbody>
-          {props.ingredientsList.map((ingredient, index) => (
-            <IngredientEditor
-              {...ingredient}
-              updateIngredientAmount={(amount) =>
-                props.updateIngredientAmount(index, amount)
-              }
-              updateIngredientUnit={(unit) =>
-                props.updateIngredientUnit(index, unit)
-              }
-              loadAndSelectIngredient={(queryResult) =>
-                props.loadAndSelectIngredient(index, queryResult)
-              }
-              deselectIngredient={() => props.deselectIngredient(index)}
-              deleteIngredient={() => props.deleteIngredient(index)}
-              nutrientNames={props.nutrientNames}
-            />
+          {Array.from({ length: props.numIngredients }, (_, index) => (
+            <IngredientEditorContainer index={index} />
           ))}
           <tr className="d-flex">
             <td className="col-1"></td>

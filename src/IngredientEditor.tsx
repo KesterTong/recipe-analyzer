@@ -23,10 +23,6 @@ export interface IngredientEditorProps {
   units: string[];
   queryResult: QueryResult | null;
   nutrients: number[] | LOADING;
-}
-
-// TODO: Remove this once we have IngredientEditorContainer.
-interface PropsFromDispatch {
   nutrientNames: string[];
   updateIngredientAmount(amount: number): void;
   updateIngredientUnit(unit: string): void;
@@ -35,9 +31,9 @@ interface PropsFromDispatch {
   deleteIngredient(): void;
 }
 
-export const IngredientEditor: React.FunctionComponent<
-  IngredientEditorProps & PropsFromDispatch
-> = (props) => (
+export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = (
+  props
+) => (
   <tr className="d-flex">
     <td className="col-1">
       <Form.Control

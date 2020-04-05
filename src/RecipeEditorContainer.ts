@@ -16,14 +16,8 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { RecipeEditor } from "./RecipeEditor";
 import { RootState, ThunkDispatch, selectNutrientNames } from "./store";
-import {
-  actions,
-  selectQueryResult,
-  selectNutrientsForIngredient,
-  selectIngredientUnits,
-} from "./store/recipe_edit";
+import { actions, selectNutrientsForIngredient } from "./store/recipe_edit";
 import { addNutrients, Nutrients } from "./core";
-import { IngredientEditorProps } from "./IngredientEditor";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;
@@ -31,19 +25,9 @@ function mapStateToProps(state: RootState) {
     return <typeof result>{};
   }
   const nutrientNames = selectNutrientNames(state);
-  const ingredientsList = foodState.ingredients.map<IngredientEditorProps>(
-    (ingredient) => {
-      return {
-        queryResult: selectQueryResult(ingredient),
-        amount: ingredient ? ingredient.amount : 0,
-        unit: ingredient ? ingredient.unit : "",
-        units: selectIngredientUnits(ingredient),
-        nutrients: selectNutrientsForIngredient(ingredient),
-      };
-    }
-  );
-  const totalNutrients = ingredientsList
-    .map((ingredient) => ingredient.nutrients)
+  const numIngredients = foodState.ingredients.length;
+  const totalNutrients = foodState.ingredients
+    .map((ingredient) => selectNutrientsForIngredient(ingredient))
     .filter((e): e is Nutrients => e != "LOADING")
     .reduce(
       addNutrients,
@@ -52,14 +36,20 @@ function mapStateToProps(state: RootState) {
   const result = {
     description: foodState.description,
     nutrientNames,
-    ingredientsList,
+    numIngredients,
     totalNutrients,
   };
   return result;
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(actions, dispatch);
+  return bindActionCreators(
+    {
+      updateDescription: actions.updateDescription,
+      addIngredient: actions.addIngredient,
+    },
+    dispatch
+  );
 }
 
 export const RecipeEditorContainer = connect(
