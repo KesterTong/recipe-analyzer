@@ -29,7 +29,6 @@ const fetchJson = memoize(async (url: string) => {
   return response.json();
 });
 
-// TODO: maybe only memoize FDC data?
 export async function getFood(foodId: string): Promise<Food> {
   if (foodId.startsWith("fdcData/")) {
     let fdcId = Number(foodId.substr(8, foodId.length - 8));
