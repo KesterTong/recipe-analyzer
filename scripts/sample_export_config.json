@@ -125,12 +125,12 @@
       "scale": 0.001
     },
     {
-      "name": "vitamin-a_IU_100g",
+      "name": "vitamin-a_iu_100g",
       "nutrient_id": 1089,
       "scale": 1
     },
     {
-      "name": "vitamin-C_IU_100g",
+      "name": "vitamin-c_iu_100g",
       "nutrient_id": 1089,
       "scale": 1
      }
