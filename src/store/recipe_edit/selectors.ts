@@ -20,26 +20,28 @@ import {
   servingEquivalentQuantities,
 } from "../../core";
 
-export const makeGetQueryResult = () => createSelector(
-  (ingredient: Ingredient | null) => ingredient,
-  (ingredient: Ingredient | null) => {
-    if (ingredient == null || ingredient.deselected) {
-      return null;
+export const makeGetQueryResult = () =>
+  createSelector(
+    (ingredient: Ingredient | null) => ingredient,
+    (ingredient: Ingredient | null) => {
+      if (ingredient == null || ingredient.deselected) {
+        return null;
+      }
+      return {
+        foodId: ingredient.foodId,
+        description: ingredient.food?.description || "Loading...",
+      };
     }
-    return {
-      foodId: ingredient.foodId,
-      description: ingredient.food?.description || "Loading...",
-    };
-  }
-);
+  );
 
-export const makeGetIngredientUnits = () => createSelector(
-  (ingredient: Ingredient | null) => ingredient,
-  (ingredient: Ingredient | null) =>
-    ingredient && ingredient.food
-      ? getIngredientUnits_(servingEquivalentQuantities(ingredient.food))
-      : [""]
-);
+export const makeGetIngredientUnits = () =>
+  createSelector(
+    (ingredient: Ingredient | null) => ingredient,
+    (ingredient: Ingredient | null) =>
+      ingredient && ingredient.food
+        ? getIngredientUnits_(servingEquivalentQuantities(ingredient.food))
+        : [""]
+  );
 
 export type LOADING = "LOADING";
 
