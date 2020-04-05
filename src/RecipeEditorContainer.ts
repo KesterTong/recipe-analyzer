@@ -22,7 +22,7 @@ import {
   selectNutrientsForIngredient,
   selectIngredientUnits,
 } from "./store/recipe_edit";
-import { getIngredientUnits, addNutrients, Nutrients } from "./core";
+import { addNutrients, Nutrients } from "./core";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;
