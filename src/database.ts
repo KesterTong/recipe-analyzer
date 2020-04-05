@@ -84,9 +84,10 @@ async function searchCustomFoods(query: string): Promise<QueryResult[]> {
 }
 
 async function searchFdcFoods(query: string): Promise<QueryResult[]> {
-  let result = await fetch(searchFdcFoodsUrl(query, FDC_API_KEY));
-  let queryResult = (await result.json()) as FDCQueryResult;
-  return queryResult.foods.map((entry) => ({
+  let fdcQueryResult: FDCQueryResult = await fetchJson(
+    searchFdcFoodsUrl(query, FDC_API_KEY)
+  );
+  return fdcQueryResult.foods.map((entry) => ({
     foodId: "fdcData/" + entry.fdcId.toString(),
     description: entry.description,
   }));
