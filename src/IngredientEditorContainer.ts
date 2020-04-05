@@ -16,33 +16,37 @@ import { connect } from "react-redux";
 import { RootState, ThunkDispatch, selectNutrientNames } from "./store";
 import {
   actions,
-  selectQueryResult,
-  selectNutrientsForIngredient,
-  selectIngredientUnits,
+  makeGetQueryResult,
+  getNutrientsForIngredient,
+  makeGetIngredientUnits,
 } from "./store/recipe_edit";
 import { Nutrients } from "./core";
 import { IngredientEditor } from "./IngredientEditor";
 import { QueryResult } from "./database";
 
-function mapStateToProps(state: RootState, ownProps: { index: number }) {
-  const foodState = state.foodState;
-  if (foodState?.stateType != "RecipeEdit") {
-    return <typeof result>{};
-  }
-  const { index } = ownProps;
-  const ingredient = foodState.ingredients[index];
-  if (ingredient === undefined) {
-    return <typeof result>{};
-  }
-  const result = {
-    queryResult: selectQueryResult(ingredient),
-    amount: ingredient ? ingredient.amount : null,
-    unit: ingredient ? ingredient.unit : null,
-    units: selectIngredientUnits(ingredient),
-    nutrients: <"LOADING" | Nutrients>selectNutrientsForIngredient(ingredient),
-    nutrientNames: selectNutrientNames(state),
+function mapStateToProps() {
+  const getQueryResult = makeGetQueryResult();
+  const getIngredientUnits = makeGetIngredientUnits();
+  return (state: RootState, ownProps: { index: number }) => {
+    const foodState = state.foodState;
+    if (foodState?.stateType != "RecipeEdit") {
+      return <typeof result>{};
+    }
+    const { index } = ownProps;
+    const ingredient = foodState.ingredients[index];
+    if (ingredient === undefined) {
+      return <typeof result>{};
+    }
+    const result = {
+      queryResult: getQueryResult(ingredient),
+      amount: ingredient ? ingredient.amount : null,
+      unit: ingredient ? ingredient.unit : null,
+      units: getIngredientUnits(ingredient),
+      nutrients: <"LOADING" | Nutrients>getNutrientsForIngredient(ingredient),
+      nutrientNames: selectNutrientNames(state),
+    };
+    return result;
   };
-  return result;
 }
 
 function mapDispatchToProps(

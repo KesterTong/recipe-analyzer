@@ -12,19 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { memoize } from "lodash";
-import { createSelectorCreator } from "reselect";
+import { createSelectorCreator, createSelector } from "reselect";
 import { Ingredient } from "./types";
 import {
   nutrientsForQuantity,
-  getIngredientUnits,
+  getIngredientUnits as getIngredientUnits_,
   servingEquivalentQuantities,
 } from "../../core";
 
-const customSelectorCreator = createSelectorCreator(
-  <(...args: any) => any>memoize
-);
-
-export const selectQueryResult = customSelectorCreator(
+export const makeGetQueryResult = () => createSelector(
   (ingredient: Ingredient | null) => ingredient,
   (ingredient: Ingredient | null) => {
     if (ingredient == null || ingredient.deselected) {
@@ -37,17 +33,24 @@ export const selectQueryResult = customSelectorCreator(
   }
 );
 
-export const selectIngredientUnits = customSelectorCreator(
+export const makeGetIngredientUnits = () => createSelector(
   (ingredient: Ingredient | null) => ingredient,
   (ingredient: Ingredient | null) =>
     ingredient && ingredient.food
-      ? getIngredientUnits(servingEquivalentQuantities(ingredient.food))
+      ? getIngredientUnits_(servingEquivalentQuantities(ingredient.food))
       : [""]
 );
 
 export type LOADING = "LOADING";
 
-export const selectNutrientsForIngredient = customSelectorCreator(
+// Because this is called by RecipeEditor to compute the total
+// nutrients, we take a different approach to memoizing.  Instead
+// of using a factory function, we use a custom selector creator.
+const customSelectorCreator = createSelectorCreator(
+  <(...args: any) => any>memoize
+);
+
+export const getNutrientsForIngredient = customSelectorCreator(
   (ingredient: Ingredient | null) => ingredient,
   (ingredient: Ingredient | null) => {
     if (

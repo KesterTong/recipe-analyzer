@@ -16,7 +16,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { RecipeEditor } from "./RecipeEditor";
 import { RootState, ThunkDispatch, selectNutrientNames } from "./store";
-import { actions, selectNutrientsForIngredient } from "./store/recipe_edit";
+import { actions, getNutrientsForIngredient } from "./store/recipe_edit";
 import { addNutrients, Nutrients } from "./core";
 
 function mapStateToProps(state: RootState) {
@@ -27,7 +27,7 @@ function mapStateToProps(state: RootState) {
   const nutrientNames = selectNutrientNames(state);
   const numIngredients = foodState.ingredients.length;
   const totalNutrients = foodState.ingredients
-    .map((ingredient) => selectNutrientsForIngredient(ingredient))
+    .map((ingredient) => getNutrientsForIngredient(ingredient))
     .filter((e): e is Nutrients => e != "LOADING")
     .reduce(
       addNutrients,
