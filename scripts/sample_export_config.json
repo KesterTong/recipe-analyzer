@@ -130,8 +130,8 @@
       "scale": 1
     },
     {
-      "name": "vitamin-c_iu_100g",
-      "nutrient_id": 1089,
+      "name": "vitamin-c_mg_100g",
+      "nutrient_id": 1162,
       "scale": 1
      }
   ]
