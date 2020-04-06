@@ -28,9 +28,16 @@ function mapStateToProps(state: RootState) {
   const numIngredients = foodState.ingredients.length;
   const totalNutrients = foodState.ingredients
     .map((ingredient) => getNutrientsForIngredient(ingredient))
-    .filter((e): e is Nutrients => e != "LOADING")
     .reduce(
-      addNutrients,
+      (lhs, rhs) => {
+        if ("code" in lhs) {
+          return lhs;
+        }
+        if ("code" in rhs) {
+          return rhs;
+        }
+        return addNutrients(lhs, rhs);
+      },
       nutrientNames.map(() => 0)
     );
   const result = {

@@ -12,14 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
-export * from "./FoodDataCentral";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./StatusOr";
+export interface Status {
+  code: string;
+  message?: string;
+}
 
-export { getDisplayQuantities } from "./getDisplayQuantities";
-export {
-  nutrientsPerServingForFood,
-  servingEquivalentQuantities,
-} from "./normalizeFood";
+export type StatusOr<T> = Status | T;

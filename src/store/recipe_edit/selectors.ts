@@ -18,6 +18,8 @@ import {
   nutrientsForQuantity,
   getIngredientUnits as getIngredientUnits_,
   servingEquivalentQuantities,
+  Nutrients,
+  StatusOr,
 } from "../../core";
 
 export const makeGetQueryResult = () =>
@@ -54,13 +56,13 @@ const customSelectorCreator = createSelectorCreator(
 
 export const getNutrientsForIngredient = customSelectorCreator(
   (ingredient: Ingredient | null) => ingredient,
-  (ingredient: Ingredient | null) => {
+  (ingredient: Ingredient | null): StatusOr<Nutrients> => {
     if (
       ingredient == null ||
       ingredient.food == null ||
       ingredient.nutrientsPerServing == null
     ) {
-      return "LOADING";
+      return { code: "LOADING" };
     }
     return nutrientsForQuantity(
       ingredient.amount,

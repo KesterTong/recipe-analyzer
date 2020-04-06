@@ -15,11 +15,12 @@ import * as React from "react";
 
 import { Form, Table, Button } from "react-bootstrap";
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
+import { StatusOr, Nutrients } from "./core";
 
 export interface RecipeEditorProps {
   description: string;
   nutrientNames: string[];
-  totalNutrients: number[];
+  totalNutrients: StatusOr<Nutrients>;
   numIngredients: number;
   updateDescription(value: string): void;
   addIngredient(): void;
@@ -63,9 +64,11 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             <td className="col-1"></td>
             <td className="col-2"></td>
             <td className="col-6">Total</td>
-            {props.totalNutrients.map((value) => (
-              <td className="col-1">{value.toFixed(1)}</td>
-            ))}
+            {"code" in props.totalNutrients
+              ? props.nutrientNames.map((_) => <td className="col-1">-</td>)
+              : props.totalNutrients.map((value) => (
+                  <td className="col-1">{value.toFixed(1)}</td>
+                ))}
             <td className="col-1">
               <Button onClick={props.addIngredient}>Add</Button>
             </td>
