@@ -25,6 +25,7 @@
     {
       "name": "available_date",
       "field": "availableDate"
+
     },
     {
       "name": "publication_date",
@@ -60,198 +61,208 @@
       "scale": 1.0
     },
     {
-      "name": "proteins_100g",
+      "name": "proteins_g_100g",
       "nutrient_id": 1003,
       "scale": 1.0
     },
     {
-      "name": "carbohydrates_100g",
+      "name": "carbohydrates_g_100g",
       "nutrient_id": 1005,
       "scale": 1.0
     },
     {
-      "name": "sugars_100g",
+      "name": "sugars_g_100g",
       "nutrient_id": 2000,
       "scale": 1.0
     },
     {
-      "name": "fat_100g",
+      "name": "fat_g_100g",
       "nutrient_id": 1004,
       "scale": 1.0
     },
     {
-      "name": "saturated-fat_100g",
+      "name": "saturated-fat_g_100g",
       "nutrient_id": 1258,
       "scale": 1.0
     },
     {
-      "name": "monounsaturated-fat_100g",
+      "name": "monounsaturated-fat_g_100g",
       "nutrient_id": 1292,
       "scale": 1.0
     },
     {
-      "name": "polyunsaturated-fat_100g",
+      "name": "polyunsaturated-fat_g_100g",
       "nutrient_id": 1293,
       "scale": 1.0
     },
     {
-      "name": "trans-fat_100g",
+      "name": "trans-fat_g_100g",
       "nutrient_id": 1257,
       "scale": 1.0
     },
     {
-      "name": "cholesterol_100g",
+      "name": "cholesterol_mg_100g",
       "nutrient_id": 1253,
-      "scale": 0.001
+      "scale": 1.0
     },
     {
-      "name": "fiber_100g",
+      "name": "fiber_g_100g",
       "nutrient_id": 1079,
       "scale": 1.0
     },
     {
-      "name": "sodium_100g",
+      "name": "sodium_mg_100g",
       "nutrient_id": 1093,
-      "scale": 0.001
+      "scale": 1.0
     },
     {
-      "name": "calcium_100g",
+      "name": "calcium_mg_100g",
       "nutrient_id": 1087,
-      "scale": 0.001
+      "scale": 1.0
     },
     {
-      "name": "iron_100g",
+      "name": "iron_mg_100g",
       "nutrient_id": 1089,
-      "scale": 0.001
+      "scale": 1.0
     },
     {
       "name": "vitamin-a_iu_100g",
       "nutrient_id": 1104,
-      "scale": 1
+      "scale": 1.0
     },
     {
       "name": "vitamin-c_mg_100g",
       "nutrient_id": 1162,
-      "scale": 1
      },
     {
       "nutrient_id":1092,
       "name":"potassium_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1292,
-      "name":"monounsaturated-fat_100g",
+      "name":"monounsaturated-fat_g_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1293,
-      "name":"polyunsaturated-fat_100g",
+      "name":"polyunsaturated-fat_g_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1167,
       "name":"vitamin-pp_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1165,
       "name":"vitamin-b1_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1166,
       "name":"vitamin-b2_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1175,
       "name":"vitamin-b6_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1091,
       "name":"phosphorus_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1090,
       "name":"magnesium_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1178,
       "name":"vitamin_b12_ug_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1095,
       "name":"zinc_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1177,
       "name":"folates_ug_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1170,
       "name":"pantothenic-acid_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1186,
       "name":"vitamin-b9_ug_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1082,
       "name":"soluble-fiber_g_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1098,
       "name":"copper_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1084,
       "name":"insoluble-fiber_g_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1101,
       "name":"manganese_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1086,
       "name":"polyols_g_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1103,
       "name":"selenium_ug_100g",
+      "scale": 1.0
     },
-    #missing unit in food.pm
     {
       "nutrient_id":1185,
       "name":"phylloquinone_ug_100g",
+      "scale": 1.0
     },
-    #water
-    #ash
     {
       "nutrient_id":1100,
       "name":"iodine_ug_100g",
+      "scale": 1.0
     },
-    # Carbohydrate, other
-    # Vitamin E - mg_ATE
     {
       "nutrient_id":1176,
       "name":"biotin_ug_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1057,
       "name":"caffeine_mg_100g",
+      "scale": 1.0
     },
     {
       "nutrient_id":1102,
       "name":"molybdenum_ug_100g",
+      "scale": 1.0
     },
-    # Folate, DFE
-    {
-      "nutrient_id":1177,
-      "name":"folates_ug_100g",
-    },
-    # missing in OFF - xylitol
-    # missing in OFF - arginine
     {
       "nutrient_id":1096,
       "name":"chromium_ug_100g",
-    }
-    # lysine
-    # Phenylalanine (apr. 80 products)
-    
+      "scale": 1.0
+    }    
   ]
 }
