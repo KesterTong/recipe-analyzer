@@ -32,7 +32,7 @@
       "field": "publicationDate"
     },
     {
-      "name": "quantity",
+      "name": "serving_size",
       "field": "householdServingFullText"
     },
     {
