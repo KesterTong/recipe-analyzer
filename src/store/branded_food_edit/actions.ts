@@ -14,39 +14,35 @@
 import { ActionType, Action } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
 
-function makeRootAction(action: Action): RootAction {
-  return { type: RootActionType.UPDATE_BRANDED_FOOD_EDIT_STATE, action };
-}
-
 export function updateDescription(description: string): RootAction {
-  return makeRootAction({ type: ActionType.UPDATE_DESCRIPTION, description });
+  return { type: ActionType.UPDATE_DESCRIPTION, description };
 }
 
 export function updateServingSize(servingSize: string): RootAction {
-  return makeRootAction({ type: ActionType.UPDATE_SERVING_SIZE, servingSize });
+  return { type: ActionType.UPDATE_SERVING_SIZE, servingSize };
 }
 
 export function updateServingSizeUnit(servingSizeUnit: string): RootAction {
-  return makeRootAction({
+  return {
     type: ActionType.UPDATE_SERVING_SIZE_UNIT,
     servingSizeUnit,
-  });
+  };
 }
 
 export function updateHouseholdUnit(householdUnit: string): RootAction {
-  return makeRootAction({
+  return {
     type: ActionType.UPDATE_HOUSEHOLD_UNIT,
     householdUnit,
-  });
+  };
 }
 
 export function updateNutrientValue(
   nutrientId: number,
   value: string
 ): RootAction {
-  return makeRootAction({
+  return {
     type: ActionType.UPDATE_NUTRIENT_VALUE,
     nutrientId,
     value,
-  });
+  };
 }

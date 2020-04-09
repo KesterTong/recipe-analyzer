@@ -74,9 +74,6 @@ export enum ActionType {
   NEW_FOOD = "@NewFood",
   UPDATE_FOOD = "@UpdateFood",
   UPDATE_AFTER_SAVE = "@UpdateAfterSave",
-  UPDATE_FOOD_VIEW_STATE = "@UpdateFoodViewState",
-  UPDATE_BRANDED_FOOD_EDIT_STATE = "@UpdateBrandedFoodEditState",
-  UPDATE_RECIPE_EDIT_STATE = "@UpdateRecipeEditState",
 }
 
 export interface SetNutrientInfos {
@@ -105,30 +102,15 @@ export interface UpdateFood {
   food: Food;
 }
 
-export interface UpdateFoodViewState {
-  type: ActionType.UPDATE_FOOD_VIEW_STATE;
-  action: FoodViewAction;
-}
-
-export interface UpdateBrandedFoodEditState {
-  type: ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE;
-  action: BrandedFoodEditAction;
-}
-
-export interface UpdateRecipeEditState {
-  type: ActionType.UPDATE_RECIPE_EDIT_STATE;
-  action: RecipeEditAction;
-}
-
 export type RootAction =
   | SetNutrientInfos
   | Deselect
   | SelectFood
   | NewFood
   | UpdateFood
-  | UpdateFoodViewState
-  | UpdateBrandedFoodEditState
-  | UpdateRecipeEditState;
+  | FoodViewAction
+  | BrandedFoodEditAction
+  | RecipeEditAction;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

@@ -77,37 +77,30 @@ function rootReducer(
         ...state,
         foodState: foodStateFromFood(action.food),
       };
-    case ActionType.UPDATE_FOOD_VIEW_STATE:
-      if (state.foodState?.stateType != "FoodView") {
-        return state;
-      }
-      return {
-        ...state,
-        foodState: food_view.reducer(state.foodState, action.action),
-      };
-    case ActionType.UPDATE_BRANDED_FOOD_EDIT_STATE:
-      if (state.foodState?.stateType != "BrandedFoodEdit") {
-        return state;
-      }
-      return {
-        ...state,
-        foodState: branded_food_edit.reducer(state.foodState, action.action),
-      };
-    case ActionType.UPDATE_RECIPE_EDIT_STATE:
-      if (state.foodState?.stateType != "RecipeEdit") {
-        return state;
-      }
-      return {
-        ...state,
-        foodState: recipe_edit.reducer(state.foodState, action.action),
-      };
     case ActionType.SET_NUTRIENT_INFOS:
       return {
         ...state,
         config: { ...state.config, nutrientInfos: action.nutrientInfos },
       };
     default:
-      return state;
+      if (state.foodState?.stateType == "FoodView") {
+        return {
+          ...state,
+          foodState: food_view.reducer(state.foodState, action),
+        };
+      } else if (state.foodState?.stateType == "BrandedFoodEdit") {
+        return {
+          ...state,
+          foodState: branded_food_edit.reducer(state.foodState, action),
+        };
+      } else if (state.foodState?.stateType == "RecipeEdit") {
+        return {
+          ...state,
+          foodState: recipe_edit.reducer(state.foodState, action),
+        };
+      } else {
+        return state;
+      }
   }
 }
 

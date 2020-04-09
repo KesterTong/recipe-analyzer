@@ -11,7 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { ActionType, State, Ingredient, Action } from "./types";
+import { ActionType, State, Ingredient } from "./types";
+import { RootAction } from "../types";
 
 function updateIngredient(
   state: State,
@@ -26,7 +27,7 @@ function updateIngredient(
   };
 }
 
-export function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: RootAction): State {
   switch (action.type) {
     case ActionType.UPDATE_DESCRIPTION:
       return { ...state, description: action.description };
@@ -80,5 +81,7 @@ export function reducer(state: State, action: Action): State {
         ...ingredient,
         deselected: true,
       }));
+    default:
+      return state;
   }
 }

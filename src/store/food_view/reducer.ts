@@ -11,9 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { State, Action, ActionType } from "./types";
+import { State, ActionType } from "./types";
+import { RootAction } from "../types";
 
-export function reducer(state: State, action: Action): State {
+export function reducer(state: State, action: RootAction): State {
   switch (action.type) {
     case ActionType.SET_SELECTED_QUANTITY:
       return { ...state, selectedQuantity: action.index };

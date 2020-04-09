@@ -14,10 +14,6 @@
 import { ActionType, Action } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
 
-function makeRootAction(action: Action): RootAction {
-  return { type: RootActionType.UPDATE_FOOD_VIEW_STATE, action };
-}
-
 export function setSelectedQuantity(index: number): RootAction {
-  return makeRootAction({ type: ActionType.SET_SELECTED_QUANTITY, index });
+  return { type: ActionType.SET_SELECTED_QUANTITY, index };
 }
