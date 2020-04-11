@@ -133,6 +133,7 @@
     {
       "name": "vitamin-c_mg_100g",
       "nutrient_id": 1162,
+      "scale": 1.0
      },
     {
       "nutrient_id":1092,
