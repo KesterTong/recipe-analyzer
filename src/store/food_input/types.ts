@@ -16,16 +16,3 @@ export interface SelectedFood {
   foodId: string;
   description: string;
 }
-
-export type State = SelectedFood | null;
-
-export enum ActionType {
-  SELECT = "@food_input/Select",
-}
-
-export interface Select {
-  type: ActionType.SELECT;
-  selectedFood: SelectedFood | null;
-}
-
-export type Action = Select;

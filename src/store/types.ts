@@ -14,7 +14,7 @@
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { Food } from "../core";
 import * as branded_food_edit from "./branded_food_edit/types";
-import * as food_input from './food_input/types';
+import { SelectedFood } from './food_input/types';
 import * as food_view from "./food_view/types";
 import * as recipe_edit from "./recipe_edit/types";
 
@@ -34,7 +34,7 @@ export interface NutrientInfo {
 //  - If foodState is non-null then foodId should be non-null.
 export interface RootState {
   foodId: string | null;
-  foodInput: food_input.State;
+  foodInput: SelectedFood | null;
   foodState:
     | branded_food_edit.State
     | food_view.State
@@ -70,7 +70,7 @@ export interface SetNutrientInfos {
 
 export interface SelectFood {
   type: ActionType.SELECT_FOOD;
-  selected: food_input.SelectedFood | null;
+  selected: SelectedFood | null;
 }
 
 export interface NewFood {
