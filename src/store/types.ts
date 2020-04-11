@@ -14,7 +14,7 @@
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { Food } from "../core";
 import * as branded_food_edit from "./branded_food_edit/types";
-import { SelectedFood } from './food_input/types';
+import { SelectedFood } from "./food_input/types";
 import * as food_view from "./food_view/types";
 import * as recipe_edit from "./recipe_edit/types";
 

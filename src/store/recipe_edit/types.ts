@@ -15,10 +15,10 @@ import { Nutrients, Food } from "../../core";
 import { SelectedFood } from "../food_input";
 
 export interface Ingredient {
-  amount: number;
-  unit: string;
-  foodId: string;
-  deselected: boolean;
+  amount: number | null;
+  unit: string | null;
+  foodId: string | null;
+  selected: SelectedFood | null;
   food: Food | null;
   nutrientsPerServing: Nutrients | null;
 }
@@ -26,7 +26,7 @@ export interface Ingredient {
 export interface State {
   stateType: "RecipeEdit";
   description: string;
-  ingredients: (Ingredient | null)[];
+  ingredients: Ingredient[];
 }
 
 export enum ActionType {

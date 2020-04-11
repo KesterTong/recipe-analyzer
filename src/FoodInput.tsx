@@ -16,14 +16,20 @@ export class FoodInput extends React.Component<FoodInputProps> {
   };
 
   render() {
-    let selected = this.props.selected
-      ? [
-          {
-            label: this.props.selected.description,
-            value: this.props.selected.foodId,
-          },
-        ]
-      : [];
+    let selected: { label: string; value: string }[];
+    let disabled: boolean;
+    if (this.props.selected) {
+      selected = [
+        {
+          label: this.props.selected.description || "Loading",
+          value: this.props.selected.foodId,
+        },
+      ];
+      disabled = this.props.selected.description == null;
+    } else {
+      selected = [];
+      disabled = false;
+    }
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
         this.props.select({
@@ -38,6 +44,7 @@ export class FoodInput extends React.Component<FoodInputProps> {
       <React.Fragment>
         <AsyncTypeahead
           {...this.state}
+          disabled={disabled}
           selected={selected}
           filterBy={(x) => true}
           onChange={onChange}

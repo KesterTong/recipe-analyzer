@@ -22,24 +22,10 @@ import {
   StatusOr,
 } from "../../core";
 
-export const makeGetSelected = () =>
-  createSelector(
-    (ingredient: Ingredient | null) => ingredient,
-    (ingredient: Ingredient | null) => {
-      if (ingredient == null || ingredient.deselected) {
-        return null;
-      }
-      return {
-        foodId: ingredient.foodId,
-        description: ingredient.food?.description || "Loading...",
-      };
-    }
-  );
-
 export const makeGetIngredientUnits = () =>
   createSelector(
-    (ingredient: Ingredient | null) => ingredient,
-    (ingredient: Ingredient | null) =>
+    (ingredient: Ingredient) => ingredient,
+    (ingredient: Ingredient) =>
       ingredient && ingredient.food
         ? getIngredientUnits_(servingEquivalentQuantities(ingredient.food))
         : [""]
@@ -55,10 +41,11 @@ const customSelectorCreator = createSelectorCreator(
 );
 
 export const getNutrientsForIngredient = customSelectorCreator(
-  (ingredient: Ingredient | null) => ingredient,
-  (ingredient: Ingredient | null): StatusOr<Nutrients> => {
+  (ingredient: Ingredient) => ingredient,
+  (ingredient: Ingredient): StatusOr<Nutrients> => {
     if (
-      ingredient == null ||
+      ingredient.amount == null ||
+      ingredient.unit == null ||
       ingredient.food == null ||
       ingredient.nutrientsPerServing == null
     ) {

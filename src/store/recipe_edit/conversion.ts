@@ -28,13 +28,24 @@ export function recipeFromState(state: State): Recipe {
   return {
     dataType: "Recipe",
     description: state.description,
-    ingredientsList: filterNulls(state.ingredients).map((ingredient) => ({
-      quantity: {
-        amount: ingredient.amount,
-        unit: ingredient.unit,
-      },
-      foodId: ingredient.foodId,
-    })),
+    ingredientsList: filterNulls(
+      state.ingredients.map((ingredient) => {
+        if (
+          ingredient.amount === null ||
+          ingredient.unit === null ||
+          ingredient.foodId === null
+        ) {
+          return null;
+        }
+        return {
+          quantity: {
+            amount: ingredient.amount,
+            unit: ingredient.unit,
+          },
+          foodId: ingredient.foodId,
+        };
+      })
+    ),
   };
 }
 
@@ -46,7 +57,7 @@ export function stateFromRecipe(food: Recipe): State {
       amount: ingredient.quantity.amount,
       unit: ingredient.quantity.unit,
       foodId: ingredient.foodId,
-      deselected: false,
+      selected: { foodId: ingredient.foodId, description: null },
       food: null,
       nutrientsPerServing: null,
     })),

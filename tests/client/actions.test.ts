@@ -13,7 +13,11 @@
 // limitations under the License.
 import { getFood, insertFood, patchFood } from "../../src/database";
 import { store, RootState } from "../../src/store";
-import { selectAndMaybeLoad, newRecipe, saveFood } from "../../src/store/actions";
+import {
+  selectAndMaybeLoad,
+  newRecipe,
+  saveFood,
+} from "../../src/store/actions";
 import { TEST_BRANDED_FOOD } from "../testData";
 import { NEW_RECIPE } from "../../src/store/recipe_edit/conversion";
 import { initialState } from "../../src/store/types";

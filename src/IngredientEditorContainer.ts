@@ -16,7 +16,6 @@ import { connect } from "react-redux";
 import { RootState, ThunkDispatch, getNutrientNames } from "./store";
 import {
   actions,
-  makeGetSelected,
   getNutrientsForIngredient,
   makeGetIngredientUnits,
 } from "./store/recipe_edit";
@@ -26,7 +25,6 @@ import { QueryResult } from "./database";
 import { SelectedFood } from "./store/food_input";
 
 function mapStateToProps() {
-  const getSelected = makeGetSelected();
   const getIngredientUnits = makeGetIngredientUnits();
   return (state: RootState, ownProps: { index: number }) => {
     const foodState = state.foodState;
@@ -39,7 +37,7 @@ function mapStateToProps() {
       return <typeof result>{};
     }
     const result = {
-      selected: getSelected(ingredient),
+      selected: ingredient.selected,
       amount: ingredient ? ingredient.amount : null,
       unit: ingredient ? ingredient.unit : null,
       units: getIngredientUnits(ingredient),

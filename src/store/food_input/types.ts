@@ -14,5 +14,8 @@
 
 export interface SelectedFood {
   foodId: string;
-  description: string;
+  // Null means the ingredient is loading so description is not known.
+  // This occurs when loading a recipe so its ingredient ids are known
+  // and selected but the ingredient foods have not been loaded yet.
+  description: string | null;
 }

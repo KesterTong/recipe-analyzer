@@ -34,7 +34,16 @@ export function reducer(state: State, action: RootAction): State {
     case ActionType.ADD_INGREDIENT:
       return {
         ...state,
-        ingredients: state.ingredients.concat([null]),
+        ingredients: state.ingredients.concat([
+          {
+            amount: null,
+            unit: null,
+            foodId: null,
+            selected: null,
+            food: null,
+            nutrientsPerServing: null,
+          },
+        ]),
       };
     case ActionType.DELETE_INGREDIENT:
       return {
@@ -56,6 +65,10 @@ export function reducer(state: State, action: RootAction): State {
     case ActionType.UPDATE_INGREDIENT_FOOD:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
+        selected: {
+          foodId: ingredient.foodId!,
+          description: action.food.description,
+        },
         food: action.food,
         nutrientsPerServing: action.nutrientsPerServing,
       }));
@@ -70,7 +83,10 @@ export function reducer(state: State, action: RootAction): State {
             amount: action.food.dataType == "Recipe" ? 1 : 100,
             unit: action.food.dataType == "Recipe" ? "serving" : "g",
             foodId: action.foodId,
-            deselected: false,
+            selected: {
+              foodId: action.foodId,
+              description: action.food.description,
+            },
             food: action.food,
             nutrientsPerServing: action.nutrientsPerServing,
           };
@@ -79,7 +95,7 @@ export function reducer(state: State, action: RootAction): State {
     case ActionType.DESELECT_INGREDIENT:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
-        deselected: true,
+        selected: null,
       }));
     default:
       return state;
