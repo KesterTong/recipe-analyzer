@@ -60,7 +60,7 @@ function mapDispatchToProps(
       updateIngredientUnit: (unit: string) =>
         actions.updateIngredientUnit(index, unit),
       select: (selected: SelectedFood | null) =>
-        actions.loadAndMaybeSelectIngredient(index, selected),
+        actions.selectAndMaybeLoadIngredient(index, selected),
       deleteIngredient: () => actions.deleteIngredient(index),
     },
     dispatch

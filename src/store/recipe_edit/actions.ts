@@ -32,21 +32,13 @@ export function deleteIngredient(index: number): RootAction {
 
 export function selectIngredient(
   index: number,
-  foodId: string,
-  food: Food,
-  nutrientsPerServing: Nutrients
+  selected: SelectedFood | null
 ): RootAction {
   return {
     type: ActionType.SELECT_INGREDIENT,
     index,
-    foodId,
-    food,
-    nutrientsPerServing,
+    selected,
   };
-}
-
-export function deselectIngredient(index: number): RootAction {
-  return { type: ActionType.DESELECT_INGREDIENT, index };
 }
 
 export function updateIngredientAmount(
@@ -71,12 +63,21 @@ export function updateIngredientUnit(index: number, unit: string): RootAction {
 export function updateIngredientFood(
   index: number,
   food: Food,
-  nutrientsPerServing: Nutrients
 ): RootAction {
   return {
     type: ActionType.UPDATE_INGREDIENT_FOOD,
     index,
     food,
+  };
+}
+
+export function updateIngredientNutrientsPerServing(
+  index: number,
+  nutrientsPerServing: Nutrients,
+): RootAction {
+  return {
+    type: ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING,
+    index,
     nutrientsPerServing,
   };
 }
@@ -87,36 +88,34 @@ export function loadIngredient(
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
     const food = await getFood(foodId);
-    const nutrientsPerServing = food
-      ? await nutrientsPerServingForFood(
+    if (food == null) {
+      return;
+    }
+    dispatch(updateIngredientFood(index, food));
+    const nutrientsPerServing = await nutrientsPerServingForFood(
           food,
           getFood,
-          getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
-        )
-      : null;
-    if (nutrientsPerServing != null) {
-      dispatch(updateIngredientFood(index, food, nutrientsPerServing));
-    }
+          getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id));
+    dispatch(updateIngredientNutrientsPerServing(index, nutrientsPerServing));
   };
 }
 
-export function loadAndMaybeSelectIngredient(
+export function selectAndMaybeLoadIngredient(
   index: number,
   selected: SelectedFood | null
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
+    dispatch(selectIngredient(index, selected));
     if (selected === null) {
-      dispatch(deselectIngredient(index));
       return;
     }
     const food = await getFood(selected.foodId);
+    dispatch(updateIngredientFood(index, food));
     const nutrientsPerServing = await nutrientsPerServingForFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(
-      selectIngredient(index, selected.foodId, food, nutrientsPerServing)
-    );
+    dispatch(updateIngredientNutrientsPerServing(index, nutrientsPerServing));
   };
 }

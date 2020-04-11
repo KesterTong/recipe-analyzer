@@ -34,10 +34,10 @@ export enum ActionType {
   ADD_INGREDIENT = "@recipe/AddIngredient",
   DELETE_INGREDIENT = "@recipe/DeleteIngredient",
   SELECT_INGREDIENT = "@recipe/SelectIngredient",
-  DESELECT_INGREDIENT = "@recipe/DeselectIngredient",
   UPDATE_INGREDIENT_AMOUNT = "@recipe/UpdateIngredientAmount",
   UPDATE_INGREDIENT_UNIT = "@recipe/UpdateIngredientUnit",
   UPDATE_INGREDIENT_FOOD = "@recipe/UpdateIngredientFood",
+  UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING = "@recipe/UpdateIngredientNutrientsPerServing",
 }
 
 export interface UpdateDescription {
@@ -57,14 +57,7 @@ export interface DeleteIngredient {
 export interface SelectIngredient {
   type: ActionType.SELECT_INGREDIENT;
   index: number;
-  foodId: string;
-  food: Food;
-  nutrientsPerServing: Nutrients;
-}
-
-export interface DeselectIngredient {
-  type: ActionType.DESELECT_INGREDIENT;
-  index: number;
+  selected: SelectedFood | null;
 }
 
 export interface UpdateIngredientAmount {
@@ -83,6 +76,11 @@ export interface UpdateIngredientFood {
   type: ActionType.UPDATE_INGREDIENT_FOOD;
   index: number;
   food: Food;
+}
+
+export interface UpdateIngredientNutrientsPerServing {
+  type: ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING;
+  index: number;
   nutrientsPerServing: Nutrients;
 }
 
@@ -91,7 +89,7 @@ export type Action =
   | AddIngredient
   | DeleteIngredient
   | SelectIngredient
-  | DeselectIngredient
   | UpdateIngredientAmount
   | UpdateIngredientUnit
-  | UpdateIngredientFood;
+  | UpdateIngredientFood
+  | UpdateIngredientNutrientsPerServing;

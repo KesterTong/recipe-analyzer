@@ -13,6 +13,7 @@
 // limitations under the License.
 import { ActionType, State, Ingredient } from "./types";
 import { RootAction } from "../types";
+import { Food, servingEquivalentQuantities, getIngredientUnits } from "../../core";
 
 function updateIngredient(
   state: State,
@@ -25,6 +26,16 @@ function updateIngredient(
       index == updateIndex && ingredient ? updateFn(ingredient) : ingredient
     ),
   };
+}
+
+function defaultUnit(food: Food) {
+  const units = getIngredientUnits(servingEquivalentQuantities(food));
+  // Units should never be empty. 
+  return units[0];
+}
+
+function defaultAmount(unit: string): number {
+  return unit == 'g' || unit == 'ml' ? 100 : 1;
 }
 
 export function reducer(state: State, action: RootAction): State {
@@ -63,40 +74,43 @@ export function reducer(state: State, action: RootAction): State {
         unit: action.unit,
       }));
     case ActionType.UPDATE_INGREDIENT_FOOD:
+      return updateIngredient(state, action.index, (ingredient) => {
+        const unit = ingredient.unit || defaultUnit(action.food);
+        const amount = ingredient.amount == null ? defaultAmount(unit) : ingredient.amount;
+        return {
+          ...ingredient,
+          amount,
+          unit,
+          selected: {
+            foodId: ingredient.foodId!,
+            description: action.food.description,
+          },
+          food: action.food,
+        };
+      });
+    case ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING:
       return updateIngredient(state, action.index, (ingredient) => ({
         ...ingredient,
-        selected: {
-          foodId: ingredient.foodId!,
-          description: action.food.description,
-        },
-        food: action.food,
         nutrientsPerServing: action.nutrientsPerServing,
       }));
     case ActionType.SELECT_INGREDIENT:
-      return {
-        ...state,
-        ingredients: state.ingredients.map((ingredient, index) => {
-          if (index != action.index) {
-            return ingredient;
-          }
+      return updateIngredient(state, action.index, (ingredient) => {
+        // If the ingredient is deselected, just update UI state.
+        if (action.selected == null) {
           return {
-            amount: action.food.dataType == "Recipe" ? 1 : 100,
-            unit: action.food.dataType == "Recipe" ? "serving" : "g",
-            foodId: action.foodId,
-            selected: {
-              foodId: action.foodId,
-              description: action.food.description,
-            },
-            food: action.food,
-            nutrientsPerServing: action.nutrientsPerServing,
-          };
-        }),
-      };
-    case ActionType.DESELECT_INGREDIENT:
-      return updateIngredient(state, action.index, (ingredient) => ({
-        ...ingredient,
-        selected: null,
-      }));
+            ...ingredient,
+            selected: null,
+          }
+        }
+        return {
+          amount: null,  // Don't know a good default yet.
+          unit: null,  // Same here.
+          foodId: action.selected.foodId,
+          selected: action.selected,
+          food: null,
+          nutrientsPerServing: null,
+        };
+      });
     default:
       return state;
   }
