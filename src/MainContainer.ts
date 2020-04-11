@@ -11,20 +11,36 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { actions, selectQueryResult, RootState, ThunkDispatch } from "./store";
+import {
+  selectAndMaybeLoad,
+  saveFood,
+  newBrandedFood,
+  newRecipe,
+  getSelectedFood,
+  RootState,
+  ThunkDispatch,
+} from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
   return {
-    queryResult: selectQueryResult(state),
+    selected: getSelectedFood(state),
     loading: state.foodId != null && state.foodState?.stateType == "Loading",
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(actions, dispatch);
+  return bindActionCreators(
+    {
+      select: selectAndMaybeLoad,
+      saveFood,
+      newBrandedFood,
+      newRecipe,
+    },
+    dispatch
+  );
 }
 
 export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);

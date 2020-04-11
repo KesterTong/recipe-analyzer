@@ -1,12 +1,12 @@
 import * as React from "react";
 
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
-import { searchFoods, QueryResult } from "./database";
+import { searchFoods } from "./database";
+import { SelectedFood } from "./store/food_input";
 
 export interface FoodInputProps {
-  queryResult: QueryResult | null;
-  select(QueryResult: QueryResult): void;
-  deselect(): void;
+  selected: SelectedFood | null;
+  select(selected: SelectedFood | null): void;
 }
 
 export class FoodInput extends React.Component<FoodInputProps> {
@@ -16,9 +16,13 @@ export class FoodInput extends React.Component<FoodInputProps> {
   };
 
   render() {
-    let queryResult = this.props.queryResult;
-    let selected = queryResult
-      ? [{ label: queryResult.description, value: queryResult.foodId }]
+    let selected = this.props.selected
+      ? [
+          {
+            label: this.props.selected.description,
+            value: this.props.selected.foodId,
+          },
+        ]
       : [];
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
@@ -27,7 +31,7 @@ export class FoodInput extends React.Component<FoodInputProps> {
           description: selected[0].label,
         });
       } else {
-        this.props.deselect();
+        this.props.select(null);
       }
     };
     return (
@@ -48,9 +52,9 @@ export class FoodInput extends React.Component<FoodInputProps> {
   _handleSearch = async (query: string) => {
     this.setState({ isLoading: true });
     const result = await searchFoods(query);
-    const options = result.map((QueryResult) => ({
-      label: QueryResult.description,
-      value: QueryResult.foodId,
+    const options = result.map((result) => ({
+      label: result.description,
+      value: result.foodId,
     }));
     this.setState({ isLoading: false, options });
   };

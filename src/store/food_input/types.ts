@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootState } from "./types";
-import { createSelector } from "reselect";
-import { SelectedFood } from "./food_input";
-
-export function getSelectedFood(state: RootState): SelectedFood | null {
-  return state.foodInput;
+export interface SelectedFood {
+  foodId: string;
+  description: string;
 }
 
-export const getNutrientIds = createSelector(
-  (state: RootState) => state.config.nutrientInfos,
-  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
-);
+export type State = SelectedFood | null;
 
-export const getNutrientNames = createSelector(
-  (state: RootState) => state.config.nutrientInfos,
-  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.name)
-);
+export enum ActionType {
+  SELECT = "@food_input/Select",
+}
+
+export interface Select {
+  type: ActionType.SELECT;
+  selectedFood: SelectedFood | null;
+}
+
+export type Action = Select;

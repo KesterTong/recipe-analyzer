@@ -11,21 +11,5 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-import { RootState } from "./types";
-import { createSelector } from "reselect";
-import { SelectedFood } from "./food_input";
-
-export function getSelectedFood(state: RootState): SelectedFood | null {
-  return state.foodInput;
-}
-
-export const getNutrientIds = createSelector(
-  (state: RootState) => state.config.nutrientInfos,
-  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
-);
-
-export const getNutrientNames = createSelector(
-  (state: RootState) => state.config.nutrientInfos,
-  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.name)
-);
+export * from "./types";
+export * from "./reducer";

@@ -11,28 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import {
-  State as BrandedFoodEditState,
-  Action as BrandedFoodEditAction,
-} from "./branded_food_edit/types";
-import {
-  State as RecipeEditState,
-  Action as RecipeEditAction,
-} from "./recipe_edit/types";
-import {
-  State as FoodViewState,
-  Action as FoodViewAction,
-} from "./food_view/types";
-import { Food } from "../core";
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { QueryResult } from "../database";
+import { Food } from "../core";
+import * as branded_food_edit from "./branded_food_edit/types";
+import * as food_input from './food_input/types';
+import * as food_view from "./food_view/types";
+import * as recipe_edit from "./recipe_edit/types";
 
 // State of a food whose description may be known but nothing else.
 export interface LoadingState {
   stateType: "Loading";
-  food: {
-    description: string | null;
-  };
 }
 
 export interface NutrientInfo {
@@ -46,11 +34,11 @@ export interface NutrientInfo {
 //  - If foodState is non-null then foodId should be non-null.
 export interface RootState {
   foodId: string | null;
-  deselected: boolean;
+  foodInput: food_input.State;
   foodState:
-    | FoodViewState
-    | RecipeEditState
-    | BrandedFoodEditState
+    | branded_food_edit.State
+    | food_view.State
+    | recipe_edit.State
     | LoadingState
     | null;
   config: {
@@ -60,7 +48,7 @@ export interface RootState {
 
 export const initialState: RootState = {
   foodId: null,
-  deselected: false,
+  foodInput: null,
   foodState: null,
   config: {
     nutrientInfos: [],
@@ -69,7 +57,6 @@ export const initialState: RootState = {
 
 export enum ActionType {
   SET_NUTRIENT_INFOS = "@SetNutrientInfos",
-  DESELECT = "@Deselect",
   SELECT_FOOD = "@SelectFood",
   NEW_FOOD = "@NewFood",
   UPDATE_FOOD = "@UpdateFood",
@@ -81,13 +68,9 @@ export interface SetNutrientInfos {
   nutrientInfos: NutrientInfo[];
 }
 
-export interface Deselect {
-  type: ActionType.DESELECT;
-}
-
 export interface SelectFood {
   type: ActionType.SELECT_FOOD;
-  queryResult: QueryResult;
+  selected: food_input.SelectedFood | null;
 }
 
 export interface NewFood {
@@ -104,13 +87,12 @@ export interface UpdateFood {
 
 export type RootAction =
   | SetNutrientInfos
-  | Deselect
   | SelectFood
   | NewFood
   | UpdateFood
-  | FoodViewAction
-  | BrandedFoodEditAction
-  | RecipeEditAction;
+  | food_view.Action
+  | branded_food_edit.Action
+  | recipe_edit.Action;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

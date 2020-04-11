@@ -13,19 +13,20 @@
 // limitations under the License.
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { RootState, ThunkDispatch, selectNutrientNames } from "./store";
+import { RootState, ThunkDispatch, getNutrientNames } from "./store";
 import {
   actions,
-  makeGetQueryResult,
+  makeGetSelected,
   getNutrientsForIngredient,
   makeGetIngredientUnits,
 } from "./store/recipe_edit";
 import { Nutrients } from "./core";
 import { IngredientEditor } from "./IngredientEditor";
 import { QueryResult } from "./database";
+import { SelectedFood } from "./store/food_input";
 
 function mapStateToProps() {
-  const getQueryResult = makeGetQueryResult();
+  const getSelected = makeGetSelected();
   const getIngredientUnits = makeGetIngredientUnits();
   return (state: RootState, ownProps: { index: number }) => {
     const foodState = state.foodState;
@@ -38,12 +39,12 @@ function mapStateToProps() {
       return <typeof result>{};
     }
     const result = {
-      queryResult: getQueryResult(ingredient),
+      selected: getSelected(ingredient),
       amount: ingredient ? ingredient.amount : null,
       unit: ingredient ? ingredient.unit : null,
       units: getIngredientUnits(ingredient),
       nutrients: <"LOADING" | Nutrients>getNutrientsForIngredient(ingredient),
-      nutrientNames: selectNutrientNames(state),
+      nutrientNames: getNutrientNames(state),
     };
     return result;
   };
@@ -60,9 +61,8 @@ function mapDispatchToProps(
         actions.updateIngredientAmount(index, amount),
       updateIngredientUnit: (unit: string) =>
         actions.updateIngredientUnit(index, unit),
-      loadAndSelectIngredient: (queryResult: QueryResult) =>
-        actions.loadAndSelectIngredient(index, queryResult),
-      deselectIngredient: () => actions.deselectIngredient(index),
+      select: (selected: SelectedFood | null) =>
+        actions.loadAndMaybeSelectIngredient(index, selected),
       deleteIngredient: () => actions.deleteIngredient(index),
     },
     dispatch

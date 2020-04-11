@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { nutrientsPerServingForFood, Food, Nutrients } from "../../core";
-import { QueryResult, getFood } from "../../database";
-import { RootAction, ActionType as RootActionType } from "../types";
-import { Action, ActionType } from "./types";
+import { getFood } from "../../database";
+import { RootAction } from "../types";
+import { ActionType } from "./types";
 import { ThunkResult } from "../types";
+import { SelectedFood } from "../food_input";
 
 export function updateDescription(description: string): RootAction {
   return { type: ActionType.UPDATE_DESCRIPTION, description };
@@ -99,19 +100,23 @@ export function loadIngredient(
   };
 }
 
-export function loadAndSelectIngredient(
+export function loadAndMaybeSelectIngredient(
   index: number,
-  queryResult: QueryResult
+  selected: SelectedFood | null
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    const food = await getFood(queryResult.foodId);
+    if (selected === null) {
+      dispatch(deselectIngredient(index));
+      return;
+    }
+    const food = await getFood(selected.foodId);
     const nutrientsPerServing = await nutrientsPerServingForFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
     dispatch(
-      selectIngredient(index, queryResult.foodId, food, nutrientsPerServing)
+      selectIngredient(index, selected.foodId, food, nutrientsPerServing)
     );
   };
 }

@@ -22,7 +22,7 @@ import {
   StatusOr,
 } from "../../core";
 
-export const makeGetQueryResult = () =>
+export const makeGetSelected = () =>
   createSelector(
     (ingredient: Ingredient | null) => ingredient,
     (ingredient: Ingredient | null) => {

@@ -13,7 +13,7 @@
 // limitations under the License.
 import { getFood, insertFood, patchFood } from "../../src/database";
 import { store, RootState } from "../../src/store";
-import { selectAndLoad, newRecipe, saveFood } from "../../src/store/actions";
+import { selectAndMaybeLoad, newRecipe, saveFood } from "../../src/store/actions";
 import { TEST_BRANDED_FOOD } from "../testData";
 import { NEW_RECIPE } from "../../src/store/recipe_edit/conversion";
 import { initialState } from "../../src/store/types";
@@ -49,22 +49,27 @@ describe("actions", () => {
   it("SelectFood_Branded", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     let actionCompleted = store.dispatch(
-      selectAndLoad({ foodId: "userData/abcdefg", description: "My Food" })
+      selectAndMaybeLoad({ foodId: "userData/abcdefg", description: "My Food" })
     );
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       foodId: "userData/abcdefg",
+      foodInput: {
+        description: "My Food",
+        foodId: "userData/abcdefg",
+      },
       foodState: {
         stateType: "Loading",
-        food: {
-          description: "My Food",
-        },
       },
     });
     await actionCompleted;
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       foodId: "userData/abcdefg",
+      foodInput: {
+        description: "My Food",
+        foodId: "userData/abcdefg",
+      },
       foodState: _TEST_BRANDED_FOOD_EDITS,
     });
     expect(getFoodMock.mock.calls).toEqual([["userData/abcdefg"]]);
@@ -73,12 +78,16 @@ describe("actions", () => {
   it("UpdateDescriptionAndSave", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     await store.dispatch(
-      selectAndLoad({ foodId: "userData/abcdefg", description: "My Food" })
+      selectAndMaybeLoad({ foodId: "userData/abcdefg", description: "My Food" })
     );
     store.dispatch(updateBrandedFoodDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       foodId: "userData/abcdefg",
+      foodInput: {
+        description: "My Food",
+        foodId: "userData/abcdefg",
+      },
       foodState: {
         ..._TEST_BRANDED_FOOD_EDITS,
         description: "New Description",
@@ -88,6 +97,10 @@ describe("actions", () => {
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       foodId: "userData/abcdefg",
+      foodInput: {
+        description: "My Food",
+        foodId: "userData/abcdefg",
+      },
       foodState: {
         ..._TEST_BRANDED_FOOD_EDITS,
         description: "New Description",
@@ -108,6 +121,10 @@ describe("actions", () => {
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
       foodId: "userData/abcdefg",
+      foodInput: {
+        description: "New Recipe",
+        foodId: "userData/abcdefg",
+      },
       foodState: {
         stateType: "RecipeEdit",
         description: "New Recipe",

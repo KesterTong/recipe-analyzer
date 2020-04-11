@@ -27,7 +27,7 @@ import {
   initialState,
 } from "./types";
 
-export { actions };
+export * from "./actions";
 export * from "./types";
 export * from "./selectors";
 
@@ -53,23 +53,25 @@ function rootReducer(
   action: RootAction
 ): RootState {
   switch (action.type) {
-    case ActionType.DESELECT:
-      return { ...state, deselected: true };
     case ActionType.SELECT_FOOD:
+      if (action.selected == null) {
+        // Only update state of input if the selection is null.
+        return { ...state, foodInput: action.selected };
+      }
       return {
         ...state,
-        foodId: action.queryResult.foodId,
-        deselected: false,
-        foodState: {
-          stateType: "Loading",
-          food: { description: action.queryResult.description },
-        },
+        foodId: action.selected.foodId,
+        foodInput: action.selected,
+        foodState: { stateType: "Loading" },
       };
     case ActionType.NEW_FOOD:
       return {
         ...state,
         foodId: action.foodId,
-        deselected: false,
+        foodInput: {
+          foodId: action.foodId,
+          description: action.food.description,
+        },
         foodState: foodStateFromFood(action.food),
       };
     case ActionType.UPDATE_FOOD:

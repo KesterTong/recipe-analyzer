@@ -18,8 +18,8 @@ import { FoodViewer } from "./FoodViewer";
 import {
   RootState,
   ThunkDispatch,
-  selectNutrientNames,
-  selectNutrientIds,
+  getNutrientNames,
+  getNutrientIds,
 } from "./store";
 import {
   actions,
@@ -32,8 +32,8 @@ function mapStateToProps(state: RootState) {
     return <typeof result>{};
   }
   const quantities = selectQuantities(state.foodState);
-  const nutrientIds = selectNutrientIds(state);
-  const nutrientNames = selectNutrientNames(state);
+  const nutrientIds = getNutrientIds(state);
+  const nutrientNames = getNutrientNames(state);
   const nutrientsPerServing = selectNutrientsPerServing(
     state.foodState,
     nutrientIds

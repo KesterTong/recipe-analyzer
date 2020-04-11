@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Nutrients, Food } from "../../core";
+import { SelectedFood } from "../food_input";
 
 export interface Ingredient {
   amount: number;

@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { QueryResult, getFood, insertFood, patchFood } from "../database";
+import { getFood, insertFood, patchFood } from "../database";
 import { Food } from "../core";
 import { RootAction, ThunkResult, ActionType } from "./types";
 import {
@@ -20,13 +20,10 @@ import {
   actions as recipe_edit_actions,
 } from "./recipe_edit";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food_edit";
+import { SelectedFood } from "./food_input";
 
-export function deselect(): RootAction {
-  return { type: ActionType.DESELECT };
-}
-
-export function select(queryResult: QueryResult): RootAction {
-  return { type: ActionType.SELECT_FOOD, queryResult };
+export function select(selected: SelectedFood | null): RootAction {
+  return { type: ActionType.SELECT_FOOD, selected };
 }
 
 export function updateFood(food: Food): RootAction {
@@ -58,14 +55,18 @@ export function saveFood(): ThunkResult<Promise<void>> {
   };
 }
 
-export function selectAndLoad(
-  queryResult: QueryResult
+export function selectAndMaybeLoad(
+  selected: SelectedFood | null
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(select(queryResult));
+    dispatch(select(selected));
+    if (selected == null) {
+      return;
+    }
     try {
-      const food = await getFood(queryResult.foodId);
-      if (getState().foodId != queryResult.foodId) {
+      const food = await getFood(selected.foodId);
+      // Check if selected food has changed in the meantime.
+      if (getState().foodId != selected.foodId) {
         return;
       }
       dispatch(updateFood(food));
