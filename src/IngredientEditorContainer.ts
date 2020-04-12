@@ -21,7 +21,6 @@ import {
 } from "./store/recipe_edit";
 import { Nutrients } from "./core";
 import { IngredientEditor } from "./IngredientEditor";
-import { QueryResult } from "./database";
 import { SelectedFood } from "./store/food_input";
 
 function mapStateToProps() {

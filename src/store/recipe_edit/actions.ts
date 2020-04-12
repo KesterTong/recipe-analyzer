@@ -13,73 +13,69 @@
 // limitations under the License.
 import { nutrientsPerServingForFood, Food, Nutrients } from "../../core";
 import { getFood } from "../../database";
-import { RootAction } from "../types";
-import { ActionType } from "./types";
 import { ThunkResult } from "../types";
 import { SelectedFood } from "../food_input";
+import {
+  Action as IngredientAction,
+  ActionType as IngredientActionType,
+} from "../ingredient";
+import { Action, ActionType } from "./types";
 
-export function updateDescription(description: string): RootAction {
+export function updateDescription(description: string): Action {
   return { type: ActionType.UPDATE_DESCRIPTION, description };
 }
 
-export function addIngredient(): RootAction {
+export function addIngredient(): Action {
   return { type: ActionType.ADD_INGREDIENT };
 }
 
-export function deleteIngredient(index: number): RootAction {
+export function deleteIngredient(index: number): Action {
   return { type: ActionType.DELETE_INGREDIENT, index };
+}
+
+function updateIngredient(index: number, action: IngredientAction): Action {
+  return { type: ActionType.UPDATE_INGREDIENT, index, action };
 }
 
 export function selectIngredient(
   index: number,
   selected: SelectedFood | null
-): RootAction {
-  return {
-    type: ActionType.SELECT_INGREDIENT,
-    index,
+): Action {
+  return updateIngredient(index, {
+    type: IngredientActionType.SELECT_INGREDIENT,
     selected,
-  };
+  });
 }
 
-export function updateIngredientAmount(
-  index: number,
-  amount: number
-): RootAction {
-  return {
-    type: ActionType.UPDATE_INGREDIENT_AMOUNT,
-    index,
+export function updateIngredientAmount(index: number, amount: number): Action {
+  return updateIngredient(index, {
+    type: IngredientActionType.UPDATE_INGREDIENT_AMOUNT,
     amount,
-  };
+  });
 }
 
-export function updateIngredientUnit(index: number, unit: string): RootAction {
-  return {
-    type: ActionType.UPDATE_INGREDIENT_UNIT,
-    index,
+export function updateIngredientUnit(index: number, unit: string): Action {
+  return updateIngredient(index, {
+    type: IngredientActionType.UPDATE_INGREDIENT_UNIT,
     unit,
-  };
+  });
 }
 
-export function updateIngredientFood(
-  index: number,
-  food: Food,
-): RootAction {
-  return {
-    type: ActionType.UPDATE_INGREDIENT_FOOD,
-    index,
+export function updateIngredientFood(index: number, food: Food): Action {
+  return updateIngredient(index, {
+    type: IngredientActionType.UPDATE_INGREDIENT_FOOD,
     food,
-  };
+  });
 }
 
 export function updateIngredientNutrientsPerServing(
   index: number,
-  nutrientsPerServing: Nutrients,
-): RootAction {
-  return {
-    type: ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING,
-    index,
+  nutrientsPerServing: Nutrients
+): Action {
+  return updateIngredient(index, {
+    type: IngredientActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING,
     nutrientsPerServing,
-  };
+  });
 }
 
 export function loadIngredient(
@@ -93,9 +89,10 @@ export function loadIngredient(
     }
     dispatch(updateIngredientFood(index, food));
     const nutrientsPerServing = await nutrientsPerServingForFood(
-          food,
-          getFood,
-          getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id));
+      food,
+      getFood,
+      getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
+    );
     dispatch(updateIngredientNutrientsPerServing(index, nutrientsPerServing));
   };
 }

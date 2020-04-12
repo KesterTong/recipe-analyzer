@@ -13,7 +13,7 @@
 // limitations under the License.
 import { memoize } from "lodash";
 import { createSelectorCreator, createSelector } from "reselect";
-import { Ingredient } from "./types";
+import { State } from "./types";
 import {
   nutrientsForQuantity,
   getIngredientUnits as getIngredientUnits_,
@@ -24,8 +24,8 @@ import {
 
 export const makeGetIngredientUnits = () =>
   createSelector(
-    (ingredient: Ingredient) => ingredient,
-    (ingredient: Ingredient) =>
+    (ingredient: State) => ingredient,
+    (ingredient: State) =>
       ingredient && ingredient.food
         ? getIngredientUnits_(servingEquivalentQuantities(ingredient.food))
         : [""]
@@ -41,8 +41,8 @@ const customSelectorCreator = createSelectorCreator(
 );
 
 export const getNutrientsForIngredient = customSelectorCreator(
-  (ingredient: Ingredient) => ingredient,
-  (ingredient: Ingredient): StatusOr<Nutrients> => {
+  (ingredient: State) => ingredient,
+  (ingredient: State): StatusOr<Nutrients> => {
     if (
       ingredient.amount == null ||
       ingredient.unit == null ||

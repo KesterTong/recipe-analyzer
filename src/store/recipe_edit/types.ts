@@ -11,17 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Nutrients, Food } from "../../core";
-import { SelectedFood } from "../food_input";
-
-export interface Ingredient {
-  amount: number | null;
-  unit: string | null;
-  foodId: string | null;
-  selected: SelectedFood | null;
-  food: Food | null;
-  nutrientsPerServing: Nutrients | null;
-}
+import {
+  State as Ingredient,
+  Action as UpdateIngredientAction,
+} from "../ingredient";
 
 export interface State {
   stateType: "RecipeEdit";
@@ -33,11 +26,7 @@ export enum ActionType {
   UPDATE_DESCRIPTION = "@branded_food/UpdateDescription",
   ADD_INGREDIENT = "@recipe/AddIngredient",
   DELETE_INGREDIENT = "@recipe/DeleteIngredient",
-  SELECT_INGREDIENT = "@recipe/SelectIngredient",
-  UPDATE_INGREDIENT_AMOUNT = "@recipe/UpdateIngredientAmount",
-  UPDATE_INGREDIENT_UNIT = "@recipe/UpdateIngredientUnit",
-  UPDATE_INGREDIENT_FOOD = "@recipe/UpdateIngredientFood",
-  UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING = "@recipe/UpdateIngredientNutrientsPerServing",
+  UPDATE_INGREDIENT = "@recipe/UpdateIngredient",
 }
 
 export interface UpdateDescription {
@@ -54,42 +43,14 @@ export interface DeleteIngredient {
   index: number;
 }
 
-export interface SelectIngredient {
-  type: ActionType.SELECT_INGREDIENT;
+export interface UpdateIngredient {
+  type: ActionType.UPDATE_INGREDIENT;
   index: number;
-  selected: SelectedFood | null;
-}
-
-export interface UpdateIngredientAmount {
-  type: ActionType.UPDATE_INGREDIENT_AMOUNT;
-  index: number;
-  amount: number;
-}
-
-export interface UpdateIngredientUnit {
-  type: ActionType.UPDATE_INGREDIENT_UNIT;
-  index: number;
-  unit: string;
-}
-
-export interface UpdateIngredientFood {
-  type: ActionType.UPDATE_INGREDIENT_FOOD;
-  index: number;
-  food: Food;
-}
-
-export interface UpdateIngredientNutrientsPerServing {
-  type: ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING;
-  index: number;
-  nutrientsPerServing: Nutrients;
+  action: UpdateIngredientAction;
 }
 
 export type Action =
   | UpdateDescription
   | AddIngredient
   | DeleteIngredient
-  | SelectIngredient
-  | UpdateIngredientAmount
-  | UpdateIngredientUnit
-  | UpdateIngredientFood
-  | UpdateIngredientNutrientsPerServing;
+  | UpdateIngredient;
