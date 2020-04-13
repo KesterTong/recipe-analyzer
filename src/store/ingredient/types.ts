@@ -24,41 +24,41 @@ export interface State {
 }
 
 export enum ActionType {
-  SELECT_INGREDIENT = "@recipe/SelectIngredient",
-  UPDATE_INGREDIENT_AMOUNT = "@recipe/UpdateIngredientAmount",
-  UPDATE_INGREDIENT_UNIT = "@recipe/UpdateIngredientUnit",
-  UPDATE_INGREDIENT_FOOD = "@recipe/UpdateIngredientFood",
-  UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING = "@recipe/UpdateIngredientNutrientsPerServing",
+  SELECT_FOOD = "@recipe/SelectFood",
+  UPDATE_AMOUNT = "@recipe/UpdateAmount",
+  UPDATE_UNIT = "@recipe/UpdateUnit",
+  UPDATE_FOOD = "@recipe/UpdateFood",
+  UPDATE_NUTRIENTS_PER_SERVING = "@recipe/UpdateNutrientsPerServing",
 }
 
-export interface SelectIngredient {
-  type: ActionType.SELECT_INGREDIENT;
+export interface SelectFood {
+  type: ActionType.SELECT_FOOD;
   selected: SelectedFood | null;
 }
 
-export interface UpdateIngredientAmount {
-  type: ActionType.UPDATE_INGREDIENT_AMOUNT;
+export interface UpdateAmount {
+  type: ActionType.UPDATE_AMOUNT;
   amount: number;
 }
 
-export interface UpdateIngredientUnit {
-  type: ActionType.UPDATE_INGREDIENT_UNIT;
+export interface UpdateUnit {
+  type: ActionType.UPDATE_UNIT;
   unit: string;
 }
 
-export interface UpdateIngredientFood {
-  type: ActionType.UPDATE_INGREDIENT_FOOD;
+export interface UpdateFood {
+  type: ActionType.UPDATE_FOOD;
   food: Food;
 }
 
-export interface UpdateIngredientNutrientsPerServing {
-  type: ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING;
+export interface UpdateNutrientsPerServing {
+  type: ActionType.UPDATE_NUTRIENTS_PER_SERVING;
   nutrientsPerServing: Nutrients;
 }
 
 export type Action =
-  | SelectIngredient
-  | UpdateIngredientAmount
-  | UpdateIngredientUnit
-  | UpdateIngredientFood
-  | UpdateIngredientNutrientsPerServing;
+  | SelectFood
+  | UpdateAmount
+  | UpdateUnit
+  | UpdateFood
+  | UpdateNutrientsPerServing;

@@ -22,6 +22,8 @@ import {
 import { Nutrients } from "./core";
 import { IngredientEditor } from "./IngredientEditor";
 import { SelectedFood } from "./store/food_input";
+import { Action } from "./store/ingredient";
+import { updateAmount, updateUnit } from "./store/ingredient/actions";
 
 function mapStateToProps() {
   const getIngredientUnits = makeGetIngredientUnits();
@@ -55,9 +57,9 @@ function mapDispatchToProps(
   return bindActionCreators(
     {
       updateIngredientAmount: (amount: number) =>
-        actions.updateIngredientAmount(index, amount),
+        actions.updateIngredient(index, updateAmount(amount)),
       updateIngredientUnit: (unit: string) =>
-        actions.updateIngredientUnit(index, unit),
+        actions.updateIngredient(index, updateUnit(unit)),
       select: (selected: SelectedFood | null) =>
         actions.selectAndMaybeLoadIngredient(index, selected),
       deleteIngredient: () => actions.deleteIngredient(index),

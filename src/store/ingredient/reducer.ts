@@ -30,18 +30,18 @@ function defaultAmount(unit: string): number {
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case ActionType.UPDATE_INGREDIENT_AMOUNT:
+    case ActionType.UPDATE_AMOUNT:
       return {
         ...state,
         amount: action.amount,
       };
-    case ActionType.UPDATE_INGREDIENT_UNIT:
+    case ActionType.UPDATE_UNIT:
       return {
         ...state,
         amount: defaultAmount(action.unit),
         unit: action.unit,
       };
-    case ActionType.UPDATE_INGREDIENT_FOOD:
+    case ActionType.UPDATE_FOOD:
       const unit = state.unit || defaultUnit(action.food);
       const amount = state.amount == null ? defaultAmount(unit) : state.amount;
       return {
@@ -54,12 +54,12 @@ export function reducer(state: State, action: Action): State {
         },
         food: action.food,
       };
-    case ActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING:
+    case ActionType.UPDATE_NUTRIENTS_PER_SERVING:
       return {
         ...state,
         nutrientsPerServing: action.nutrientsPerServing,
       };
-    case ActionType.SELECT_INGREDIENT:
+    case ActionType.SELECT_FOOD:
       // If the ingredient is deselected, just update UI state.
       if (action.selected == null) {
         return {

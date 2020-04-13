@@ -15,11 +15,13 @@ import { nutrientsPerServingForFood, Food, Nutrients } from "../../core";
 import { getFood } from "../../database";
 import { ThunkResult } from "../types";
 import { SelectedFood } from "../food_input";
-import {
-  Action as IngredientAction,
-  ActionType as IngredientActionType,
-} from "../ingredient";
+import { Action as IngredientAction } from "../ingredient";
 import { Action, ActionType } from "./types";
+import {
+  updateFood,
+  updateNutrientsPerServing,
+  selectIngredient,
+} from "../ingredient/actions";
 
 export function updateDescription(description: string): Action {
   return { type: ActionType.UPDATE_DESCRIPTION, description };
@@ -33,49 +35,11 @@ export function deleteIngredient(index: number): Action {
   return { type: ActionType.DELETE_INGREDIENT, index };
 }
 
-function updateIngredient(index: number, action: IngredientAction): Action {
+export function updateIngredient(
+  index: number,
+  action: IngredientAction
+): Action {
   return { type: ActionType.UPDATE_INGREDIENT, index, action };
-}
-
-export function selectIngredient(
-  index: number,
-  selected: SelectedFood | null
-): Action {
-  return updateIngredient(index, {
-    type: IngredientActionType.SELECT_INGREDIENT,
-    selected,
-  });
-}
-
-export function updateIngredientAmount(index: number, amount: number): Action {
-  return updateIngredient(index, {
-    type: IngredientActionType.UPDATE_INGREDIENT_AMOUNT,
-    amount,
-  });
-}
-
-export function updateIngredientUnit(index: number, unit: string): Action {
-  return updateIngredient(index, {
-    type: IngredientActionType.UPDATE_INGREDIENT_UNIT,
-    unit,
-  });
-}
-
-export function updateIngredientFood(index: number, food: Food): Action {
-  return updateIngredient(index, {
-    type: IngredientActionType.UPDATE_INGREDIENT_FOOD,
-    food,
-  });
-}
-
-export function updateIngredientNutrientsPerServing(
-  index: number,
-  nutrientsPerServing: Nutrients
-): Action {
-  return updateIngredient(index, {
-    type: IngredientActionType.UPDATE_INGREDIENT_NUTRIENTS_PER_SERVING,
-    nutrientsPerServing,
-  });
 }
 
 export function loadIngredient(
@@ -87,13 +51,15 @@ export function loadIngredient(
     if (food == null) {
       return;
     }
-    dispatch(updateIngredientFood(index, food));
+    dispatch(updateIngredient(index, updateFood(food)));
     const nutrientsPerServing = await nutrientsPerServingForFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(updateIngredientNutrientsPerServing(index, nutrientsPerServing));
+    dispatch(
+      updateIngredient(index, updateNutrientsPerServing(nutrientsPerServing))
+    );
   };
 }
 
@@ -102,17 +68,19 @@ export function selectAndMaybeLoadIngredient(
   selected: SelectedFood | null
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(selectIngredient(index, selected));
+    dispatch(updateIngredient(index, selectIngredient(selected)));
     if (selected === null) {
       return;
     }
     const food = await getFood(selected.foodId);
-    dispatch(updateIngredientFood(index, food));
+    dispatch(updateIngredient(index, updateFood(food)));
     const nutrientsPerServing = await nutrientsPerServingForFood(
       food,
       getFood,
       getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
     );
-    dispatch(updateIngredientNutrientsPerServing(index, nutrientsPerServing));
+    dispatch(
+      updateIngredient(index, updateNutrientsPerServing(nutrientsPerServing))
+    );
   };
 }
