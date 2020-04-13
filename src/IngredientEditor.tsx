@@ -24,10 +24,10 @@ export interface IngredientEditorProps {
   selected: SelectedFood | null;
   nutrients: number[] | LOADING;
   nutrientNames: string[];
-  updateIngredientAmount(amount: number): void;
-  updateIngredientUnit(unit: string): void;
-  select(selected: SelectedFood | null): void;
-  deleteIngredient(): void;
+  updateAmount(amount: number): void;
+  updateUnit(unit: string): void;
+  selectFood(selected: SelectedFood | null): void;
+  delete(): void;
 }
 
 export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = (
@@ -39,7 +39,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
         disabled={props.amount === null}
         value={props.amount === null ? "" : props.amount.toString()}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          props.updateIngredientAmount(Number(event.target.value))
+          props.updateAmount(Number(event.target.value))
         }
       />
     </td>
@@ -49,7 +49,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
         value={props.unit || ""}
         as="select"
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          props.updateIngredientUnit(event.target.value)
+          props.updateUnit(event.target.value)
         }
       >
         {props.units.map((unit) => (
@@ -58,7 +58,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
       </Form.Control>
     </td>
     <td className="col-6">
-      {<FoodInput selected={props.selected} select={props.select} />}
+      {<FoodInput selected={props.selected} select={props.selectFood} />}
     </td>
     {props.nutrientNames.map((_, index) => {
       const value =
@@ -68,7 +68,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
       );
     })}
     <td className="col-1">
-      <Button onClick={() => props.deleteIngredient()}>Delete</Button>
+      <Button onClick={() => props.delete()}>Delete</Button>
     </td>
   </tr>
 );

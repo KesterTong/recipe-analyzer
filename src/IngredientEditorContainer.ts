@@ -56,13 +56,13 @@ function mapDispatchToProps(
   const { index } = ownProps;
   return bindActionCreators(
     {
-      updateIngredientAmount: (amount: number) =>
+      updateAmount: (amount: number) =>
         actions.updateIngredient(index, updateAmount(amount)),
-      updateIngredientUnit: (unit: string) =>
+      updateUnit: (unit: string) =>
         actions.updateIngredient(index, updateUnit(unit)),
-      select: (selected: SelectedFood | null) =>
+      selectFood: (selected: SelectedFood | null) =>
         actions.selectAndMaybeLoadIngredient(index, selected),
-      deleteIngredient: () => actions.deleteIngredient(index),
+      delete: () => actions.deleteIngredient(index),
     },
     dispatch
   );
