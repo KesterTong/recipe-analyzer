@@ -14,11 +14,6 @@
 
 import { RootState } from "./types";
 import { createSelector } from "reselect";
-import { SelectedFood } from "./food_input";
-
-export function getSelectedFood(state: RootState): SelectedFood | null {
-  return state.foodInput;
-}
 
 export const getNutrientIds = createSelector(
   (state: RootState) => state.config.nutrientInfos,

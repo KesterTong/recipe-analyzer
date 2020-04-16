@@ -49,7 +49,7 @@ export function reducer(state: State, action: Action): State {
         amount,
         unit,
         selected: {
-          foodId: state.foodId!,
+          ...state.selected,
           description: action.food.description,
         },
         food: action.food,
@@ -59,19 +59,23 @@ export function reducer(state: State, action: Action): State {
         ...state,
         nutrientsPerServing: action.nutrientsPerServing,
       };
-    case ActionType.SELECT_FOOD:
-      // If the ingredient is deselected, just update UI state.
-      if (action.selected == null) {
-        return {
-          ...state,
-          selected: null,
-        };
+    case ActionType.DESELECT_FOOD:
+      return {
+        ...state,
+        selected: {
+          ...state.selected,
+          deselected: true,
+        }
       }
+    case ActionType.SELECT_FOOD:
       return {
         amount: null, // Don't know a good default yet.
         unit: null, // Same here.
-        foodId: action.selected.foodId,
-        selected: action.selected,
+        selected: {
+          foodId: action.foodId,
+          deselected: false,
+          description: action.description,
+        },
         food: null,
         nutrientsPerServing: null,
       };

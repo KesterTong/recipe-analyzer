@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { SelectedFood } from "../food_input";
 import { Action, ActionType } from "./types";
 import { Food, Nutrients } from "../../core";
 
-export function selectIngredient(selected: SelectedFood | null): Action {
+export function select(foodId: string, description: string): Action {
   return {
     type: ActionType.SELECT_FOOD,
-    selected,
+    foodId,
+    description,
+  };
+}
+
+export function deselect(): Action {
+  return {
+    type: ActionType.DESELECT_FOOD,
   };
 }
 

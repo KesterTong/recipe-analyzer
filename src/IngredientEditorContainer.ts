@@ -21,8 +21,6 @@ import {
 } from "./store/recipe_edit";
 import { Nutrients } from "./core";
 import { IngredientEditor } from "./IngredientEditor";
-import { SelectedFood } from "./store/food_input";
-import { Action } from "./store/ingredient";
 import { updateAmount, updateUnit } from "./store/ingredient/actions";
 
 function mapStateToProps() {
@@ -60,8 +58,9 @@ function mapDispatchToProps(
         actions.updateIngredient(index, updateAmount(amount)),
       updateUnit: (unit: string) =>
         actions.updateIngredient(index, updateUnit(unit)),
-      selectFood: (selected: SelectedFood | null) =>
-        actions.selectAndMaybeLoadIngredient(index, selected),
+      select: (foodId: string, description: string) =>
+        actions.selectAndMaybeLoadIngredient(index, foodId, description),
+      deselect: () => actions.updateIngredient(index, actions.deselect()),
       delete: () => actions.deleteIngredient(index),
     },
     dispatch

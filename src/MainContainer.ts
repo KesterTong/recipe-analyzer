@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import {
+  deselect,
   selectAndMaybeLoad,
   saveFood,
   newBrandedFood,
   newRecipe,
-  getSelectedFood,
   RootState,
   ThunkDispatch,
 } from "./store";
@@ -26,8 +26,8 @@ import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
   return {
-    selected: getSelectedFood(state),
-    loading: state.foodId != null && state.foodState?.stateType == "Loading",
+    selected: state.foodInput,
+    loading: state.foodInput.foodId != null && state.foodState?.stateType == "Loading",
   };
 }
 
@@ -35,6 +35,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
       select: selectAndMaybeLoad,
+      deselect: deselect,
       saveFood,
       newBrandedFood,
       newRecipe,

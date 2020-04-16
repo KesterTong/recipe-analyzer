@@ -20,10 +20,20 @@ import {
   actions as recipe_edit_actions,
 } from "./recipe_edit";
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food_edit";
-import { SelectedFood } from "./food_input";
+import * as food_input from "./food_input";
 
-export function select(selected: SelectedFood | null): RootAction {
-  return { type: ActionType.SELECT_FOOD, selected };
+export function select(foodId: string, description: string): RootAction {
+  return {
+    type: ActionType.SELECT_FOOD,
+    foodId,
+    description,
+  };
+}
+
+export function deselect(): RootAction {
+  return {
+    type: ActionType.DESELECT_FOOD,
+  };
 }
 
 export function updateFood(food: Food): RootAction {
@@ -37,7 +47,7 @@ export function newFood(foodId: string, food: Food): RootAction {
 export function saveFood(): ThunkResult<Promise<void>> {
   return async (_, getState) => {
     const state = getState();
-    const foodId = state.foodId;
+    const foodId = state.foodInput.foodId;
     if (foodId == null) {
       throw "foodId was null.  This should never happen when saveFood is called.";
     }
@@ -56,17 +66,15 @@ export function saveFood(): ThunkResult<Promise<void>> {
 }
 
 export function selectAndMaybeLoad(
-  selected: SelectedFood | null
+  foodId: string,
+  description: string,
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(select(selected));
-    if (selected == null) {
-      return;
-    }
+    dispatch(select(foodId, description));
     try {
-      const food = await getFood(selected.foodId);
+      const food = await getFood(foodId);
       // Check if selected food has changed in the meantime.
-      if (getState().foodId != selected.foodId) {
+      if (getState().foodInput.foodId != foodId) {
         return;
       }
       dispatch(updateFood(food));

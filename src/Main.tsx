@@ -19,12 +19,13 @@ import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
-import { SelectedFood } from "./store/food_input";
+import * as food_input from "./store/food_input";
 
 interface MainProps {
   loading: boolean;
-  selected: SelectedFood | null;
-  select(selected: SelectedFood | null): void;
+  selected: food_input.State;
+  select(foodId: string, description: string): void;
+  deselect(): void;
   saveFood: () => void;
   newBrandedFood: () => void;
   newRecipe: () => void;
@@ -35,7 +36,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
     <React.Fragment>
       <Navbar bg="light" expand="lg">
         <Form inline>
-          <FoodInput selected={props.selected} select={props.select} />
+          <FoodInput {...props.selected} select={props.select} deselect={props.deselect} />
           &nbsp;
           <Button onClick={props.saveFood}>Save</Button>
           &nbsp;

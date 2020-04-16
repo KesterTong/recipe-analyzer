@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface SelectedFood {
-  foodId: string;
+export interface State {
+  foodId: string | null;
+  deselected: boolean;
   // Null means the ingredient is loading so description is not known.
   // This occurs when loading a recipe so its ingredient ids are known
   // and selected but the ingredient foods have not been loaded yet.

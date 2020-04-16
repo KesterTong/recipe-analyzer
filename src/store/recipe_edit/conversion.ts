@@ -33,7 +33,7 @@ export function recipeFromState(state: State): Recipe {
         if (
           ingredient.amount === null ||
           ingredient.unit === null ||
-          ingredient.foodId === null
+          ingredient.selected.foodId === null
         ) {
           return null;
         }
@@ -42,7 +42,7 @@ export function recipeFromState(state: State): Recipe {
             amount: ingredient.amount,
             unit: ingredient.unit,
           },
-          foodId: ingredient.foodId,
+          foodId: ingredient.selected.foodId,
         };
       })
     ),
@@ -56,8 +56,7 @@ export function stateFromRecipe(food: Recipe): State {
     ingredients: food.ingredientsList.map((ingredient) => ({
       amount: ingredient.quantity.amount,
       unit: ingredient.quantity.unit,
-      foodId: ingredient.foodId,
-      selected: { foodId: ingredient.foodId, description: null },
+      selected: { foodId: ingredient.foodId, deselected: false, description: null },
       food: null,
       nutrientsPerServing: null,
     })),

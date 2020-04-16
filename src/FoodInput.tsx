@@ -2,11 +2,11 @@ import * as React from "react";
 
 import { AsyncTypeahead } from "react-bootstrap-typeahead";
 import { searchFoods } from "./database";
-import { SelectedFood } from "./store/food_input";
+import { State } from "./store/food_input";
 
-export interface FoodInputProps {
-  selected: SelectedFood | null;
-  select(selected: SelectedFood | null): void;
+export interface FoodInputProps extends State {
+  select(foodId: string, description: string): void;
+  deselect(): void;
 }
 
 export class FoodInput extends React.Component<FoodInputProps> {
@@ -18,26 +18,26 @@ export class FoodInput extends React.Component<FoodInputProps> {
   render() {
     let selected: { label: string; value: string }[];
     let disabled: boolean;
-    if (this.props.selected) {
+    if (this.props.foodId && !this.props.deselected) {
       selected = [
         {
-          label: this.props.selected.description || "Loading",
-          value: this.props.selected.foodId,
+          label: this.props.description || "Loading",
+          value: this.props.foodId,
         },
       ];
-      disabled = this.props.selected.description == null;
+      disabled = this.props.description == null;
     } else {
       selected = [];
       disabled = false;
     }
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
-        this.props.select({
-          foodId: selected[0].value,
-          description: selected[0].label,
-        });
+        this.props.select(
+          selected[0].value,
+          selected[0].label,
+        );
       } else {
-        this.props.select(null);
+        this.props.deselect();
       }
     };
     return (

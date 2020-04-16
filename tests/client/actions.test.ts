@@ -53,14 +53,14 @@ describe("actions", () => {
   it("SelectFood_Branded", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     let actionCompleted = store.dispatch(
-      selectAndMaybeLoad({ foodId: "userData/abcdefg", description: "My Food" })
+      selectAndMaybeLoad("userData/abcdefg", "My Food")
     );
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      foodId: "userData/abcdefg",
       foodInput: {
         description: "My Food",
         foodId: "userData/abcdefg",
+        deselected: false,
       },
       foodState: {
         stateType: "Loading",
@@ -69,10 +69,10 @@ describe("actions", () => {
     await actionCompleted;
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      foodId: "userData/abcdefg",
       foodInput: {
         description: "My Food",
         foodId: "userData/abcdefg",
+        deselected: false,
       },
       foodState: _TEST_BRANDED_FOOD_EDITS,
     });
@@ -82,15 +82,15 @@ describe("actions", () => {
   it("UpdateDescriptionAndSave", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
     await store.dispatch(
-      selectAndMaybeLoad({ foodId: "userData/abcdefg", description: "My Food" })
+      selectAndMaybeLoad("userData/abcdefg", "My Food")
     );
     store.dispatch(updateBrandedFoodDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      foodId: "userData/abcdefg",
       foodInput: {
         description: "My Food",
         foodId: "userData/abcdefg",
+        deselected: false,
       },
       foodState: {
         ..._TEST_BRANDED_FOOD_EDITS,
@@ -100,10 +100,10 @@ describe("actions", () => {
     await store.dispatch(saveFood());
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      foodId: "userData/abcdefg",
       foodInput: {
         description: "My Food",
         foodId: "userData/abcdefg",
+        deselected: false,
       },
       foodState: {
         ..._TEST_BRANDED_FOOD_EDITS,
@@ -124,10 +124,10 @@ describe("actions", () => {
     await store.dispatch(newRecipe());
     expect(store.getState()).toEqual<RootState>({
       ...initialState,
-      foodId: "userData/abcdefg",
       foodInput: {
         description: "New Recipe",
         foodId: "userData/abcdefg",
+        deselected: false,
       },
       foodState: {
         stateType: "RecipeEdit",

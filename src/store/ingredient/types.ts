@@ -11,20 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { SelectedFood } from "../food_input";
+import * as food_input from "../food_input";
 import { Food, Nutrients } from "../../core";
 
 export interface State {
   amount: number | null;
   unit: string | null;
-  foodId: string | null;
-  selected: SelectedFood | null;
+  selected: food_input.State;
   food: Food | null;
   nutrientsPerServing: Nutrients | null;
 }
 
 export enum ActionType {
   SELECT_FOOD = "@recipe/SelectFood",
+  DESELECT_FOOD = "@recipe/DeselectFood",
   UPDATE_AMOUNT = "@recipe/UpdateAmount",
   UPDATE_UNIT = "@recipe/UpdateUnit",
   UPDATE_FOOD = "@recipe/UpdateFood",
@@ -33,7 +33,12 @@ export enum ActionType {
 
 export interface SelectFood {
   type: ActionType.SELECT_FOOD;
-  selected: SelectedFood | null;
+  foodId: string;
+  description: string;
+}
+
+export interface DeselectFood {
+  type: ActionType.DESELECT_FOOD;
 }
 
 export interface UpdateAmount {
@@ -58,6 +63,7 @@ export interface UpdateNutrientsPerServing {
 
 export type Action =
   | SelectFood
+  | DeselectFood
   | UpdateAmount
   | UpdateUnit
   | UpdateFood

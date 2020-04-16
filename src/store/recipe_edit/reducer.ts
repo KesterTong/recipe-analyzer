@@ -26,8 +26,11 @@ export function reducer(state: State, action: RootAction): State {
           {
             amount: null,
             unit: null,
-            foodId: null,
-            selected: null,
+            selected: {
+              foodId: null,
+              deselected: false,
+              description: null
+            },
             food: null,
             nutrientsPerServing: null,
           },

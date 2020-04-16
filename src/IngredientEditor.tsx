@@ -13,20 +13,21 @@
 // limitations under the License.
 import * as React from "react";
 import { LOADING } from "./store/recipe_edit";
-import { FoodInput } from "./FoodInput";
+import * as food_input from "./store/food_input";
 import { Form, Button } from "react-bootstrap";
-import { SelectedFood } from "./store/food_input";
+import { FoodInput } from "./FoodInput";
 
 export interface IngredientEditorProps {
   amount: number | null;
   unit: string | null;
   units: string[];
-  selected: SelectedFood | null;
+  selected: food_input.State;
   nutrients: number[] | LOADING;
   nutrientNames: string[];
   updateAmount(amount: number): void;
   updateUnit(unit: string): void;
-  selectFood(selected: SelectedFood | null): void;
+  select(foodId: string, description: string): void;
+  deselect(): void;
   delete(): void;
 }
 
@@ -58,7 +59,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
       </Form.Control>
     </td>
     <td className="col-6">
-      {<FoodInput selected={props.selected} select={props.selectFood} />}
+      {<FoodInput {...props.selected} select={props.select} deselect={props.deselect} />}
     </td>
     {props.nutrientNames.map((_, index) => {
       const value =
