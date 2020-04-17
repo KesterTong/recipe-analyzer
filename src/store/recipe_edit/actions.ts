@@ -66,10 +66,12 @@ export function loadIngredient(
 export function selectAndMaybeLoadIngredient(
   index: number,
   foodId: string,
-  description: string,
+  description: string
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(updateIngredient(index, updateFoodInput(select(foodId, description))));
+    dispatch(
+      updateIngredient(index, updateFoodInput(select(foodId, description)))
+    );
     const food = await getFood(foodId);
     dispatch(updateIngredient(index, updateFood(food)));
     const nutrientsPerServing = await nutrientsPerServingForFood(

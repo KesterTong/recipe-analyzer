@@ -81,9 +81,7 @@ describe("actions", () => {
 
   it("UpdateDescriptionAndSave", async () => {
     getFoodMock.mockResolvedValue(TEST_BRANDED_FOOD);
-    await store.dispatch(
-      selectAndMaybeLoad("userData/abcdefg", "My Food")
-    );
+    await store.dispatch(selectAndMaybeLoad("userData/abcdefg", "My Food"));
     store.dispatch(updateBrandedFoodDescription("New Description"));
     expect(store.getState()).toEqual<RootState>({
       ...initialState,

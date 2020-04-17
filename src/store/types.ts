@@ -59,8 +59,7 @@ export const initialState: RootState = {
 
 export enum ActionType {
   SET_NUTRIENT_INFOS = "@SetNutrientInfos",
-  SELECT_FOOD = "@SelectFood",
-  DESELECT_FOOD = "@DeselectFood",
+  UPDATE_FOOD_INPUT = "@UpdateFoodInput",
   NEW_FOOD = "@NewFood",
   UPDATE_FOOD = "@UpdateFood",
   UPDATE_AFTER_SAVE = "@UpdateAfterSave",
@@ -71,14 +70,9 @@ export interface SetNutrientInfos {
   nutrientInfos: NutrientInfo[];
 }
 
-export interface SelectFood {
-  type: ActionType.SELECT_FOOD;
-  foodId: string;
-  description: string;
-}
-
-export interface DeselectFood {
-  type: ActionType.DESELECT_FOOD;
+export interface UpdateFoodInput {
+  type: ActionType.UPDATE_FOOD_INPUT;
+  action: food_input.Action;
 }
 
 export interface NewFood {
@@ -95,8 +89,7 @@ export interface UpdateFood {
 
 export type RootAction =
   | SetNutrientInfos
-  | SelectFood
-  | DeselectFood
+  | UpdateFoodInput
   | NewFood
   | UpdateFood
   | food_view.Action

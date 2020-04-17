@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import {
-  deselect,
+  updateFoodInput,
   selectAndMaybeLoad,
   saveFood,
   newBrandedFood,
@@ -20,6 +20,7 @@ import {
   RootState,
   ThunkDispatch,
 } from "./store";
+import { deselect } from "./store/food_input";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
@@ -27,7 +28,8 @@ import { Main } from "./Main";
 function mapStateToProps(state: RootState) {
   return {
     selected: state.foodInput,
-    loading: state.foodInput.foodId != null && state.foodState?.stateType == "Loading",
+    loading:
+      state.foodInput.foodId != null && state.foodState?.stateType == "Loading",
   };
 }
 
@@ -35,7 +37,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
       select: selectAndMaybeLoad,
-      deselect: deselect,
+      deselect: () => updateFoodInput(deselect()),
       saveFood,
       newBrandedFood,
       newRecipe,

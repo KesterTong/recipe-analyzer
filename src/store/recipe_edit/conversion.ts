@@ -56,7 +56,11 @@ export function stateFromRecipe(food: Recipe): State {
     ingredients: food.ingredientsList.map((ingredient) => ({
       amount: ingredient.quantity.amount,
       unit: ingredient.quantity.unit,
-      selected: { foodId: ingredient.foodId, deselected: false, description: null },
+      selected: {
+        foodId: ingredient.foodId,
+        deselected: false,
+        description: null,
+      },
       food: null,
       nutrientsPerServing: null,
     })),

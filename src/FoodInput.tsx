@@ -32,10 +32,7 @@ export class FoodInput extends React.Component<FoodInputProps> {
     }
     let onChange = (selected: { label: string; value: string }[]) => {
       if (selected.length > 0) {
-        this.props.select(
-          selected[0].value,
-          selected[0].label,
-        );
+        this.props.select(selected[0].value, selected[0].label);
       } else {
         this.props.deselect();
       }

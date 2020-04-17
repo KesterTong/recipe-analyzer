@@ -22,17 +22,10 @@ import {
 import { brandedFoodFromState, NEW_BRANDED_FOOD } from "./branded_food_edit";
 import * as food_input from "./food_input";
 
-export function select(foodId: string, description: string): RootAction {
+export function updateFoodInput(action: food_input.Action): RootAction {
   return {
-    type: ActionType.SELECT_FOOD,
-    foodId,
-    description,
-  };
-}
-
-export function deselect(): RootAction {
-  return {
-    type: ActionType.DESELECT_FOOD,
+    type: ActionType.UPDATE_FOOD_INPUT,
+    action,
   };
 }
 
@@ -67,10 +60,10 @@ export function saveFood(): ThunkResult<Promise<void>> {
 
 export function selectAndMaybeLoad(
   foodId: string,
-  description: string,
+  description: string
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(select(foodId, description));
+    dispatch(updateFoodInput(food_input.select(foodId, description)));
     try {
       const food = await getFood(foodId);
       // Check if selected food has changed in the meantime.

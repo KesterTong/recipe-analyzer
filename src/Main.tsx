@@ -36,7 +36,11 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
     <React.Fragment>
       <Navbar bg="light" expand="lg">
         <Form inline>
-          <FoodInput {...props.selected} select={props.select} deselect={props.deselect} />
+          <FoodInput
+            {...props.selected}
+            select={props.select}
+            deselect={props.deselect}
+          />
           &nbsp;
           <Button onClick={props.saveFood}>Save</Button>
           &nbsp;

@@ -16,6 +16,7 @@ import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Food } from "../core";
 import * as actions from "./actions";
+import * as food_input from "./food_input";
 import * as branded_food_edit from "./branded_food_edit";
 import * as food_view from "./food_view";
 import * as recipe_edit from "./recipe_edit";
@@ -53,17 +54,13 @@ function rootReducer(
   action: RootAction
 ): RootState {
   switch (action.type) {
-    case ActionType.DESELECT_FOOD:
-      return {...state, foodInput: {...state.foodInput, deselected: true}};
-    case ActionType.SELECT_FOOD:
+    case ActionType.UPDATE_FOOD_INPUT:
       return {
         ...state,
-        foodInput: {
-          foodId: action.foodId,
-          deselected: false,
-          description: action.description
-        },
-        foodState: { stateType: "Loading" },
+        foodInput: food_input.reducer(state.foodInput, action.action),
+        ...(action.action.type == food_input.ActionType.SELECT
+          ? { foodState: { stateType: "Loading" } }
+          : {}),
       };
     case ActionType.NEW_FOOD:
       return {

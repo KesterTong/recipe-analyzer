@@ -59,7 +59,13 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
       </Form.Control>
     </td>
     <td className="col-6">
-      {<FoodInput {...props.selected} select={props.select} deselect={props.deselect} />}
+      {
+        <FoodInput
+          {...props.selected}
+          select={props.select}
+          deselect={props.deselect}
+        />
+      }
     </td>
     {props.nutrientNames.map((_, index) => {
       const value =

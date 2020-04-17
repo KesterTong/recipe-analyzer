@@ -63,9 +63,11 @@ export function reducer(state: State, action: Action): State {
         nutrientsPerServing: null,
       };
       return {
-        ...action.action.type == food_input.ActionType.SELECT ? resetIngredient : state,
-        selected: food_input.reducer(state.selected, action.action)
-      }
+        ...(action.action.type == food_input.ActionType.SELECT
+          ? resetIngredient
+          : state),
+        selected: food_input.reducer(state.selected, action.action),
+      };
     case ActionType.UPDATE_NUTRIENTS_PER_SERVING:
       return {
         ...state,
