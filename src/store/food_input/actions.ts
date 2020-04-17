@@ -11,6 +11,18 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-export * from "./actions";
-export * from "./types";
-export * from "./reducer";
+import { Action, ActionType } from "./types";
+
+export function select(foodId: string, description: string): Action {
+  return {
+    type: ActionType.SELECT,
+    foodId,
+    description,
+  };
+}
+
+export function deselect(): Action {
+  return {
+    type: ActionType.DESELECT,
+  };
+}

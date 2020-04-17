@@ -20,3 +20,20 @@ export interface State {
   // and selected but the ingredient foods have not been loaded yet.
   description: string | null;
 }
+
+export enum ActionType {
+  SELECT = "@food_input/Select",
+  DESELECT = "@food_input/Deselect",
+}
+
+export interface Select {
+  type: ActionType.SELECT;
+  foodId: string;
+  description: string;
+}
+
+export interface Deselect {
+  type: ActionType.DESELECT;
+}
+
+export type Action = Select | Deselect;

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Action, ActionType, State } from "./types";
+import * as food_input from "../food_input";
 import {
   Food,
   getIngredientUnits,
@@ -54,30 +55,21 @@ export function reducer(state: State, action: Action): State {
         },
         food: action.food,
       };
+    case ActionType.UPDATE_FOOD_INPUT:
+      const resetIngredient = {
+        amount: null, // Don't know a good default yet.
+        unit: null, // Same here.
+        food: null,
+        nutrientsPerServing: null,
+      };
+      return {
+        ...action.action.type == food_input.ActionType.SELECT ? resetIngredient : state,
+        selected: food_input.reducer(state.selected, action.action)
+      }
     case ActionType.UPDATE_NUTRIENTS_PER_SERVING:
       return {
         ...state,
         nutrientsPerServing: action.nutrientsPerServing,
-      };
-    case ActionType.DESELECT_FOOD:
-      return {
-        ...state,
-        selected: {
-          ...state.selected,
-          deselected: true,
-        }
-      }
-    case ActionType.SELECT_FOOD:
-      return {
-        amount: null, // Don't know a good default yet.
-        unit: null, // Same here.
-        selected: {
-          foodId: action.foodId,
-          deselected: false,
-          description: action.description,
-        },
-        food: null,
-        nutrientsPerServing: null,
       };
   }
 }

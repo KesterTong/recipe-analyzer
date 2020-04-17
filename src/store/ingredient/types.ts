@@ -23,22 +23,11 @@ export interface State {
 }
 
 export enum ActionType {
-  SELECT_FOOD = "@recipe/SelectFood",
-  DESELECT_FOOD = "@recipe/DeselectFood",
   UPDATE_AMOUNT = "@recipe/UpdateAmount",
   UPDATE_UNIT = "@recipe/UpdateUnit",
+  UPDATE_FOOD_INPUT = "@recipe/UpdateFoodInput",
   UPDATE_FOOD = "@recipe/UpdateFood",
   UPDATE_NUTRIENTS_PER_SERVING = "@recipe/UpdateNutrientsPerServing",
-}
-
-export interface SelectFood {
-  type: ActionType.SELECT_FOOD;
-  foodId: string;
-  description: string;
-}
-
-export interface DeselectFood {
-  type: ActionType.DESELECT_FOOD;
 }
 
 export interface UpdateAmount {
@@ -49,6 +38,11 @@ export interface UpdateAmount {
 export interface UpdateUnit {
   type: ActionType.UPDATE_UNIT;
   unit: string;
+}
+
+export interface UpdateFoodInput {
+  type: ActionType.UPDATE_FOOD_INPUT;
+  action: food_input.Action;
 }
 
 export interface UpdateFood {
@@ -62,8 +56,7 @@ export interface UpdateNutrientsPerServing {
 }
 
 export type Action =
-  | SelectFood
-  | DeselectFood
+  | UpdateFoodInput
   | UpdateAmount
   | UpdateUnit
   | UpdateFood

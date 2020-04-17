@@ -13,21 +13,8 @@
 // limitations under the License.
 
 import { Action, ActionType } from "./types";
+import * as food_input from "../food_input";
 import { Food, Nutrients } from "../../core";
-
-export function select(foodId: string, description: string): Action {
-  return {
-    type: ActionType.SELECT_FOOD,
-    foodId,
-    description,
-  };
-}
-
-export function deselect(): Action {
-  return {
-    type: ActionType.DESELECT_FOOD,
-  };
-}
 
 export function updateAmount(amount: number): Action {
   return {
@@ -47,6 +34,13 @@ export function updateFood(food: Food): Action {
   return {
     type: ActionType.UPDATE_FOOD,
     food,
+  };
+}
+
+export function updateFoodInput(action: food_input.Action): Action {
+  return {
+    type: ActionType.UPDATE_FOOD_INPUT,
+    action,
   };
 }
 

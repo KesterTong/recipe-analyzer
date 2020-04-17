@@ -14,14 +14,14 @@
 import { nutrientsPerServingForFood, Food, Nutrients } from "../../core";
 import { getFood } from "../../database";
 import { ThunkResult } from "../types";
-import * as food_input from "../food_input";
 import { Action as IngredientAction } from "../ingredient";
 import { Action, ActionType } from "./types";
 import {
   updateFood,
   updateNutrientsPerServing,
-  select,
+  updateFoodInput,
 } from "../ingredient/actions";
+import { select } from "../food_input";
 
 export function updateDescription(description: string): Action {
   return { type: ActionType.UPDATE_DESCRIPTION, description };
@@ -69,7 +69,7 @@ export function selectAndMaybeLoadIngredient(
   description: string,
 ): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    dispatch(updateIngredient(index, select(foodId, description)));
+    dispatch(updateIngredient(index, updateFoodInput(select(foodId, description))));
     const food = await getFood(foodId);
     dispatch(updateIngredient(index, updateFood(food)));
     const nutrientsPerServing = await nutrientsPerServingForFood(
@@ -82,5 +82,3 @@ export function selectAndMaybeLoadIngredient(
     );
   };
 }
-
-export { deselect } from "../ingredient/actions";
