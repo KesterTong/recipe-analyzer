@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createStore, applyMiddleware } from "redux";
+import { createStore, applyMiddleware, Store } from "redux";
 import thunk from "redux-thunk";
 import { Food } from "../core";
 import * as actions from "./actions";
@@ -104,7 +104,14 @@ function rootReducer(
   }
 }
 
+const logger = (store: any) => (next: any) => (action: any) => {
+  console.log("dispatching", action);
+  let result = next(action);
+  console.log("next state", store.getState());
+  return result;
+};
+
 export const store = createStore(
   rootReducer,
-  applyMiddleware<ThunkDispatch>(thunk)
+  applyMiddleware<ThunkDispatch>(thunk, <any>logger)
 );

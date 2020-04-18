@@ -131,6 +131,7 @@ describe("actions", () => {
         stateType: "RecipeEdit",
         description: "New Recipe",
         ingredients: [],
+        foodCache: {},
       },
     });
     expect(insertFoodMock.mock.calls).toEqual([[NEW_RECIPE]]);

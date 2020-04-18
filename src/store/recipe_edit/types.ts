@@ -15,11 +15,13 @@ import {
   State as Ingredient,
   Action as UpdateIngredientAction,
 } from "../ingredient";
+import { Food } from "../../core";
 
 export interface State {
   stateType: "RecipeEdit";
   description: string;
   ingredients: Ingredient[];
+  foodCache: { [index: string]: Food };
 }
 
 export enum ActionType {
@@ -27,6 +29,7 @@ export enum ActionType {
   ADD_INGREDIENT = "@recipe/AddIngredient",
   DELETE_INGREDIENT = "@recipe/DeleteIngredient",
   UPDATE_INGREDIENT = "@recipe/UpdateIngredient",
+  UPDATE_FOOD_CACHE = "@recipe/UpdateFoodCache",
 }
 
 export interface UpdateDescription {
@@ -49,8 +52,15 @@ export interface UpdateIngredient {
   action: UpdateIngredientAction;
 }
 
+export interface UpdateFoodCache {
+  type: ActionType.UPDATE_FOOD_CACHE;
+  foodId: string;
+  food: Food;
+}
+
 export type Action =
   | UpdateDescription
   | AddIngredient
   | DeleteIngredient
-  | UpdateIngredient;
+  | UpdateIngredient
+  | UpdateFoodCache;

@@ -30,25 +30,9 @@ export function updateUnit(unit: string): Action {
   };
 }
 
-export function updateFood(food: Food): Action {
-  return {
-    type: ActionType.UPDATE_FOOD,
-    food,
-  };
-}
-
 export function updateFoodInput(action: food_input.Action): Action {
   return {
     type: ActionType.UPDATE_FOOD_INPUT,
     action,
-  };
-}
-
-export function updateNutrientsPerServing(
-  nutrientsPerServing: Nutrients
-): Action {
-  return {
-    type: ActionType.UPDATE_NUTRIENTS_PER_SERVING,
-    nutrientsPerServing,
   };
 }

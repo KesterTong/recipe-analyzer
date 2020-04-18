@@ -42,19 +42,6 @@ export function reducer(state: State, action: Action): State {
         amount: defaultAmount(action.unit),
         unit: action.unit,
       };
-    case ActionType.UPDATE_FOOD:
-      const unit = state.unit || defaultUnit(action.food);
-      const amount = state.amount == null ? defaultAmount(unit) : state.amount;
-      return {
-        ...state,
-        amount,
-        unit,
-        selected: {
-          ...state.selected,
-          description: action.food.description,
-        },
-        food: action.food,
-      };
     case ActionType.UPDATE_FOOD_INPUT:
       const resetIngredient = {
         amount: null, // Don't know a good default yet.
@@ -67,11 +54,6 @@ export function reducer(state: State, action: Action): State {
           ? resetIngredient
           : state),
         selected: food_input.reducer(state.selected, action.action),
-      };
-    case ActionType.UPDATE_NUTRIENTS_PER_SERVING:
-      return {
-        ...state,
-        nutrientsPerServing: action.nutrientsPerServing,
       };
   }
 }

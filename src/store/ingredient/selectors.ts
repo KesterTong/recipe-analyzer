@@ -13,22 +13,37 @@
 // limitations under the License.
 import { memoize } from "lodash";
 import { createSelectorCreator, createSelector } from "reselect";
-import { State } from "./types";
+import { State } from "../recipe_edit/types";
+import { State as Ingredient } from "../ingredient/types";
 import {
-  nutrientsForQuantity,
   getIngredientUnits as getIngredientUnits_,
   servingEquivalentQuantities,
   Nutrients,
   StatusOr,
+  Food,
+  nutrientsForQuantity,
+  nutrientsPerServingForFDCFood,
+  nutrientsPerServingForFood,
 } from "../../core";
 
 export const makeGetIngredientUnits = () =>
   createSelector(
-    (ingredient: State) => ingredient,
-    (ingredient: State) =>
-      ingredient && ingredient.food
-        ? getIngredientUnits_(servingEquivalentQuantities(ingredient.food))
-        : [""]
+    [
+      (state: State, index: number) => state.ingredients[index],
+      (state: State, _: number) => state.foodCache,
+    ],
+    (ingredient: Ingredient, foodCache: { [index: string]: Food }) => {
+      const foodId = ingredient.selected.foodId;
+      if (foodId == null) {
+        return [""];
+      }
+      if (foodCache[foodId] === undefined) {
+        return [""];
+      }
+      return getIngredientUnits_(
+        servingEquivalentQuantities(foodCache[foodId])
+      );
+    }
   );
 
 export type LOADING = "LOADING";
@@ -40,22 +55,36 @@ const customSelectorCreator = createSelectorCreator(
   <(...args: any) => any>memoize
 );
 
-export const getNutrientsForIngredient = customSelectorCreator(
-  (ingredient: State) => ingredient,
-  (ingredient: State): StatusOr<Nutrients> => {
-    if (
-      ingredient.amount == null ||
-      ingredient.unit == null ||
-      ingredient.food == null ||
-      ingredient.nutrientsPerServing == null
-    ) {
-      return { code: "LOADING" };
-    }
-    return nutrientsForQuantity(
-      ingredient.amount,
-      ingredient.unit,
-      servingEquivalentQuantities(ingredient.food),
-      ingredient.nutrientsPerServing
-    );
+function ready(food: Food, foodCache: { [index: string]: Food }): boolean {
+  if (food === undefined) {
+    return false;
   }
-);
+  if (food.dataType != 'Recipe') {
+    return true;
+  }
+  return food.ingredientsList.every((ingredient) => 
+    foodCache[ingredient.foodId] !== undefined && ready(foodCache[ingredient.foodId], foodCache))
+}
+
+export function getNutrientsForIngredient(
+  ingredient: Ingredient,
+  foodCache: { [index: string]: Food }): StatusOr<Nutrients> {
+  const foodId = ingredient.selected.foodId;
+  if (
+    ingredient.amount == null ||
+    ingredient.unit == null ||
+    foodId == null
+  ) {
+    return { code: "LOADING" };
+  }
+  const food = foodCache[foodId];
+  if (!ready(food, foodCache)) {
+    return { code: "LOADING" };
+  }
+  return nutrientsForQuantity(
+    ingredient.amount,
+    ingredient.unit,
+    servingEquivalentQuantities(food),
+    nutrientsPerServingForFood(food, foodCache, [1008, 1003]), // TODO: don't hardcode this.
+  );
+}

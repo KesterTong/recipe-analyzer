@@ -16,11 +16,7 @@ import { getFood } from "../../database";
 import { ThunkResult } from "../types";
 import { Action as IngredientAction } from "../ingredient";
 import { Action, ActionType } from "./types";
-import {
-  updateFood,
-  updateNutrientsPerServing,
-  updateFoodInput,
-} from "../ingredient/actions";
+import { updateFoodInput } from "../ingredient/actions";
 import { select } from "../food_input";
 
 export function updateDescription(description: string): Action {
@@ -42,28 +38,41 @@ export function updateIngredient(
   return { type: ActionType.UPDATE_INGREDIENT, index, action };
 }
 
-export function loadIngredient(
-  index: number,
-  foodId: string
-): ThunkResult<Promise<void>> {
+export function updateFoodCache(foodId: string, food: Food): Action {
+  return {
+    type: ActionType.UPDATE_FOOD_CACHE,
+    foodId,
+    food,
+  };
+}
+
+export function loadIngredient(foodId: string): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
+    console.log(foodId);
     const food = await getFood(foodId);
     if (food == null) {
       return;
     }
-    dispatch(updateIngredient(index, updateFood(food)));
-    const nutrientsPerServing = await nutrientsPerServingForFood(
-      food,
-      getFood,
-      getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
-    );
-    dispatch(
-      updateIngredient(index, updateNutrientsPerServing(nutrientsPerServing))
-    );
+    const foodState = getState().foodState;
+    if (foodState?.stateType != "RecipeEdit") {
+      return;
+    }
+    // Check if food has already been set.
+    if (foodState.foodCache[foodId] !== undefined) {
+      return;
+    }
+    dispatch(updateFoodCache(foodId, food));
+    if (food.dataType == "Recipe") {
+      return Promise.all(
+        food.ingredientsList.map((ingredient) =>
+          dispatch(loadIngredient(ingredient.foodId))
+        )
+      ).then((_) => {});
+    }
   };
 }
 
-export function selectAndMaybeLoadIngredient(
+export function selectAndLoadIngredient(
   index: number,
   foodId: string,
   description: string
@@ -72,15 +81,6 @@ export function selectAndMaybeLoadIngredient(
     dispatch(
       updateIngredient(index, updateFoodInput(select(foodId, description)))
     );
-    const food = await getFood(foodId);
-    dispatch(updateIngredient(index, updateFood(food)));
-    const nutrientsPerServing = await nutrientsPerServingForFood(
-      food,
-      getFood,
-      getState().config.nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
-    );
-    dispatch(
-      updateIngredient(index, updateNutrientsPerServing(nutrientsPerServing))
-    );
+    return dispatch(loadIngredient(foodId));
   };
 }

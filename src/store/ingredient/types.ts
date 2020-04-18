@@ -18,16 +18,12 @@ export interface State {
   amount: number | null;
   unit: string | null;
   selected: food_input.State;
-  food: Food | null;
-  nutrientsPerServing: Nutrients | null;
 }
 
 export enum ActionType {
   UPDATE_AMOUNT = "@recipe/UpdateAmount",
   UPDATE_UNIT = "@recipe/UpdateUnit",
   UPDATE_FOOD_INPUT = "@recipe/UpdateFoodInput",
-  UPDATE_FOOD = "@recipe/UpdateFood",
-  UPDATE_NUTRIENTS_PER_SERVING = "@recipe/UpdateNutrientsPerServing",
 }
 
 export interface UpdateAmount {
@@ -45,19 +41,4 @@ export interface UpdateFoodInput {
   action: food_input.Action;
 }
 
-export interface UpdateFood {
-  type: ActionType.UPDATE_FOOD;
-  food: Food;
-}
-
-export interface UpdateNutrientsPerServing {
-  type: ActionType.UPDATE_NUTRIENTS_PER_SERVING;
-  nutrientsPerServing: Nutrients;
-}
-
-export type Action =
-  | UpdateFoodInput
-  | UpdateAmount
-  | UpdateUnit
-  | UpdateFood
-  | UpdateNutrientsPerServing;
+export type Action = UpdateFoodInput | UpdateAmount | UpdateUnit;

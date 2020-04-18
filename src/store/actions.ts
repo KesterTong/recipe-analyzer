@@ -76,9 +76,7 @@ export function selectAndMaybeLoad(
       }
       await Promise.all(
         food.ingredientsList.map((ingredient, index) => {
-          dispatch(
-            recipe_edit_actions.loadIngredient(index, ingredient.foodId)
-          );
+          dispatch(recipe_edit_actions.loadIngredient(ingredient.foodId));
         })
       );
     } catch (err) {

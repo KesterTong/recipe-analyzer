@@ -41,11 +41,18 @@ function mapStateToProps() {
       return <typeof result>{};
     }
     const result = {
-      selected: ingredient.selected,
+      selected: {
+        ...ingredient.selected,
+        description:
+          ingredient.selected.foodId == null
+            ? null
+            : foodState.foodCache[ingredient.selected.foodId]?.description ||
+              null,
+      },
       amount: ingredient ? ingredient.amount : null,
       unit: ingredient ? ingredient.unit : null,
-      units: getIngredientUnits(ingredient),
-      nutrients: <"LOADING" | Nutrients>getNutrientsForIngredient(ingredient),
+      units: getIngredientUnits(foodState, index),
+      nutrients: <"LOADING" | Nutrients>getNutrientsForIngredient(ingredient, foodState.foodCache),
       nutrientNames: getNutrientNames(state),
     };
     return result;
@@ -64,7 +71,7 @@ function mapDispatchToProps(
       updateUnit: (unit: string) =>
         actions.updateIngredient(index, updateUnit(unit)),
       select: (foodId: string, description: string) =>
-        actions.selectAndMaybeLoadIngredient(index, foodId, description),
+        actions.selectAndLoadIngredient(index, foodId, description),
       deselect: () =>
         actions.updateIngredient(index, updateFoodInput(deselect())),
       delete: () => actions.deleteIngredient(index),

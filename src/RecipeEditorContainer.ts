@@ -27,7 +27,7 @@ function mapStateToProps(state: RootState) {
   const nutrientNames = getNutrientNames(state);
   const numIngredients = foodState.ingredients.length;
   const totalNutrients = foodState.ingredients
-    .map((ingredient) => getNutrientsForIngredient(ingredient))
+    .map((ingredient) => getNutrientsForIngredient(ingredient, foodState.foodCache))
     .reduce(
       (lhs, rhs) => {
         if ("code" in lhs) {

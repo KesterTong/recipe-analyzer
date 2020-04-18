@@ -37,7 +37,6 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
   <tr className="d-flex">
     <td className="col-1">
       <Form.Control
-        disabled={props.amount === null}
         value={props.amount === null ? "" : props.amount.toString()}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
           props.updateAmount(Number(event.target.value))
@@ -46,7 +45,6 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
     </td>
     <td className="col-2">
       <Form.Control
-        disabled={props.unit === null}
         value={props.unit || ""}
         as="select"
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>

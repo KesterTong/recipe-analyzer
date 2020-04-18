@@ -23,42 +23,40 @@ import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
 import { nutrientsForQuantity, Recipe } from "./Recipe";
 
-export async function nutrientsPerServingForFood(
+export function nutrientsPerServingForFood(
   food: Food,
-  getFood: (foodId: string) => Promise<Food>,
+  foodCache: {[index: string]: Food},
   nutrientIds: number[]
-): Promise<Nutrients> {
+): Nutrients {
   switch (food.dataType) {
     case "SR Legacy":
     case "Branded":
-      return Promise.resolve(nutrientsPerServingForFDCFood(food, nutrientIds));
+      return nutrientsPerServingForFDCFood(food, nutrientIds);
     case "Recipe":
-      return nutrientsForRecipe(food, getFood, nutrientIds);
+      return nutrientsForRecipe(food, foodCache, nutrientIds);
   }
 }
 
-async function nutrientsForRecipe(
+function nutrientsForRecipe(
   food: Recipe,
-  getFood: (foodId: string) => Promise<Food>,
+  foodCache: {[index: string]: Food},
   nutrientIds: number[]
-): Promise<Nutrients> {
-  const nutrients = await Promise.all(
-    food.ingredientsList.map(async (ingredient) => {
-      const subFood = await getFood(ingredient.foodId);
-      const nutrientsPerServing = await nutrientsPerServingForFood(
-        subFood,
-        getFood,
-        nutrientIds
-      );
-      const { amount, unit } = ingredient.quantity;
-      return nutrientsForQuantity(
-        amount,
-        unit,
-        servingEquivalentQuantities(subFood),
-        nutrientsPerServing
-      );
-    })
-  );
+): Nutrients {
+  const nutrients = food.ingredientsList.map((ingredient) => {
+    const subFood = foodCache[ingredient.foodId];
+    const nutrientsPerServing = nutrientsPerServingForFood(
+      subFood,
+      foodCache,
+      nutrientIds
+    );
+    const { amount, unit } = ingredient.quantity;
+    return nutrientsForQuantity(
+      amount,
+      unit,
+      servingEquivalentQuantities(subFood),
+      nutrientsPerServing
+    );
+  });
   return nutrients.reduce(addNutrients);
 }
 

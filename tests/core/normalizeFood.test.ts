@@ -24,33 +24,33 @@ import {
 import { Food } from "../../src/core/Food";
 
 describe("nutrientsPerServingForFood", () => {
-  function getFood(foodId: string): Promise<Food> {
-    return Promise.resolve(TEST_BRANDED_FOOD);
+  const foodCache: {[index: string]: Food} = {
+    "userData/id.abc123": TEST_BRANDED_FOOD,
   }
   const NUTRIENT_IDS = [1008, 1003];
 
-  it("SR Legacy Food", async () => {
-    const result = await nutrientsPerServingForFood(
+  it("SR Legacy Food", () => {
+    const result = nutrientsPerServingForFood(
       TEST_SR_LEGACY_FOOD,
-      getFood,
+      foodCache,
       NUTRIENT_IDS
     );
     expect(result).toEqual([123, 10]);
   });
 
-  it("Branded Food", async () => {
-    const result = await nutrientsPerServingForFood(
+  it("Branded Food", () => {
+    const result = nutrientsPerServingForFood(
       TEST_BRANDED_FOOD,
-      getFood,
+      foodCache,
       NUTRIENT_IDS
     );
     expect(result).toEqual([425, 5]);
   });
 
-  it("Recipe", async () => {
-    const result = await nutrientsPerServingForFood(
+  it("Recipe", () => {
+    const result = nutrientsPerServingForFood(
       TEST_RECIPE,
-      getFood,
+      foodCache,
       NUTRIENT_IDS
     );
     expect(result).toEqual([212.5, 2.5]);

@@ -31,8 +31,6 @@ export function reducer(state: State, action: RootAction): State {
               deselected: false,
               description: null,
             },
-            food: null,
-            nutrientsPerServing: null,
           },
         ]),
       };
@@ -51,6 +49,14 @@ export function reducer(state: State, action: RootAction): State {
             ? ingredientReducer(ingredient, action.action)
             : ingredient
         ),
+      };
+    case ActionType.UPDATE_FOOD_CACHE:
+      return {
+        ...state,
+        foodCache: {
+          ...state.foodCache,
+          [action.foodId]: action.food,
+        },
       };
     default:
       return state;

@@ -61,8 +61,7 @@ export function stateFromRecipe(food: Recipe): State {
         deselected: false,
         description: null,
       },
-      food: null,
-      nutrientsPerServing: null,
     })),
+    foodCache: {},
   };
 }
