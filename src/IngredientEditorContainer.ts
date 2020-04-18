@@ -51,7 +51,7 @@ function mapStateToProps() {
       },
       amount: ingredient ? ingredient.amount : null,
       unit: ingredient ? ingredient.unit : null,
-      units: getIngredientUnits(foodState, index),
+      units: getIngredientUnits(foodState, index).concat([""]),
       nutrients: <"LOADING" | Nutrients>getNutrientsForIngredient(ingredient, foodState.foodCache),
       nutrientNames: getNutrientNames(state),
     };
