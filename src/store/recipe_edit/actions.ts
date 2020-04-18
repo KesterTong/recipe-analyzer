@@ -48,7 +48,6 @@ export function updateFoodCache(foodId: string, food: Food): Action {
 
 export function loadIngredient(foodId: string): ThunkResult<Promise<void>> {
   return async (dispatch, getState) => {
-    console.log(foodId);
     const food = await getFood(foodId);
     if (food == null) {
       return;
