@@ -26,7 +26,6 @@ import {
   Icon,
 } from "@material-ui/core";
 
-
 export interface IngredientEditorProps {
   amount: number | null;
   unit: string | null;
@@ -47,12 +46,12 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
   <TableRow>
     <TableCell>
       <TextField
-          id="amount"
-          value={props.amount === null ? "" : props.amount.toString()}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            props.updateAmount(Number(event.target.value))
-          }
-        />
+        id="amount"
+        value={props.amount === null ? "" : props.amount.toString()}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          props.updateAmount(Number(event.target.value))
+        }
+      />
     </TableCell>
     <TableCell>
       <FormControl>

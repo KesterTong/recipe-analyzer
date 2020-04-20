@@ -13,7 +13,13 @@
 // limitations under the License.
 import * as React from "react";
 
-import { Button, AppBar, Toolbar, Container, CircularProgress } from "@material-ui/core";
+import {
+  Button,
+  AppBar,
+  Toolbar,
+  Container,
+  CircularProgress,
+} from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";

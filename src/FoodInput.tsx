@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from "@material-ui/lab";
 import { searchFoods } from "./database";
 import { State } from "./store/food_input";
 import { TextField } from "@material-ui/core";
@@ -14,11 +14,14 @@ export interface FoodInputProps extends State {
 
 // TODO: replace by QueryResult
 interface Option {
-  label: string,
-  value: string,
+  label: string;
+  value: string;
 }
 
-export class FoodInput extends React.Component<FoodInputProps, {isLoading: boolean, options: Option[]}> {
+export class FoodInput extends React.Component<
+  FoodInputProps,
+  { isLoading: boolean; options: Option[] }
+> {
   state = {
     isLoading: false,
     options: [],
@@ -53,7 +56,7 @@ export class FoodInput extends React.Component<FoodInputProps, {isLoading: boole
           filterOptions={(options: Option[], _) => options}
           getOptionLabel={(option: Option) => option.label}
           style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params}/>}
+          renderInput={(params) => <TextField {...params} />}
           onInputChange={(event, newValue: string) => {
             this._handleSearch(newValue);
           }}
