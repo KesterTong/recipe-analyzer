@@ -24,6 +24,7 @@ import {
   TableRow,
   TableCell,
   Button,
+  Typography,
 } from "@material-ui/core";
 
 export interface RecipeEditorProps {
@@ -51,7 +52,9 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
           props.updateDescription(event.target.value)
         }
       />
-      Ingredients
+      <Typography variant="h5" component="h2" gutterBottom>
+        Ingredients
+      </Typography>
       <Table>
         <TableHead className="d-flex">
           <TableRow>
