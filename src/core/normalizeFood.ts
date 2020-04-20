@@ -25,7 +25,7 @@ import { nutrientsForQuantity, Recipe } from "./Recipe";
 
 export function nutrientsPerServingForFood(
   food: Food,
-  foodCache: {[index: string]: Food},
+  foodCache: { [index: string]: Food },
   nutrientIds: number[]
 ): Nutrients {
   switch (food.dataType) {
@@ -39,7 +39,7 @@ export function nutrientsPerServingForFood(
 
 function nutrientsForRecipe(
   food: Recipe,
-  foodCache: {[index: string]: Food},
+  foodCache: { [index: string]: Food },
   nutrientIds: number[]
 ): Nutrients {
   const nutrients = food.ingredientsList.map((ingredient) => {

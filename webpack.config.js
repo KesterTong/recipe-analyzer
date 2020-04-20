@@ -42,6 +42,7 @@ module.exports = {
     "react-dom": "ReactDOM",
     "react-bootstrap": "ReactBootstrap",
     "react-bootstrap-typeahead": "ReactBootstrapTypeahead",
+    "@material-ui/core": "MaterialUI",
   },
 	optimization: {
 		// We do not want to minimize our code.

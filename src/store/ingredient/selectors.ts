@@ -59,22 +59,22 @@ function ready(food: Food, foodCache: { [index: string]: Food }): boolean {
   if (food === undefined) {
     return false;
   }
-  if (food.dataType != 'Recipe') {
+  if (food.dataType != "Recipe") {
     return true;
   }
-  return food.ingredientsList.every((ingredient) => 
-    foodCache[ingredient.foodId] !== undefined && ready(foodCache[ingredient.foodId], foodCache))
+  return food.ingredientsList.every(
+    (ingredient) =>
+      foodCache[ingredient.foodId] !== undefined &&
+      ready(foodCache[ingredient.foodId], foodCache)
+  );
 }
 
 export function getNutrientsForIngredient(
   ingredient: Ingredient,
-  foodCache: { [index: string]: Food }): StatusOr<Nutrients> {
+  foodCache: { [index: string]: Food }
+): StatusOr<Nutrients> {
   const foodId = ingredient.selected.foodId;
-  if (
-    ingredient.amount == null ||
-    ingredient.unit == null ||
-    foodId == null
-  ) {
+  if (ingredient.amount == null || ingredient.unit == null || foodId == null) {
     return { code: "LOADING" };
   }
   const food = foodCache[foodId];
@@ -85,6 +85,6 @@ export function getNutrientsForIngredient(
     ingredient.amount,
     ingredient.unit,
     servingEquivalentQuantities(food),
-    nutrientsPerServingForFood(food, foodCache, [1008, 1003]), // TODO: don't hardcode this.
+    nutrientsPerServingForFood(food, foodCache, [1008, 1003]) // TODO: don't hardcode this.
   );
 }

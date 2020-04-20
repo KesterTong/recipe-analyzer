@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/KesterTong/recipe-analyzer#readme",
   "dependencies": {
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
     "@types/google-apps-script": "^1.0.9",
     "@types/lodash": "^4.14.149",
     "@types/react-bootstrap-typeahead": "^3.4.5",

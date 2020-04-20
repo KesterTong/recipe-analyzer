@@ -13,7 +13,19 @@
 // limitations under the License.
 import { Food } from "./core";
 import * as React from "react";
-import { Form, Table } from "react-bootstrap";
+import {
+  Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  makeStyles,
+} from "@material-ui/core";
 
 export interface FoodViewerProps {
   food: Food;
@@ -26,43 +38,58 @@ export interface FoodViewerProps {
 
 export const NO_DISPLAY = {} as FoodViewerProps;
 
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+});
+
 export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
   if (props.food === undefined) {
     return null;
   }
+  const classes = useStyles();
   return (
     <React.Fragment>
-      <h1>{props.food.description}</h1>
-      <h2>Nutrients</h2>
-      <Form.Control
-        as="select"
-        value={props.selectedQuantity.toString()}
-        onChange={(event: React.FormEvent) =>
-          props.setSelectedQuantity(
-            Number((event.target as HTMLSelectElement).value)
-          )
-        }
-      >
-        {props.quantities.map((quantity, index) => (
-          <option value={index}>{quantity}</option>
-        ))}
-      </Form.Control>
+      <Typography variant="h4" component="h1" gutterBottom>
+        {props.food.description}
+      </Typography>
+      <Typography variant="h5" component="h2" gutterBottom>
+        Nutrients
+      </Typography>
+      <FormControl>
+        <InputLabel id="display-quantity-label">Quantity</InputLabel>
+        <Select
+          labelId="display-quantity-label"
+          id="display-quantity-select"
+          value={props.selectedQuantity.toString()}
+          onChange={(event) =>
+            props.setSelectedQuantity(
+              Number((event.target as HTMLSelectElement).value)
+            )
+          }
+        >
+          {props.quantities.map((quantity, index) => (
+            <MenuItem value={index}>{quantity}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <p>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
               {props.nutrientNames.map((nutrientName) => (
-                <th>{nutrientName}</th>
+                <TableCell>{nutrientName}</TableCell>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
               {props.nutrientValues.map((nutrientValue) => (
-                <td>{nutrientValue}</td>
+                <TableCell>{nutrientValue}</TableCell>
               ))}
-            </tr>
-          </tbody>
+            </TableRow>
+          </TableBody>
         </Table>
       </p>
     </React.Fragment>

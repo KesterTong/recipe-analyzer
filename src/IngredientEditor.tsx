@@ -14,8 +14,18 @@
 import * as React from "react";
 import { LOADING } from "./store/recipe_edit";
 import * as food_input from "./store/food_input";
-import { Form, Button } from "react-bootstrap";
 import { FoodInput } from "./FoodInput";
+import {
+  TableRow,
+  TableCell,
+  FormControl,
+  Select,
+  MenuItem,
+  TextField,
+  IconButton,
+  Icon,
+} from "@material-ui/core";
+
 
 export interface IngredientEditorProps {
   amount: number | null;
@@ -34,29 +44,30 @@ export interface IngredientEditorProps {
 export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = (
   props
 ) => (
-  <tr className="d-flex">
-    <td className="col-1">
-      <Form.Control
-        value={props.amount === null ? "" : props.amount.toString()}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          props.updateAmount(Number(event.target.value))
-        }
-      />
-    </td>
-    <td className="col-2">
-      <Form.Control
-        value={props.unit || ""}
-        as="select"
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          props.updateUnit(event.target.value)
-        }
-      >
-        {props.units.map((unit) => (
-          <option>{unit}</option>
-        ))}
-      </Form.Control>
-    </td>
-    <td className="col-6">
+  <TableRow>
+    <TableCell>
+      <TextField
+          id="amount"
+          value={props.amount === null ? "" : props.amount.toString()}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            props.updateAmount(Number(event.target.value))
+          }
+        />
+    </TableCell>
+    <TableCell>
+      <FormControl>
+        <Select
+          id="unit"
+          value={props.unit || ""}
+          onChange={(event) => props.updateUnit(event.target.value as string)}
+        >
+          {props.units.map((unit) => (
+            <MenuItem value={unit}>{unit}</MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </TableCell>
+    <TableCell>
       {
         <FoodInput
           {...props.selected}
@@ -64,16 +75,16 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
           deselect={props.deselect}
         />
       }
-    </td>
+    </TableCell>
     {props.nutrientNames.map((_, index) => {
       const value =
         props.nutrients == "LOADING" ? null : props.nutrients[index];
-      return (
-        <td className="col-1">{value == null ? "..." : value.toFixed(1)}</td>
-      );
+      return <TableCell>{value == null ? "..." : value.toFixed(1)}</TableCell>;
     })}
-    <td className="col-1">
-      <Button onClick={() => props.delete()}>Delete</Button>
-    </td>
-  </tr>
+    <TableCell>
+      <IconButton aria-label="delete" onClick={() => props.delete()}>
+        <Icon>delete</Icon>
+      </IconButton>
+    </TableCell>
+  </TableRow>
 );

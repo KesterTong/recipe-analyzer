@@ -24,9 +24,9 @@ import {
 import { Food } from "../../src/core/Food";
 
 describe("nutrientsPerServingForFood", () => {
-  const foodCache: {[index: string]: Food} = {
+  const foodCache: { [index: string]: Food } = {
     "userData/id.abc123": TEST_BRANDED_FOOD,
-  }
+  };
   const NUTRIENT_IDS = [1008, 1003];
 
   it("SR Legacy Food", () => {

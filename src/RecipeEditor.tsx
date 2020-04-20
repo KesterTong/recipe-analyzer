@@ -13,9 +13,18 @@
 // limitations under the License.
 import * as React from "react";
 
-import { Form, Table, Button } from "react-bootstrap";
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
 import { StatusOr, Nutrients } from "./core";
+import {
+  FormGroup,
+  TextField,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Button,
+} from "@material-ui/core";
 
 export interface RecipeEditorProps {
   description: string;
@@ -34,46 +43,45 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
   }
   return (
     <React.Fragment>
-      <Form>
-        <Form.Group controlId="formDescription">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            value={props.description}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              props.updateDescription(event.target.value)
-            }
-          />
-        </Form.Group>
-      </Form>
-      <Form.Label>Ingredients</Form.Label>
+      <TextField
+        id="description"
+        label="description"
+        value={props.description}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          props.updateDescription(event.target.value)
+        }
+      />
+      Ingredients
       <Table>
-        <thead className="d-flex">
-          <th className="col-1">Amount</th>
-          <th className="col-2">Unit</th>
-          <th className="col-6">Ingredient</th>
-          {props.nutrientNames.map((nutrientName) => (
-            <th className="col-1">{nutrientName}</th>
-          ))}
-          <th className="col-1"></th>
-        </thead>
-        <tbody>
+        <TableHead className="d-flex">
+          <TableRow>
+            <TableCell>Amount</TableCell>
+            <TableCell>Unit</TableCell>
+            <TableCell>Ingredient</TableCell>
+            {props.nutrientNames.map((nutrientName) => (
+              <TableCell>{nutrientName}</TableCell>
+            ))}
+            <TableCell></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {Array.from({ length: props.numIngredients }, (_, index) => (
             <IngredientEditorContainer index={index} />
           ))}
-          <tr className="d-flex">
-            <td className="col-1"></td>
-            <td className="col-2"></td>
-            <td className="col-6">Total</td>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell>Total</TableCell>
             {"code" in props.totalNutrients
-              ? props.nutrientNames.map((_) => <td className="col-1">-</td>)
+              ? props.nutrientNames.map((_) => <TableCell>-</TableCell>)
               : props.totalNutrients.map((value) => (
-                  <td className="col-1">{value.toFixed(1)}</td>
+                  <TableCell>{value.toFixed(1)}</TableCell>
                 ))}
-            <td className="col-1">
+            <TableCell>
               <Button onClick={props.addIngredient}>Add</Button>
-            </td>
-          </tr>
-        </tbody>
+            </TableCell>
+          </TableRow>
+        </TableBody>
       </Table>
     </React.Fragment>
   );

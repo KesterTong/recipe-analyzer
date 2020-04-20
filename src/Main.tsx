@@ -13,7 +13,8 @@
 // limitations under the License.
 import * as React from "react";
 
-import { Form, Navbar, Container, Button, Spinner } from "react-bootstrap";
+import { Form, Container, Spinner } from "react-bootstrap";
+import { Button, AppBar, Toolbar } from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
@@ -34,21 +35,20 @@ interface MainProps {
 export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
-      <Navbar bg="light" expand="lg">
-        <Form inline>
-          <FoodInput
-            {...props.selected}
-            select={props.select}
-            deselect={props.deselect}
-          />
-          &nbsp;
-          <Button onClick={props.saveFood}>Save</Button>
-          &nbsp;
-          <Button onClick={props.newBrandedFood}>New Custom Food</Button>
-          &nbsp;
-          <Button onClick={props.newRecipe}>New Recipe</Button>
-        </Form>
-      </Navbar>
+      <AppBar position="static">
+        <Toolbar>
+          <Form inline>
+            <FoodInput
+              {...props.selected}
+              select={props.select}
+              deselect={props.deselect}
+            />
+            <Button onClick={props.saveFood}>Save</Button>
+            <Button onClick={props.newBrandedFood}>New Custom Food</Button>
+            <Button onClick={props.newRecipe}>New Recipe</Button>
+          </Form>
+        </Toolbar>
+      </AppBar>
       <Container>
         {props.loading ? <Spinner animation="border"></Spinner> : null}
         <BrandedFoodEditorContainer />
