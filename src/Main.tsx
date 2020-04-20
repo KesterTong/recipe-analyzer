@@ -13,8 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 
-import { Form, Spinner } from "react-bootstrap";
-import { Button, AppBar, Toolbar, Container } from "@material-ui/core";
+import { Button, AppBar, Toolbar, Container, CircularProgress } from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
@@ -48,7 +47,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         </Toolbar>
       </AppBar>
       <Container>
-        {props.loading ? <Spinner animation="border"></Spinner> : null}
+        {props.loading ? <CircularProgress /> : null}
         <BrandedFoodEditorContainer />
         <RecipeEditorContainer />
         <FoodViewerContainer />
