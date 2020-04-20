@@ -13,8 +13,8 @@
 // limitations under the License.
 import * as React from "react";
 
-import { Form, Container, Spinner } from "react-bootstrap";
-import { Button, AppBar, Toolbar } from "@material-ui/core";
+import { Form, Spinner } from "react-bootstrap";
+import { Button, AppBar, Toolbar, Container } from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
@@ -37,16 +37,14 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
     <React.Fragment>
       <AppBar position="static">
         <Toolbar>
-          <Form inline>
-            <FoodInput
-              {...props.selected}
-              select={props.select}
-              deselect={props.deselect}
-            />
-            <Button onClick={props.saveFood}>Save</Button>
-            <Button onClick={props.newBrandedFood}>New Custom Food</Button>
-            <Button onClick={props.newRecipe}>New Recipe</Button>
-          </Form>
+          <FoodInput
+            {...props.selected}
+            select={props.select}
+            deselect={props.deselect}
+          />
+          <Button onClick={props.saveFood}>Save</Button>
+          <Button onClick={props.newBrandedFood}>New Custom Food</Button>
+          <Button onClick={props.newRecipe}>New Recipe</Button>
         </Toolbar>
       </AppBar>
       <Container>
