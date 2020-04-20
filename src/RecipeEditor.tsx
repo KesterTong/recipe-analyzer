@@ -25,6 +25,8 @@ import {
   TableCell,
   Button,
   Typography,
+  IconButton,
+  Icon,
 } from "@material-ui/core";
 
 export interface RecipeEditorProps {
@@ -81,7 +83,9 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
                   <TableCell>{value.toFixed(1)}</TableCell>
                 ))}
             <TableCell>
-              <Button onClick={props.addIngredient}>Add</Button>
+            <IconButton aria-label="add" onClick={props.addIngredient}>
+              <Icon>add</Icon>
+            </IconButton>
             </TableCell>
           </TableRow>
         </TableBody>
