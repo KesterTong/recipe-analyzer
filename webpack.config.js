@@ -6,7 +6,7 @@ module.exports = {
   devtool: "source-map",
   resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: [".ts", ".tsx"]
+      extensions: [".js", ".ts", ".tsx"]
   },
   module: {
       rules: [
@@ -42,7 +42,6 @@ module.exports = {
     "react-dom": "ReactDOM",
     "react-bootstrap": "ReactBootstrap",
     "react-bootstrap-typeahead": "ReactBootstrapTypeahead",
-    "@material-ui/core": "MaterialUI",
   },
 	optimization: {
 		// We do not want to minimize our code.
