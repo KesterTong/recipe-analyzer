@@ -19,6 +19,7 @@ import {
   Toolbar,
   Container,
   CircularProgress,
+  makeStyles,
 } from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
@@ -26,6 +27,7 @@ import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
 import * as food_input from "./store/food_input";
+import { blue } from "@material-ui/core/colors";
 
 interface MainProps {
   loading: boolean;
@@ -37,10 +39,17 @@ interface MainProps {
   newRecipe: () => void;
 }
 
+const useStyles = makeStyles({
+  root: {
+    background: blue[300],
+  },
+});
+
 export const Main: React.FunctionComponent<MainProps> = (props) => {
+  const classes = useStyles();
   return (
     <React.Fragment>
-      <AppBar position="static">
+      <AppBar className={classes.root} position="static">
         <Toolbar>
           <FoodInput
             {...props.selected}
