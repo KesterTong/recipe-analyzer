@@ -52,8 +52,9 @@ export function getNutrientsForIngredient(
   foodCache: { [index: string]: Food }
 ): StatusOr<Nutrients> {
   const foodId = ingredient.selected.foodId;
-  if (ingredient.amount == null || ingredient.unit == null || foodId == null) {
-    return status(StatusCode.LOADING);
+  if (ingredient.amount == "" || ingredient.unit == "" || foodId == null) {
+    // Return empty nutrients when ingredient isn't fully specified
+    return {};
   }
   const food = foodCache[foodId];
   if (food === undefined) {

@@ -22,12 +22,17 @@ export const NutrientsRow: React.FunctionComponent<{
   nutrients: StatusOr<Nutrients>;
   nutrientInfos: NutrientInfo[];
 }> = (props) => {
+  // TODO: for total row, present missing value as "0" not "".
   return (
     <React.Fragment>
       {props.nutrientInfos.map((nutrientInfo) => (
         <TableCell>
           {isOk(props.nutrients) ? (
-            props.nutrients[nutrientInfo.id].toFixed(1)
+            props.nutrients[nutrientInfo.id] ? (
+              props.nutrients[nutrientInfo.id].toFixed(1)
+            ) : (
+              ""
+            )
           ) : hasCode(props.nutrients, StatusCode.LOADING) ? (
             <CircularProgress />
           ) : (
