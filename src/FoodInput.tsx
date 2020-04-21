@@ -3,11 +3,12 @@ import * as React from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { searchFoods } from "./database";
 import { State } from "./store/food_input";
-import { TextField } from "@material-ui/core";
+import { TextField, InputAdornment, Icon } from "@material-ui/core";
 
 import { QueryResult } from "./database";
 
 export interface FoodInputProps extends State {
+  useSearchAdornment: boolean;
   select(foodId: string, description: string): void;
   deselect(): void;
 }
@@ -56,7 +57,19 @@ export class FoodInput extends React.Component<
           filterOptions={(options: Option[], _) => options}
           getOptionLabel={(option: Option) => option.label}
           style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} />}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: this.props.useSearchAdornment ? (
+                  <InputAdornment position="start">
+                    <Icon>search</Icon>
+                  </InputAdornment>
+                ) : null,
+              }}
+            />
+          )}
           onInputChange={(event, newValue: string) => {
             this._handleSearch(newValue);
           }}

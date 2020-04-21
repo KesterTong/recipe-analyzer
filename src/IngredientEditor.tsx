@@ -86,6 +86,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
       {
         <FoodInput
           {...props.selected}
+          useSearchAdornment={false}
           select={props.select}
           deselect={props.deselect}
         />

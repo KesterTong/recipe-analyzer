@@ -59,9 +59,9 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
     <React.Fragment>
       <AppBar className={classes.root} position="static">
         <Toolbar>
-          <Icon>search</Icon>
           <FoodInput
             {...props.selected}
+            useSearchAdornment={true}
             select={props.select}
             deselect={props.deselect}
           />
