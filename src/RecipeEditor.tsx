@@ -83,9 +83,9 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
                   <TableCell>{value.toFixed(1)}</TableCell>
                 ))}
             <TableCell>
-            <IconButton aria-label="add" onClick={props.addIngredient}>
-              <Icon>add</Icon>
-            </IconButton>
+              <IconButton aria-label="add" onClick={props.addIngredient}>
+                <Icon>add</Icon>
+              </IconButton>
             </TableCell>
           </TableRow>
         </TableBody>

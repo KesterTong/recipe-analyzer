@@ -22,9 +22,10 @@ import {
   StatusOr,
   Food,
   nutrientsForQuantity,
-  nutrientsPerServingForFDCFood,
   nutrientsPerServingForFood,
-  error,
+  status,
+  StatusCode,
+  isOk,
 } from "../../core";
 
 export const makeGetIngredientUnits = () =>
@@ -76,16 +77,20 @@ export function getNutrientsForIngredient(
 ): StatusOr<Nutrients> {
   const foodId = ingredient.selected.foodId;
   if (ingredient.amount == null || ingredient.unit == null || foodId == null) {
-    return error("LOADING");
+    return status(StatusCode.LOADING);
   }
   const food = foodCache[foodId];
   if (!ready(food, foodCache)) {
-    return error("LOADING");
+    return status(StatusCode.LOADING);
+  }
+  const nutrientsPerServing = nutrientsPerServingForFood(food, foodCache, [1008, 1003]) // TODO: don't hardcode this.
+  if (!isOk(nutrientsPerServing)) {
+    return nutrientsPerServing;
   }
   return nutrientsForQuantity(
     ingredient.amount,
     ingredient.unit,
     servingEquivalentQuantities(food),
-    nutrientsPerServingForFood(food, foodCache, [1008, 1003]) // TODO: don't hardcode this.
+    nutrientsPerServing,
   );
 }

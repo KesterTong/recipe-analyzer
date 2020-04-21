@@ -22,12 +22,16 @@ import {
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
 import { nutrientsForQuantity, Recipe } from "./Recipe";
+import { StatusOr, StatusCode, status, isOk, hasCode } from "./StatusOr";
 
 export function nutrientsPerServingForFood(
   food: Food,
   foodCache: { [index: string]: Food },
   nutrientIds: number[]
-): Nutrients {
+): StatusOr<Nutrients> {
+  if (food === undefined) {
+    return status(StatusCode.LOADING);
+  }
   switch (food.dataType) {
     case "SR Legacy":
     case "Branded":
@@ -41,23 +45,44 @@ function nutrientsForRecipe(
   food: Recipe,
   foodCache: { [index: string]: Food },
   nutrientIds: number[]
-): Nutrients {
-  const nutrients = food.ingredientsList.map((ingredient) => {
-    const subFood = foodCache[ingredient.foodId];
-    const nutrientsPerServing = nutrientsPerServingForFood(
-      subFood,
-      foodCache,
-      nutrientIds
+): StatusOr<Nutrients> {
+  const nutrients: StatusOr<Nutrients>[] = food.ingredientsList.map(
+    (ingredient) => {
+      const subFood = foodCache[ingredient.foodId];
+      if (subFood === undefined) {
+        return status(StatusCode.LOADING);
+      }
+      const nutrientsPerServing = nutrientsPerServingForFood(
+        subFood,
+        foodCache,
+        nutrientIds
+      );
+      if (!isOk(nutrientsPerServing)) {
+        return nutrientsPerServing;
+      }
+      const { amount, unit } = ingredient.quantity;
+      return nutrientsForQuantity(
+        amount,
+        unit,
+        servingEquivalentQuantities(subFood),
+        nutrientsPerServing
+      );
+    }
+  );
+  if (nutrients.every((value) => isOk(value))) {
+    return (nutrients as Nutrients[]).reduce(
+      addNutrients,
+      nutrientIds.map((_) => 0)
     );
-    const { amount, unit } = ingredient.quantity;
-    return nutrientsForQuantity(
-      amount,
-      unit,
-      servingEquivalentQuantities(subFood),
-      nutrientsPerServing
-    );
-  });
-  return nutrients.reduce(addNutrients);
+  } else if (
+    nutrients.every(
+      (value) => isOk(value) || hasCode(value, StatusCode.LOADING)
+    )
+  ) {
+    return status(StatusCode.LOADING);
+  } else {
+    return status(StatusCode.INGREDIENT_ERROR);
+  }
 }
 
 export function servingEquivalentQuantities(food: Food) {

@@ -12,13 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+export enum StatusCode {
+  LOADING = "@Status/Loading",
+  // An error happened when processing an ingredient of a recipe.
+  INGREDIENT_ERROR = "@Status/IngredientError",
+}
+
 export interface Status {
-  code: string;
+  code: StatusCode;
   message?: string;
 }
 
-export function error(code: string, message?: string): Status {
-  return {code, message};
+export function status(code: StatusCode, message?: string): Status {
+  return { code, message };
+}
+
+export function hasCode<T>(status: StatusOr<T>, code: StatusCode): boolean {
+  return (status as Status).code === code;
 }
 
 export function isOk<T>(status: StatusOr<T>): status is T {
