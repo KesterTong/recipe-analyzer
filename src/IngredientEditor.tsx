@@ -35,7 +35,6 @@ export interface IngredientEditorProps {
   selected: food_input.State;
   nutrients: StatusOr<Nutrients>;
   nutrientIds: string[];
-  nutrientNames: string[];
   updateAmount(amount: string): void;
   updateUnit(unit: string): void;
   select(foodId: string, description: string): void;

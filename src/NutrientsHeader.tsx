@@ -12,11 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootState } from "./types";
-import { createSelector } from "reselect";
+import * as React from "react";
 
-export const getNutrientIds = createSelector(
-  (state: RootState) => state.config.nutrientInfos,
-  (nutrientInfos) =>
-    nutrientInfos.map((nutrientInfo) => nutrientInfo.id.toString())
-);
+import { NutrientInfo } from "./store";
+import { TableCell } from "@material-ui/core";
+
+export const NutrientsHeader: React.FunctionComponent<{
+  nutrientInfos: NutrientInfo[];
+}> = (props) => {
+  return (
+    <React.Fragment>
+      {props.nutrientInfos.map((nutrientInfo) => (
+        <TableCell>{nutrientInfo.name}</TableCell>
+      ))}
+    </React.Fragment>
+  );
+};

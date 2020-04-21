@@ -26,11 +26,13 @@ import {
   Icon,
   CircularProgress,
 } from "@material-ui/core";
+import { NutrientsHeader } from "./NutrientsHeader";
+import { NutrientInfo } from "./store";
 
 export interface RecipeEditorProps {
   description: string;
   nutrientIds: string[];
-  nutrientNames: string[];
+  nutrientInfos: NutrientInfo[];
   totalNutrients: StatusOr<Nutrients>;
   numIngredients: number;
   updateDescription(value: string): void;
@@ -59,9 +61,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
         <TableHead className="d-flex">
           <TableRow>
             <TableCell colSpan={3}>Ingredient</TableCell>
-            {props.nutrientNames.map((nutrientName) => (
-              <TableCell>{nutrientName}</TableCell>
-            ))}
+            <NutrientsHeader nutrientInfos={props.nutrientInfos} />
             <TableCell></TableCell>
           </TableRow>
         </TableHead>

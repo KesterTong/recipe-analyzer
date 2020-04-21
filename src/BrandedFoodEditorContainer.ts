@@ -15,7 +15,7 @@ import { RootState } from "./store";
 import { connect } from "react-redux";
 import { actions } from "./store/branded_food_edit";
 import { bindActionCreators } from "redux";
-import { ThunkDispatch, getNutrientNames, getNutrientIds } from "./store";
+import { ThunkDispatch } from "./store";
 import { BrandedFoodEditor } from "./BrandedFoodEditor";
 
 function mapStateToProps(state: RootState) {
@@ -24,7 +24,6 @@ function mapStateToProps(state: RootState) {
   }
   const edits = state.foodState;
   const nutrientsById: { [index: number]: string } = {};
-  const nutrientNames = getNutrientNames(state);
   edits.foodNutrients.forEach(({ id, amount }) => {
     nutrientsById[id] = amount;
   });
@@ -33,9 +32,9 @@ function mapStateToProps(state: RootState) {
     householdServingFullText: edits.householdServingFullText || "",
     servingSize: edits.servingSize,
     servingSizeUnit: edits.servingSizeUnit,
-    nutrients: state.config.nutrientInfos.map((nutrientInfo, index) => ({
+    nutrients: state.config.nutrientInfos.map((nutrientInfo) => ({
       id: nutrientInfo.id,
-      description: nutrientNames[index],
+      description: nutrientInfo.name,
       value: nutrientsById[nutrientInfo.id],
     })),
   };

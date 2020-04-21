@@ -26,10 +26,12 @@ import {
   TableBody,
   makeStyles,
 } from "@material-ui/core";
+import { NutrientInfo } from "./store";
+import { NutrientsHeader } from "./NutrientsHeader";
 
 export interface FoodViewerProps {
   food: Food;
-  nutrientNames: string[];
+  nutrientInfos: NutrientInfo[];
   nutrientValues: number[];
   quantities: string[];
   selectedQuantity: number;
@@ -78,9 +80,7 @@ export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              {props.nutrientNames.map((nutrientName) => (
-                <TableCell>{nutrientName}</TableCell>
-              ))}
+              <NutrientsHeader nutrientInfos={props.nutrientInfos} />
             </TableRow>
           </TableHead>
           <TableBody>
