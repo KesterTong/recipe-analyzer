@@ -70,9 +70,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             <IngredientEditorContainer index={index} />
           ))}
           <TableRow>
-            <TableCell></TableCell>
-            <TableCell></TableCell>
-            <TableCell>Total</TableCell>
+            <TableCell colSpan={3}>Total</TableCell>
             {props.nutrientIds.map((nutrientId) => (
               <TableCell>
                 {isOk(props.totalNutrients) ? (
