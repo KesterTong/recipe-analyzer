@@ -14,7 +14,7 @@
 import * as React from "react";
 
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
-import { StatusOr, Nutrients, isOk, hasCode, StatusCode } from "./core";
+import { StatusOr, Nutrients } from "./core";
 import {
   TextField,
   Table,
@@ -24,7 +24,6 @@ import {
   TableCell,
   IconButton,
   Icon,
-  CircularProgress,
 } from "@material-ui/core";
 import { NutrientsHeader } from "./NutrientsHeader";
 import { NutrientInfo } from "./store";
