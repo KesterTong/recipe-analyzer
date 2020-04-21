@@ -24,6 +24,7 @@ import {
   TextField,
   IconButton,
   Icon,
+  CircularProgress,
 } from "@material-ui/core";
 import { isOk, StatusOr, StatusCode, hasCode } from "./core";
 
@@ -81,7 +82,7 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
         {isOk(props.nutrients) ? (
           props.nutrients[index].toFixed(1)
         ) : hasCode(props.nutrients, StatusCode.LOADING) ? (
-          "..."
+          <CircularProgress />
         ) : (
           <Icon>error</Icon>
         )}
