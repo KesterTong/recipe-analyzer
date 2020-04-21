@@ -20,6 +20,8 @@ import {
   Container,
   CircularProgress,
   makeStyles,
+  Card,
+  Box,
 } from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
@@ -62,10 +64,12 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         </Toolbar>
       </AppBar>
       <Container>
-        {props.loading ? <CircularProgress /> : null}
-        <BrandedFoodEditorContainer />
-        <RecipeEditorContainer />
-        <FoodViewerContainer />
+        <Box my={4}>
+          {props.loading ? <CircularProgress /> : null}
+          <BrandedFoodEditorContainer />
+          <RecipeEditorContainer />
+          <FoodViewerContainer />
+        </Box>
       </Container>
     </React.Fragment>
   );
