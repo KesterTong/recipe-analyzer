@@ -16,12 +16,17 @@ import { addNutrients, scaleNutrients } from "../../src/core/Nutrients";
 
 describe("scaleNutrients", () => {
   it("scaleNutrients", () => {
-    expect(scaleNutrients([10, 20], 2)).toEqual([20, 40]);
+    expect(scaleNutrients({ "123": 10, "456": 20 }, 2)).toEqual({
+      "123": 20,
+      "456": 40,
+    });
   });
 });
 
 describe("addNutrients", () => {
   it("addNutrients", () => {
-    expect(addNutrients([10, 20], [5, 2])).toEqual([15, 22]);
+    expect(
+      addNutrients({ "123": 10, "456": 20 }, { "123": 10, "789": 20 })
+    ).toEqual({ "123": 20, "456": 20, "789": 20 });
   });
 });

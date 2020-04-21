@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { LOADING } from "./store/recipe_edit";
 import * as food_input from "./store/food_input";
 import { FoodInput } from "./FoodInput";
 import {
@@ -26,14 +25,15 @@ import {
   Icon,
   CircularProgress,
 } from "@material-ui/core";
-import { isOk, StatusOr, StatusCode, hasCode } from "./core";
+import { isOk, StatusOr, StatusCode, hasCode, Nutrients } from "./core";
 
 export interface IngredientEditorProps {
   amount: number | null;
   unit: string | null;
   units: string[];
   selected: food_input.State;
-  nutrients: StatusOr<number[]>;
+  nutrients: StatusOr<Nutrients>;
+  nutrientIds: string[];
   nutrientNames: string[];
   updateAmount(amount: number): void;
   updateUnit(unit: string): void;
@@ -77,10 +77,10 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
         />
       }
     </TableCell>
-    {props.nutrientNames.map((_, index) => (
+    {props.nutrientIds.map((nutrientId) => (
       <TableCell>
         {isOk(props.nutrients) ? (
-          props.nutrients[index].toFixed(1)
+          props.nutrients[nutrientId].toFixed(1)
         ) : hasCode(props.nutrients, StatusCode.LOADING) ? (
           <CircularProgress />
         ) : (

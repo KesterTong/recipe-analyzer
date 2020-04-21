@@ -13,7 +13,12 @@
 // limitations under the License.
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { RootState, ThunkDispatch, getNutrientNames } from "./store";
+import {
+  RootState,
+  ThunkDispatch,
+  getNutrientNames,
+  getNutrientIds,
+} from "./store";
 import {
   actions,
   getNutrientsForIngredient,
@@ -53,6 +58,7 @@ function mapStateToProps() {
       unit: ingredient ? ingredient.unit : null,
       units: getIngredientUnits(foodState, index).concat([""]),
       nutrients: getNutrientsForIngredient(ingredient, foodState.foodCache),
+      nutrientIds: getNutrientIds(state),
       nutrientNames: getNutrientNames(state),
     };
     return result;

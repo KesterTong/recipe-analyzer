@@ -14,7 +14,7 @@
 import * as React from "react";
 
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
-import { StatusOr, Nutrients } from "./core";
+import { StatusOr, Nutrients, isOk, hasCode, StatusCode } from "./core";
 import {
   FormGroup,
   TextField,
@@ -27,10 +27,12 @@ import {
   Typography,
   IconButton,
   Icon,
+  CircularProgress,
 } from "@material-ui/core";
 
 export interface RecipeEditorProps {
   description: string;
+  nutrientIds: string[];
   nutrientNames: string[];
   totalNutrients: StatusOr<Nutrients>;
   numIngredients: number;
@@ -77,16 +79,17 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             <TableCell></TableCell>
             <TableCell></TableCell>
             <TableCell>Total</TableCell>
-            {"code" in props.totalNutrients
-              ? props.nutrientNames.map((_) => <TableCell>-</TableCell>)
-              : props.totalNutrients.map((value) => (
-                  <TableCell>{value.toFixed(1)}</TableCell>
-                ))}
-            <TableCell>
-              <IconButton aria-label="add" onClick={props.addIngredient}>
-                <Icon>add</Icon>
-              </IconButton>
-            </TableCell>
+            {props.nutrientIds.map((nutrientId) => (
+              <TableCell>
+                {isOk(props.totalNutrients) ? (
+                  props.totalNutrients[nutrientId].toFixed(1)
+                ) : hasCode(props.totalNutrients, StatusCode.LOADING) ? (
+                  <CircularProgress />
+                ) : (
+                  <Icon>error</Icon>
+                )}
+              </TableCell>
+            ))}
           </TableRow>
         </TableBody>
       </Table>

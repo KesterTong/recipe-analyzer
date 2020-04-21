@@ -15,7 +15,7 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { RecipeEditor } from "./RecipeEditor";
-import { RootState, ThunkDispatch, getNutrientNames } from "./store";
+import { RootState, ThunkDispatch, getNutrientNames, getNutrientIds } from "./store";
 import { actions, getNutrientsForIngredient } from "./store/recipe_edit";
 import { addNutrients, Nutrients } from "./core";
 
@@ -25,26 +25,25 @@ function mapStateToProps(state: RootState) {
     return <typeof result>{};
   }
   const nutrientNames = getNutrientNames(state);
+  const nutrientIds = getNutrientIds(state);
   const numIngredients = foodState.ingredients.length;
   const totalNutrients = foodState.ingredients
     .map((ingredient) =>
       getNutrientsForIngredient(ingredient, foodState.foodCache)
     )
-    .reduce(
-      (lhs, rhs) => {
-        if ("code" in lhs) {
-          return lhs;
-        }
-        if ("code" in rhs) {
-          return rhs;
-        }
-        return addNutrients(lhs, rhs);
-      },
-      nutrientNames.map(() => 0)
-    );
+    .reduce((lhs, rhs) => {
+      if ("code" in lhs) {
+        return lhs;
+      }
+      if ("code" in rhs) {
+        return rhs;
+      }
+      return addNutrients(lhs, rhs);
+    }, {});
   const result = {
     description: foodState.description,
     nutrientNames,
+    nutrientIds,
     numIngredients,
     totalNutrients,
   };

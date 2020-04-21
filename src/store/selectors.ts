@@ -17,7 +17,8 @@ import { createSelector } from "reselect";
 
 export const getNutrientIds = createSelector(
   (state: RootState) => state.config.nutrientInfos,
-  (nutrientInfos) => nutrientInfos.map((nutrientInfo) => nutrientInfo.id)
+  (nutrientInfos) =>
+    nutrientInfos.map((nutrientInfo) => nutrientInfo.id.toString())
 );
 
 export const getNutrientNames = createSelector(

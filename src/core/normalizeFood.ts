@@ -26,8 +26,7 @@ import { StatusOr, StatusCode, status, isOk, hasCode } from "./StatusOr";
 
 export function nutrientsPerServingForFood(
   food: Food,
-  foodCache: { [index: string]: Food },
-  nutrientIds: number[]
+  foodCache: { [index: string]: Food }
 ): StatusOr<Nutrients> {
   if (food === undefined) {
     return status(StatusCode.LOADING);
@@ -35,16 +34,15 @@ export function nutrientsPerServingForFood(
   switch (food.dataType) {
     case "SR Legacy":
     case "Branded":
-      return nutrientsPerServingForFDCFood(food, nutrientIds);
+      return nutrientsPerServingForFDCFood(food);
     case "Recipe":
-      return nutrientsForRecipe(food, foodCache, nutrientIds);
+      return nutrientsForRecipe(food, foodCache);
   }
 }
 
 function nutrientsForRecipe(
   food: Recipe,
-  foodCache: { [index: string]: Food },
-  nutrientIds: number[]
+  foodCache: { [index: string]: Food }
 ): StatusOr<Nutrients> {
   const nutrients: StatusOr<Nutrients>[] = food.ingredientsList.map(
     (ingredient) => {
@@ -54,8 +52,7 @@ function nutrientsForRecipe(
       }
       const nutrientsPerServing = nutrientsPerServingForFood(
         subFood,
-        foodCache,
-        nutrientIds
+        foodCache
       );
       if (!isOk(nutrientsPerServing)) {
         return nutrientsPerServing;
@@ -70,10 +67,7 @@ function nutrientsForRecipe(
     }
   );
   if (nutrients.every((value) => isOk(value))) {
-    return (nutrients as Nutrients[]).reduce(
-      addNutrients,
-      nutrientIds.map((_) => 0)
-    );
+    return (nutrients as Nutrients[]).reduce(addNutrients, {});
   } else if (
     nutrients.every(
       (value) => isOk(value) || hasCode(value, StatusCode.LOADING)

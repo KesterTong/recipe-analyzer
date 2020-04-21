@@ -27,33 +27,20 @@ describe("nutrientsPerServingForFood", () => {
   const foodCache: { [index: string]: Food } = {
     "userData/id.abc123": TEST_BRANDED_FOOD,
   };
-  const NUTRIENT_IDS = [1008, 1003];
 
   it("SR Legacy Food", () => {
-    const result = nutrientsPerServingForFood(
-      TEST_SR_LEGACY_FOOD,
-      foodCache,
-      NUTRIENT_IDS
-    );
-    expect(result).toEqual([123, 10]);
+    const result = nutrientsPerServingForFood(TEST_SR_LEGACY_FOOD, foodCache);
+    expect(result).toEqual({ "1003": 10, "1008": 123 });
   });
 
   it("Branded Food", () => {
-    const result = nutrientsPerServingForFood(
-      TEST_BRANDED_FOOD,
-      foodCache,
-      NUTRIENT_IDS
-    );
-    expect(result).toEqual([425, 5]);
+    const result = nutrientsPerServingForFood(TEST_BRANDED_FOOD, foodCache);
+    expect(result).toEqual({ "1003": 5, "1008": 425 });
   });
 
   it("Recipe", () => {
-    const result = nutrientsPerServingForFood(
-      TEST_RECIPE,
-      foodCache,
-      NUTRIENT_IDS
-    );
-    expect(result).toEqual([212.5, 2.5]);
+    const result = nutrientsPerServingForFood(TEST_RECIPE, foodCache);
+    expect(result).toEqual({ "1003": 2.5, "1008": 212.5 });
   });
 });
 

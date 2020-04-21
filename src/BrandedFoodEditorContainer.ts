@@ -33,10 +33,10 @@ function mapStateToProps(state: RootState) {
     householdServingFullText: edits.householdServingFullText || "",
     servingSize: edits.servingSize,
     servingSizeUnit: edits.servingSizeUnit,
-    nutrients: getNutrientIds(state).map((id, index) => ({
-      id,
+    nutrients: state.config.nutrientInfos.map((nutrientInfo, index) => ({
+      id: nutrientInfo.id,
       description: nutrientNames[index],
-      value: nutrientsById[id],
+      value: nutrientsById[nutrientInfo.id],
     })),
   };
   return result;

@@ -83,10 +83,7 @@ export function getNutrientsForIngredient(
   if (!ready(food, foodCache)) {
     return status(StatusCode.LOADING);
   }
-  const nutrientsPerServing = nutrientsPerServingForFood(food, foodCache, [
-    1008,
-    1003,
-  ]); // TODO: don't hardcode this.
+  const nutrientsPerServing = nutrientsPerServingForFood(food, foodCache);
   if (!isOk(nutrientsPerServing)) {
     return nutrientsPerServing;
   }
