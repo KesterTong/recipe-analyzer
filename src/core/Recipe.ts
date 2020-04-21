@@ -13,6 +13,7 @@
 // limitations under the License.
 import { Nutrients, scaleNutrients } from "./Nutrients";
 import { canonicalizeQuantity } from "./Quantity";
+import { StatusOr, StatusCode, status } from "./StatusOr";
 
 export interface Ingredient {
   quantity: { amount: number; unit: string };
@@ -56,13 +57,13 @@ export function nutrientsForQuantity(
   unit: string,
   servingEquivalentQuantities: { [index: string]: number },
   nutrientsPerServing: Nutrients
-): Nutrients {
+): StatusOr<Nutrients> {
   [amount, unit] = canonicalizeQuantity(amount, unit);
   // The number of units of the quantity per serving.
   let unitsPerServing = servingEquivalentQuantities[unit];
   if (unitsPerServing == undefined) {
     // TODO: Display original unit as well as canonicalized unit in error.
-    throw "Could not determine nutrients for quantity " + unit;
+    return status(StatusCode.UNKNOWN_QUANTITY, unit);
   }
   var servings = amount / unitsPerServing;
   return scaleNutrients(nutrientsPerServing, servings);

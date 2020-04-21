@@ -14,6 +14,7 @@
 
 export enum StatusCode {
   LOADING = "@Status/Loading",
+  UNKNOWN_QUANTITY = "@Status/UnknownQuantity",
   // An error happened when processing an ingredient of a recipe.
   INGREDIENT_ERROR = "@Status/IngredientError",
 }
