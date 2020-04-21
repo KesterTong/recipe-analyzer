@@ -25,7 +25,7 @@ import {
   IconButton,
   Icon,
 } from "@material-ui/core";
-import { isOk, StatusOr } from "./core";
+import { isOk, StatusOr, StatusCode, hasCode } from "./core";
 
 export interface IngredientEditorProps {
   amount: number | null;
@@ -78,7 +78,13 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
     </TableCell>
     {props.nutrientNames.map((_, index) => (
       <TableCell>
-        {isOk(props.nutrients) ? props.nutrients[index].toFixed(1) : "..."}
+        {isOk(props.nutrients) ? (
+          props.nutrients[index].toFixed(1)
+        ) : hasCode(props.nutrients, StatusCode.LOADING) ? (
+          "..."
+        ) : (
+          <Icon>error</Icon>
+        )}
       </TableCell>
     ))}
     <TableCell>
