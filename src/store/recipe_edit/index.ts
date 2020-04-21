@@ -17,7 +17,6 @@ export * from "./conversion";
 export * from "./reducer";
 export * from "./types";
 export {
-  LOADING,
   getNutrientsForIngredient,
   makeGetIngredientUnits,
 } from "../ingredient";

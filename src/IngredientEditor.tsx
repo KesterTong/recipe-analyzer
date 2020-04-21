@@ -70,7 +70,9 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
           ))}
         </Select>
         <FormHelperText>
-          { hasCode(props.nutrients, StatusCode.UNKNOWN_QUANTITY) ? "Unknown quantity" : null}
+          {hasCode(props.nutrients, StatusCode.UNKNOWN_QUANTITY)
+            ? "Unknown quantity"
+            : null}
         </FormHelperText>
       </FormControl>
     </TableCell>

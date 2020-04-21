@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as food_input from "../food_input";
-import { Food, Nutrients } from "../../core";
 
 export interface State {
   amount: number | null;

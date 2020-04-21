@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createStore, applyMiddleware, Store } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import { Food } from "../core";
-import * as actions from "./actions";
 import * as food_input from "./food_input";
 import * as branded_food_edit from "./branded_food_edit";
 import * as food_view from "./food_view";

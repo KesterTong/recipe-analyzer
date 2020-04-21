@@ -11,8 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { memoize } from "lodash";
-import { createSelectorCreator, createSelector } from "reselect";
+import { createSelector } from "reselect";
 import { State } from "../recipe_edit/types";
 import { State as Ingredient } from "../ingredient/types";
 import {
@@ -48,29 +47,6 @@ export const makeGetIngredientUnits = () =>
     }
   );
 
-export type LOADING = "LOADING";
-
-// Because this is called by RecipeEditor to compute the total
-// nutrients, we take a different approach to memoizing.  Instead
-// of using a factory function, we use a custom selector creator.
-const customSelectorCreator = createSelectorCreator(
-  <(...args: any) => any>memoize
-);
-
-function ready(food: Food, foodCache: { [index: string]: Food }): boolean {
-  if (food === undefined) {
-    return false;
-  }
-  if (food.dataType != "Recipe") {
-    return true;
-  }
-  return food.ingredientsList.every(
-    (ingredient) =>
-      foodCache[ingredient.foodId] !== undefined &&
-      ready(foodCache[ingredient.foodId], foodCache)
-  );
-}
-
 export function getNutrientsForIngredient(
   ingredient: Ingredient,
   foodCache: { [index: string]: Food }
@@ -80,7 +56,7 @@ export function getNutrientsForIngredient(
     return status(StatusCode.LOADING);
   }
   const food = foodCache[foodId];
-  if (!ready(food, foodCache)) {
+  if (food === undefined) {
     return status(StatusCode.LOADING);
   }
   const nutrientsPerServing = nutrientsPerServingForFood(food, foodCache);
