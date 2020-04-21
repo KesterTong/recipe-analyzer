@@ -24,6 +24,7 @@ import {
   IconButton,
   Icon,
   CircularProgress,
+  FormHelperText,
 } from "@material-ui/core";
 import { isOk, StatusOr, StatusCode, hasCode, Nutrients } from "./core";
 
@@ -56,7 +57,9 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
       />
     </TableCell>
     <TableCell>
-      <FormControl>
+      <FormControl
+        error={hasCode(props.nutrients, StatusCode.UNKNOWN_QUANTITY)}
+      >
         <Select
           id="unit"
           value={props.unit || ""}
@@ -66,6 +69,9 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
             <MenuItem value={unit}>{unit}</MenuItem>
           ))}
         </Select>
+        <FormHelperText>
+          { hasCode(props.nutrients, StatusCode.UNKNOWN_QUANTITY) ? "Unknown quantity" : null}
+        </FormHelperText>
       </FormControl>
     </TableCell>
     <TableCell>
