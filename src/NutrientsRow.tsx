@@ -20,9 +20,9 @@ import { Nutrients, StatusOr, isOk, hasCode, StatusCode } from "./core";
 
 export const NutrientsRow: React.FunctionComponent<{
   nutrients: StatusOr<Nutrients>;
+  emptyValuesAreZero?: boolean;
   nutrientInfos: NutrientInfo[];
 }> = (props) => {
-  // TODO: for total row, present missing value as "0" not "".
   return (
     <React.Fragment>
       {props.nutrientInfos.map((nutrientInfo) => (
@@ -30,6 +30,8 @@ export const NutrientsRow: React.FunctionComponent<{
           {isOk(props.nutrients) ? (
             props.nutrients[nutrientInfo.id] ? (
               props.nutrients[nutrientInfo.id].toFixed(1)
+            ) : props.emptyValuesAreZero ? (
+              "0.0"
             ) : (
               ""
             )

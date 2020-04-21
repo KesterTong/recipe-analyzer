@@ -73,6 +73,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             <TableCell colSpan={3}>Total</TableCell>
             <NutrientsRow
               nutrients={props.totalNutrients}
+              emptyValuesAreZero={true}
               nutrientInfos={props.nutrientInfos}
             />
             <TableCell>
