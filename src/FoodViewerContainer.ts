@@ -42,7 +42,7 @@ function mapStateToProps(state: RootState) {
   const result = {
     food: state.foodState.food,
     nutrientNames,
-    nutrientValues: nutrientsPerServing.map(value => value * scale),
+    nutrientValues: nutrientsPerServing.map((value) => value * scale),
     quantities: quantities.map((quantity) => quantity.description),
     selectedQuantity: state.foodState.selectedQuantity,
   };

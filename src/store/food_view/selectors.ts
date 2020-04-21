@@ -28,9 +28,8 @@ export const selectNutrientsPerServing = createSelector(
   ],
   // TODO: Compute nutrientsPerServing in an action and do so for recipes too.
   (food: Food, nutrientIds: string[]) => {
-    const nutrients = food.dataType == "Recipe"
-      ? {}
-      : nutrientsPerServingForFDCFood(food);
-    return nutrientIds.map(nutrientId => nutrients[nutrientId]);
+    const nutrients =
+      food.dataType == "Recipe" ? {} : nutrientsPerServingForFDCFood(food);
+    return nutrientIds.map((nutrientId) => nutrients[nutrientId]);
   }
 );
