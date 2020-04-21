@@ -20,8 +20,12 @@ import {
   Container,
   CircularProgress,
   makeStyles,
-  Card,
   Box,
+  Icon,
+  IconButton,
+  Menu,
+  withStyles,
+  MenuItem,
 } from "@material-ui/core";
 
 import { FoodInput } from "./FoodInput";
@@ -48,19 +52,55 @@ const useStyles = makeStyles({
 });
 
 export const Main: React.FunctionComponent<MainProps> = (props) => {
+  const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
+
   const classes = useStyles();
   return (
     <React.Fragment>
       <AppBar className={classes.root} position="static">
         <Toolbar>
+          <Icon>search</Icon>
           <FoodInput
             {...props.selected}
             select={props.select}
             deselect={props.deselect}
           />
-          <Button onClick={props.saveFood}>Save</Button>
-          <Button onClick={props.newBrandedFood}>New Custom Food</Button>
-          <Button onClick={props.newRecipe}>New Recipe</Button>
+          <IconButton onClick={props.saveFood}>
+            <Icon>save</Icon>
+          </IconButton>
+          <div>
+            <IconButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={(event) => setAnchorEl(event.currentTarget)}
+            >
+              <Icon>create</Icon>
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={() => setAnchorEl(null)}
+            >
+              <MenuItem
+                onClick={() => {
+                  setAnchorEl(null);
+                  props.newRecipe();
+                }}
+              >
+                Recipe
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  setAnchorEl(null);
+                  props.newBrandedFood();
+                }}
+              >
+                Custom Food
+              </MenuItem>
+            </Menu>
+          </div>
         </Toolbar>
       </AppBar>
       <Container>
