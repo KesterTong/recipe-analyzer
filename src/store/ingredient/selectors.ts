@@ -43,7 +43,7 @@ export const makeGetIngredientUnits = () =>
       }
       return getIngredientUnits_(
         servingEquivalentQuantities(foodCache[foodId])
-      );
+      ).concat([""]);
     }
   );
 
@@ -63,8 +63,12 @@ export function getNutrientsForIngredient(
   if (!isOk(nutrientsPerServing)) {
     return nutrientsPerServing;
   }
+  const amount = Number(ingredient.amount);
+  if (isNaN(amount)) {
+    return status(StatusCode.NAN_AMOUNT);
+  }
   return nutrientsForQuantity(
-    ingredient.amount,
+    amount,
     ingredient.unit,
     servingEquivalentQuantities(food),
     nutrientsPerServing

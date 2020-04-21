@@ -76,7 +76,7 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
             {props.nutrientIds.map((nutrientId) => (
               <TableCell>
                 {isOk(props.totalNutrients) ? (
-                  props.totalNutrients[nutrientId].toFixed(1)
+                  props.totalNutrients[nutrientId]?.toFixed(1)
                 ) : hasCode(props.totalNutrients, StatusCode.LOADING) ? (
                   <CircularProgress />
                 ) : (

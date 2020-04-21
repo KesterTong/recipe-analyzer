@@ -29,14 +29,14 @@ import {
 import { isOk, StatusOr, StatusCode, hasCode, Nutrients } from "./core";
 
 export interface IngredientEditorProps {
-  amount: number | null;
-  unit: string | null;
+  amount: string;
+  unit: string;
   units: string[];
   selected: food_input.State;
   nutrients: StatusOr<Nutrients>;
   nutrientIds: string[];
   nutrientNames: string[];
-  updateAmount(amount: number): void;
+  updateAmount(amount: string): void;
   updateUnit(unit: string): void;
   select(foodId: string, description: string): void;
   deselect(): void;
@@ -50,9 +50,15 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
     <TableCell>
       <TextField
         id="amount"
-        value={props.amount === null ? "" : props.amount.toString()}
+        value={props.amount}
+        error={hasCode(props.nutrients, StatusCode.NAN_AMOUNT)}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          props.updateAmount(Number(event.target.value))
+          props.updateAmount(event.target.value)
+        }
+        helperText={
+          hasCode(props.nutrients, StatusCode.NAN_AMOUNT)
+            ? "Invalid amount"
+            : null
         }
       />
     </TableCell>

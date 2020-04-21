@@ -39,7 +39,7 @@ export function recipeFromState(state: State): Recipe {
         }
         return {
           quantity: {
-            amount: ingredient.amount,
+            amount: Number(ingredient.amount),
             unit: ingredient.unit,
           },
           foodId: ingredient.selected.foodId,
@@ -54,7 +54,10 @@ export function stateFromRecipe(food: Recipe): State {
     stateType: "RecipeEdit",
     description: food.description,
     ingredients: food.ingredientsList.map((ingredient) => ({
-      amount: ingredient.quantity.amount,
+      amount:
+        ingredient.quantity.amount === null
+          ? ""
+          : ingredient.quantity.amount.toString(),
       unit: ingredient.quantity.unit,
       selected: {
         foodId: ingredient.foodId,

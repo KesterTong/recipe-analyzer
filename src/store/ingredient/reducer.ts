@@ -19,14 +19,8 @@ import {
   servingEquivalentQuantities,
 } from "../../core";
 
-function defaultUnit(food: Food) {
-  const units = getIngredientUnits(servingEquivalentQuantities(food));
-  // Units should never be empty.
-  return units[0];
-}
-
-function defaultAmount(unit: string): number {
-  return unit == "g" || unit == "ml" ? 100 : 1;
+function defaultAmount(unit: string): string {
+  return unit == "g" || unit == "ml" ? "100" : "1";
 }
 
 export function reducer(state: State, action: Action): State {
@@ -44,8 +38,8 @@ export function reducer(state: State, action: Action): State {
       };
     case ActionType.UPDATE_FOOD_INPUT:
       const resetIngredient = {
-        amount: null, // Don't know a good default yet.
-        unit: null, // Same here.
+        amount: "", // Don't know a good default yet.
+        unit: "", // Same here.
         food: null,
         nutrientsPerServing: null,
       };

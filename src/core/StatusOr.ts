@@ -15,6 +15,8 @@
 export enum StatusCode {
   LOADING = "@Status/Loading",
   UNKNOWN_QUANTITY = "@Status/UnknownQuantity",
+  // When the amount in the edit UI is not a number.
+  NAN_AMOUNT = "@Status/NanAmount",
   // An error happened when processing an ingredient of a recipe.
   INGREDIENT_ERROR = "@Status/IngredientError",
 }

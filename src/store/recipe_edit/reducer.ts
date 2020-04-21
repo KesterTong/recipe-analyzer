@@ -24,8 +24,8 @@ export function reducer(state: State, action: RootAction): State {
         ...state,
         ingredients: state.ingredients.concat([
           {
-            amount: null,
-            unit: null,
+            amount: "",
+            unit: "",
             selected: {
               foodId: null,
               deselected: false,

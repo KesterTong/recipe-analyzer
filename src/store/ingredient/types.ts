@@ -14,8 +14,8 @@
 import * as food_input from "../food_input";
 
 export interface State {
-  amount: number | null;
-  unit: string | null;
+  amount: string;
+  unit: string;
   selected: food_input.State;
 }
 
@@ -27,7 +27,7 @@ export enum ActionType {
 
 export interface UpdateAmount {
   type: ActionType.UPDATE_AMOUNT;
-  amount: number;
+  amount: string;
 }
 
 export interface UpdateUnit {

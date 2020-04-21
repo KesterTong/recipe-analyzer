@@ -16,7 +16,7 @@ import { Action, ActionType } from "./types";
 import * as food_input from "../food_input";
 import { Food, Nutrients } from "../../core";
 
-export function updateAmount(amount: number): Action {
+export function updateAmount(amount: string): Action {
   return {
     type: ActionType.UPDATE_AMOUNT,
     amount,

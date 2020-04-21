@@ -54,9 +54,9 @@ function mapStateToProps() {
             : foodState.foodCache[ingredient.selected.foodId]?.description ||
               null,
       },
-      amount: ingredient ? ingredient.amount : null,
-      unit: ingredient ? ingredient.unit : null,
-      units: getIngredientUnits(foodState, index).concat([""]),
+      amount: ingredient.amount,
+      unit: ingredient.unit,
+      units: getIngredientUnits(foodState, index),
       nutrients: getNutrientsForIngredient(ingredient, foodState.foodCache),
       nutrientIds: getNutrientIds(state),
       nutrientNames: getNutrientNames(state),
@@ -72,7 +72,7 @@ function mapDispatchToProps(
   const { index } = ownProps;
   return bindActionCreators(
     {
-      updateAmount: (amount: number) =>
+      updateAmount: (amount: string) =>
         actions.updateIngredient(index, updateAmount(amount)),
       updateUnit: (unit: string) =>
         actions.updateIngredient(index, updateUnit(unit)),
