@@ -16,15 +16,12 @@ import * as React from "react";
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
 import { StatusOr, Nutrients, isOk, hasCode, StatusCode } from "./core";
 import {
-  FormGroup,
   TextField,
   Table,
   TableHead,
   TableBody,
   TableRow,
   TableCell,
-  Button,
-  Typography,
   IconButton,
   Icon,
   CircularProgress,
@@ -48,23 +45,20 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
   }
   return (
     <React.Fragment>
-      <TextField
-        id="description"
-        label="description"
-        value={props.description}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          props.updateDescription(event.target.value)
-        }
-      />
-      <Typography variant="h5" component="h2" gutterBottom>
-        Ingredients
-      </Typography>
+      <form>
+        <TextField
+          id="description"
+          label="description"
+          value={props.description}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            props.updateDescription(event.target.value)
+          }
+        />
+      </form>
       <Table>
         <TableHead className="d-flex">
           <TableRow>
-            <TableCell>Amount</TableCell>
-            <TableCell>Unit</TableCell>
-            <TableCell>Ingredient</TableCell>
+            <TableCell colSpan={3}>Ingredient</TableCell>
             {props.nutrientNames.map((nutrientName) => (
               <TableCell>{nutrientName}</TableCell>
             ))}
