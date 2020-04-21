@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Food } from "./core";
+import { Food, Nutrients, StatusOr } from "./core";
 import * as React from "react";
 import {
   Typography,
@@ -28,11 +28,12 @@ import {
 } from "@material-ui/core";
 import { NutrientInfo } from "./store";
 import { NutrientsHeader } from "./NutrientsHeader";
+import { NutrientsRow } from "./NutrientsRow";
 
 export interface FoodViewerProps {
   food: Food;
   nutrientInfos: NutrientInfo[];
-  nutrientValues: number[];
+  nutrients: StatusOr<Nutrients>;
   quantities: string[];
   selectedQuantity: number;
   setSelectedQuantity: (index: number) => void;
@@ -85,9 +86,10 @@ export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
           </TableHead>
           <TableBody>
             <TableRow>
-              {props.nutrientValues.map((nutrientValue) => (
-                <TableCell>{nutrientValue}</TableCell>
-              ))}
+              <NutrientsRow
+                nutrients={props.nutrients}
+                nutrientInfos={props.nutrientInfos}
+              />
             </TableRow>
           </TableBody>
         </Table>

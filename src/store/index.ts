@@ -29,7 +29,6 @@ import {
 
 export * from "./actions";
 export * from "./types";
-export * from "./selectors";
 
 function foodStateFromFood(
   food: Food

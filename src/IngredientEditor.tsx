@@ -27,6 +27,8 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import { isOk, StatusOr, StatusCode, hasCode, Nutrients } from "./core";
+import { NutrientsRow } from "./NutrientsRow";
+import { NutrientInfo } from "./store";
 
 export interface IngredientEditorProps {
   amount: string;
@@ -34,7 +36,7 @@ export interface IngredientEditorProps {
   units: string[];
   selected: food_input.State;
   nutrients: StatusOr<Nutrients>;
-  nutrientIds: string[];
+  nutrientInfos: NutrientInfo[];
   updateAmount(amount: string): void;
   updateUnit(unit: string): void;
   select(foodId: string, description: string): void;
@@ -91,17 +93,10 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
         />
       }
     </TableCell>
-    {props.nutrientIds.map((nutrientId) => (
-      <TableCell>
-        {isOk(props.nutrients) ? (
-          props.nutrients[nutrientId].toFixed(1)
-        ) : hasCode(props.nutrients, StatusCode.LOADING) ? (
-          <CircularProgress />
-        ) : (
-          <Icon>error</Icon>
-        )}
-      </TableCell>
-    ))}
+    <NutrientsRow
+      nutrients={props.nutrients}
+      nutrientInfos={props.nutrientInfos}
+    />
     <TableCell>
       <IconButton aria-label="delete" onClick={() => props.delete()}>
         <Icon>delete</Icon>

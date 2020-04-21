@@ -28,10 +28,10 @@ import {
 } from "@material-ui/core";
 import { NutrientsHeader } from "./NutrientsHeader";
 import { NutrientInfo } from "./store";
+import { NutrientsRow } from "./NutrientsRow";
 
 export interface RecipeEditorProps {
   description: string;
-  nutrientIds: string[];
   nutrientInfos: NutrientInfo[];
   totalNutrients: StatusOr<Nutrients>;
   numIngredients: number;
@@ -71,17 +71,10 @@ export const RecipeEditor: React.FunctionComponent<RecipeEditorProps> = (
           ))}
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
-            {props.nutrientIds.map((nutrientId) => (
-              <TableCell>
-                {isOk(props.totalNutrients) ? (
-                  props.totalNutrients[nutrientId]?.toFixed(1)
-                ) : hasCode(props.totalNutrients, StatusCode.LOADING) ? (
-                  <CircularProgress />
-                ) : (
-                  <Icon>error</Icon>
-                )}
-              </TableCell>
-            ))}
+            <NutrientsRow
+              nutrients={props.totalNutrients}
+              nutrientInfos={props.nutrientInfos}
+            />
             <TableCell>
               <IconButton aria-label="add" onClick={props.addIngredient}>
                 <Icon>add</Icon>

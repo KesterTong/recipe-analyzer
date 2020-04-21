@@ -15,7 +15,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { scaleNutrients } from "./core";
 import { FoodViewer } from "./FoodViewer";
-import { RootState, ThunkDispatch, getNutrientIds } from "./store";
+import { RootState, ThunkDispatch } from "./store";
 import {
   actions,
   selectQuantities,
@@ -27,17 +27,13 @@ function mapStateToProps(state: RootState) {
     return <typeof result>{};
   }
   const quantities = selectQuantities(state.foodState);
-  const nutrientIds = getNutrientIds(state);
   const nutrientInfos = state.config.nutrientInfos;
-  const nutrientsPerServing = selectNutrientsPerServing(
-    state.foodState,
-    nutrientIds
-  );
+  const nutrientsPerServing = selectNutrientsPerServing(state.foodState);
   const scale = quantities[state.foodState.selectedQuantity].servings;
   const result = {
     food: state.foodState.food,
     nutrientInfos,
-    nutrientValues: nutrientsPerServing.map((value) => value * scale),
+    nutrients: scaleNutrients(nutrientsPerServing, scale),
     quantities: quantities.map((quantity) => quantity.description),
     selectedQuantity: state.foodState.selectedQuantity,
   };
