@@ -17,4 +17,12 @@ export interface Status {
   message?: string;
 }
 
+export function error(code: string, message?: string): Status {
+  return {code, message};
+}
+
+export function isOk<T>(status: StatusOr<T>): status is T {
+  return (status as Status).code === undefined;
+}
+
 export type StatusOr<T> = Status | T;

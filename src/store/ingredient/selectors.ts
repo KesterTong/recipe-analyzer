@@ -24,6 +24,7 @@ import {
   nutrientsForQuantity,
   nutrientsPerServingForFDCFood,
   nutrientsPerServingForFood,
+  error,
 } from "../../core";
 
 export const makeGetIngredientUnits = () =>
@@ -75,11 +76,11 @@ export function getNutrientsForIngredient(
 ): StatusOr<Nutrients> {
   const foodId = ingredient.selected.foodId;
   if (ingredient.amount == null || ingredient.unit == null || foodId == null) {
-    return { code: "LOADING" };
+    return error("LOADING");
   }
   const food = foodCache[foodId];
   if (!ready(food, foodCache)) {
-    return { code: "LOADING" };
+    return error("LOADING");
   }
   return nutrientsForQuantity(
     ingredient.amount,

@@ -25,13 +25,14 @@ import {
   IconButton,
   Icon,
 } from "@material-ui/core";
+import { isOk, StatusOr } from "./core";
 
 export interface IngredientEditorProps {
   amount: number | null;
   unit: string | null;
   units: string[];
   selected: food_input.State;
-  nutrients: number[] | LOADING;
+  nutrients: StatusOr<number[]>;
   nutrientNames: string[];
   updateAmount(amount: number): void;
   updateUnit(unit: string): void;
@@ -75,11 +76,11 @@ export const IngredientEditor: React.FunctionComponent<IngredientEditorProps> = 
         />
       }
     </TableCell>
-    {props.nutrientNames.map((_, index) => {
-      const value =
-        props.nutrients == "LOADING" ? null : props.nutrients[index];
-      return <TableCell>{value == null ? "..." : value.toFixed(1)}</TableCell>;
-    })}
+    {props.nutrientNames.map((_, index) => (
+      <TableCell>
+        {isOk(props.nutrients) ? props.nutrients[index].toFixed(1) : "..."}
+      </TableCell>
+    ))}
     <TableCell>
       <IconButton aria-label="delete" onClick={() => props.delete()}>
         <Icon>delete</Icon>
