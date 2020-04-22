@@ -29,10 +29,10 @@ jest.mock("../../src/database");
 const _TEST_BRANDED_FOOD_EDITS: BrandedFoodEdits = {
   stateType: "BrandedFoodEdit",
   description: "Plantain Chips",
-  foodNutrients: [
-    { amount: "170", id: 1008 },
-    { amount: "2", id: 1003 },
-  ],
+  nutrients: {
+    1008: "170",
+    1003: "2",
+  },
   householdServingFullText: "6 pieces",
   selectedQuantity: 0,
   servingSize: "40",

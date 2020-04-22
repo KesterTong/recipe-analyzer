@@ -27,11 +27,10 @@ export function reducer(state: State, action: RootAction): State {
     case ActionType.UPDATE_NUTRIENT_VALUE:
       return {
         ...state,
-        foodNutrients: state.foodNutrients.map((nutrient) =>
-          nutrient.id == action.nutrientId
-            ? { ...nutrient, amount: action.value }
-            : nutrient
-        ),
+        nutrients: {
+          ...state.nutrients,
+          [action.nutrientId]: action.value,
+        },
       };
     default:
       return state;

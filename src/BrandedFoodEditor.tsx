@@ -19,13 +19,22 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@material-ui/core/TableBody";
+import { NutrientsHeader } from "./NutrientsHeader";
+import { NutrientInfo } from "./store";
+import TableCell from "@material-ui/core/TableCell";
 
 export interface BrandedFoodEditorProps {
   description: string;
   householdServingFullText: string;
   servingSize: string;
   servingSizeUnit: string;
-  nutrients: { id: number; description: string; value: string }[];
+  nutrientInfos: NutrientInfo[];
+  nutrients: { [index: number]: string };
   updateDescription(value: string): void;
   updateHouseholdUnit(value: string): void;
   updateServingSize(value: string): void;
@@ -42,15 +51,17 @@ export const BrandedFoodEditor: React.FunctionComponent<BrandedFoodEditorProps> 
   return (
     <React.Fragment>
       <form>
-        <TextField
-          id="description"
-          label="description"
-          value={props.description}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            props.updateDescription(event.target.value)
-          }
-        />
-        <FormGroup>
+        <div>
+          <TextField
+            id="description"
+            label="description"
+            value={props.description}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              props.updateDescription(event.target.value)
+            }
+          />
+        </div>
+        <div>
           <TextField
             id="household-unit"
             label="household unit"
@@ -83,17 +94,34 @@ export const BrandedFoodEditor: React.FunctionComponent<BrandedFoodEditorProps> 
               <MenuItem value={"g"}>g</MenuItem>
             </Select>
           </FormControl>
-        </FormGroup>
-        {props.nutrients.map((nutrient) => (
-          <TextField
-            id={nutrient.description + "-value"}
-            label={nutrient.description}
-            value={nutrient.value.toString()}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              props.updateNutrientValue(nutrient.id, event.target.value)
-            }
-          />
-        ))}
+        </div>
+        <div>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <NutrientsHeader nutrientInfos={props.nutrientInfos} />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                {props.nutrientInfos.map((nutrientInfo) => (
+                  <TableCell>
+                    <TextField
+                      id={nutrientInfo.name + "-value"}
+                      value={props.nutrients[nutrientInfo.id] || ""}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        props.updateNutrientValue(
+                          nutrientInfo.id,
+                          event.target.value
+                        )
+                      }
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </form>
     </React.Fragment>
   );

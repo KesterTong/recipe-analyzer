@@ -18,7 +18,7 @@ export interface State {
   servingSizeUnit: string;
   householdServingFullText: string;
   description: string;
-  foodNutrients: { id: number; amount: string }[];
+  nutrients: { [index: number]: string };
   selectedQuantity: number;
 }
 

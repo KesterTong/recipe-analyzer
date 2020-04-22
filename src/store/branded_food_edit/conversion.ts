@@ -15,41 +15,44 @@
 import { State } from "./types";
 import { BrandedFood } from "../../core";
 
-// TODO: don't hardcode nutrients.
 export const NEW_BRANDED_FOOD: BrandedFood = {
   dataType: "Branded",
   description: "New Food",
   servingSize: 100,
   servingSizeUnit: "g",
   householdServingFullText: "1 serving",
-  foodNutrients: [
-    { nutrient: { id: 1008 }, amount: 0 },
-    { nutrient: { id: 1003 }, amount: 0 },
-  ],
+  foodNutrients: [],
 };
 
 export function stateFromBrandedFood(food: BrandedFood): State {
-  let foodNutrients = food.foodNutrients.map((nutrient) => ({
-    id: nutrient.nutrient.id,
-    amount: (((nutrient.amount || 0) * food.servingSize) / 100).toString(),
-  }));
+  let nutrients: { [index: number]: string } = {};
+  food.foodNutrients.forEach((nutrient) => {
+    const scaled = (
+      ((nutrient.amount || 0) * food.servingSize) /
+      100
+    ).toString();
+    nutrients[nutrient.nutrient.id] = scaled.toString();
+  });
   return {
     stateType: "BrandedFoodEdit",
     description: food.description,
     servingSize: food.servingSize.toString(),
     servingSizeUnit: food.servingSizeUnit,
     householdServingFullText: food.householdServingFullText || "",
-    foodNutrients,
+    nutrients,
     selectedQuantity: 0,
   };
 }
 
 export function brandedFoodFromState(state: State): BrandedFood {
   let servingSize = Number(state.servingSize);
-  let foodNutrients = state.foodNutrients.map((nutrient) => ({
-    nutrient: { id: nutrient.id },
-    amount: (Number(nutrient.amount) * 100) / servingSize,
-  }));
+  let foodNutrients = Object.keys(state.nutrients).map((nutrientIdStr) => {
+    const nutrientId = Number(nutrientIdStr);
+    return {
+      nutrient: { id: nutrientId },
+      amount: (Number(state.nutrients[nutrientId]) * 100) / servingSize,
+    };
+  });
   return {
     dataType: "Branded",
     description: state.description,

@@ -23,20 +23,13 @@ function mapStateToProps(state: RootState) {
     return <typeof result>{};
   }
   const edits = state.foodState;
-  const nutrientsById: { [index: number]: string } = {};
-  edits.foodNutrients.forEach(({ id, amount }) => {
-    nutrientsById[id] = amount;
-  });
   const result = {
     description: edits.description,
     householdServingFullText: edits.householdServingFullText || "",
     servingSize: edits.servingSize,
     servingSizeUnit: edits.servingSizeUnit,
-    nutrients: state.config.nutrientInfos.map((nutrientInfo) => ({
-      id: nutrientInfo.id,
-      description: nutrientInfo.name,
-      value: nutrientsById[nutrientInfo.id],
-    })),
+    nutrientInfos: state.config.nutrientInfos,
+    nutrients: edits.nutrients,
   };
   return result;
 }
