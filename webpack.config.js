@@ -40,8 +40,6 @@ module.exports = {
     "redux": "Redux",
     "react-redux": "ReactRedux",
     "react-dom": "ReactDOM",
-    "react-bootstrap": "ReactBootstrap",
-    "react-bootstrap-typeahead": "ReactBootstrapTypeahead",
   },
 	optimization: {
 		// We do not want to minimize our code.
