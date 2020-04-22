@@ -16,7 +16,6 @@ import * as React from "react";
 import { NutrientInfo } from "./store";
 import { NutrientsHeader } from "./NutrientsHeader";
 import { NutrientsRow } from "./NutrientsRow";
-import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -26,6 +25,7 @@ import Table from "@material-ui/core/Table";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 export interface FoodViewerProps {
   food: Food;
