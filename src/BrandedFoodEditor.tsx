@@ -13,8 +13,14 @@
 // limitations under the License.
 
 import * as React from "react";
-
-import { Form, Col } from "react-bootstrap";
+import {
+  TextField,
+  FormGroup,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormControl,
+} from "@material-ui/core";
 
 export interface BrandedFoodEditorProps {
   description: string;
@@ -37,61 +43,60 @@ export const BrandedFoodEditor: React.FunctionComponent<BrandedFoodEditorProps> 
   }
   return (
     <React.Fragment>
-      <Form>
-        <Form.Group controlId="formDescription">
-          <Form.Label>Description</Form.Label>
-          <Form.Control
-            value={props.description}
+      <form>
+        <TextField
+          id="description"
+          label="description"
+          value={props.description}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            props.updateDescription(event.target.value)
+          }
+        />
+        <FormGroup>
+          <TextField
+            id="household-unit"
+            label="household unit"
+            value={props.householdServingFullText}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              props.updateDescription(event.target.value)
+              props.updateHouseholdUnit(event.target.value)
             }
           />
-        </Form.Group>
-        <Form.Row>
-          <Form.Group as={Col} controlId="formHouseholdUnit">
-            <Form.Label>Household Units</Form.Label>
-            <Form.Control
-              value={props.householdServingFullText}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                props.updateHouseholdUnit(event.target.value)
-              }
-            />
-          </Form.Group>
-          <Form.Group as={Col} controlId="formServingSize">
-            <Form.Label>Serving Size</Form.Label>
-            <Form.Control
-              value={props.servingSize}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                props.updateServingSize(event.target.value)
-              }
-            />
-          </Form.Group>
-          <Form.Group as={Col} controlId="formServingSizeUnits">
-            <Form.Label>Units</Form.Label>
-            <Form.Control
-              as="select"
+          <TextField
+            id="serving-size"
+            label="serving size"
+            value={props.servingSize}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              props.updateServingSize(event.target.value)
+            }
+          />
+          <FormControl>
+            <InputLabel id="serving-size-units-label">Quantity</InputLabel>
+            <Select
+              labelId="serving-size-units-label"
+              id="serving-size-units"
               value={props.servingSizeUnit}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                props.updateServingSizeUnit(event.target.value)
+              onChange={(event) =>
+                props.updateServingSizeUnit(
+                  (event.target as HTMLSelectElement).value
+                )
               }
             >
-              <option>ml</option>
-              <option>g</option>
-            </Form.Control>
-          </Form.Group>
-        </Form.Row>
+              <MenuItem value={"ml"}>ml</MenuItem>
+              <MenuItem value={"g"}>g</MenuItem>
+            </Select>
+          </FormControl>
+        </FormGroup>
         {props.nutrients.map((nutrient) => (
-          <Form.Group controlId={"form-" + nutrient.description}>
-            <Form.Label>{nutrient.description}</Form.Label>
-            <Form.Control
-              value={nutrient.value.toString()}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                props.updateNutrientValue(nutrient.id, event.target.value)
-              }
-            />
-          </Form.Group>
+          <TextField
+            id={nutrient.description + "-value"}
+            label={nutrient.description}
+            value={nutrient.value.toString()}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              props.updateNutrientValue(nutrient.id, event.target.value)
+            }
+          />
         ))}
-      </Form>
+      </form>
     </React.Fragment>
   );
 };
