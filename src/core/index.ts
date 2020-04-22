@@ -22,4 +22,5 @@ export { getDisplayQuantities } from "./getDisplayQuantities";
 export {
   nutrientsPerServingForFood,
   servingEquivalentQuantities,
+  nutrientsForIngredient,
 } from "./normalizeFood";

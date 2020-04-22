@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import { RecipeEditor } from "./RecipeEditor";
 import { RootState, ThunkDispatch } from "./store";
 import { actions, getNutrientsForIngredient } from "./store/recipe_edit";
-import { addNutrients } from "./core";
+import { totalNutrients } from "./core/normalizeFood";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;
@@ -26,24 +26,15 @@ function mapStateToProps(state: RootState) {
   }
   const nutrientInfos = state.config.nutrientInfos;
   const numIngredients = foodState.ingredients.length;
-  const totalNutrients = foodState.ingredients
-    .map((ingredient) =>
-      getNutrientsForIngredient(ingredient, foodState.foodCache)
-    )
-    .reduce((lhs, rhs) => {
-      if ("code" in lhs) {
-        return lhs;
-      }
-      if ("code" in rhs) {
-        return rhs;
-      }
-      return addNutrients(lhs, rhs);
-    }, {});
   const result = {
     description: foodState.description,
     nutrientInfos,
     numIngredients,
-    totalNutrients,
+    totalNutrients: totalNutrients(
+      foodState.ingredients.map((ingredient) =>
+        getNutrientsForIngredient(ingredient, foodState.foodCache)
+      )
+    ),
   };
   return result;
 }

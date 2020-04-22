@@ -20,11 +20,7 @@ import {
   Nutrients,
   StatusOr,
   Food,
-  nutrientsForQuantity,
-  nutrientsPerServingForFood,
-  status,
-  StatusCode,
-  isOk,
+  nutrientsForIngredient,
 } from "../../core";
 
 export const makeGetIngredientUnits = () =>
@@ -56,22 +52,14 @@ export function getNutrientsForIngredient(
     // Return empty nutrients when ingredient isn't fully specified
     return {};
   }
-  const food = foodCache[foodId];
-  if (food === undefined) {
-    return status(StatusCode.LOADING);
-  }
-  const nutrientsPerServing = nutrientsPerServingForFood(food, foodCache);
-  if (!isOk(nutrientsPerServing)) {
-    return nutrientsPerServing;
-  }
-  const amount = Number(ingredient.amount);
-  if (isNaN(amount)) {
-    return status(StatusCode.NAN_AMOUNT);
-  }
-  return nutrientsForQuantity(
-    amount,
-    ingredient.unit,
-    servingEquivalentQuantities(food),
-    nutrientsPerServing
+  return nutrientsForIngredient(
+    {
+      quantity: {
+        amount: Number(ingredient.amount),
+        unit: ingredient.unit,
+      },
+      foodId,
+    },
+    foodCache
   );
 }

@@ -21,7 +21,7 @@ import {
 } from "./FoodDataCentral";
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
-import { nutrientsForQuantity, Recipe } from "./Recipe";
+import { nutrientsForQuantity, Recipe, Ingredient } from "./Recipe";
 import { StatusOr, StatusCode, status, isOk, hasCode } from "./StatusOr";
 
 export function nutrientsPerServingForFood(
@@ -44,32 +44,44 @@ function nutrientsForRecipe(
   food: Recipe,
   foodCache: { [index: string]: Food }
 ): StatusOr<Nutrients> {
-  const nutrients: StatusOr<Nutrients>[] = food.ingredientsList.map(
-    (ingredient) => {
-      const subFood = foodCache[ingredient.foodId];
-      if (subFood === undefined) {
-        return status(StatusCode.LOADING);
-      }
-      const nutrientsPerServing = nutrientsPerServingForFood(
-        subFood,
-        foodCache
-      );
-      if (!isOk(nutrientsPerServing)) {
-        return nutrientsPerServing;
-      }
-      const { amount, unit } = ingredient.quantity;
-      return nutrientsForQuantity(
-        amount,
-        unit,
-        servingEquivalentQuantities(subFood),
-        nutrientsPerServing
-      );
-    }
+  return totalNutrients(
+    food.ingredientsList.map((ingredient) =>
+      nutrientsForIngredient(ingredient, foodCache)
+    )
   );
-  if (nutrients.every((value) => isOk(value))) {
-    return (nutrients as Nutrients[]).reduce(addNutrients, {});
+}
+
+export function nutrientsForIngredient(
+  ingredient: Ingredient,
+  foodCache: { [index: string]: Food }
+): StatusOr<Nutrients> {
+  const foodId = ingredient.foodId;
+  const food = foodCache[foodId];
+  if (food === undefined) {
+    return status(StatusCode.LOADING);
+  }
+  const nutrientsPerServing = nutrientsPerServingForFood(food, foodCache);
+  if (!isOk(nutrientsPerServing)) {
+    return nutrientsPerServing;
+  }
+  if (isNaN(ingredient.quantity.amount)) {
+    return status(StatusCode.NAN_AMOUNT);
+  }
+  return nutrientsForQuantity(
+    ingredient.quantity.amount,
+    ingredient.quantity.unit,
+    servingEquivalentQuantities(food),
+    nutrientsPerServing
+  );
+}
+
+export function totalNutrients(
+  nutrientsPerIngredient: StatusOr<Nutrients>[]
+): StatusOr<Nutrients> {
+  if (nutrientsPerIngredient.every((value) => isOk(value))) {
+    return (nutrientsPerIngredient as Nutrients[]).reduce(addNutrients, {});
   } else if (
-    nutrients.every(
+    nutrientsPerIngredient.every(
       (value) => isOk(value) || hasCode(value, StatusCode.LOADING)
     )
   ) {
