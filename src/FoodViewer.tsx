@@ -13,22 +13,19 @@
 // limitations under the License.
 import { Food, Nutrients, StatusOr } from "./core";
 import * as React from "react";
-import {
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  makeStyles,
-} from "@material-ui/core";
 import { NutrientInfo } from "./store";
 import { NutrientsHeader } from "./NutrientsHeader";
 import { NutrientsRow } from "./NutrientsRow";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableBody from "@material-ui/core/TableBody";
 
 export interface FoodViewerProps {
   food: Food;

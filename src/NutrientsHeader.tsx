@@ -15,7 +15,7 @@
 import * as React from "react";
 
 import { NutrientInfo } from "./store";
-import { TableCell } from "@material-ui/core";
+import TableCell from "@material-ui/core/TableCell";
 
 export const NutrientsHeader: React.FunctionComponent<{
   nutrientInfos: NutrientInfo[];

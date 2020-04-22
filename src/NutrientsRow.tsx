@@ -15,8 +15,10 @@
 import * as React from "react";
 
 import { NutrientInfo } from "./store";
-import { TableCell, CircularProgress, Icon } from "@material-ui/core";
 import { Nutrients, StatusOr, isOk, hasCode, StatusCode } from "./core";
+import TableCell from "@material-ui/core/TableCell";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Icon from "@material-ui/core/Icon";
 
 export const NutrientsRow: React.FunctionComponent<{
   nutrients: StatusOr<Nutrients>;

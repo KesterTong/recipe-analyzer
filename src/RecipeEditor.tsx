@@ -15,19 +15,17 @@ import * as React from "react";
 
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
 import { StatusOr, Nutrients } from "./core";
-import {
-  TextField,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  IconButton,
-  Icon,
-} from "@material-ui/core";
 import { NutrientsHeader } from "./NutrientsHeader";
 import { NutrientInfo } from "./store";
 import { NutrientsRow } from "./NutrientsRow";
+import TextField from "@material-ui/core/TextField";
+import Table from "@material-ui/core/Table";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TableBody from "@material-ui/core/TableBody";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
 
 export interface RecipeEditorProps {
   description: string;

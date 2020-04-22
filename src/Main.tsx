@@ -13,27 +13,22 @@
 // limitations under the License.
 import * as React from "react";
 
-import {
-  Button,
-  AppBar,
-  Toolbar,
-  Container,
-  CircularProgress,
-  makeStyles,
-  Box,
-  Icon,
-  IconButton,
-  Menu,
-  withStyles,
-  MenuItem,
-} from "@material-ui/core";
-
 import { FoodInput } from "./FoodInput";
 import { BrandedFoodEditorContainer } from "./BrandedFoodEditorContainer";
 import { FoodViewerContainer } from "./FoodViewerContainer";
 import { RecipeEditorContainer } from "./RecipeEditorContainer";
 import * as food_input from "./store/food_input";
 import { blue } from "@material-ui/core/colors";
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface MainProps {
   loading: boolean;

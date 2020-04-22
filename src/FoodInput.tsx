@@ -1,11 +1,11 @@
 import * as React from "react";
 
-import { Autocomplete } from "@material-ui/lab";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { searchFoods } from "./database";
 import { State } from "./store/food_input";
-import { TextField, InputAdornment, Icon } from "@material-ui/core";
-
-import { QueryResult } from "./database";
+import TextField from "@material-ui/core/TextField";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Icon from "@material-ui/core/Icon";
 
 export interface FoodInputProps extends State {
   useSearchAdornment: boolean;

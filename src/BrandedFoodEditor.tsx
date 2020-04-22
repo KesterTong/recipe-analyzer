@@ -13,14 +13,12 @@
 // limitations under the License.
 
 import * as React from "react";
-import {
-  TextField,
-  FormGroup,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControl,
-} from "@material-ui/core";
+import TextField from "@material-ui/core/TextField";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 export interface BrandedFoodEditorProps {
   description: string;

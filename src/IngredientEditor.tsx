@@ -14,21 +14,18 @@
 import * as React from "react";
 import * as food_input from "./store/food_input";
 import { FoodInput } from "./FoodInput";
-import {
-  TableRow,
-  TableCell,
-  FormControl,
-  Select,
-  MenuItem,
-  TextField,
-  IconButton,
-  Icon,
-  CircularProgress,
-  FormHelperText,
-} from "@material-ui/core";
 import { isOk, StatusOr, StatusCode, hasCode, Nutrients } from "./core";
 import { NutrientsRow } from "./NutrientsRow";
 import { NutrientInfo } from "./store";
+import TableRow from "@material-ui/core/TableRow";
+import TableCell from "@material-ui/core/TableCell";
+import TextField from "@material-ui/core/TextField";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import IconButton from "@material-ui/core/IconButton";
+import Icon from "@material-ui/core/Icon";
 
 export interface IngredientEditorProps {
   amount: string;
