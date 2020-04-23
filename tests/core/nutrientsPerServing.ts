@@ -15,7 +15,7 @@
 import {
   nutrientsPerServingForFood,
   servingEquivalentQuantities,
-} from "../../src/core/normalizeFood";
+} from "../../src/core";
 import {
   TEST_SR_LEGACY_FOOD,
   TEST_BRANDED_FOOD,

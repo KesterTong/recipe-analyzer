@@ -23,29 +23,30 @@ describe("getDisplayQuantities", () => {
   it("SR Legacy", () => {
     expect(getDisplayQuantities(TEST_SR_LEGACY_FOOD)).toEqual([
       {
-        description: "100 g",
-        servings: 1,
+        amount: 100,
+        unit: "g"
       },
       {
-        description: "1 cup (230 g)",
-        servings: 2.3,
+        amount: 1,
+        unit: "cup",
       },
       {
-        description: "2 fruit without skin and seeds (304 g)",
-        servings: 3.04,
+        amount: 2,
+        unit: "fruit without skin and seeds",
       },
     ]);
   });
 
   it("Branded", () => {
     expect(getDisplayQuantities(TEST_BRANDED_FOOD)).toEqual([
+      
       {
-        description: "6 pieces (40 g)",
-        servings: 40,
+        amount: 100,
+        unit: "g",
       },
       {
-        description: "100 g",
-        servings: 1,
+        amount: 6,
+        unit: "pieces",
       },
     ]);
   });
@@ -53,8 +54,8 @@ describe("getDisplayQuantities", () => {
   it("SR Legacy", () => {
     expect(getDisplayQuantities(TEST_RECIPE)).toEqual([
       {
-        description: "1 serving",
-        servings: 1,
+        amount: 1,
+        unit: "serving",
       },
     ]);
   });

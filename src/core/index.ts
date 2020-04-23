@@ -24,4 +24,5 @@ export {
   servingEquivalentQuantities,
   nutrientsForIngredient,
   nutrientsForQuantity,
-} from "./normalizeFood";
+  totalNutrients,
+} from "./nutrientsPerServing";

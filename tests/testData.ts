@@ -47,12 +47,12 @@ export const TEST_BRANDED_FOOD: BrandedFood = {
   dataType: "Branded",
   foodNutrients: [
     {
-      nutrient: { id: 1008 },
-      amount: 425.0,
-    },
-    {
       nutrient: { id: 1003 },
       amount: 5.0,
+    },
+    {
+      nutrient: { id: 1008 },
+      amount: 425.0,
     },
   ],
   servingSize: 40,

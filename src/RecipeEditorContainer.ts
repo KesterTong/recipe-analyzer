@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import { RecipeEditor } from "./RecipeEditor";
 import { RootState, ThunkDispatch } from "./store";
 import { actions, getNutrientsForIngredient } from "./store/recipe_edit";
-import { totalNutrients } from "./core/normalizeFood";
+import { totalNutrients } from "./core";
 
 function mapStateToProps(state: RootState) {
   const foodState = state.foodState;
