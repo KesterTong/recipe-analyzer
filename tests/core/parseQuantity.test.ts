@@ -16,21 +16,21 @@ import { parseQuantity } from "../../src/core/parseQuantity";
 
 describe("parseQuantity", () => {
   it("no unit", () => {
-    expect(parseQuantity("1")).toEqual({amount: 1.0, unit: "serving"});
+    expect(parseQuantity("1")).toEqual({ amount: 1.0, unit: "serving" });
   });
   it("number", () => {
-    expect(parseQuantity("1 cup")).toEqual({amount: 1.0, unit: "cup"});
+    expect(parseQuantity("1 cup")).toEqual({ amount: 1.0, unit: "cup" });
   });
   it("number with decimel", () => {
-    expect(parseQuantity("1.5 cup")).toEqual({amount: 1.5, unit: "cup"});
+    expect(parseQuantity("1.5 cup")).toEqual({ amount: 1.5, unit: "cup" });
   });
   it("number with trailing decimal point", () => {
-    expect(parseQuantity("1.0 cup")).toEqual({amount: 1.0, unit: "cup"});
+    expect(parseQuantity("1.0 cup")).toEqual({ amount: 1.0, unit: "cup" });
   });
   it("pure fraction", () => {
-    expect(parseQuantity("½ cup")).toEqual({amount: 0.5, unit: "cup"});
+    expect(parseQuantity("½ cup")).toEqual({ amount: 0.5, unit: "cup" });
   });
   it("compound fraction", () => {
-    expect(parseQuantity("1½ cup")).toEqual({amount: 1.5, unit: "cup"});
+    expect(parseQuantity("1½ cup")).toEqual({ amount: 1.5, unit: "cup" });
   });
 });

@@ -24,7 +24,7 @@ describe("getDisplayQuantities", () => {
     expect(getDisplayQuantities(TEST_SR_LEGACY_FOOD)).toEqual([
       {
         amount: 100,
-        unit: "g"
+        unit: "g",
       },
       {
         amount: 1,
@@ -39,7 +39,6 @@ describe("getDisplayQuantities", () => {
 
   it("Branded", () => {
     expect(getDisplayQuantities(TEST_BRANDED_FOOD)).toEqual([
-      
       {
         amount: 100,
         unit: "g",

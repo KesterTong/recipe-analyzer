@@ -46,13 +46,15 @@ export function stateFromBrandedFood(food: BrandedFood): State {
 
 export function brandedFoodFromState(state: State): BrandedFood {
   let servingSize = Number(state.servingSize);
-  let foodNutrients = Object.keys(state.nutrients).sort().map((nutrientIdStr) => {
-    const nutrientId = Number(nutrientIdStr);
-    return {
-      nutrient: { id: nutrientId },
-      amount: (Number(state.nutrients[nutrientId]) * 100) / servingSize,
-    };
-  });
+  let foodNutrients = Object.keys(state.nutrients)
+    .sort()
+    .map((nutrientIdStr) => {
+      const nutrientId = Number(nutrientIdStr);
+      return {
+        nutrient: { id: nutrientId },
+        amount: (Number(state.nutrients[nutrientId]) * 100) / servingSize,
+      };
+    });
   return {
     dataType: "Branded",
     description: state.description,
