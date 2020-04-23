@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Food } from "../../core";
+import { Quantity } from "../../core/Quantity";
 
 export interface State {
   stateType: "FoodView";
   food: Food;
-  selectedQuantity: number;
+  selectedQuantity: Quantity;
 }
 
 export enum ActionType {
@@ -25,7 +26,7 @@ export enum ActionType {
 
 export interface SetSelectedQuantity {
   type: ActionType.SET_SELECTED_QUANTITY;
-  index: number;
+  quantity: Quantity;
 }
 
 export type Action = SetSelectedQuantity;

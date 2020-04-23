@@ -13,20 +13,16 @@
 // limitations under the License.
 
 import { canonicalizeQuantity } from "./Quantity";
-import { Nutrients, addNutrients } from "./Nutrients";
-import {
-  SRLegacyFood,
-  BrandedFood,
-  nutrientsPerServingForFDCFood,
-} from "./FoodDataCentral";
+import { Nutrients, addNutrients, scaleNutrients } from "./Nutrients";
+import { SRLegacyFood, BrandedFood, FDCFood } from "./FoodDataCentral";
 import { parseQuantity } from "./parseQuantity";
 import { Food } from "./Food";
-import { nutrientsForQuantity, Recipe, Ingredient } from "./Recipe";
+import { Recipe, Ingredient } from "./Recipe";
 import { StatusOr, StatusCode, status, isOk, hasCode } from "./StatusOr";
 
 export function nutrientsPerServingForFood(
   food: Food,
-  foodCache: { [index: string]: Food }
+  foodCache: { [index: string]: Food } = {}
 ): StatusOr<Nutrients> {
   if (food === undefined) {
     return status(StatusCode.LOADING);
@@ -38,6 +34,35 @@ export function nutrientsPerServingForFood(
     case "Recipe":
       return nutrientsForRecipe(food, foodCache);
   }
+}
+
+function nutrientsPerServingForFDCFood(foodDetails: FDCFood): Nutrients {
+  const result: Nutrients = {};
+  for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
+    var foodNutrient = foodDetails.foodNutrients[i];
+    var nutrientId = foodNutrient.nutrient.id;
+    var nutrientAmount = foodNutrient.amount || 0;
+    result[nutrientId.toString()] = nutrientAmount;
+  }
+  return result;
+}
+
+// Used to compute ingredient quantity
+export function nutrientsForQuantity(
+  amount: number,
+  unit: string,
+  servingEquivalentQuantities: { [index: string]: number },
+  nutrientsPerServing: Nutrients
+): StatusOr<Nutrients> {
+  [amount, unit] = canonicalizeQuantity(amount, unit);
+  // The number of units of the quantity per serving.
+  let unitsPerServing = servingEquivalentQuantities[unit];
+  if (unitsPerServing == undefined) {
+    // TODO: Display original unit as well as canonicalized unit in error.
+    return status(StatusCode.UNKNOWN_QUANTITY, unit);
+  }
+  var servings = amount / unitsPerServing;
+  return scaleNutrients(nutrientsPerServing, servings);
 }
 
 function nutrientsForRecipe(
@@ -131,8 +156,8 @@ function brandedServingEquivalentQuantities(foodDetails: BrandedFood) {
       : parseQuantity(foodDetails.householdServingFullText);
   if (householdServingQuantity != null) {
     const [amount, unit] = canonicalizeQuantity(
-      householdServingQuantity[0],
-      householdServingQuantity[1]
+      householdServingQuantity.amount,
+      householdServingQuantity.unit
     );
     result[unit] = (100.0 * amount) / foodDetails.servingSize;
   }

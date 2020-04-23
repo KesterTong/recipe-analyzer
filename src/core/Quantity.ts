@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+export interface Quantity {
+  amount: number;
+  unit: string;
+}
+
 /**
  * Transform a quantity by
  *  - Converting mass units to 'g' and volume units to 'ml'.

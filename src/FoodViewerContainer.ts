@@ -13,28 +13,40 @@
 // limitations under the License.
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { scaleNutrients } from "./core";
+import {
+  getDisplayQuantities,
+  nutrientsPerServingForFood,
+  servingEquivalentQuantities,
+  isOk,
+} from "./core";
 import { FoodViewer } from "./FoodViewer";
 import { RootState, ThunkDispatch } from "./store";
-import {
-  actions,
-  selectQuantities,
-  selectNutrientsPerServing,
-} from "./store/food_view";
+import { actions } from "./store/food_view";
+import { nutrientsForQuantity } from "./core";
 
 function mapStateToProps(state: RootState) {
   if (state.foodState?.stateType != "FoodView") {
     return <typeof result>{};
   }
-  const quantities = selectQuantities(state.foodState);
+  const food = state.foodState.food;
+  const selectedQuantity = state.foodState.selectedQuantity;
+  const quantities = getDisplayQuantities(food);
   const nutrientInfos = state.config.nutrientInfos;
-  const nutrientsPerServing = selectNutrientsPerServing(state.foodState);
-  const scale = quantities[state.foodState.selectedQuantity].servings;
+  const nutrientsPerServing = nutrientsPerServingForFood(food);
+  const nutrients = isOk(nutrientsPerServing)
+    ? nutrientsForQuantity(
+        selectedQuantity.amount,
+        selectedQuantity.unit,
+        servingEquivalentQuantities(food),
+        nutrientsPerServing
+      )
+    : nutrientsPerServing;
+
   const result = {
     food: state.foodState.food,
     nutrientInfos,
-    nutrients: scaleNutrients(nutrientsPerServing, scale),
-    quantities: quantities.map((quantity) => quantity.description),
+    nutrients,
+    quantities,
     selectedQuantity: state.foodState.selectedQuantity,
   };
   return result;

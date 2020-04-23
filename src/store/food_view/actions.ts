@@ -13,7 +13,8 @@
 // limitations under the License.
 import { ActionType, Action } from "./types";
 import { RootAction, ActionType as RootActionType } from "../types";
+import { Quantity } from "../../core/Quantity";
 
-export function setSelectedQuantity(index: number): RootAction {
-  return { type: ActionType.SET_SELECTED_QUANTITY, index };
+export function setSelectedQuantity(quantity: Quantity): RootAction {
+  return { type: ActionType.SET_SELECTED_QUANTITY, quantity };
 }

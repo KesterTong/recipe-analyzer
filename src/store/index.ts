@@ -14,7 +14,7 @@
 
 import { createStore, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
-import { Food } from "../core";
+import { Food, getDisplayQuantities } from "../core";
 import * as food_input from "./food_input";
 import * as branded_food_edit from "./branded_food_edit";
 import * as food_view from "./food_view";
@@ -42,7 +42,7 @@ function foodStateFromFood(
       return {
         stateType: "FoodView",
         food: food,
-        selectedQuantity: 0,
+        selectedQuantity: getDisplayQuantities(food)[0],
       };
   }
 }

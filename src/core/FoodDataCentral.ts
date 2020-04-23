@@ -92,14 +92,3 @@ function fdcApiUrl(
   });
   return url;
 }
-
-export function nutrientsPerServingForFDCFood(foodDetails: FDCFood): Nutrients {
-  const result: Nutrients = {};
-  for (var i = 0; i < foodDetails.foodNutrients.length; i++) {
-    var foodNutrient = foodDetails.foodNutrients[i];
-    var nutrientId = foodNutrient.nutrient.id;
-    var nutrientAmount = foodNutrient.amount || 0;
-    result[nutrientId.toString()] = nutrientAmount;
-  }
-  return result;
-}

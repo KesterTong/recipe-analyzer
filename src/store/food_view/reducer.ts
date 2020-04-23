@@ -17,7 +17,7 @@ import { RootAction } from "../types";
 export function reducer(state: State, action: RootAction): State {
   switch (action.type) {
     case ActionType.SET_SELECTED_QUANTITY:
-      return { ...state, selectedQuantity: action.index };
+      return { ...state, selectedQuantity: action.quantity };
     default:
       return state;
   }

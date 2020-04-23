@@ -50,21 +50,3 @@ export function getIngredientUnits(servingEquivalentQuantities: {
   }
   return result;
 }
-
-// Used to compute ingredient quantity
-export function nutrientsForQuantity(
-  amount: number,
-  unit: string,
-  servingEquivalentQuantities: { [index: string]: number },
-  nutrientsPerServing: Nutrients
-): StatusOr<Nutrients> {
-  [amount, unit] = canonicalizeQuantity(amount, unit);
-  // The number of units of the quantity per serving.
-  let unitsPerServing = servingEquivalentQuantities[unit];
-  if (unitsPerServing == undefined) {
-    // TODO: Display original unit as well as canonicalized unit in error.
-    return status(StatusCode.UNKNOWN_QUANTITY, unit);
-  }
-  var servings = amount / unitsPerServing;
-  return scaleNutrients(nutrientsPerServing, servings);
-}

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Food } from "./Food";
+import { Quantity } from "./Quantity";
+import { parseQuantity } from "./parseQuantity";
 
 /**
  * Get a list of quantities to display when viewing an ingredient.
@@ -19,35 +21,33 @@ import { Food } from "./Food";
  * This is the set of quantities that a user might want to view the
  * nutritional info for, e.g. 100 g, 1 container, 1 cup.
  */
-export function getDisplayQuantities(food: Food) {
+export function getDisplayQuantities(food: Food): Quantity[] {
+  const result: Quantity[] = [];
   switch (food.dataType) {
     case "Branded":
-      const hhs = food.householdServingFullText!;
-      const s = food.servingSize.toString();
-      const su = food.servingSizeUnit;
-      return [
-        {
-          description: `${hhs} (${s} ${su})`,
-          servings: food.servingSize,
-        },
-        {
-          description: `100 ${food.servingSizeUnit}`,
-          servings: 1,
-        },
-      ];
-    case "Recipe":
-      return [{ description: "1 serving", servings: 1 }];
-    case "SR Legacy":
-      let quantities = [{ description: "100 g", servings: 1 }];
-      food.foodPortions.forEach((portion) => {
-        const a = portion.amount.toString();
-        const m = portion.modifier;
-        const gw = portion.gramWeight;
-        quantities.push({
-          description: `${a} ${m} (${gw} g)`,
-          servings: portion.gramWeight / 100,
-        });
+      result.push({
+        amount: 100,
+        unit: food.servingSizeUnit,
       });
-      return quantities;
+      if (food.householdServingFullText) {
+        const householdServing = parseQuantity(food.householdServingFullText);
+        if (householdServing) {
+          result.push(householdServing);
+        }
+      }
+      break;
+    case "Recipe":
+      result.push({ amount: 1, unit: "serving" });
+      break;
+    case "SR Legacy":
+      result.push({ amount: 100, unit: "g" });
+      result.push(
+        ...food.foodPortions.map((portion) => ({
+          amount: portion.amount,
+          unit: portion.modifier,
+        }))
+      );
+      break;
   }
+  return result;
 }

@@ -26,14 +26,15 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { Quantity } from "./core/Quantity";
 
 export interface FoodViewerProps {
   food: Food;
   nutrientInfos: NutrientInfo[];
   nutrients: StatusOr<Nutrients>;
-  quantities: string[];
-  selectedQuantity: number;
-  setSelectedQuantity: (index: number) => void;
+  quantities: Quantity[];
+  selectedQuantity: Quantity;
+  setSelectedQuantity: (quantity: Quantity) => void;
 }
 
 export const NO_DISPLAY = {} as FoodViewerProps;
@@ -62,15 +63,17 @@ export const FoodViewer: React.FunctionComponent<FoodViewerProps> = (props) => {
         <Select
           labelId="display-quantity-label"
           id="display-quantity-select"
-          value={props.selectedQuantity.toString()}
+          value={JSON.stringify(props.selectedQuantity)}
           onChange={(event) =>
             props.setSelectedQuantity(
-              Number((event.target as HTMLSelectElement).value)
+              JSON.parse((event.target as HTMLSelectElement).value)
             )
           }
         >
-          {props.quantities.map((quantity, index) => (
-            <MenuItem value={index}>{quantity}</MenuItem>
+          {props.quantities.map((quantity) => (
+            <MenuItem value={JSON.stringify(quantity)}>
+              {quantity.amount} {quantity.unit}
+            </MenuItem>
           ))}
         </Select>
       </FormControl>
