@@ -1,9 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  mode: "production",
-  // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
+  mode: "development",
   resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: [".js", ".ts", ".tsx"]
@@ -35,14 +33,6 @@ module.exports = {
   externals: {
     firebase: 'firebase',
     firebaseui: 'firebaseui',
-    react: "React",
-    "lodash": "_",
-    "redux": "Redux",
-    "react-redux": "ReactRedux",
-    "react-dom": "ReactDOM",
-  },
-	optimization: {
-		// We do not want to minimize our code.
-		minimize: false
-	},
+    "lodash": "_"
+  }
 };
