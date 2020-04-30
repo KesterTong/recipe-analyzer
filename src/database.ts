@@ -29,28 +29,30 @@ const fetchJson = memoize(async (url: string) => {
   return response.json();
 });
 
+const customFoods: {[index: string]: Food} = {};
+
 export async function getFood(foodId: string): Promise<Food> {
   if (foodId.startsWith("fdcData/")) {
     let fdcId = Number(foodId.substr(8, foodId.length - 8));
     return fetchJson(getFdcFoodUrl(fdcId, FDC_API_KEY));
   } else {
-    const documentData = await firebase.firestore().doc(foodId).get();
-    let data = documentData.data();
-    if (!data) {
+    const result = customFoods[foodId];
+    if (result === undefined) {
       throw Error("Food ${foodId} not found");
     }
-    return <Food>JSON.parse(data.data);
+    return result;
   }
 }
 
-export function patchFood(foodId: string, food: Food): Promise<void> {
-  return firebase
+export async function patchFood(foodId: string, food: Food): Promise<void> {
+  await firebase
     .firestore()
     .doc(foodId)
     .set({
       data: JSON.stringify(food),
       version: "0.1",
     });
+  customFoods[foodId] = food;
 }
 
 export async function insertFood(food: Food): Promise<string> {
@@ -61,7 +63,9 @@ export async function insertFood(food: Food): Promise<string> {
       data: JSON.stringify(food),
       version: "0.1",
     });
-  return documentReference.path;
+  const foodId = documentReference.path;
+  customFoods[foodId] = food;
+  return foodId;
 }
 
 export interface QueryResult {
@@ -69,18 +73,25 @@ export interface QueryResult {
   description: string;
 }
 
-async function searchCustomFoods(query: string): Promise<QueryResult[]> {
+export async function loadCustomFoods(): Promise<void> {
   let documentData = await firebase.firestore().collection("userData").get();
-  return documentData.docs
-    .map((document) => ({
-      foodId: document.ref.path,
-      food: <Food>JSON.parse(document.data().data),
-    }))
-    .filter((data) => data.food.description.match(query))
-    .map((data) => ({
-      foodId: data.foodId,
-      description: data.food.description,
-    }));
+  documentData.docs.forEach((document) => {
+    customFoods[document.ref.path] = <Food>JSON.parse(document.data().data);
+  });
+}
+
+async function searchCustomFoods(query: string): Promise<QueryResult[]> {
+  const result: QueryResult[] = [];
+  Object.keys(customFoods).map(foodId => {
+    const food = customFoods[foodId];
+    if (food.description.match(query)) {
+      result.push({
+        foodId,
+        description: food.description,
+      });
+    }
+  });
+  return result;
 }
 
 async function searchFdcFoods(query: string): Promise<QueryResult[]> {

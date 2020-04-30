@@ -17,7 +17,7 @@ import * as firebase from "firebase";
 import * as firebaseui from "firebaseui";
 
 import { firebaseConfig } from "./config";
-import { getNutrientInfo } from "./database";
+import { getNutrientInfo, loadCustomFoods } from "./database";
 import { MainContainer } from "./MainContainer";
 import ReactDOM = require("react-dom");
 import React = require("react");
@@ -30,11 +30,11 @@ firebase.initializeApp(firebaseConfig);
 // Start auth
 var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-firebase.auth().onAuthStateChanged(function (user) {
+firebase.auth().onAuthStateChanged(async function (user) {
   if (user) {
-    getNutrientInfo().then((nutrientInfos) =>
-      store.dispatch({ type: ActionType.SET_NUTRIENT_INFOS, nutrientInfos })
-    );
+    const nutrientInfos = await getNutrientInfo();
+    loadCustomFoods();
+    store.dispatch({ type: ActionType.SET_NUTRIENT_INFOS, nutrientInfos });
     ReactDOM.render(
       <Provider store={store}>
         <MainContainer />
