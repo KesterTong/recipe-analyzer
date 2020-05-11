@@ -12,89 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { Food } from "../core";
-import * as branded_food_edit from "./branded_food_edit/types";
-import * as food_input from "./food_input/types";
-import * as food_view from "./food_view/types";
-import * as recipe_edit from "./recipe_edit/types";
+import { Document } from "../apps_script/Document";
 
-// State of a food whose description may be known but nothing else.
-export interface LoadingState {
-  stateType: "Loading";
-}
-
-export interface NutrientInfo {
-  id: number;
-  name: string;
-  display: boolean;
-}
-
-// Constraints on RootState
-//
-//  - If foodState is non-null then foodId should be non-null.
 export interface RootState {
-  foodInput: food_input.State;
-  foodState:
-    | branded_food_edit.State
-    | food_view.State
-    | recipe_edit.State
-    | LoadingState
-    | null;
-  config: {
-    nutrientInfos: NutrientInfo[];
-  };
+  document: Document | null;
 }
 
 export const initialState: RootState = {
-  foodInput: {
-    foodId: null,
-    deselected: false,
-    description: null,
-  },
-  foodState: null,
-  config: {
-    nutrientInfos: [],
-  },
+  document: null
 };
 
 export enum ActionType {
-  SET_NUTRIENT_INFOS = "@SetNutrientInfos",
-  UPDATE_FOOD_INPUT = "@UpdateFoodInput",
-  NEW_FOOD = "@NewFood",
-  UPDATE_FOOD = "@UpdateFood",
-  UPDATE_AFTER_SAVE = "@UpdateAfterSave",
+  UPDATE_DOCUMENT = "@UpdateDocument",
 }
 
-export interface SetNutrientInfos {
-  type: ActionType.SET_NUTRIENT_INFOS;
-  nutrientInfos: NutrientInfo[];
+export interface UpdateDocument {
+  type: ActionType.UPDATE_DOCUMENT;
+  document: Document
 }
 
-export interface UpdateFoodInput {
-  type: ActionType.UPDATE_FOOD_INPUT;
-  action: food_input.Action;
-}
-
-export interface NewFood {
-  type: ActionType.NEW_FOOD;
-  foodId: string;
-  food: Food;
-}
-
-// Update the data for the current food.
-export interface UpdateFood {
-  type: ActionType.UPDATE_FOOD;
-  food: Food;
-}
-
-export type RootAction =
-  | SetNutrientInfos
-  | UpdateFoodInput
-  | NewFood
-  | UpdateFood
-  | food_view.Action
-  | branded_food_edit.Action
-  | recipe_edit.Action;
+export type RootAction = UpdateDocument;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

@@ -12,36 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import {
-  updateFoodInput,
-  selectAndMaybeLoad,
-  saveFood,
-  newBrandedFood,
-  newRecipe,
   RootState,
   ThunkDispatch,
 } from "./store";
-import { deselect } from "./store/food_input";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
+  console.log(state)
   return {
-    selected: state.foodInput,
-    loading:
-      state.foodInput.foodId != null && state.foodState?.stateType == "Loading",
+    displayText: state.document == null ? "Loading..." : JSON.stringify(state.document),
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
-    {
-      select: selectAndMaybeLoad,
-      deselect: () => updateFoodInput(deselect()),
-      saveFood,
-      newBrandedFood,
-      newRecipe,
-    },
+    {},
     dispatch
   );
 }

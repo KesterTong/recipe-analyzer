@@ -15,15 +15,15 @@
 import ReactDOM = require("react-dom");
 import React = require("react");
 import { parseDocument } from "./apps_script/client";
+import { Provider } from "react-redux";
+import { store, updateDocument } from "./store";
+import { MainContainer } from "./MainContainer";
 
 ReactDOM.render(
-  <React.Fragment>Hello World</React.Fragment>,
+  <Provider store={store}>
+    <MainContainer/>
+  </Provider>,
   document.getElementById("root")
 );
 
-parseDocument().then(d => {
-  let el = document.getElementById("root")
-  if (el != null) {
-    el.innerHTML = JSON.stringify(d)
-  }
-})
+parseDocument().then(document => store.dispatch(updateDocument(document)));
