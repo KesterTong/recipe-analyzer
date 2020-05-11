@@ -1,10 +1,9 @@
 docs/**
 env/**
 node_modules/**
-src/core/**
-src/store/**
-src/ui/**
-src/*.ts
+apps_script/client.ts
+apps_script/web_main.tsx
+src/**
 tests/**
 ui/bundle.*
 webpack.config.js

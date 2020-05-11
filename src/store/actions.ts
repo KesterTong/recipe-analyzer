@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { RootAction, ThunkResult, ActionType } from "./types";
-import { Document } from "../apps_script/Document";
+import { Document } from "../../apps_script/Document";
 
 export function updateDocument(document: Document): RootAction {
   return {

@@ -14,10 +14,10 @@
 
 import ReactDOM = require("react-dom");
 import React = require("react");
-import { parseDocument } from "./apps_script/client";
+import { parseDocument } from "./client";
 import { Provider } from "react-redux";
-import { store, updateDocument } from "./store";
-import { MainContainer } from "./MainContainer";
+import { store, updateDocument } from "../src/store";
+import { MainContainer } from "../src/MainContainer";
 
 ReactDOM.render(
   <Provider store={store}>

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { Document } from "../apps_script/Document";
+import { Document } from "../../apps_script/Document";
 
 export interface RootState {
   document: Document | null;

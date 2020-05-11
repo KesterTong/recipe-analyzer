@@ -27,7 +27,7 @@ module.exports = {
           }
       ]
   },
-  entry: './src/web_main.tsx',
+  entry: './apps_script/sidebar.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'ui'),
