@@ -118,7 +118,7 @@ const RECIPE_TITLE_HEADING_LEVEL = DocumentApp.ParagraphHeading.HEADING1;
 
 const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table"
 
-function parseDocument(document: GoogleAppsScript.Document.Document) {
+export function parseDocument(document: GoogleAppsScript.Document.Document) {
   document = DocumentApp.getActiveDocument();
 
   // Remove existing `NamedRange`s that we use to keep track of

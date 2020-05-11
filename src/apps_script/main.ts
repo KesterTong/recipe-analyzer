@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-function showSidebar() {
+export function showSidebar() {
   let htmlOutput = HtmlService
   .createHtmlOutputFromFile('src/ui/sidebar.html')
   .setTitle('Edit Recipes')
@@ -19,7 +19,7 @@ function showSidebar() {
   .showSidebar(htmlOutput);
 }
 
-function onOpen() {
+export function onOpen() {
   DocumentApp.getUi()
       .createAddonMenu()
       .addItem('Show', 'showSidebar')
