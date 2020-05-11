@@ -12,18 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import ReactDOM = require("react-dom");
-import React = require("react");
-import { parseDocument } from "./apps_script/client";
+import { Document } from "./Document";
 
-ReactDOM.render(
-  <React.Fragment>Hello World</React.Fragment>,
-  document.getElementById("root")
-);
-
-parseDocument().then(d => {
-  let el = document.getElementById("root")
-  if (el != null) {
-    el.innerHTML = JSON.stringify(d)
-  }
-})
+export function parseDocument(): Promise<Document> {
+  return new Promise(resolve => {
+    (<any>window).google.script.run.withSuccessHandler(resolve).parseDocument();
+  })
+}
