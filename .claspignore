@@ -1,8 +1,9 @@
-tests/**
+docs/**
+env/**
 node_modules/**
-templates/**
-public/**
-index.ts
+src/core/**
+src/store/**
+src/*.ts
+tests/**
+ui/**
 webpack.config.js
-**/*bundle.js
-client/**

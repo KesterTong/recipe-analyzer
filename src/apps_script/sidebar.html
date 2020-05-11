@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <button id="button">Parse</button>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>  
+    <script>
+      $('#button').click(() => {
+        google.script.run.withSuccessHandler((result) => console.log(result)).parseDocument();
+      });
+    </script>
+  </body>
+</html>
