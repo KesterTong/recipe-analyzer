@@ -11,23 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-export interface DocIngredient {
-  nutrientValues: string[],
-  amount: string,
-  unit: string,
-  ingredient: {
-    description: string,
-    url: string | null,
-  },
-}
+/**
+ * NOTE: This code is only intended to be called from Apps Script, not in the
+ * client.  From the point of view of the client this is server-side code.
+ */
 
-export interface DocRecipe {
-  title: string,
-  rangeId: string,
-  nutrientNames: string[],
-  ingredients: DocIngredient[],
-  totalNutrientValues: string[]
-}
+import { RecipeTable, IngredientRow } from "./Document";
+
 
 function parseToc(toc: GoogleAppsScript.Document.TableOfContents) {
   let tocNumChildren = toc.getNumChildren();
@@ -46,7 +36,7 @@ function parseToc(toc: GoogleAppsScript.Document.TableOfContents) {
   return result;
 }
 
-function parseIngredient(row: GoogleAppsScript.Document.TableRow, numNutrients: number): DocIngredient | null {
+function parseIngredient(row: GoogleAppsScript.Document.TableRow, numNutrients: number): IngredientRow | null {
   if (row.getNumCells() != 3 + numNutrients) {
     return null;
   }
@@ -68,7 +58,7 @@ function parseIngredient(row: GoogleAppsScript.Document.TableRow, numNutrients: 
 function parseTable(
   document: GoogleAppsScript.Document.Document,
   title: string,
-  table: GoogleAppsScript.Document.Table): DocRecipe | null {
+  table: GoogleAppsScript.Document.Table): RecipeTable | null {
   let tableNumRows = table.getNumRows();
   if (tableNumRows < 2) {
     return null;

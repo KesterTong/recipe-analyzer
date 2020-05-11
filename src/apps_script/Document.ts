@@ -11,21 +11,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-/**
- * NOTE: This code is only intended to be called from Apps Script, not in the
- * client.  From the point of view of the client this is server-side code.
- */
-export function showSidebar() {
-  let htmlOutput = HtmlService
-  .createHtmlOutputFromFile('ui/sidebar.html')
-  .setTitle('Edit Recipes')
-  DocumentApp.getUi()
-  .showSidebar(htmlOutput);
+
+export interface IngredientRow {
+  nutrientValues: string[],
+  amount: string,
+  unit: string,
+  ingredient: {
+    description: string,
+    url: string | null,
+  },
 }
 
-export function onOpen() {
-  DocumentApp.getUi()
-      .createAddonMenu()
-      .addItem('Show', 'showSidebar')
-      .addToUi();
+export interface RecipeTable {
+  title: string,
+  rangeId: string,
+  nutrientNames: string[],
+  ingredients: IngredientRow[],
+  totalNutrientValues: string[]
 }
+
