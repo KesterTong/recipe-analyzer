@@ -12,45 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Firebase App (the core Firebase SDK) is always required and must be listed first
-import * as firebase from "firebase";
-import * as firebaseui from "firebaseui";
-
-import { firebaseConfig } from "./config";
-import { getNutrientInfo, loadCustomFoods } from "./database";
-import { MainContainer } from "./MainContainer";
 import ReactDOM = require("react-dom");
 import React = require("react");
-import { Provider } from "react-redux";
-import { store, ActionType } from "./store";
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
-// Start auth
-var ui = new firebaseui.auth.AuthUI(firebase.auth());
-
-firebase.auth().onAuthStateChanged(async function (user) {
-  if (user) {
-    const nutrientInfos = await getNutrientInfo();
-    loadCustomFoods();
-    store.dispatch({ type: ActionType.SET_NUTRIENT_INFOS, nutrientInfos });
-    ReactDOM.render(
-      <Provider store={store}>
-        <MainContainer />
-      </Provider>,
-      document.getElementById("root")
-    );
-  } else {
-    // User is signed out.
-    ui.start("#firebaseui-auth-container", {
-      callbacks: {
-        signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-          return false;
-        },
-      },
-      signInFlow: "popup",
-      signInOptions: [firebase.auth.GoogleAuthProvider.PROVIDER_ID],
-    });
-  }
-});
+ReactDOM.render(
+  <React.Fragment>Hello World</React.Fragment>,
+  document.getElementById("root")
+);

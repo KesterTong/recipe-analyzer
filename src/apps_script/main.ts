@@ -13,7 +13,7 @@
 // limitations under the License.
 export function showSidebar() {
   let htmlOutput = HtmlService
-  .createHtmlOutputFromFile('src/ui/sidebar.html')
+  .createHtmlOutputFromFile('ui/sidebar.html')
   .setTitle('Edit Recipes')
   DocumentApp.getUi()
   .showSidebar(htmlOutput);

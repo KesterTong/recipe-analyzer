@@ -1,7 +1,9 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
 module.exports = {
-  mode: "development",
+  mode: "production",
   resolve: {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: [".js", ".ts", ".tsx"]
@@ -31,8 +33,17 @@ module.exports = {
     path: path.resolve(__dirname, 'ui'),
   },
   externals: {
-    firebase: 'firebase',
-    firebaseui: 'firebaseui',
-    "lodash": "_"
-  }
+    "react": "React",
+    "redux": "Redux",
+    "react-redux": "ReactRedux",
+    "react-dom": "ReactDOM",
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'src/ui/sidebar.html',
+      filename: 'sidebar.html',
+      inlineSource: '.(js|css)$', // embed all javascript and css inline
+    }),
+    new HtmlWebpackInlineSourcePlugin(),
+  ],
 };

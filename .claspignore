@@ -3,7 +3,8 @@ env/**
 node_modules/**
 src/core/**
 src/store/**
+src/ui/**
 src/*.ts
 tests/**
-ui/**
+ui/bundle.*
 webpack.config.js
