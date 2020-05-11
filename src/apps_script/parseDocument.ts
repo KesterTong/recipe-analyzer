@@ -16,10 +16,10 @@
  * client.  From the point of view of the client this is server-side code.
  */
 
-import { RecipeTable, IngredientRow } from "./Document";
+import { Document, RecipeTable, IngredientRow, TocEntry } from "./Document";
 
 
-function parseToc(toc: GoogleAppsScript.Document.TableOfContents) {
+function parseToc(toc: GoogleAppsScript.Document.TableOfContents): TocEntry[] {
   let tocNumChildren = toc.getNumChildren();
   let result = []
   for (let i = 0; i < tocNumChildren; i++) {
@@ -108,7 +108,7 @@ const RECIPE_TITLE_HEADING_LEVEL = DocumentApp.ParagraphHeading.HEADING1;
 
 const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table"
 
-export function parseDocument(document: GoogleAppsScript.Document.Document) {
+export function parseDocument(document: GoogleAppsScript.Document.Document): Document | null {
   document = DocumentApp.getActiveDocument();
 
   // Remove existing `NamedRange`s that we use to keep track of
@@ -117,7 +117,7 @@ export function parseDocument(document: GoogleAppsScript.Document.Document) {
     namedRange.remove();
   });
 
-  let toc = null;
+  let toc: TocEntry[] | null = null;
   let recipes = [];
   let currentTitle = null;
   let body = document.getBody();
@@ -143,6 +143,9 @@ export function parseDocument(document: GoogleAppsScript.Document.Document) {
       // Clear heading whenever we reach a page break.
       currentTitle = null;
     }
+  }
+  if (toc == null) {
+    return null;
   }
   return {
     toc: toc,

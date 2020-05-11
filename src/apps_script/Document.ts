@@ -30,3 +30,13 @@ export interface RecipeTable {
   totalNutrientValues: string[]
 }
 
+export interface TocEntry {
+  title: string,
+  url: string,
+}
+
+export interface Document {
+  toc: TocEntry[],
+  recipes: RecipeTable[],
+}
+
