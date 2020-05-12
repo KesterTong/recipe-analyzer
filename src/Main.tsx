@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { Database } from "./Database";
+import { Database } from "./document/Database";
 import { Dropdown } from "./Dropdown";
-import { Document } from "../apps_script/Document";
+import { Document } from "./document/Document";
 import { selectRecipe } from "./store";
 
 interface MainProps {

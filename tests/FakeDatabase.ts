@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Database } from "../src/Database";
+import { Database } from "../src/document/Database";
 
 /**
  * An implementation of a Database that stores recipes in a Google Doc.
