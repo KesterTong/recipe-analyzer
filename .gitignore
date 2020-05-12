@@ -1,7 +1,10 @@
 # node
 /node_modules
-/ui/*
 package-lock.json
+
+# generated html and JS
+/test_ui
+/ui
 
 # deployment configs
 .clasp.json
