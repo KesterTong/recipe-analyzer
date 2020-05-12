@@ -27,3 +27,10 @@ export function selectRecipe(index: number): RootAction {
     index,
   };
 }
+
+export function selectIngredient(index: number): RootAction {
+  return {
+    type: ActionType.SELECT_INGREDIENT,
+    index,
+  };
+}

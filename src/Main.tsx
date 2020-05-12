@@ -21,8 +21,10 @@ interface MainProps {
   recipeTitles: string[] | null;
   ingredientStrings: string[] | null;
   selectedRecipeIndex: number;
+  selectedIngredientIndex: number;
   errors: Status[];
   selectRecipe(index: number): void;
+  selectIngredient(index: number): void;
 }
 
 export const Main: React.FunctionComponent<MainProps> = (props) => {
@@ -59,8 +61,8 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
               }))
             : [{ value: 0, label: "" }]
         }
-        selected={0}
-        onChange={(event) => {}}
+        selected={props.selectedIngredientIndex}
+        onChange={(event) => props.selectIngredient(Number(event.target.value))}
       />
 
       <div className="block form-group">

@@ -15,7 +15,7 @@ import { RootState, ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
-import { selectRecipe } from "./store";
+import { selectRecipe, selectIngredient } from "./store";
 
 function mapStateToProps(state: RootState) {
   return {
@@ -25,6 +25,8 @@ function mapStateToProps(state: RootState) {
         : state.document.recipes.map((recipe) => recipe.title),
     selectedRecipeIndex:
       state.type == "Loading" ? 0 : state.selectedRecipeIndex,
+    selectedIngredientIndex:
+      state.type == "Loading" ? 0 : state.selectedIngredientIndex,
     ingredientStrings:
       state.type == "Loading"
         ? null
@@ -44,6 +46,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
       selectRecipe,
+      selectIngredient,
     },
     dispatch
   );
