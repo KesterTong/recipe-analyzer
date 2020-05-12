@@ -46,6 +46,15 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         <button>Insert Above</button>
         <button>Insert Below</button>
       </div>
+      	
+      <div className="block form-group">
+        <label htmlFor="errors">Errors</label>
+        <select id="errors" multiple>
+          <option className="error">Bad value</option>
+          <option>Google Forms</option>
+          <option>Google Sheets</option>
+        </select>
+      </div>
     </React.Fragment>
   );
 };
