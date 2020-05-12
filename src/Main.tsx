@@ -24,6 +24,11 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
       <Dropdown id="recipes" label="Recipes" options={props.recipeNames} />
+      <div className="block form-group">
+        <button>Delete</button>
+        <button>Insert Above</button>
+        <button>Insert Below</button>
+      </div>
     </React.Fragment>
   );
 };
