@@ -25,6 +25,17 @@ function mapStateToProps(state: RootState) {
         : state.document.recipes.map((recipe) => recipe.title),
     selectedRecipeIndex:
       state.type == "Loading" ? 0 : state.selectedRecipeIndex,
+    ingredientStrings:
+      state.type == "Loading"
+        ? null
+        : state.document.recipes[state.selectedRecipeIndex].ingredients.map(
+            (ingredient) =>
+              ingredient.amount +
+              " " +
+              ingredient.unit +
+              " " +
+              ingredient.ingredient.description
+          ),
     errors: state.type == "Loading" ? [] : state.errors,
   };
 }

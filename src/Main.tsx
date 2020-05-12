@@ -19,6 +19,7 @@ import { Status } from "./core";
 interface MainProps {
   database: Database;
   recipeTitles: string[] | null;
+  ingredientStrings: string[] | null;
   selectedRecipeIndex: number;
   errors: Status[];
   selectRecipe(index: number): void;
@@ -46,6 +47,21 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         <button>Insert Above</button>
         <button>Insert Below</button>
       </div>
+
+      <Dropdown
+        id="ingredient"
+        label="Selected Ingredient"
+        options={
+          props.ingredientStrings
+            ? props.ingredientStrings.map((title, index) => ({
+                value: index,
+                label: title,
+              }))
+            : [{ value: 0, label: "" }]
+        }
+        selected={0}
+        onChange={(event) => {}}
+      />
 
       <div className="block form-group">
         <label htmlFor="errors">Errors</label>

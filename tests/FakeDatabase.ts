@@ -34,9 +34,9 @@ export const FakeDatabase: Database = {
                     nutrientValues: ["100", "20"],
                   },
                   {
-                    unit: "",
-                    amount: "2",
-                    ingredient: { description: "test2", url: "#bc" },
+                    unit: "g",
+                    amount: "100",
+                    ingredient: { description: "water", url: null },
                     nutrientValues: ["b", "c"],
                   },
                 ],
