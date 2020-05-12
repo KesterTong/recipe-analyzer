@@ -40,7 +40,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/ui/sidebar.html',
+      template: 'apps_script/sidebar.html',
       filename: 'sidebar.html',
       inlineSource: '.(js|css)$', // embed all javascript and css inline
     }),
