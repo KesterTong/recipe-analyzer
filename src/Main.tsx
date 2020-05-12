@@ -24,9 +24,14 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
       <Dropdown
-        id="recipes"
+        id="recipe"
         label="Selected Recipe"
         options={props.recipeNames}
+      />
+      <Dropdown
+        id="ingredient"
+        label="Selected Ingredient"
+        options={["1 cup flour", "1 potato"]}
       />
       <div className="block form-group button-group">
         <button>Delete</button>
