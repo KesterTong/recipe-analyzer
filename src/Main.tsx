@@ -23,8 +23,12 @@ interface MainProps {
 export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
-      <Dropdown id="recipes" label="Recipes" options={props.recipeNames} />
-      <div className="block form-group">
+      <Dropdown
+        id="recipes"
+        label="Selected Recipe"
+        options={props.recipeNames}
+      />
+      <div className="block form-group button-group">
         <button>Delete</button>
         <button>Insert Above</button>
         <button>Insert Below</button>
