@@ -12,10 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Document } from "./Document";
+import { Database } from "../src/Database";
 
-export function parseDocument(): Promise<Document> {
-  return new Promise(resolve => {
-    (<any>window).google.script.run.withSuccessHandler(resolve).parseDocument();
-  })
-}
+/**
+ * An implementation of a Database that stores recipes in a Google Doc.
+ */
+
+export const DocsDatabase: Database = {
+  parseDocument: () => {
+    return new Promise(resolve => {
+      (<any>window).google.script.run.withSuccessHandler(resolve).parseDocument();
+    })
+  }
+};

@@ -11,19 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { Document } from "../apps_script/Document";
 
-import ReactDOM = require("react-dom");
-import React = require("react");
-import { DocsDatabase } from "./DocsDatabase";
-import { Provider } from "react-redux";
-import { store, updateDocument } from "../src/store";
-import { MainContainer } from "../src/MainContainer";
-
-ReactDOM.render(
-  <Provider store={store}>
-    <MainContainer database={DocsDatabase}/>
-  </Provider>,
-  document.getElementById("root")
-);
-
-DocsDatabase.parseDocument().then(document => store.dispatch(updateDocument(document)));
+/**
+ * A database of recipes.
+ * 
+ * The only non-testing implementation of this class stores recipes
+ * in a Google Doc.  See /apps_script/sidebar.tsx.
+ */
+export interface Database {
+  parseDocument(): Promise<Document>;
+}
