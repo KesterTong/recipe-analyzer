@@ -22,6 +22,10 @@ information, and also providing a UI that simplifies editing of recipes.
 
 ## Implementation
 
+The architecture of the docs add-on is shown below
+
+![diagram of the architecture of the add-on](./diagram.svg)
+
 The code has the following components
  * Apps Script code to parser recipes from the Google Doc and update it.
  * A TypeScript wrapper around this (run in client-side UI code) that keeps
