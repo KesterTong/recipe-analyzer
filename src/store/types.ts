@@ -13,6 +13,7 @@
 // limitations under the License.
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { Document } from "../document/Document";
+import { Status, Recipe } from "../core";
 
 export interface LoadingState {
   type: "Loading";
@@ -22,6 +23,8 @@ export interface ActiveState {
   type: "Active";
   document: Document;
   selectedRecipeIndex: number;
+  recipes: { [index: string]: Recipe };
+  errors: Status[];
 }
 
 export type RootState = LoadingState | ActiveState;

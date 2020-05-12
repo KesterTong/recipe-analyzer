@@ -21,6 +21,7 @@ import {
   ThunkDispatch,
   initialState,
 } from "./types";
+import { parseRecipes } from "../document/parseRecipes";
 
 export * from "./actions";
 export * from "./types";
@@ -34,7 +35,8 @@ function rootReducer(
       return {
         type: "Active",
         document: action.document,
-        selectedRecipeIndex: 0,  // TODO: handle empty recipe set.
+        selectedRecipeIndex: 0, // TODO: handle empty recipe set.
+        ...parseRecipes(action.document),
       };
     case ActionType.SELECT_RECIPE:
       if (state.type == "Loading") {
@@ -43,7 +45,7 @@ function rootReducer(
       return {
         ...state,
         selectedRecipeIndex: action.index,
-      }
+      };
     default:
       return state;
   }

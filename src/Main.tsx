@@ -14,13 +14,13 @@
 import * as React from "react";
 import { Database } from "./document/Database";
 import { Dropdown } from "./Dropdown";
-import { Document } from "./document/Document";
-import { selectRecipe } from "./store";
+import { Status } from "./core";
 
 interface MainProps {
   database: Database;
   recipeTitles: string[] | null;
   selectedRecipeIndex: number;
+  errors: Status[];
   selectRecipe(index: number): void;
 }
 
@@ -46,13 +46,13 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         <button>Insert Above</button>
         <button>Insert Below</button>
       </div>
-      	
+
       <div className="block form-group">
         <label htmlFor="errors">Errors</label>
         <select id="errors" multiple>
-          <option className="error">&#x26D4;Sample error</option>
-          <option className="error">&#x26A0;Sample warning</option>
-          <option>&#x1F514;Sample notice</option>
+          {props.errors.map((error) => (
+            <option className="error">{error.message}</option>
+          ))}
         </select>
       </div>
     </React.Fragment>

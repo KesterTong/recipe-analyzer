@@ -65,7 +65,7 @@ export const FakeDatabase: Database = {
                 title: "Recipe 2",
               },
             ],
-            toc: [{ title: "Recipe Template", url: "#heading=h.y3h0qes0821d" }],
+            toc: [{ title: "Recipe 1", url: "#heading=h.y3h0qes0821d" }],
           }),
         1000
       );

@@ -12,14 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Document } from "./Document";
-import { Recipe, Status } from "../core";
+import { Recipe, Status, StatusCode } from "../core";
 
 /**
  * Parse the document, generating a set of Recipes.
  */
-function parseRecipes(document: Document) {
-  const recipes: {[index: string]: Recipe} = {};
+export function parseRecipes(document: Document) {
+  const recipes: { [index: string]: Recipe } = {};
   const errors: Status[] = [];
 
-  return {recipes, errors};
+  // Construct map from recipe titles to the heading URL.
+  // Note this can only be done indirectly using to table of
+  // contents as heading URLs are not available from the
+  // Apps Script API.
+  const headingUrlByTitle: { [index: string]: string } = {};
+  document.toc.forEach((tocEntry) => {
+    headingUrlByTitle[tocEntry.title] = tocEntry.url;
+  });
+
+  document.recipes.forEach((recipe) => {
+    // TODO: parse recipe.
+
+    const recipeUrl = headingUrlByTitle[recipe.title];
+    if (recipeUrl === undefined) {
+      errors.push({
+        code: StatusCode.TITLE_NOT_IN_TOC_ERROR,
+        message:
+          'Title "' +
+          recipe.title +
+          '" not found in table of contents.  The table of contents may need refreshing.',
+      });
+    }
+  });
+
+  return { recipes, errors };
 }

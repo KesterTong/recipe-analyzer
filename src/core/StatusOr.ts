@@ -19,6 +19,8 @@ export enum StatusCode {
   NAN_AMOUNT = "@Status/NanAmount",
   // An error happened when processing an ingredient of a recipe.
   INGREDIENT_ERROR = "@Status/IngredientError",
+  // A recipe had a title that was not in the table of contents.
+  TITLE_NOT_IN_TOC_ERROR = "@Status/IngredientError",
 }
 
 export interface Status {

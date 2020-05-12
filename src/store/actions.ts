@@ -25,5 +25,5 @@ export function selectRecipe(index: number): RootAction {
   return {
     type: ActionType.SELECT_RECIPE,
     index,
-  }
+  };
 }
