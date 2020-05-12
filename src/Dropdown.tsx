@@ -17,8 +17,8 @@ import * as React from "react";
 export const Dropdown: React.FunctionComponent<{
   id: string;
   label: string;
-  options: { value: any; label: string }[];
-  selected: any;
+  options: { value: string | number ; label: string }[];
+  selected: string | number;
   onChange(event: React.ChangeEvent<HTMLSelectElement>): void;
 }> = (props) => {
   return (
