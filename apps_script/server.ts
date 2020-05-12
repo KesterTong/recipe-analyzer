@@ -18,10 +18,9 @@
 
 import { Document, RecipeTable, IngredientRow, TocEntry } from "./Document";
 
-
 function parseToc(toc: GoogleAppsScript.Document.TableOfContents): TocEntry[] {
   let tocNumChildren = toc.getNumChildren();
-  let result = []
+  let result = [];
   for (let i = 0; i < tocNumChildren; i++) {
     let child = toc.getChild(i);
     if (child.getType() != DocumentApp.ElementType.PARAGRAPH) {
@@ -31,16 +30,19 @@ function parseToc(toc: GoogleAppsScript.Document.TableOfContents): TocEntry[] {
     if (paragraph.getLinkUrl() == null) {
       continue;
     }
-    result.push({title: paragraph.getText(), url: paragraph.getLinkUrl()})
+    result.push({ title: paragraph.getText(), url: paragraph.getLinkUrl() });
   }
   return result;
 }
 
-function parseIngredient(row: GoogleAppsScript.Document.TableRow, numNutrients: number): IngredientRow | null {
+function parseIngredient(
+  row: GoogleAppsScript.Document.TableRow,
+  numNutrients: number
+): IngredientRow | null {
   if (row.getNumCells() != 3 + numNutrients) {
     return null;
   }
-  let nutrientValues = []
+  let nutrientValues = [];
   for (let j = 3; j < 3 + numNutrients; j++) {
     nutrientValues.push(row.getCell(j).getText());
   }
@@ -58,7 +60,8 @@ function parseIngredient(row: GoogleAppsScript.Document.TableRow, numNutrients: 
 function parseTable(
   document: GoogleAppsScript.Document.Document,
   title: string,
-  table: GoogleAppsScript.Document.Table): RecipeTable | null {
+  table: GoogleAppsScript.Document.Table
+): RecipeTable | null {
   let tableNumRows = table.getNumRows();
   if (tableNumRows < 2) {
     return null;
@@ -68,9 +71,9 @@ function parseTable(
   if (tableNumCols < 3) {
     return null;
   }
-  let nutrientNames = []
+  let nutrientNames = [];
   for (let j = 3; j < tableNumCols; j++) {
-    nutrientNames.push(headerRow.getCell(j).getText())
+    nutrientNames.push(headerRow.getCell(j).getText());
   }
   let ingredients = [];
   for (let i = 1; i < tableNumRows - 1; i++) {
@@ -79,7 +82,7 @@ function parseTable(
     if (ingredient == null) {
       return null;
     }
-    ingredients.push(ingredient)
+    ingredients.push(ingredient);
   }
   // Parse total row like an ingredient but ignore everything
   // except nutrient values.
@@ -87,35 +90,42 @@ function parseTable(
   if (totalRow.getNumCells() != tableNumCols) {
     return null;
   }
-  let totalNutrientValues = []
+  let totalNutrientValues = [];
   for (let j = 3; j < tableNumCols; j++) {
-    totalNutrientValues.push(totalRow.getCell(j).getText())
+    totalNutrientValues.push(totalRow.getCell(j).getText());
   }
   // Add a NamedRange for later reference.
   let rangeBuilder = document.newRange();
   rangeBuilder.addElement(table);
-  let namedRange = document.addNamedRange(INGREDIENTS_TABLE_RANGE_NAME, rangeBuilder.build());
+  let namedRange = document.addNamedRange(
+    INGREDIENTS_TABLE_RANGE_NAME,
+    rangeBuilder.build()
+  );
   return {
     rangeId: namedRange.getId(),
     title,
     nutrientNames,
     ingredients,
-    totalNutrientValues
-  }
+    totalNutrientValues,
+  };
 }
 
 const RECIPE_TITLE_HEADING_LEVEL = DocumentApp.ParagraphHeading.HEADING1;
 
-const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table"
+const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table";
 
-export function parseDocument(document: GoogleAppsScript.Document.Document): Document | null {
+export function parseDocument(
+  document: GoogleAppsScript.Document.Document
+): Document | null {
   document = DocumentApp.getActiveDocument();
 
   // Remove existing `NamedRange`s that we use to keep track of
   // Tables
-  document.getNamedRanges(INGREDIENTS_TABLE_RANGE_NAME).forEach(namedRange => {
-    namedRange.remove();
-  });
+  document
+    .getNamedRanges(INGREDIENTS_TABLE_RANGE_NAME)
+    .forEach((namedRange) => {
+      namedRange.remove();
+    });
 
   let toc: TocEntry[] | null = null;
   let recipes = [];

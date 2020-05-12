@@ -11,31 +11,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import * as React from "react";
 
-export interface IngredientRow {
-  nutrientValues: string[];
-  amount: string;
-  unit: string;
-  ingredient: {
-    description: string;
-    url: string | null;
-  };
-}
-
-export interface RecipeTable {
-  title: string;
-  rangeId: string;
-  nutrientNames: string[];
-  ingredients: IngredientRow[];
-  totalNutrientValues: string[];
-}
-
-export interface TocEntry {
-  title: string;
-  url: string;
-}
-
-export interface Document {
-  toc: TocEntry[];
-  recipes: RecipeTable[];
-}
+// TODO: make selected a controlled property.
+export const Dropdown: React.FunctionComponent<{
+  id: string;
+  label: string;
+  options: string[];
+}> = (props) => {
+  return (
+    <div className="block form-group">
+      <label htmlFor={props.id}>{props.label}</label>
+      <select id={props.id}>
+        {props.options.map((option, index) => (
+          <option selected={index == 0}>{option}</option>
+        ))}
+      </select>
+    </div>
+  );
+};

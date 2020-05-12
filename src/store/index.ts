@@ -32,8 +32,8 @@ function rootReducer(
   switch (action.type) {
     case ActionType.UPDATE_DOCUMENT:
       return {
-        ...state,
-        document: action.document
+        type: "Active",
+        document: action.document,
       };
     default:
       return state;

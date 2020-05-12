@@ -21,9 +21,11 @@ import { MainContainer } from "../src/MainContainer";
 
 ReactDOM.render(
   <Provider store={store}>
-    <MainContainer database={DocsDatabase}/>
+    <MainContainer database={DocsDatabase} />
   </Provider>,
   document.getElementById("root")
 );
 
-DocsDatabase.parseDocument().then(document => store.dispatch(updateDocument(document)));
+DocsDatabase.parseDocument().then((document) =>
+  store.dispatch(updateDocument(document))
+);

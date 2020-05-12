@@ -16,16 +16,15 @@
  * client.  From the point of view of the client this is server-side code.
  */
 export function showSidebar() {
-  let htmlOutput = HtmlService
-  .createHtmlOutputFromFile('ui/sidebar.html')
-  .setTitle('Edit Recipes')
-  DocumentApp.getUi()
-  .showSidebar(htmlOutput);
+  let htmlOutput = HtmlService.createHtmlOutputFromFile(
+    "ui/sidebar.html"
+  ).setTitle("Edit Recipes");
+  DocumentApp.getUi().showSidebar(htmlOutput);
 }
 
 export function onOpen() {
   DocumentApp.getUi()
-      .createAddonMenu()
-      .addItem('Show', 'showSidebar')
-      .addToUi();
+    .createAddonMenu()
+    .addItem("Show", "showSidebar")
+    .addToUi();
 }

@@ -13,16 +13,17 @@
 // limitations under the License.
 import * as React from "react";
 import { Database } from "./Database";
+import { Dropdown } from "./Dropdown";
 
 interface MainProps {
   database: Database;
-  displayText: string;
+  recipeNames: string[];
 }
 
 export const Main: React.FunctionComponent<MainProps> = (props) => {
   return (
     <React.Fragment>
-      { props.displayText }
+      <Dropdown id="recipes" label="Recipes" options={props.recipeNames} />
     </React.Fragment>
   );
 };

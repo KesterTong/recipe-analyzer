@@ -11,26 +11,23 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import {
-  RootState,
-  ThunkDispatch,
-} from "./store";
+import { RootState, ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
 
 function mapStateToProps(state: RootState) {
-  console.log(state)
+  console.log(state);
   return {
-    displayText: state.document == null ? "Loading..." : JSON.stringify(state.document),
+    recipeNames:
+      state.type == "Loading"
+        ? ["Loading..."]
+        : state.document.recipes.map((recipe) => recipe.title),
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {},
-    dispatch
-  );
+  return bindActionCreators({}, dispatch);
 }
 
 export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);

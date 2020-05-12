@@ -17,11 +17,12 @@ import { Database } from "../src/Database";
 /**
  * An implementation of a Database that stores recipes in a Google Doc.
  */
-
 export const DocsDatabase: Database = {
   parseDocument: () => {
-    return new Promise(resolve => {
-      (<any>window).google.script.run.withSuccessHandler(resolve).parseDocument();
-    })
-  }
+    return new Promise((resolve) => {
+      (<any>window).google.script.run
+        .withSuccessHandler(resolve)
+        .parseDocument();
+    });
+  },
 };

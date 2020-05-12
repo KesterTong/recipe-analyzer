@@ -14,12 +14,19 @@
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { Document } from "../../apps_script/Document";
 
-export interface RootState {
-  document: Document | null;
+export interface LoadingState {
+  type: "Loading";
 }
 
+export interface ActiveState {
+  type: "Active";
+  document: Document;
+}
+
+export type RootState = LoadingState | ActiveState;
+
 export const initialState: RootState = {
-  document: null
+  type: "Loading",
 };
 
 export enum ActionType {
@@ -28,7 +35,7 @@ export enum ActionType {
 
 export interface UpdateDocument {
   type: ActionType.UPDATE_DOCUMENT;
-  document: Document
+  document: Document;
 }
 
 export type RootAction = UpdateDocument;

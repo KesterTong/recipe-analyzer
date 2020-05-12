@@ -15,7 +15,7 @@ import { Document } from "../apps_script/Document";
 
 /**
  * A database of recipes.
- * 
+ *
  * The only non-testing implementation of this class stores recipes
  * in a Google Doc.  See /apps_script/sidebar.tsx.
  */
