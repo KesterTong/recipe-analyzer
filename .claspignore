@@ -3,6 +3,7 @@ env/**
 node_modules/**
 apps_script/client.ts
 apps_script/web_main.tsx
+apps_script/sidebar.html
 src/**
 tests/**
 ui/bundle.*
