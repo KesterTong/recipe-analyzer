@@ -15,19 +15,19 @@ import { RootState, ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
+import { selectRecipe } from "./store";
 
 function mapStateToProps(state: RootState) {
-  console.log(state);
   return {
-    recipeNames:
-      state.type == "Loading"
-        ? ["Loading..."]
-        : state.document.recipes.map((recipe) => recipe.title),
+    recipeTitles: state.type == "Loading" ? null : state.document.recipes.map(recipe => recipe.title),
+    selectedRecipeIndex: state.type == "Loading" ? 0 : state.selectedRecipeIndex,
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators({}, dispatch);
+  return bindActionCreators({
+    selectRecipe,
+  }, dispatch);
 }
 
 export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);

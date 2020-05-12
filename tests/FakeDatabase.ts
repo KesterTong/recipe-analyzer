@@ -42,7 +42,27 @@ export const FakeDatabase: Database = {
                 ],
                 nutrientNames: ["Protein", "Calories"],
                 rangeId: "3e1qfk20lh8q",
-                title: "Recipe Template",
+                title: "Recipe 1",
+              },
+              {
+                totalNutrientValues: ["1000", "200"],
+                ingredients: [
+                  {
+                    unit: "cup",
+                    amount: "1",
+                    ingredient: { description: "flour", url: "#test" },
+                    nutrientValues: ["100", "20"],
+                  },
+                  {
+                    unit: "",
+                    amount: "2",
+                    ingredient: { description: "test2", url: "#bc" },
+                    nutrientValues: ["b", "c"],
+                  },
+                ],
+                nutrientNames: ["Protein", "Calories"],
+                rangeId: "abcdefg",
+                title: "Recipe 2",
               },
             ],
             toc: [{ title: "Recipe Template", url: "#heading=h.y3h0qes0821d" }],

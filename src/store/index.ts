@@ -34,7 +34,16 @@ function rootReducer(
       return {
         type: "Active",
         document: action.document,
+        selectedRecipeIndex: 0,  // TODO: handle empty recipe set.
       };
+    case ActionType.SELECT_RECIPE:
+      if (state.type == "Loading") {
+        return state;
+      }
+      return {
+        ...state,
+        selectedRecipeIndex: action.index,
+      }
     default:
       return state;
   }

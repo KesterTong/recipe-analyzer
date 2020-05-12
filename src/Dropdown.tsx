@@ -17,14 +17,16 @@ import * as React from "react";
 export const Dropdown: React.FunctionComponent<{
   id: string;
   label: string;
-  options: string[];
+  options: { value: any; label: string }[];
+  selected: any;
+  onChange(event: React.ChangeEvent<HTMLSelectElement>): void;
 }> = (props) => {
   return (
     <div className="block form-group">
       <label htmlFor={props.id}>{props.label}</label>
-      <select id={props.id}>
-        {props.options.map((option, index) => (
-          <option selected={index == 0}>{option}</option>
+      <select value={props.selected} onChange={props.onChange} id={props.id}>
+        {props.options.map((option) => (
+          <option value={option.value}>{option.label}</option>
         ))}
       </select>
     </div>

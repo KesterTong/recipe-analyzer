@@ -21,7 +21,7 @@ import { MainContainer } from "../src/MainContainer";
 
 ReactDOM.render(
   <Provider store={store}>
-    <div style={{width: "300px"}}>
+    <div style={{ width: "300px" }}>
       <MainContainer database={FakeDatabase} />
     </div>
   </Provider>,

@@ -21,6 +21,7 @@ export interface LoadingState {
 export interface ActiveState {
   type: "Active";
   document: Document;
+  selectedRecipeIndex: number;
 }
 
 export type RootState = LoadingState | ActiveState;
@@ -31,6 +32,7 @@ export const initialState: RootState = {
 
 export enum ActionType {
   UPDATE_DOCUMENT = "@UpdateDocument",
+  SELECT_RECIPE = "@SelectRecipe",
 }
 
 export interface UpdateDocument {
@@ -38,7 +40,12 @@ export interface UpdateDocument {
   document: Document;
 }
 
-export type RootAction = UpdateDocument;
+export interface SelectRecipe {
+  type: ActionType.SELECT_RECIPE;
+  index: number;
+}
+
+export type RootAction = UpdateDocument | SelectRecipe;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

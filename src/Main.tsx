@@ -14,10 +14,14 @@
 import * as React from "react";
 import { Database } from "./Database";
 import { Dropdown } from "./Dropdown";
+import { Document } from "../apps_script/Document";
+import { selectRecipe } from "./store";
 
 interface MainProps {
   database: Database;
-  recipeNames: string[];
+  recipeTitles: string[] | null;
+  selectedRecipeIndex: number;
+  selectRecipe(index: number): void;
 }
 
 export const Main: React.FunctionComponent<MainProps> = (props) => {
@@ -26,12 +30,16 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
       <Dropdown
         id="recipe"
         label="Selected Recipe"
-        options={props.recipeNames}
-      />
-      <Dropdown
-        id="ingredient"
-        label="Selected Ingredient"
-        options={["1 cup flour", "1 potato"]}
+        options={
+          props.recipeTitles
+            ? props.recipeTitles.map((title, index) => ({
+                value: index,
+                label: title,
+              }))
+            : [{ value: 0, label: "Loading..." }]
+        }
+        selected={props.selectedRecipeIndex}
+        onChange={(event) => props.selectRecipe(Number(event.target.value))}
       />
       <div className="block form-group button-group">
         <button>Delete</button>
