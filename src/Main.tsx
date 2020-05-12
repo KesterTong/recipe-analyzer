@@ -50,9 +50,9 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
       <div className="block form-group">
         <label htmlFor="errors">Errors</label>
         <select id="errors" multiple>
-          <option className="error">Bad value</option>
-          <option>Google Forms</option>
-          <option>Google Sheets</option>
+        <option className="error">&#x26D4;Sample error</option>
+        <option className="error">&#x26A0;Sample warning</option>
+          <option>&#x1F514;Sample notice</option>
         </select>
       </div>
     </React.Fragment>
