@@ -18,7 +18,7 @@ import { Recipe, Status, StatusCode } from "../core";
  * Parse the document, generating a set of Recipes.
  */
 export function parseRecipes(document: Document) {
-  const recipes: { [index: string]: Recipe } = {};
+  const recipeIndexByUrl: { [index: string]: number } = {};
   const errors: Status[] = [];
 
   // Construct map from recipe titles to the heading URL.
@@ -30,7 +30,7 @@ export function parseRecipes(document: Document) {
     headingUrlByTitle[tocEntry.title] = tocEntry.url;
   });
 
-  document.recipes.forEach((recipe) => {
+  document.recipes.forEach((recipe, index) => {
     // TODO: parse recipe.
 
     const recipeUrl = headingUrlByTitle[recipe.title];
@@ -43,7 +43,8 @@ export function parseRecipes(document: Document) {
           '" not found in table of contents.  The table of contents may need refreshing.',
       });
     }
+    recipeIndexByUrl[recipeUrl] = index;
   });
 
-  return { recipes, errors };
+  return { recipeIndexByUrl, errors };
 }

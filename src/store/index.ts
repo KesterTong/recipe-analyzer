@@ -37,6 +37,7 @@ function rootReducer(
         document: action.document,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0, // TODO: handle empty ingredient list.
+        fdcFoodByUrl: {},
         ...parseRecipes(action.document),
       };
     case ActionType.SELECT_RECIPE:
