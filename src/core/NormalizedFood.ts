@@ -12,7 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "./FoodDataCentral";
-import { Recipe } from "./Recipe";
+import { Nutrients } from "./Nutrients";
+import { Quantity } from "./Quantity";
 
-export type Food = FDCFood | Recipe;
+/**
+ * Representation of a food used for calculations.
+ */
+export interface NormalizedFood {
+  description: string;
+  nutrientsPerServing: Nutrients;
+  gramsPerServing: number | null;
+  mlPerServing: number | null;
+  otherServingEquivalents: Quantity[];
+};

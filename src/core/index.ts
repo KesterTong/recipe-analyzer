@@ -12,17 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
+export * from "./NormalizedFood";
 export * from "./FoodDataCentral";
 export * from "./Nutrients";
 export * from "./Recipe";
 export * from "./StatusOr";
 
-export { getDisplayQuantities } from "./getDisplayQuantities";
-export {
-  nutrientsPerServingForFood,
-  servingEquivalentQuantities,
-  nutrientsForIngredient,
-  nutrientsForQuantity,
-  totalNutrients,
-} from "./nutrientsPerServing";
+export { normalizeFDCFood } from "./normalizeFDCFood";
