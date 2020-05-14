@@ -16,8 +16,9 @@ import ReactDOM = require("react-dom");
 import React = require("react");
 import { DocsDatabase } from "./DocsDatabase";
 import { Provider } from "react-redux";
-import { store, updateDocument } from "../src/store";
+import { store, initialize } from "../src/store";
 import { MainContainer } from "../src/MainContainer";
+import { fetchFdcFoods } from "../src/document/fetchFdcFoods";
 
 ReactDOM.render(
   <Provider store={store}>
@@ -26,6 +27,10 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-DocsDatabase.parseDocument().then((document) =>
-  store.dispatch(updateDocument(document))
-);
+async function init() {
+  const document = await DocsDatabase.parseDocument();
+  const fdcFoodsById = await fetchFdcFoods(document);
+  store.dispatch(initialize(document, fdcFoodsById));
+}
+
+init();

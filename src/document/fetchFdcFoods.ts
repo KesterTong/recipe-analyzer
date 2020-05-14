@@ -12,21 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Document } from "./Document";
-import { Status, StatusCode, getFdcFoodUrl } from "../core";
-import { NormalizedFood, parseFdcWebUrl } from "../core";
+import { Status, StatusCode, getFdcFoodUrl, normalizeFDCFood } from "../core";
+import { NormalizedFood, parseFdcWebUrl, FDCFood } from "../core";
 
-const FDC_API_KEY = 'exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ';
+const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
 
 /**
  * Fetch FDC Foods contained in the recipes in the document.
- * 
+ *
  * @param document The document
  * @returns The FDC Foods by id
  */
-export function fetchFdcFoods(document: Document): Promise<{[index: string]: NormalizedFood}> {
+export async function fetchFdcFoods(
+  document: Document
+): Promise<{ [index: number]: NormalizedFood }> {
   const fdcIds: number[] = [];
-  document.recipes.forEach(recipe => {
-    recipe.ingredients.forEach(async ingredient => {
+  document.recipes.forEach((recipe) => {
+    recipe.ingredients.forEach(async (ingredient) => {
       // Links the FDC Web App are parsed as the corresponding food.
       const url = ingredient.ingredient.url;
       const fdcId = url == null ? null : parseFdcWebUrl(url);
@@ -34,6 +36,19 @@ export function fetchFdcFoods(document: Document): Promise<{[index: string]: Nor
         return;
       }
       fdcIds.push(fdcId);
-    })
+    });
   });
+  const responses = await Promise.all(
+    fdcIds.map(async (fdcId) => {
+      const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
+      const food: FDCFood = await response.json();
+      const normalizedFood = normalizeFDCFood(food);
+      return { fdcId, normalizedFood };
+    })
+  );
+  let result: { [index: number]: NormalizedFood } = {};
+  responses.forEach((response) => {
+    result[response.fdcId] = response.normalizedFood;
+  });
+  return result;
 }

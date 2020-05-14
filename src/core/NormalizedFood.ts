@@ -24,4 +24,4 @@ export interface NormalizedFood {
   gramsPerServing: number | null;
   mlPerServing: number | null;
   otherServingEquivalents: Quantity[];
-};
+}

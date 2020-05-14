@@ -30,7 +30,11 @@ export const FakeDatabase: Database = {
                   {
                     unit: "cup",
                     amount: "1",
-                    ingredient: { description: "flour", url: "#test" },
+                    ingredient: {
+                      description: "flour",
+                      url:
+                        "https://fdc.nal.usda.gov/fdc-app.html#/food-details/169761/nutrients",
+                    },
                     nutrientValues: ["100", "20"],
                   },
                   {

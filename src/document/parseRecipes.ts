@@ -16,7 +16,7 @@ import { Status, StatusCode } from "../core";
 
 /**
  * Parse the document, generating a set of Recipes.
- * 
+ *
  * @param document The document to parse
  * @returns The parsed document and errors
  */

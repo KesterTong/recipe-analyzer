@@ -70,7 +70,7 @@ const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-d
 
 /**
  * Parse a link to the FDC website as an FDC ID.
- * 
+ *
  * @param url A URL to the FDC website
  * @returns The FDC ID or none if parsing fails.
  */

@@ -11,13 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RootAction, ThunkResult, ActionType } from "./types";
+import { RootAction, ActionType } from "./types";
 import { Document } from "../document/Document";
+import { NormalizedFood } from "../core";
 
-export function updateDocument(document: Document): RootAction {
+export function initialize(
+  document: Document,
+  fdcFoodsById: {
+    [index: number]: NormalizedFood;
+  }
+): RootAction {
   return {
-    type: ActionType.UPDATE_DOCUMENT,
+    type: ActionType.INITIALIZE,
     document,
+    fdcFoodsById,
   };
 }
 

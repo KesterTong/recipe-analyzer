@@ -33,15 +33,15 @@ export function normalizeFDCFood(food: FDCFood): NormalizedFood {
   let gramsPerServing: number | null = null;
   let mlPerServing: number | null = null;
   let otherServingEquivalents: Quantity[] = [];
-  servingEquivalentQuantities(food).forEach(quantity => {
-    if (quantity.unit == 'g') {
+  servingEquivalentQuantities(food).forEach((quantity) => {
+    if (quantity.unit == "g") {
       gramsPerServing = gramsPerServing || quantity.amount;
-    } else if (quantity.unit == 'ml') {
+    } else if (quantity.unit == "ml") {
       mlPerServing = mlPerServing || quantity.amount;
     } else {
       otherServingEquivalents.push(quantity);
     }
-  })
+  });
   return {
     description: food.description,
     nutrientsPerServing,
@@ -62,7 +62,7 @@ function servingEquivalentQuantities(food: FDCFood): Quantity[] {
 
 function SRLegacyServingEquivalentQuantities(food: SRLegacyFood): Quantity[] {
   // A serving is 100 g by definition for SR Legacy foods.
-  let result = [{amount: 100, unit: 'g'}];
+  let result = [{ amount: 100, unit: "g" }];
   for (let i = 0; i < food.foodPortions.length; i++) {
     const foodPortion = food.foodPortions[i];
     const [amount, unit] = canonicalizeQuantity(
@@ -70,16 +70,16 @@ function SRLegacyServingEquivalentQuantities(food: SRLegacyFood): Quantity[] {
       foodPortion.modifier
     );
     const amountPerServing = (100.0 * amount) / foodPortion.gramWeight;
-    result.push({amount: amountPerServing, unit});
+    result.push({ amount: amountPerServing, unit });
   }
   return result;
 }
 
 function brandedServingEquivalentQuantities(food: BrandedFood): Quantity[] {
   // A serving is 100 g or 100 ml depending on servingSizeUnit, for Branded foods.
-  let result = [{amount: 100, unit: food.servingSizeUnit}];
+  let result = [{ amount: 100, unit: food.servingSizeUnit }];
   let householdServingQuantity =
-  food.householdServingFullText == null
+    food.householdServingFullText == null
       ? null
       : parseQuantity(food.householdServingFullText);
   if (householdServingQuantity != null) {
@@ -88,11 +88,10 @@ function brandedServingEquivalentQuantities(food: BrandedFood): Quantity[] {
       householdServingQuantity.unit
     );
     const amountPerServing = (100.0 * amount) / food.servingSize;
-    result.push({amount: amountPerServing, unit});
+    result.push({ amount: amountPerServing, unit });
   }
   return result;
 }
-
 
 // // Used to compute ingredient quantity
 // export function nutrientsForQuantity(
@@ -111,7 +110,6 @@ function brandedServingEquivalentQuantities(food: BrandedFood): Quantity[] {
 //   var servings = amount / unitsPerServing;
 //   return scaleNutrients(nutrientsPerServing, servings);
 // }
-
 
 // export function nutrientsForIngredient(
 //   ingredient: Ingredient,

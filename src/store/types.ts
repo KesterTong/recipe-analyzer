@@ -13,7 +13,7 @@
 // limitations under the License.
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 import { Document } from "../document/Document";
-import { Status, Recipe, FDCFood } from "../core";
+import { Status, Recipe, FDCFood, NormalizedFood } from "../core";
 
 export interface LoadingState {
   type: "Loading";
@@ -25,7 +25,7 @@ export interface ActiveState {
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   recipeIndexByUrl: { [index: string]: number };
-  fdcFoodByUrl: { [index: string]: FDCFood };
+  fdcFoodsById: { [index: number]: NormalizedFood };
   errors: Status[];
 }
 
@@ -36,14 +36,15 @@ export const initialState: RootState = {
 };
 
 export enum ActionType {
-  UPDATE_DOCUMENT = "@UpdateDocument",
+  INITIALIZE = "@Initialize",
   SELECT_RECIPE = "@SelectRecipe",
   SELECT_INGREDIENT = "@SelectIngredient",
 }
 
-export interface UpdateDocument {
-  type: ActionType.UPDATE_DOCUMENT;
+export interface Initialize {
+  type: ActionType.INITIALIZE;
   document: Document;
+  fdcFoodsById: { [index: number]: NormalizedFood };
 }
 
 export interface SelectRecipe {
@@ -56,7 +57,7 @@ export interface SelectIngredient {
   index: number;
 }
 
-export type RootAction = UpdateDocument | SelectRecipe | SelectIngredient;
+export type RootAction = Initialize | SelectRecipe | SelectIngredient;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

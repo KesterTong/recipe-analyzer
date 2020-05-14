@@ -13,13 +13,9 @@
 // limitations under the License.
 
 import { normalizeFDCFood } from "../../src/core";
-import {
-  TEST_SR_LEGACY_FOOD,
-  TEST_BRANDED_FOOD,
-} from "../testData";
+import { TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from "../testData";
 
 describe("normalizeFDCFood", () => {
-
   it("SR Legacy Food", () => {
     const result = normalizeFDCFood(TEST_SR_LEGACY_FOOD);
     expect(result).toEqual({
@@ -27,10 +23,12 @@ describe("normalizeFDCFood", () => {
       nutrientsPerServing: { "1003": 10, "1008": 123 },
       gramsPerServing: 100,
       mlPerServing: 102.86521739130434,
-      otherServingEquivalents: [{
-        amount: 0.6578947368421053,
-        unit: "fruit without skin and seed",
-      }],
+      otherServingEquivalents: [
+        {
+          amount: 0.6578947368421053,
+          unit: "fruit without skin and seed",
+        },
+      ],
     });
   });
 
@@ -41,10 +39,12 @@ describe("normalizeFDCFood", () => {
       nutrientsPerServing: { "1003": 5, "1008": 425 },
       gramsPerServing: 100,
       mlPerServing: null,
-      otherServingEquivalents: [{
-        amount: 15.0,
-        unit: "piece",
-      }],
+      otherServingEquivalents: [
+        {
+          amount: 15.0,
+          unit: "piece",
+        },
+      ],
     });
   });
 });

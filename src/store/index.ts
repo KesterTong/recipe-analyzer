@@ -31,13 +31,13 @@ function rootReducer(
   action: RootAction
 ): RootState {
   switch (action.type) {
-    case ActionType.UPDATE_DOCUMENT:
+    case ActionType.INITIALIZE:
       return {
         type: "Active",
         document: action.document,
+        fdcFoodsById: action.fdcFoodsById,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0, // TODO: handle empty ingredient list.
-        fdcFoodByUrl: {},
         ...parseRecipes(action.document),
       };
     case ActionType.SELECT_RECIPE:
