@@ -18,4 +18,5 @@ export * from "./Nutrients";
 export * from "./Recipe";
 export * from "./StatusOr";
 
+export { NormalizedFood } from "./NormalizedFood";
 export { normalizeFDCFood } from "./normalizeFDCFood";

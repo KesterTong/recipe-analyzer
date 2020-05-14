@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Document } from "./Document";
-import { Recipe, Status, StatusCode } from "../core";
+import { Status, StatusCode } from "../core";
 
 /**
  * Parse the document, generating a set of Recipes.
+ * 
+ * @param document The document to parse
+ * @returns The parsed document and errors
  */
 export function parseRecipes(document: Document) {
   const recipeIndexByUrl: { [index: string]: number } = {};
