@@ -19,6 +19,11 @@ export interface LoadingState {
   type: "Loading";
 }
 
+export interface ErrorState {
+  type: "Error";
+  message: string;
+}
+
 export interface ActiveState {
   type: "Active";
   document: Document;
@@ -29,7 +34,7 @@ export interface ActiveState {
   errors: Status[];
 }
 
-export type RootState = LoadingState | ActiveState;
+export type RootState = LoadingState | ErrorState | ActiveState;
 
 export const initialState: RootState = {
   type: "Loading",
@@ -37,6 +42,7 @@ export const initialState: RootState = {
 
 export enum ActionType {
   INITIALIZE = "@Initialize",
+  SET_ERROR = "@SetError",
   SELECT_RECIPE = "@SelectRecipe",
   SELECT_INGREDIENT = "@SelectIngredient",
 }
@@ -45,6 +51,11 @@ export interface Initialize {
   type: ActionType.INITIALIZE;
   document: Document;
   fdcFoodsById: { [index: number]: NormalizedFood };
+}
+
+export interface SetError {
+  type: ActionType.SET_ERROR;
+  message: string;
 }
 
 export interface SelectRecipe {
@@ -57,7 +68,11 @@ export interface SelectIngredient {
   index: number;
 }
 
-export type RootAction = Initialize | SelectRecipe | SelectIngredient;
+export type RootAction =
+  | Initialize
+  | SetError
+  | SelectRecipe
+  | SelectIngredient;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

@@ -40,8 +40,13 @@ function rootReducer(
         selectedIngredientIndex: 0, // TODO: handle empty ingredient list.
         ...parseRecipes(action.document),
       };
+    case ActionType.SET_ERROR:
+      return {
+        type: "Error",
+        message: action.message,
+      };
     case ActionType.SELECT_RECIPE:
-      if (state.type == "Loading") {
+      if (state.type != "Active") {
         return state;
       }
       return {
@@ -50,7 +55,7 @@ function rootReducer(
         selectedIngredientIndex: 0,
       };
     case ActionType.SELECT_INGREDIENT:
-      if (state.type == "Loading") {
+      if (state.type != "Active") {
         return state;
       }
       return {

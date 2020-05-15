@@ -19,9 +19,10 @@ import { Database } from "../src/document/Database";
  */
 export const DocsDatabase: Database = {
   parseDocument: () => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       (<any>window).google.script.run
         .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
         .parseDocument();
     });
   },

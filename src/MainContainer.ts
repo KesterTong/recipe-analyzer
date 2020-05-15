@@ -18,28 +18,7 @@ import { Main } from "./Main";
 import { selectRecipe, selectIngredient } from "./store";
 
 function mapStateToProps(state: RootState) {
-  return {
-    recipeTitles:
-      state.type == "Loading"
-        ? null
-        : state.document.recipes.map((recipe) => recipe.title),
-    selectedRecipeIndex:
-      state.type == "Loading" ? 0 : state.selectedRecipeIndex,
-    selectedIngredientIndex:
-      state.type == "Loading" ? 0 : state.selectedIngredientIndex,
-    ingredientStrings:
-      state.type == "Loading"
-        ? null
-        : state.document.recipes[state.selectedRecipeIndex].ingredients.map(
-            (ingredient) =>
-              ingredient.amount +
-              " " +
-              ingredient.unit +
-              " " +
-              ingredient.ingredient.description
-          ),
-    errors: state.type == "Loading" ? [] : state.errors,
-  };
+  return { state };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {

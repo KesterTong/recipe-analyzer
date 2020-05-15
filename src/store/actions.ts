@@ -28,6 +28,10 @@ export function initialize(
   };
 }
 
+export function setError(message: string): RootAction {
+  return { type: ActionType.SET_ERROR, message };
+}
+
 export function selectRecipe(index: number): RootAction {
   return {
     type: ActionType.SELECT_RECIPE,

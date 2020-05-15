@@ -47,6 +47,9 @@ function config(mode, entry, output) {
       }),
       new HtmlWebpackInlineSourcePlugin(),
     ],
+    optimization: {
+      minimize: false
+    },
   };
 }
 
