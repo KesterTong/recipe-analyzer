@@ -40,40 +40,62 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
   } else {
     return (
       <React.Fragment>
-        <Dropdown
-          id="recipe"
-          label="Selected Recipe"
-          options={state.recipes.map((recipe, index) => ({
-            value: index,
-            label: recipe.title,
-          }))}
-          selected={state.selectedRecipeIndex}
-          onChange={(event) => props.selectRecipe(Number(event.target.value))}
-        />
-        <div className="block form-group button-group">
-          <button>Delete</button>
-          <button>Insert Above</button>
-          <button>Insert Below</button>
+        <div className="block form-group">
+          <label htmlFor="recipe">Selected Recipe</label>
+          <div className="control-group">
+            <select 
+              value={state.selectedRecipeIndex}   
+              onChange={(event) => props.selectRecipe(Number(event.target.value))}
+              id="recipe"
+            >
+              {state.recipes.map((recipe, index) => (
+                <option value={index}>
+                  {recipe.title}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <Dropdown
-          id="ingredient"
-          label="Selected Ingredient"
-          options={state.recipes[
-            state.selectedRecipeIndex
-          ].ingredients.map((ingredient, index) => ({
-            value: index,
-            label:
-              ingredient.amount +
-              " " +
-              ingredient.unit +
-              " " +
-              ingredient.ingredient.description,
-          }))}
-          selected={state.selectedIngredientIndex}
-          onChange={(event) =>
-            props.selectIngredient(Number(event.target.value))
-          }
-        />
+        <div className="block form-group">
+          <label htmlFor="ingredient">Selected Ingredient</label>
+          <div className="control-group">
+            <select
+              value={state.selectedIngredientIndex}
+              onChange={(event) =>
+                props.selectIngredient(Number(event.target.value))
+              }
+              id="ingredient"
+            >
+              {state.recipes[state.selectedRecipeIndex].ingredients.map(
+                (ingredient, index) => (
+                  <option value={index}>
+                    {ingredient.amount +
+                      " " +
+                      ingredient.unit +
+                      " " +
+                      ingredient.ingredient.description}
+                  </option>
+                )
+              )}
+              <option value={state.recipes[state.selectedRecipeIndex].ingredients.length}>
+                New Ingredient
+              </option>
+            </select>
+            <button className="icon-button">
+              <i className="material-icons">delete</i>
+            </button>
+            <button className="icon-button">
+              <i className="material-icons">arrow_upward</i>
+            </button>
+            <button className="icon-button">
+              <i className="material-icons">arrow_downward</i>
+            </button>
+          </div>
+        </div>
+        <div className="block form-group">
+          <label htmlFor="ingredient-amount">Amount</label>
+          <input type="text" id="ingredient-amount"></input>
+        </div>
       </React.Fragment>
     );
   }

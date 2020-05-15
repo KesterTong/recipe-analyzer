@@ -3,14 +3,35 @@
   <head>
     <base target="_top">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     <style>
       select {
-        width: 100%;
+        flex-grow: 1;
         text-align: left;
+      }
+      input {
+        width: 100%;
       }
       .button-group {
         display: flex;
         justify-content: space-between;
+      }
+      .control-group {
+        display: flex;
+      }
+      .icon-button {
+        min-width: 34px;
+        padding: 4px;
+      }
+      .icon-button + .icon-button {
+        margin-left: 3px;
+      }
+      select + .icon-button {
+        margin-left: 3px;
+      }
+      .material-icons {
+        font-size: 18px;
       }
     </style>
   </head>
