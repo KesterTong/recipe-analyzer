@@ -114,6 +114,10 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
           <label htmlFor="ingredient-unit">Unit</label>
           <input type="text" id="ingredient-unit" value={selectedIngredient.unit}></input>
         </div>
+        <div className="block form-group">
+          <label htmlFor="ingredient-food">Food</label>
+          <input type="text" id="ingredient-food" value={selectedIngredient.ingredient.description}></input>
+        </div>
       </React.Fragment>
     );
   }
