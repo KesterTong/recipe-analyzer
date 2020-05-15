@@ -33,7 +33,7 @@ function rootReducer(
     case ActionType.INITIALIZE:
       return {
         type: "Active",
-        document: action.document,
+        recipes: action.recipes,
         fdcFoodsById: action.fdcFoodsById,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0, // TODO: handle empty ingredient list.

@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { RootAction, ActionType } from "./types";
-import { Document } from "../document/Document";
+import { Recipe } from "../document/Document";
 import { NormalizedFood } from "../core";
 
 export function initialize(
-  document: Document,
+  recipes: Recipe[],
   fdcFoodsById: {
     [index: number]: NormalizedFood;
   }
 ): RootAction {
   return {
     type: ActionType.INITIALIZE,
-    document,
+    recipes,
     fdcFoodsById,
   };
 }

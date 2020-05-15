@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface IngredientRow {
+export interface Ingredient {
   nutrientValues: string[];
   amount: string;
   unit: string;
@@ -22,15 +22,11 @@ export interface IngredientRow {
   };
 }
 
-export interface RecipeTable {
+export interface Recipe {
   title: string;
   url: string;
   rangeId: string;
   nutrientNames: string[];
-  ingredients: IngredientRow[];
+  ingredients: Ingredient[];
   totalNutrientValues: string[];
-}
-
-export interface Document {
-  recipes: RecipeTable[];
 }

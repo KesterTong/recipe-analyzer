@@ -30,9 +30,9 @@ ReactDOM.render(
 );
 
 async function init() {
-  const document = await FakeDatabase.parseDocument();
-  const fdcFoodsById = await fetchFdcFoods(document);
-  store.dispatch(initialize(document, fdcFoodsById));
+  const recipes = await FakeDatabase.parseDocument();
+  const fdcFoodsById = await fetchFdcFoods(recipes);
+  store.dispatch(initialize(recipes, fdcFoodsById));
 }
 
 init();

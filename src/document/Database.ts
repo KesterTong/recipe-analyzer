@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Document } from "./Document";
+import { Recipe } from "./Document";
 
 /**
  * A database of recipes.
@@ -20,5 +20,5 @@ import { Document } from "./Document";
  * in a Google Doc.  See /apps_script/sidebar.tsx.
  */
 export interface Database {
-  parseDocument(): Promise<Document>;
+  parseDocument(): Promise<Recipe[]>;
 }

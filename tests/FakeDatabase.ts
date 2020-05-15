@@ -22,56 +22,54 @@ export const FakeDatabase: Database = {
     return new Promise((resolve) => {
       setTimeout(
         () =>
-          resolve({
-            recipes: [
-              {
-                totalNutrientValues: ["1000", "200"],
-                ingredients: [
-                  {
-                    unit: "cup",
-                    amount: "1",
-                    ingredient: {
-                      description: "flour",
-                      url:
-                        "https://fdc.nal.usda.gov/fdc-app.html#/food-details/169761/nutrients",
-                    },
-                    nutrientValues: ["100", "20"],
+          resolve([
+            {
+              totalNutrientValues: ["1000", "200"],
+              ingredients: [
+                {
+                  unit: "cup",
+                  amount: "1",
+                  ingredient: {
+                    description: "flour",
+                    url:
+                      "https://fdc.nal.usda.gov/fdc-app.html#/food-details/169761/nutrients",
                   },
-                  {
-                    unit: "g",
-                    amount: "100",
-                    ingredient: { description: "water", url: null },
-                    nutrientValues: ["b", "c"],
-                  },
-                ],
-                nutrientNames: ["Protein", "Calories"],
-                rangeId: "3e1qfk20lh8q",
-                title: "Recipe 1",
-                url: "#heading=h.y3h0qes0821d",
-              },
-              {
-                totalNutrientValues: ["1000", "200"],
-                ingredients: [
-                  {
-                    unit: "cup",
-                    amount: "1",
-                    ingredient: { description: "flour", url: "#test" },
-                    nutrientValues: ["100", "20"],
-                  },
-                  {
-                    unit: "",
-                    amount: "2",
-                    ingredient: { description: "test2", url: "#bc" },
-                    nutrientValues: ["b", "c"],
-                  },
-                ],
-                nutrientNames: ["Protein", "Calories"],
-                rangeId: "abcdefg",
-                title: "Recipe 2",
-                url: "#heading=h.abcd1234",
-              },
-            ],
-          }),
+                  nutrientValues: ["100", "20"],
+                },
+                {
+                  unit: "g",
+                  amount: "100",
+                  ingredient: { description: "water", url: null },
+                  nutrientValues: ["b", "c"],
+                },
+              ],
+              nutrientNames: ["Protein", "Calories"],
+              rangeId: "3e1qfk20lh8q",
+              title: "Recipe 1",
+              url: "#heading=h.y3h0qes0821d",
+            },
+            {
+              totalNutrientValues: ["1000", "200"],
+              ingredients: [
+                {
+                  unit: "cup",
+                  amount: "1",
+                  ingredient: { description: "flour", url: "#test" },
+                  nutrientValues: ["100", "20"],
+                },
+                {
+                  unit: "",
+                  amount: "2",
+                  ingredient: { description: "test2", url: "#bc" },
+                  nutrientValues: ["b", "c"],
+                },
+              ],
+              nutrientNames: ["Protein", "Calories"],
+              rangeId: "abcdefg",
+              title: "Recipe 2",
+              url: "#heading=h.abcd1234",
+            },
+          ]),
         1000
       );
     });

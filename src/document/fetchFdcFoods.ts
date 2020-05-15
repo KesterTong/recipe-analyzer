@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Document } from "./Document";
+import { Recipe } from "./Document";
 import { Status, StatusCode, getFdcFoodUrl, normalizeFDCFood } from "../core";
 import { NormalizedFood, parseFdcWebUrl, FDCFood } from "../core";
 
@@ -24,10 +24,10 @@ const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
  * @returns The FDC Foods by id
  */
 export async function fetchFdcFoods(
-  document: Document
+  recipes: Recipe[]
 ): Promise<{ [index: number]: NormalizedFood }> {
   const fdcIds: number[] = [];
-  document.recipes.forEach((recipe) => {
+  recipes.forEach((recipe) => {
     recipe.ingredients.forEach(async (ingredient) => {
       // Links the FDC Web App are parsed as the corresponding food.
       const url = ingredient.ingredient.url;

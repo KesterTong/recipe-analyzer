@@ -29,9 +29,9 @@ ReactDOM.render(
 
 async function init() {
   try {
-    const document = await DocsDatabase.parseDocument();
-    const fdcFoodsById = await fetchFdcFoods(document);
-    store.dispatch(initialize(document, fdcFoodsById));
+    const recipes = await DocsDatabase.parseDocument();
+    const fdcFoodsById = await fetchFdcFoods(recipes);
+    store.dispatch(initialize(recipes, fdcFoodsById));
   } catch (error) {
     store.dispatch(setError(error.message));
   }

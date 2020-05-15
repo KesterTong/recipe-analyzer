@@ -16,7 +16,7 @@
  * client.  From the point of view of the client this is server-side code.
  */
 
-import { Document, RecipeTable, IngredientRow } from "../src/document/Document";
+import { Recipe, Ingredient } from "../src/document/Document";
 
 function parseToc(
   toc: GoogleAppsScript.Document.TableOfContents
@@ -40,7 +40,7 @@ function parseToc(
 function parseIngredient(
   row: GoogleAppsScript.Document.TableRow,
   numNutrients: number
-): IngredientRow | null {
+): Ingredient | null {
   if (row.getNumCells() != 3 + numNutrients) {
     return null;
   }
@@ -64,7 +64,7 @@ function parseTable(
   url: string,
   title: string,
   table: GoogleAppsScript.Document.Table
-): RecipeTable | null {
+): Recipe | null {
   let tableNumRows = table.getNumRows();
   if (tableNumRows < 2) {
     return null;
@@ -120,7 +120,7 @@ const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table";
 
 export function parseDocument(
   document: GoogleAppsScript.Document.Document
-): Document {
+): Recipe[] {
   document = DocumentApp.getActiveDocument();
 
   // Remove existing `NamedRange`s that we use to keep track of
@@ -178,9 +178,7 @@ export function parseDocument(
       currentTitle = null;
     }
   }
-  return {
-    recipes: recipes,
-  };
+  return recipes;
 }
 
 export function testParseDocument() {

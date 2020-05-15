@@ -43,7 +43,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         <Dropdown
           id="recipe"
           label="Selected Recipe"
-          options={state.document.recipes.map((recipe, index) => ({
+          options={state.recipes.map((recipe, index) => ({
             value: index,
             label: recipe.title,
           }))}
@@ -58,7 +58,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         <Dropdown
           id="ingredient"
           label="Selected Ingredient"
-          options={state.document.recipes[
+          options={state.recipes[
             state.selectedRecipeIndex
           ].ingredients.map((ingredient, index) => ({
             value: index,

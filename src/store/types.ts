@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { ThunkAction, ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { Document } from "../document/Document";
-import { Status, Recipe, FDCFood, NormalizedFood } from "../core";
+import { Recipe } from "../document/Document";
+import { NormalizedFood } from "../core";
 
 export interface LoadingState {
   type: "Loading";
@@ -26,7 +26,7 @@ export interface ErrorState {
 
 export interface ActiveState {
   type: "Active";
-  document: Document;
+  recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: NormalizedFood };
@@ -47,7 +47,7 @@ export enum ActionType {
 
 export interface Initialize {
   type: ActionType.INITIALIZE;
-  document: Document;
+  recipes: Recipe[];
   fdcFoodsById: { [index: number]: NormalizedFood };
 }
 
