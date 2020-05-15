@@ -14,6 +14,7 @@
 import * as React from "react";
 import { RootState } from "./store";
 import { Database } from "./document/Database";
+import { FoodInput } from "./FoodInput";
 
 interface MainProps {
   database: Database;
@@ -115,7 +116,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-food">Food</label>
-          <input type="text" id="ingredient-food" value={selectedIngredient.ingredient.description}></input>
+          <FoodInput id="ingredient-food" />
         </div>
       </React.Fragment>
     );
