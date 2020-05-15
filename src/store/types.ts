@@ -29,9 +29,7 @@ export interface ActiveState {
   document: Document;
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
-  recipeIndexByUrl: { [index: string]: number };
   fdcFoodsById: { [index: number]: NormalizedFood };
-  errors: Status[];
 }
 
 export type RootState = LoadingState | ErrorState | ActiveState;

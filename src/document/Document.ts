@@ -24,18 +24,13 @@ export interface IngredientRow {
 
 export interface RecipeTable {
   title: string;
+  url: string;
   rangeId: string;
   nutrientNames: string[];
   ingredients: IngredientRow[];
   totalNutrientValues: string[];
 }
 
-export interface TocEntry {
-  title: string;
-  url: string;
-}
-
 export interface Document {
-  toc: TocEntry[];
   recipes: RecipeTable[];
 }

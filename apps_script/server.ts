@@ -16,16 +16,13 @@
  * client.  From the point of view of the client this is server-side code.
  */
 
-import {
-  Document,
-  RecipeTable,
-  IngredientRow,
-  TocEntry,
-} from "../src/document/Document";
+import { Document, RecipeTable, IngredientRow } from "../src/document/Document";
 
-function parseToc(toc: GoogleAppsScript.Document.TableOfContents): TocEntry[] {
+function parseToc(
+  toc: GoogleAppsScript.Document.TableOfContents
+): { [index: string]: string } {
   let tocNumChildren = toc.getNumChildren();
-  let result = [];
+  let result: { [index: string]: string } = {};
   for (let i = 0; i < tocNumChildren; i++) {
     let child = toc.getChild(i);
     if (child.getType() != DocumentApp.ElementType.PARAGRAPH) {
@@ -35,7 +32,7 @@ function parseToc(toc: GoogleAppsScript.Document.TableOfContents): TocEntry[] {
     if (paragraph.getLinkUrl() == null) {
       continue;
     }
-    result.push({ title: paragraph.getText(), url: paragraph.getLinkUrl() });
+    result[paragraph.getText()] = paragraph.getLinkUrl();
   }
   return result;
 }
@@ -64,6 +61,7 @@ function parseIngredient(
 
 function parseTable(
   document: GoogleAppsScript.Document.Document,
+  url: string,
   title: string,
   table: GoogleAppsScript.Document.Table
 ): RecipeTable | null {
@@ -109,6 +107,7 @@ function parseTable(
   return {
     rangeId: namedRange.getId(),
     title,
+    url,
     nutrientNames,
     ingredients,
     totalNutrientValues,
@@ -132,23 +131,43 @@ export function parseDocument(
       namedRange.remove();
     });
 
-  let toc: TocEntry[] | null = null;
-  let recipes = [];
-  let currentTitle = null;
   let body = document.getBody();
   let bodyNumChildren = body.getNumChildren();
-  for (let i = 0; i < bodyNumChildren; i++) {
+  let i = 0;
+
+  // Search for TOC
+  let headingUrlByTitle: { [index: string]: string } | null = null;
+  for (; i < bodyNumChildren; i++) {
     let child = body.getChild(i);
     if (child.getType() == DocumentApp.ElementType.TABLE_OF_CONTENTS) {
-      toc = parseToc(child.asTableOfContents());
-    } else if (child.getType() == DocumentApp.ElementType.PARAGRAPH) {
+      headingUrlByTitle = parseToc(child.asTableOfContents());
+      break;
+    }
+  }
+  if (headingUrlByTitle == null) {
+    throw Error("Could not find table of contents.");
+  }
+
+  let recipes = [];
+  let currentTitle = null;
+  for (; i < bodyNumChildren; i++) {
+    let child = body.getChild(i);
+    if (child.getType() == DocumentApp.ElementType.PARAGRAPH) {
       let paragraph = child.asParagraph();
       if (paragraph.getHeading() == RECIPE_TITLE_HEADING_LEVEL) {
         currentTitle = paragraph.getText();
       }
     } else if (child.getType() == DocumentApp.ElementType.TABLE) {
       if (currentTitle != null) {
-        let recipe = parseTable(document, currentTitle, child.asTable());
+        let url = headingUrlByTitle[currentTitle];
+        if (url === undefined) {
+          throw Error(
+            "Could not match title " +
+              currentTitle +
+              " in table of contents.  The table of contents may require refreshing."
+          );
+        }
+        let recipe = parseTable(document, url, currentTitle, child.asTable());
         if (recipe != null) {
           recipes.push(recipe);
         }
@@ -159,11 +178,7 @@ export function parseDocument(
       currentTitle = null;
     }
   }
-  if (toc == null) {
-    throw Error("Could not find table of contents.");
-  }
   return {
-    toc: toc,
     recipes: recipes,
   };
 }

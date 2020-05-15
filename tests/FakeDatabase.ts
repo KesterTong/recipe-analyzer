@@ -47,6 +47,7 @@ export const FakeDatabase: Database = {
                 nutrientNames: ["Protein", "Calories"],
                 rangeId: "3e1qfk20lh8q",
                 title: "Recipe 1",
+                url: "#heading=h.y3h0qes0821d",
               },
               {
                 totalNutrientValues: ["1000", "200"],
@@ -67,9 +68,9 @@ export const FakeDatabase: Database = {
                 nutrientNames: ["Protein", "Calories"],
                 rangeId: "abcdefg",
                 title: "Recipe 2",
+                url: "#heading=h.abcd1234",
               },
             ],
-            toc: [{ title: "Recipe 1", url: "#heading=h.y3h0qes0821d" }],
           }),
         1000
       );

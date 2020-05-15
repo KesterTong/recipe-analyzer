@@ -21,7 +21,6 @@ import {
   ThunkDispatch,
   initialState,
 } from "./types";
-import { parseRecipes } from "../document/parseRecipes";
 
 export * from "./actions";
 export * from "./types";
@@ -38,7 +37,6 @@ function rootReducer(
         fdcFoodsById: action.fdcFoodsById,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0, // TODO: handle empty ingredient list.
-        ...parseRecipes(action.document),
       };
     case ActionType.SET_ERROR:
       return {
