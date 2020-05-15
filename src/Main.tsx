@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { Dropdown } from "./Dropdown";
-import { RootState, selectRecipe } from "./store";
+import { RootState } from "./store";
 import { Database } from "./document/Database";
 
 interface MainProps {
