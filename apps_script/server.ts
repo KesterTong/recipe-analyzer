@@ -121,7 +121,7 @@ const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table";
 
 export function parseDocument(
   document: GoogleAppsScript.Document.Document
-): Document | null {
+): Document {
   document = DocumentApp.getActiveDocument();
 
   // Remove existing `NamedRange`s that we use to keep track of
@@ -168,7 +168,7 @@ export function parseDocument(
   };
 }
 
-function testParseDocument() {
+export function testParseDocument() {
   const document = DocumentApp.getActiveDocument();
   console.log(JSON.stringify(parseDocument(document), undefined, 2));
 }
