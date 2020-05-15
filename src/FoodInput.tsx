@@ -26,11 +26,12 @@ const foodSuggestions = [
   },
 ];
 
-export class FoodInput extends React.Component<any, {value: string, suggestions: {description: string, url: string}[]}> {
+export class FoodInput extends React.Component<any, {value: string, url: string | null, suggestions: {description: string, url: string}[]}> {
   constructor() {
     super({});
     this.state = {
       value: '',
+      url: null,
       suggestions: []
     };
   }
@@ -61,13 +62,22 @@ export class FoodInput extends React.Component<any, {value: string, suggestions:
     });
   };
 
+  onKeyDown = (event: React.KeyboardEvent<Element>) => {
+    if ((event.keyCode == 8 || event.keyCode == 46) && this.state.url !== null) {
+      this.setState({value: '', url: null})
+      event.preventDefault();
+    }
+  }
+
   render() {
-    const { value, suggestions } = this.state;
+    const { value, url, suggestions } = this.state;
 
     const inputProps = {
-      placeholder: 'Select a food',
+      placeholder: '',
       value,
-      onChange: this.onChange
+      url,
+      onChange: this.onChange,
+      onKeyDown: this.onKeyDown,
     };
 
     return (
@@ -81,7 +91,9 @@ export class FoodInput extends React.Component<any, {value: string, suggestions:
         }}
         onSuggestionSelected={(event, params) => {
           console.log('onSelect')
-          console.log(params.suggestion)
+          this.setState({
+            url: params.suggestion.url
+          });
         }}
         getSuggestionValue={suggestion => suggestion.description}
         renderSuggestion={suggestion => (
@@ -89,6 +101,18 @@ export class FoodInput extends React.Component<any, {value: string, suggestions:
             {suggestion.description}
           </div>
         )}
+        renderInputComponent={
+          (inputProps: any) => (
+            <div className="input-container">
+              { inputProps.url == null ? null :
+                <div className="input-selection">
+                <span>{inputProps.value}</span>
+                </div>
+              }
+              <input {...inputProps} value={inputProps.url == null ? inputProps.value: ""} />
+            </div>
+          )  
+        }
         inputProps={inputProps}
       />
     );

@@ -108,11 +108,15 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-amount">Amount</label>
-          <input type="text" id="ingredient-amount" value={selectedIngredient.amount}></input>
+          <div className="control-group">
+            <input type="text" id="ingredient-amount" value={selectedIngredient.amount}></input>
+          </div>
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-unit">Unit</label>
-          <input type="text" id="ingredient-unit" value={selectedIngredient.unit}></input>
+          <div className="control-group">
+            <input type="text" id="ingredient-unit" value={selectedIngredient.unit}></input>
+          </div>
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-food">Food</label>

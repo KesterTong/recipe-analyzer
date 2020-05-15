@@ -11,7 +11,7 @@
         text-align: left;
       }
       input {
-        width: 100%;
+        flex-grow: 1;
       }
       .button-group {
         display: flex;
@@ -70,6 +70,32 @@
 
       .container {
         display: flex;
+      }
+
+      .input-container {
+        display: flex;
+        border: 1px solid #5897fb;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .input-container .react-autosuggest__input {
+        border: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .input-selection {
+        position: relative;
+        margin: 1px;
+        padding: 2px 6px 2px 4px;
+        border: 1px solid #aaa;
+        max-width: 100%;
+        border-radius: 3px;
+        background-color: #eeeeee;
+        box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+        color: #333;
+        line-height: 13px;
+        cursor: default;
       }
     </style>
   </head>
