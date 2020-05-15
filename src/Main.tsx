@@ -13,7 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import { Dropdown } from "./Dropdown";
-import { RootState } from "./store";
+import { RootState, selectRecipe } from "./store";
 import { Database } from "./document/Database";
 
 interface MainProps {
@@ -38,6 +38,20 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
       </React.Fragment>
     );
   } else {
+    const selectedRecipe = state.recipes[state.selectedRecipeIndex];
+    // Note this is undefined if "New Ingredient" is selected.
+    let selectedIngredient = selectedRecipe.ingredients[state.selectedIngredientIndex];
+    if (selectedIngredient === undefined) {
+      selectedIngredient = {
+        amount: "",
+        unit: "",
+        ingredient: {
+          description: "",
+          url: null,
+        },
+        nutrientValues: [],  // TODO: this is not correct.
+      }
+    }
     return (
       <React.Fragment>
         <div className="block form-group">
@@ -66,7 +80,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
               }
               id="ingredient"
             >
-              {state.recipes[state.selectedRecipeIndex].ingredients.map(
+              {selectedRecipe.ingredients.map(
                 (ingredient, index) => (
                   <option value={index}>
                     {ingredient.amount +
@@ -77,7 +91,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
                   </option>
                 )
               )}
-              <option value={state.recipes[state.selectedRecipeIndex].ingredients.length}>
+              <option value={selectedRecipe.ingredients.length}>
                 New Ingredient
               </option>
             </select>
@@ -94,7 +108,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-amount">Amount</label>
-          <input type="text" id="ingredient-amount"></input>
+          <input type="text" id="ingredient-amount" value={selectedIngredient.amount}></input>
         </div>
       </React.Fragment>
     );
