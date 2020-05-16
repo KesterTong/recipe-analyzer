@@ -17,6 +17,7 @@ import { FoodInput } from "./FoodInput";
 import { makeFdcWebUrl, NormalizedFood } from "./core";
 import { Recipe } from "./document/Document";
 import { fetchFdcFoods } from "./document/fetchFdcFoods";
+import { Editor } from "./Editor";
 
 export interface LoadingState {
   type: "Loading";
@@ -36,11 +37,10 @@ export interface ActiveState {
 }
 export type RootState = LoadingState | ErrorState | ActiveState;
 
-export class Main extends React.Component<{database: Database}, RootState> {
-
-  constructor(props: Readonly<{ database: Database; }>) {
+export class Main extends React.Component<{ database: Database }, RootState> {
+  constructor(props: Readonly<{ database: Database }>) {
     super(props);
-    this.state =  {
+    this.state = {
       type: "Loading",
     };
     this.initialize();
@@ -66,13 +66,43 @@ export class Main extends React.Component<{database: Database}, RootState> {
   }
 
   selectRecipe(index: number) {
-    if (this.state.type != 'Active') {
+    if (this.state.type != "Active") {
       return;
     }
     this.setState({
-      type: 'Active',
+      type: "Active",
       selectedRecipeIndex: index,
       selectedIngredientIndex: 0,
+    });
+  }
+
+  addIngredient(recipeIndex: number) {
+    if (this.state.type != "Active") {
+      return;
+    }
+    this.setState({
+      type: "Active",
+      selectedRecipeIndex: recipeIndex,
+      selectedIngredientIndex: this.state.recipes[recipeIndex].ingredients.length,
+      recipes: this.state.recipes.map((recipe, index) => {
+        if (index != recipeIndex) {
+          return recipe;
+        }
+        return {
+          ...recipe,
+          ingredients: recipe.ingredients.concat([
+            {
+              amount: "",
+              unit: "",
+              ingredient: {
+                description: "",
+                url: null,
+              },
+              nutrientValues: [], // TODO: this is not correct.
+            },
+          ]),
+        };
+      }),
     });
   }
 
@@ -86,160 +116,36 @@ export class Main extends React.Component<{database: Database}, RootState> {
       this.setState({
         type: "Active",
         selectedIngredientIndex: index,
-      })
+      });
     } else {
       const rangeId = recipe.rangeId;
       await this.props.database.addIngredient(rangeId);
-      if (this.state.type != "Active") {
-        return;
-      }
-      const selectedRecipeIndex = this.state.selectedRecipeIndex;
-      this.setState({
-        type: "Active",
-        selectedIngredientIndex: this.state.recipes[selectedRecipeIndex].ingredients.length,
-        recipes: this.state.recipes.map((recipe, index) => {
-          if (index != selectedRecipeIndex) {
-            return recipe;
-          }
-          return {
-            ...recipe,
-            ingredients: recipe.ingredients.concat([
-              {
-                amount: "",
-                unit: "",
-                ingredient: {
-                  description: "",
-                  url: null,
-                },
-                nutrientValues: [], // TODO: this is not correct.
-              },
-            ]),
-          };
-        }),
-      })
+      this.addIngredient(selectedRecipeIndex);
     }
   }
-
 
   render() {
-    const state = this.state;
-    if (state.type == "Loading") {
-      return (
-        <React.Fragment>
-          <div>Loading...</div>
-        </React.Fragment>
-      );
-    } else if (state.type == "Error") {
-      return (
-        <React.Fragment>
-          <div className="error">{state.message}</div>
-        </React.Fragment>
-      );
-    } else {
-      const selectedRecipe = state.recipes[state.selectedRecipeIndex];
-      // Note this is undefined if "New Ingredient" is selected.
-      let selectedIngredient =
-        selectedRecipe.ingredients[state.selectedIngredientIndex];
-      if (selectedIngredient === undefined) {
-        selectedIngredient = {
-          amount: "",
-          unit: "",
-          ingredient: {
-            description: "",
-            url: null,
-          },
-          nutrientValues: [], // TODO: this is not correct.
-        };
-      }
-      const suggestions = state.recipes
-        .map((recipe) => ({
-          description: recipe.title,
-          url: recipe.url,
-        }))
-        .concat(
-          Object.entries(state.fdcFoodsById).map((entry) => ({
-            url: makeFdcWebUrl(Number(entry[0])),
-            description: entry[1].description,
-          }))
+    switch (this.state.type) {
+      case "Loading":
+        return (
+          <React.Fragment>
+            <div>Loading...</div>
+          </React.Fragment>
         );
-      return (
-        <React.Fragment>
-          <div className="block form-group">
-            <label htmlFor="recipe">Selected Recipe</label>
-            <div className="control-group">
-              <select
-                value={state.selectedRecipeIndex}
-                onChange={(event) =>
-                  this.selectRecipe(Number(event.target.value))
-                }
-                id="recipe"
-              >
-                {state.recipes.map((recipe, index) => (
-                  <option value={index}>{recipe.title}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-          <div className="block form-group">
-            <label htmlFor="ingredient">Selected Ingredient</label>
-            <div className="control-group">
-              <select
-                value={state.selectedIngredientIndex}
-                onChange={(event) =>
-                  this.selectIngredient(Number(event.target.value))
-                }
-                id="ingredient"
-              >
-                {selectedRecipe.ingredients.map((ingredient, index) => (
-                  <option value={index}>
-                    {ingredient.amount +
-                      " " +
-                      ingredient.unit +
-                      " " +
-                      ingredient.ingredient.description}
-                  </option>
-                ))}
-                <option value={selectedRecipe.ingredients.length}>
-                  New Ingredient
-                </option>
-              </select>
-              <button className="icon-button">
-                <i className="material-icons">delete</i>
-              </button>
-              <button className="icon-button">
-                <i className="material-icons">arrow_upward</i>
-              </button>
-              <button className="icon-button">
-                <i className="material-icons">arrow_downward</i>
-              </button>
-            </div>
-          </div>
-          <div className="block form-group">
-            <label htmlFor="ingredient-amount">Amount</label>
-            <div className="control-group">
-              <input
-                type="text"
-                id="ingredient-amount"
-                value={selectedIngredient.amount}
-              ></input>
-            </div>
-          </div>
-          <div className="block form-group">
-            <label htmlFor="ingredient-unit">Unit</label>
-            <div className="control-group">
-              <input
-                type="text"
-                id="ingredient-unit"
-                value={selectedIngredient.unit}
-              ></input>
-            </div>
-          </div>
-          <div className="block form-group">
-            <label htmlFor="ingredient-food">Food</label>
-            <FoodInput id="ingredient-food" suggestions={suggestions} />
-          </div>
-        </React.Fragment>
-      );
+      case "Error":
+        return (
+          <React.Fragment>
+            <div className="error">{this.state.message}</div>
+          </React.Fragment>
+        );
+      case "Active":
+        return (
+          <Editor
+            {...this.state}
+            selectRecipe={(index) => this.selectRecipe(index)}
+            selectIngredient={(index) => this.selectIngredient(index)}
+          />
+        );
     }
   }
-};
+}
