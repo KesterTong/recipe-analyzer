@@ -18,11 +18,6 @@ import { makeFdcWebUrl, NormalizedFood } from "./core";
 import { Recipe } from "./document/Document";
 import { fetchFdcFoods } from "./document/fetchFdcFoods";
 
-interface MainProps {
-  database: Database;
-  state: RootState;
-}
-
 export interface LoadingState {
   type: "Loading";
 }
