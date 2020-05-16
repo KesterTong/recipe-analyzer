@@ -15,6 +15,7 @@ import * as React from "react";
 import { RootState } from "./store";
 import { Database } from "./document/Database";
 import { FoodInput } from "./FoodInput";
+import { makeFdcWebUrl } from "./core";
 
 interface MainProps {
   database: Database;
@@ -52,6 +53,13 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         nutrientValues: [],  // TODO: this is not correct.
       }
     }
+    const suggestions = state.recipes.map(recipe => ({
+      description: recipe.title,
+      url: recipe.url,
+    })).concat(Object.entries(state.fdcFoodsById).map(entry => ({
+      url: makeFdcWebUrl(Number(entry[0])),
+      description: entry[1].description,
+    })));
     return (
       <React.Fragment>
         <div className="block form-group">
@@ -120,7 +128,7 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-food">Food</label>
-          <FoodInput id="ingredient-food" />
+          <FoodInput id="ingredient-food" suggestions={suggestions} />
         </div>
       </React.Fragment>
     );

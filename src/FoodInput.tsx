@@ -14,24 +14,12 @@
 import * as React from "react";
 import * as Autosuggest from 'react-autosuggest';
 
-// TODO: replace with actual suggestions
-const foodSuggestions = [
-  {
-    description: 'My Recipe',
-    url: "#abcd1234"
-  },
-  {
-    description: 'FDC Food',
-    url: "https://path.to.fdc.food"
-  },
-];
-
-export class FoodInput extends React.Component<any, {value: string, url: string | null, suggestions: {description: string, url: string}[]}> {
-  constructor() {
-    super({});
+export class FoodInput extends React.Component<{id: string, suggestions: {description: string, url: string}[]}, {value: string, selection: {description: string, url: string} | null, suggestions: {description: string, url: string}[]}> {
+  constructor(props: {id: string, suggestions: {description: string, url: string}[]}) {
+    super(props);
     this.state = {
       value: '',
-      url: null,
+      selection: null,
       suggestions: []
     };
   }
@@ -47,11 +35,11 @@ export class FoodInput extends React.Component<any, {value: string, url: string 
   // TODO: actual suggestions
   onSuggestionsFetchRequested = (props: { value: any }) => {
     this.setState({
-      suggestions: foodSuggestions,
+      suggestions: this.props.suggestions,
     });
     setTimeout(() => {
       this.setState({
-        suggestions: foodSuggestions.concat({description: 'extra', url: 'a'}),
+        suggestions: this.props.suggestions.concat({description: 'extra', url: 'a'}),
       });
     }, 1000);
   };
@@ -63,19 +51,22 @@ export class FoodInput extends React.Component<any, {value: string, url: string 
   };
 
   onKeyDown = (event: React.KeyboardEvent<Element>) => {
-    if ((event.keyCode == 8 || event.keyCode == 46) && this.state.url !== null) {
-      this.setState({value: '', url: null})
+    if (this.state.selection !== null) {
       event.preventDefault();
+      if (event.keyCode == 8 || event.keyCode == 46) {
+        this.setState({value: '', selection: null});
+      }
     }
   }
 
   render() {
-    const { value, url, suggestions } = this.state;
+    const { value, selection, suggestions } = this.state;
 
     const inputProps = {
       placeholder: '',
       value,
-      url,
+      selection,
+      id: this.props.id,
       onChange: this.onChange,
       onKeyDown: this.onKeyDown,
     };
@@ -92,7 +83,8 @@ export class FoodInput extends React.Component<any, {value: string, url: string 
         onSuggestionSelected={(event, params) => {
           console.log('onSelect')
           this.setState({
-            url: params.suggestion.url
+            value: '',
+            selection: params.suggestion,
           });
         }}
         getSuggestionValue={suggestion => suggestion.description}
@@ -104,12 +96,12 @@ export class FoodInput extends React.Component<any, {value: string, url: string 
         renderInputComponent={
           (inputProps: any) => (
             <div className="input-container">
-              { inputProps.url == null ? null :
+              { inputProps.selection == null ? null :
                 <div className="input-selection">
-                <span>{inputProps.value}</span>
+                <span>{inputProps.selection.description}</span>
                 </div>
               }
-              <input {...inputProps} value={inputProps.url == null ? inputProps.value: ""} />
+              <input {...inputProps} />
             </div>
           )  
         }
