@@ -16,6 +16,7 @@ import { Recipe, Ingredient } from "../src/document/Document";
 export enum UpdateType {
   ADD_INGREDIENT = "@AddIngredient",
   UPDATE_INGREDIENT = "@UpdateIngredient",
+  DELETE_INGREDIENT = "@DeleteIngredient",
 }
 
 export interface AddIngredient {
@@ -32,7 +33,13 @@ export interface UpdateIngredient {
   newFood?: { description: string; url: string | null };
 }
 
-export type Update = AddIngredient | UpdateIngredient;
+export interface DeleteIngredient {
+  type: UpdateType.DELETE_INGREDIENT;
+  recipeIndex: number;
+  ingredientIndex: number;
+}
+
+export type Update = AddIngredient | UpdateIngredient | DeleteIngredient;
 
 /**
  * A database of recipes.

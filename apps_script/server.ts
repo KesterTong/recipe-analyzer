@@ -188,6 +188,9 @@ export function updateDocument(update: Update) {
         row.getCell(2).setLinkUrl(update.newFood.url as string);
       }
       break;
+    case UpdateType.DELETE_INGREDIENT:
+      // We add 1 because the first row is the header row.
+      table.removeRow(update.ingredientIndex + 1);
   }
 }
 

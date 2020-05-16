@@ -80,19 +80,6 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     });
   }
 
-  updateSelectedRecipe(updateFn: (recipe: Recipe) => Recipe) {
-    if (this.state.type != "Active") {
-      return;
-    }
-    const selectedRecipeIndex = this.state.selectedRecipeIndex;
-    this.setState({
-      type: "Active",
-      recipes: this.state.recipes.map((recipe, index) =>
-        index == selectedRecipeIndex ? updateFn(recipe) : recipe
-      ),
-    });
-  }
-
   updateDocument(update: Update) {
     const state = this.state;
     if (state.type != "Active") {
@@ -146,6 +133,14 @@ export class Main extends React.Component<{ database: Database }, RootState> {
           }),
         };
         break;
+      case UpdateType.DELETE_INGREDIENT:
+        newSelectedIngredientIndex = 0; // TODO: handle case of no ingredients.
+        newRecipe = {
+          ...recipe,
+          ingredients: recipe.ingredients.filter(
+            (_, index) => index != update.ingredientIndex
+          ),
+        };
     }
 
     this.setState({
@@ -170,6 +165,17 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       recipeIndex: this.state.selectedRecipeIndex,
       ingredientIndex: this.state.selectedIngredientIndex,
       ...update,
+    });
+  }
+
+  deleteSelectedIngredient() {
+    if (this.state.type != "Active") {
+      return;
+    }
+    this.updateDocument({
+      type: UpdateType.DELETE_INGREDIENT,
+      recipeIndex: this.state.selectedRecipeIndex,
+      ingredientIndex: this.state.selectedIngredientIndex,
     });
   }
 
@@ -222,6 +228,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             updateFood={(food) =>
               this.updateSelectedIngredient({ newFood: food })
             }
+            deleteIngredient={() => this.deleteSelectedIngredient()}
           />
         );
     }

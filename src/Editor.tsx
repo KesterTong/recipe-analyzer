@@ -26,6 +26,7 @@ interface Props {
   updateAmount(amount: string): void;
   updateUnit(unit: string): void;
   updateFood(food: { description: string; url: string | null }): void;
+  deleteIngredient(): void;
 }
 
 export const Editor: React.FunctionComponent<Props> = (props) => {
@@ -94,7 +95,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
               New Ingredient
             </option>
           </select>
-          <button className="icon-button">
+          <button className="icon-button" onClick={props.deleteIngredient}>
             <i className="material-icons">delete</i>
           </button>
           <button className="icon-button">
