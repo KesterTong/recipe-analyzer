@@ -83,7 +83,8 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     this.setState({
       type: "Active",
       selectedRecipeIndex: recipeIndex,
-      selectedIngredientIndex: this.state.recipes[recipeIndex].ingredients.length,
+      selectedIngredientIndex: this.state.recipes[recipeIndex].ingredients
+        .length,
       recipes: this.state.recipes.map((recipe, index) => {
         if (index != recipeIndex) {
           return recipe;
@@ -101,6 +102,34 @@ export class Main extends React.Component<{ database: Database }, RootState> {
               nutrientValues: [], // TODO: this is not correct.
             },
           ]),
+        };
+      }),
+    });
+  }
+
+  updateAmount(value: string) {
+    if (this.state.type != "Active") {
+      return;
+    }
+    const recipeIndex = this.state.selectedRecipeIndex;
+    const ingredientIndex = this.state.selectedIngredientIndex;
+    this.setState({
+      type: "Active",
+      recipes: this.state.recipes.map((recipe, index) => {
+        if (index != recipeIndex) {
+          return recipe;
+        }
+        return {
+          ...recipe,
+          ingredients: recipe.ingredients.map((ingredient, index) => {
+            if (index != ingredientIndex) {
+              return ingredient;
+            }
+            return {
+              ...ingredient,
+              amount: value,
+            };
+          }),
         };
       }),
     });
@@ -144,6 +173,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             {...this.state}
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
+            updateAmount={(value) => this.updateAmount(value)}
           />
         );
     }

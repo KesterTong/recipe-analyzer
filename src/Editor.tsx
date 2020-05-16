@@ -23,6 +23,7 @@ interface Props {
   fdcFoodsById: { [index: number]: NormalizedFood };
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
+  updateAmount(value: string): void;
 }
 
 export const Editor: React.FunctionComponent<Props> = (props) => {
@@ -109,6 +110,9 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             type="text"
             id="ingredient-amount"
             value={selectedIngredient.amount}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              props.updateAmount(event.target.value)
+            }
           ></input>
         </div>
       </div>
