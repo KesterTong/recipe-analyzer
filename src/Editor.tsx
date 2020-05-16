@@ -25,6 +25,7 @@ interface Props {
   selectIngredient(index: number): void;
   updateAmount(amount: string): void;
   updateUnit(unit: string): void;
+  updateFood(food: { description: string; url: string | null }): void;
 }
 
 export const Editor: React.FunctionComponent<Props> = (props) => {
@@ -124,13 +125,20 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             type="text"
             id="ingredient-unit"
             value={selectedIngredient.unit}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateUnit(event.target.value)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              props.updateUnit(event.target.value)
+            }
           ></input>
         </div>
       </div>
       <div className="block form-group">
         <label htmlFor="ingredient-food">Food</label>
-        <FoodInput id="ingredient-food" suggestions={suggestions} />
+        <FoodInput
+          id="ingredient-food"
+          value={selectedIngredient.ingredient}
+          suggestions={suggestions}
+          onChange={props.updateFood}
+        />
       </div>
     </React.Fragment>
   );

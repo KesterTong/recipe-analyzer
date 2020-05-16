@@ -14,33 +14,25 @@
 import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
 
+interface Props {
+  id: string;
+  suggestions: { description: string; url: string }[];
+  value: { description: string; url: string | null };
+  onChange(newValue: { description: string; url: string | null }): void;
+}
+
 export class FoodInput extends React.Component<
-  { id: string; suggestions: { description: string; url: string }[] },
+  Props,
   {
-    value: string;
-    selection: { description: string; url: string } | null;
     suggestions: { description: string; url: string }[];
   }
 > {
-  constructor(props: {
-    id: string;
-    suggestions: { description: string; url: string }[];
-  }) {
+  constructor(props: Props) {
     super(props);
     this.state = {
-      value: "",
-      selection: null,
       suggestions: [],
     };
   }
-
-  onChange = (event: React.ChangeEvent, props: { newValue: any }) => {
-    console.log("onChange");
-    console.log(props.newValue);
-    this.setState({
-      value: props.newValue,
-    });
-  };
 
   // TODO: actual suggestions
   onSuggestionsFetchRequested = (props: { value: any }) => {
@@ -63,25 +55,33 @@ export class FoodInput extends React.Component<
     });
   };
 
-  onKeyDown = (event: React.KeyboardEvent<Element>) => {
-    if (this.state.selection !== null) {
-      event.preventDefault();
-      if (event.keyCode == 8 || event.keyCode == 46) {
-        this.setState({ value: "", selection: null });
-      }
-    }
-  };
-
   render() {
-    const { value, selection, suggestions } = this.state;
+    const { suggestions } = this.state;
+    const { value } = this.props;
+    console.log(suggestions);
 
     const inputProps = {
       placeholder: "",
-      value,
-      selection,
+      value: value.url == null ? value.description : "",
       id: this.props.id,
-      onChange: this.onChange,
-      onKeyDown: this.onKeyDown,
+      onChange: (event: React.ChangeEvent, props: { newValue: any }) => {
+        // Ignore changes for the input if a food with URL is selected.  We
+        // are already preventing key strokes from reaching the input in this
+        // case but other events (e.g. copy-paste by mouse) can still trigger
+        // this event.
+        if (value.url !== null) {
+          return;
+        }
+        this.props.onChange({ url: null, description: props.newValue });
+      },
+      onKeyDown: (event: React.KeyboardEvent<Element>) => {
+        if (value.url !== null) {
+          event.preventDefault();
+          if (event.keyCode == 8 || event.keyCode == 46) {
+            this.props.onChange({ description: "", url: null });
+          }
+        }
+      },
     };
 
     return (
@@ -89,24 +89,16 @@ export class FoodInput extends React.Component<
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-        onSuggestionHighlighted={(params) => {
-          console.log("onHighlight");
-          console.log(params.suggestion);
-        }}
         onSuggestionSelected={(event, params) => {
-          console.log("onSelect");
-          this.setState({
-            value: "",
-            selection: params.suggestion,
-          });
+          this.props.onChange(params.suggestion);
         }}
         getSuggestionValue={(suggestion) => suggestion.description}
         renderSuggestion={(suggestion) => <div>{suggestion.description}</div>}
         renderInputComponent={(inputProps: any) => (
           <div className="input-container">
-            {inputProps.selection == null ? null : (
+            {value.url == null ? null : (
               <div className="input-selection">
-                <span>{inputProps.selection.description}</span>
+                <span>{value.description}</span>
               </div>
             )}
             <input {...inputProps} />

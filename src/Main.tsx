@@ -144,6 +144,13 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     }));
   }
 
+  updateFood(food: { description: string; url: string | null }) {
+    this.updateSelectedIngredient((ingredient) => ({
+      ...ingredient,
+      ingredient: food,
+    }));
+  }
+
   async selectIngredient(index: number) {
     if (this.state.type != "Active") {
       return;
@@ -184,6 +191,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             selectIngredient={(index) => this.selectIngredient(index)}
             updateAmount={(amount) => this.updateAmount(amount)}
             updateUnit={(unit) => this.updateUnit(unit)}
+            updateFood={(food) => this.updateFood(food)}
           />
         );
     }
