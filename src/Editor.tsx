@@ -23,7 +23,8 @@ interface Props {
   fdcFoodsById: { [index: number]: NormalizedFood };
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
-  updateAmount(value: string): void;
+  updateAmount(amount: string): void;
+  updateUnit(unit: string): void;
 }
 
 export const Editor: React.FunctionComponent<Props> = (props) => {
@@ -123,6 +124,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             type="text"
             id="ingredient-unit"
             value={selectedIngredient.unit}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => props.updateUnit(event.target.value)}
           ></input>
         </div>
       </div>

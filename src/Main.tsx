@@ -15,7 +15,7 @@ import * as React from "react";
 import { Database } from "./document/Database";
 import { FoodInput } from "./FoodInput";
 import { makeFdcWebUrl, NormalizedFood } from "./core";
-import { Recipe } from "./document/Document";
+import { Recipe, Ingredient } from "./document/Document";
 import { fetchFdcFoods } from "./document/fetchFdcFoods";
 import { Editor } from "./Editor";
 
@@ -76,63 +76,72 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     });
   }
 
+  updateSelectedRecipe(updateFn: (recipe: Recipe) => Recipe) {
+    if (this.state.type != "Active") {
+      return;
+    }
+    const selectedRecipeIndex = this.state.selectedRecipeIndex;
+    this.setState({
+      type: "Active",
+      recipes: this.state.recipes.map((recipe, index) =>
+        index == selectedRecipeIndex ? updateFn(recipe) : recipe
+      ),
+    });
+  }
+
   addIngredient(recipeIndex: number) {
     if (this.state.type != "Active") {
       return;
     }
+    this.updateSelectedRecipe((recipe) => {
+      return {
+        ...recipe,
+        ingredients: recipe.ingredients.concat([
+          {
+            amount: "",
+            unit: "",
+            ingredient: {
+              description: "",
+              url: null,
+            },
+            nutrientValues: [], // TODO: this is not correct.
+          },
+        ]),
+      };
+    });
     this.setState({
       type: "Active",
       selectedRecipeIndex: recipeIndex,
-      selectedIngredientIndex: this.state.recipes[recipeIndex].ingredients
-        .length,
-      recipes: this.state.recipes.map((recipe, index) => {
-        if (index != recipeIndex) {
-          return recipe;
-        }
-        return {
-          ...recipe,
-          ingredients: recipe.ingredients.concat([
-            {
-              amount: "",
-              unit: "",
-              ingredient: {
-                description: "",
-                url: null,
-              },
-              nutrientValues: [], // TODO: this is not correct.
-            },
-          ]),
-        };
-      }),
+      selectedIngredientIndex:
+        this.state.recipes[recipeIndex].ingredients.length - 1,
     });
   }
 
-  updateAmount(value: string) {
+  updateSelectedIngredient(updateFn: (ingredient: Ingredient) => Ingredient) {
     if (this.state.type != "Active") {
       return;
     }
-    const recipeIndex = this.state.selectedRecipeIndex;
-    const ingredientIndex = this.state.selectedIngredientIndex;
-    this.setState({
-      type: "Active",
-      recipes: this.state.recipes.map((recipe, index) => {
-        if (index != recipeIndex) {
-          return recipe;
-        }
-        return {
-          ...recipe,
-          ingredients: recipe.ingredients.map((ingredient, index) => {
-            if (index != ingredientIndex) {
-              return ingredient;
-            }
-            return {
-              ...ingredient,
-              amount: value,
-            };
-          }),
-        };
-      }),
-    });
+    const selectedIngredientIndex = this.state.selectedIngredientIndex;
+    this.updateSelectedRecipe((recipe) => ({
+      ...recipe,
+      ingredients: recipe.ingredients.map((ingredient, index) =>
+        index == selectedIngredientIndex ? updateFn(ingredient) : ingredient
+      ),
+    }));
+  }
+
+  updateAmount(amount: string) {
+    this.updateSelectedIngredient((ingredient) => ({
+      ...ingredient,
+      amount,
+    }));
+  }
+
+  updateUnit(unit: string) {
+    this.updateSelectedIngredient((ingredient) => ({
+      ...ingredient,
+      unit,
+    }));
   }
 
   async selectIngredient(index: number) {
@@ -173,7 +182,8 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             {...this.state}
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
-            updateAmount={(value) => this.updateAmount(value)}
+            updateAmount={(amount) => this.updateAmount(amount)}
+            updateUnit={(unit) => this.updateUnit(unit)}
           />
         );
     }
