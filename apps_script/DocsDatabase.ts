@@ -15,37 +15,23 @@
 import { Database } from "../src/document/Database";
 import { debounce } from "throttle-debounce";
 
+const wrapServerFunction = (functionName: string) => (...args: any[]) =>
+  new Promise<any>((resolve, reject) => {
+    (<any>window).google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject)
+      [functionName].apply(null, args);
+  });
+
 /**
  * An implementation of a Database that stores recipes in a Google Doc.
  */
 export const DocsDatabase: Database = {
-  parseDocument: () => {
-    return new Promise((resolve, reject) => {
-      (<any>window).google.script.run
-        .withSuccessHandler(resolve)
-        .withFailureHandler(reject)
-        .parseDocument();
-    });
-  },
-
-  addIngredient: (rangeId) => {
-    return new Promise((resolve, reject) => {
-      (<any>window).google.script.run
-        .withSuccessHandler(resolve)
-        .withFailureHandler(reject)
-        .addIngredient(rangeId);
-    });
-  },
+  parseDocument: wrapServerFunction("parseDocument"),
+  addIngredient: wrapServerFunction("addIngredient"),
 
   // TODO: this isn't quite right, we should batch updates otherwise we will
   // lose updates when we edit multiple ingredients/recipes within the debounce
   // period.
-  updateIngredient: debounce(2000, (rangeId, ingredientIndex, ingredient) => {
-    return new Promise((resolve, reject) => {
-      (<any>window).google.script.run
-        .withSuccessHandler(resolve)
-        .withFailureHandler(reject)
-        .updateIngredient(rangeId, ingredientIndex, ingredient);
-    });
-  }),
+  updateIngredient: debounce(2000, wrapServerFunction("updateIngredient")),
 };
