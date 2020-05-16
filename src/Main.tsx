@@ -122,20 +122,21 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       return;
     }
     const selectedIngredientIndex = this.state.selectedIngredientIndex;
-    let ingredient = null;
     this.updateSelectedRecipe((recipe) => ({
       ...recipe,
-      ingredients: recipe.ingredients.map((ingredient, index) =>
-        index == selectedIngredientIndex ? updateFn(ingredient) : ingredient
-      ),
+      ingredients: recipe.ingredients.map((ingredient, index) => {
+        if (index != selectedIngredientIndex) {
+          return ingredient;
+        }
+        const newIngredient = updateFn(ingredient);
+        this.props.database.updateIngredient(
+          recipe.rangeId,
+          index,
+          newIngredient
+        );
+        return newIngredient;
+      }),
     }));
-    const recipe = this.state.recipes[this.state.selectedRecipeIndex];
-    // TODO: debounce.
-    this.props.database.updateIngredient(
-      recipe.rangeId,
-      selectedIngredientIndex,
-      recipe.ingredients[selectedIngredientIndex]
-    );
   }
 
   updateAmount(amount: string) {

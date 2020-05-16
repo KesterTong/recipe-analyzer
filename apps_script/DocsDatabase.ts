@@ -40,7 +40,7 @@ export const DocsDatabase: Database = {
   // TODO: this isn't quite right, we should batch updates otherwise we will
   // lose updates when we edit multiple ingredients/recipes within the debounce
   // period.
-  updateIngredient: debounce(5000, (rangeId, ingredientIndex, ingredient) => {
+  updateIngredient: debounce(2000, (rangeId, ingredientIndex, ingredient) => {
     return new Promise((resolve, reject) => {
       (<any>window).google.script.run
         .withSuccessHandler(resolve)
