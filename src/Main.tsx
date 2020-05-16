@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { Database } from "./document/Database";
+import { Database, Update, UpdateType } from "../apps_script/Database";
 import { FoodInput } from "./FoodInput";
 import { makeFdcWebUrl, NormalizedFood } from "./core";
 import { Recipe, Ingredient } from "./document/Document";
@@ -89,75 +89,84 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     });
   }
 
-  addIngredient(recipeIndex: number) {
-    if (this.state.type != "Active") {
+  updateDocument(update: Update) {
+    const state = this.state;
+    if (state.type != "Active") {
       return;
     }
-    this.updateSelectedRecipe((recipe) => {
-      return {
-        ...recipe,
-        ingredients: recipe.ingredients.concat([
-          {
-            amount: "",
-            unit: "",
-            ingredient: {
-              description: "",
-              url: null,
-            },
-            nutrientValues: [], // TODO: this is not correct.
+
+    // We update the document on the server side asynchronously.
+    this.props.database.updateDocument(update);
+
+    const recipe = state.recipes[update.recipeIndex];
+    let newSelectedIngredientIndex;
+    let newRecipe: Recipe;
+    switch (update.type) {
+      case UpdateType.ADD_INGREDIENT:
+        const newIngredient = {
+          amount: "",
+          unit: "",
+          ingredient: {
+            description: "",
+            url: null,
           },
-        ]),
-      };
-    });
+          nutrientValues: [], // TODO: this is not correct.
+        };
+        newRecipe = {
+          ...recipe,
+          ingredients: recipe.ingredients.concat([newIngredient]),
+        };
+        newSelectedIngredientIndex = newRecipe.ingredients.length - 1;
+        break;
+      case UpdateType.UPDATE_INGREDIENT:
+        newSelectedIngredientIndex = state.selectedIngredientIndex;
+        newRecipe = {
+          ...recipe,
+          ingredients: recipe.ingredients.map((ingredient, index) => {
+            if (index != update.ingredientIndex) {
+              return ingredient;
+            }
+            return {
+              ...ingredient,
+              amount:
+                update.newAmount === undefined
+                  ? ingredient.amount
+                  : update.newAmount,
+              unit:
+                update.newUnit === undefined ? ingredient.unit : update.newUnit,
+              ingredient:
+                update.newFood === undefined
+                  ? ingredient.ingredient
+                  : update.newFood,
+            };
+          }),
+        };
+        break;
+    }
+
     this.setState({
       type: "Active",
-      selectedRecipeIndex: recipeIndex,
-      selectedIngredientIndex:
-        this.state.recipes[recipeIndex].ingredients.length - 1,
+      selectedIngredientIndex: newSelectedIngredientIndex,
+      recipes: state.recipes.map((recipe, index) =>
+        index == update.recipeIndex ? newRecipe : recipe
+      ),
     });
   }
 
-  updateSelectedIngredient(updateFn: (ingredient: Ingredient) => Ingredient) {
+  updateSelectedIngredient(update: {
+    newAmount?: string;
+    newUnit?: string;
+    newFood?: { description: string; url: string | null };
+  }) {
     if (this.state.type != "Active") {
       return;
     }
-    const selectedIngredientIndex = this.state.selectedIngredientIndex;
-    this.updateSelectedRecipe((recipe) => ({
-      ...recipe,
-      ingredients: recipe.ingredients.map((ingredient, index) => {
-        if (index != selectedIngredientIndex) {
-          return ingredient;
-        }
-        const newIngredient = updateFn(ingredient);
-        this.props.database.updateIngredient(
-          recipe.rangeId,
-          index,
-          newIngredient
-        );
-        return newIngredient;
-      }),
-    }));
-  }
-
-  updateAmount(amount: string) {
-    this.updateSelectedIngredient((ingredient) => ({
-      ...ingredient,
-      amount,
-    }));
-  }
-
-  updateUnit(unit: string) {
-    this.updateSelectedIngredient((ingredient) => ({
-      ...ingredient,
-      unit,
-    }));
-  }
-
-  updateFood(food: { description: string; url: string | null }) {
-    this.updateSelectedIngredient((ingredient) => ({
-      ...ingredient,
-      ingredient: food,
-    }));
+    this.updateDocument({
+      type: UpdateType.UPDATE_INGREDIENT,
+      recipeIndex: this.state.selectedRecipeIndex,
+      ingredientIndex: this.state.selectedIngredientIndex,
+      ...update,
+    });
   }
 
   async selectIngredient(index: number) {
@@ -172,9 +181,11 @@ export class Main extends React.Component<{ database: Database }, RootState> {
         selectedIngredientIndex: index,
       });
     } else {
-      const rangeId = recipe.rangeId;
-      await this.props.database.addIngredient(rangeId);
-      this.addIngredient(selectedRecipeIndex);
+      const update: Update = {
+        type: UpdateType.ADD_INGREDIENT,
+        recipeIndex: selectedRecipeIndex,
+      };
+      this.updateDocument(update);
     }
   }
 
@@ -198,9 +209,15 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             {...this.state}
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
-            updateAmount={(amount) => this.updateAmount(amount)}
-            updateUnit={(unit) => this.updateUnit(unit)}
-            updateFood={(food) => this.updateFood(food)}
+            updateAmount={(amount) =>
+              this.updateSelectedIngredient({ newAmount: amount })
+            }
+            updateUnit={(unit) =>
+              this.updateSelectedIngredient({ newUnit: unit })
+            }
+            updateFood={(food) =>
+              this.updateSelectedIngredient({ newFood: food })
+            }
           />
         );
     }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Database } from "../src/document/Database";
+import { Database } from "./Database";
 import { debounce } from "throttle-debounce";
 
 const wrapServerFunction = (functionName: string) => (...args: any[]) =>
@@ -28,10 +28,5 @@ const wrapServerFunction = (functionName: string) => (...args: any[]) =>
  */
 export const DocsDatabase: Database = {
   parseDocument: wrapServerFunction("parseDocument"),
-  addIngredient: wrapServerFunction("addIngredient"),
-
-  // TODO: this isn't quite right, we should batch updates otherwise we will
-  // lose updates when we edit multiple ingredients/recipes within the debounce
-  // period.
-  updateIngredient: debounce(2000, wrapServerFunction("updateIngredient")),
+  updateDocument: wrapServerFunction("updateDocument"),
 };

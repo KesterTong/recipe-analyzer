@@ -17,6 +17,7 @@
  */
 
 import { Recipe, Ingredient } from "../src/document/Document";
+import { Update, UpdateType } from "./Database";
 
 function parseToc(
   toc: GoogleAppsScript.Document.TableOfContents
@@ -40,9 +41,9 @@ function parseToc(
 function parseIngredient(
   row: GoogleAppsScript.Document.TableRow,
   numNutrients: number
-): Ingredient | null {
+): Ingredient {
   if (row.getNumCells() != 3 + numNutrients) {
-    return null;
+    throw new Error("Not all rows in table had same number of cells");
   }
   let nutrientValues = [];
   for (let j = 3; j < 3 + numNutrients; j++) {
@@ -60,19 +61,18 @@ function parseIngredient(
 }
 
 function parseTable(
-  document: GoogleAppsScript.Document.Document,
   url: string,
   title: string,
   table: GoogleAppsScript.Document.Table
-): Recipe | null {
+): Recipe {
   let tableNumRows = table.getNumRows();
   if (tableNumRows < 2) {
-    return null;
+    throw new Error("Table had less than 2 rows");
   }
   let headerRow = table.getRow(0);
   let tableNumCols = headerRow.getNumCells();
   if (tableNumCols < 3) {
-    return null;
+    throw new Error("Table had less than 3 columns");
   }
   let nutrientNames = [];
   for (let j = 3; j < tableNumCols; j++) {
@@ -82,30 +82,19 @@ function parseTable(
   for (let i = 1; i < tableNumRows - 1; i++) {
     let ingredientRow = table.getRow(i);
     let ingredient = parseIngredient(ingredientRow, nutrientNames.length);
-    if (ingredient == null) {
-      return null;
-    }
     ingredients.push(ingredient);
   }
   // Parse total row like an ingredient but ignore everything
   // except nutrient values.
   let totalRow = table.getRow(tableNumRows - 1);
   if (totalRow.getNumCells() != tableNumCols) {
-    return null;
+    throw new Error("Not all rows in table had same number of cells");
   }
   let totalNutrientValues = [];
   for (let j = 3; j < tableNumCols; j++) {
     totalNutrientValues.push(totalRow.getCell(j).getText());
   }
-  // Add a NamedRange for later reference.
-  let rangeBuilder = document.newRange();
-  rangeBuilder.addElement(table);
-  let namedRange = document.addNamedRange(
-    INGREDIENTS_TABLE_RANGE_NAME,
-    rangeBuilder.build()
-  );
   return {
-    rangeId: namedRange.getId(),
     title,
     url,
     nutrientNames,
@@ -116,20 +105,10 @@ function parseTable(
 
 const RECIPE_TITLE_HEADING_LEVEL = DocumentApp.ParagraphHeading.HEADING1;
 
-const INGREDIENTS_TABLE_RANGE_NAME = "RecipeEditor-ingredients-table";
-
 export function parseDocument(
   document: GoogleAppsScript.Document.Document
 ): Recipe[] {
   document = DocumentApp.getActiveDocument();
-
-  // Remove existing `NamedRange`s that we use to keep track of
-  // Tables
-  document
-    .getNamedRanges(INGREDIENTS_TABLE_RANGE_NAME)
-    .forEach((namedRange) => {
-      namedRange.remove();
-    });
 
   let body = document.getBody();
   let bodyNumChildren = body.getNumChildren();
@@ -158,21 +137,19 @@ export function parseDocument(
         currentTitle = paragraph.getText();
       }
     } else if (child.getType() == DocumentApp.ElementType.TABLE) {
-      if (currentTitle != null) {
-        let url = headingUrlByTitle[currentTitle];
-        if (url === undefined) {
-          throw Error(
-            "Could not match title " +
-              currentTitle +
-              " in table of contents.  The table of contents may require refreshing."
-          );
-        }
-        let recipe = parseTable(document, url, currentTitle, child.asTable());
-        if (recipe != null) {
-          recipes.push(recipe);
-        }
-        currentTitle = null;
+      if (currentTitle == null) {
+        throw new Error("Not title found for table");
       }
+      let url = headingUrlByTitle[currentTitle];
+      if (url === undefined) {
+        throw Error(
+          "Could not match title " +
+            currentTitle +
+            " in table of contents.  The table of contents may require refreshing."
+        );
+      }
+      recipes.push(parseTable(url, currentTitle, child.asTable()));
+      currentTitle = null;
     } else if (child.getType() == DocumentApp.ElementType.PAGE_BREAK) {
       // Clear heading whenever we reach a page break.
       currentTitle = null;
@@ -181,48 +158,37 @@ export function parseDocument(
   return recipes;
 }
 
-function getTable(rangeId: string): GoogleAppsScript.Document.Table {
+export function updateDocument(update: Update) {
   const document = DocumentApp.getActiveDocument();
-  const namedRange = document.getNamedRangeById(rangeId);
-  if (namedRange === null) {
-    throw new Error("Could not find range with id: " + rangeId);
+  const table = document.getBody().getTables()[update.recipeIndex];
+  switch (update.type) {
+    case UpdateType.ADD_INGREDIENT:
+      // Copy new row from existing row to get same styling.
+      const newRow = table.getRow(1).copy();
+      const numCells = newRow.getNumCells();
+      for (let i = 0; i < numCells; i++) {
+        newRow.getCell(i).clear();
+      }
+      table.insertTableRow(table.getNumRows() - 1, newRow);
+      break;
+    case UpdateType.UPDATE_INGREDIENT:
+      // We add 1 because the first row is the header row.
+      const row = table.getRow(update.ingredientIndex + 1);
+      // TODO: handle nutrients also.
+      if (update.newAmount) {
+        row.getCell(0).setText(update.newAmount);
+      }
+      if (update.newUnit) {
+        row.getCell(1).setText(update.newUnit);
+      }
+      if (update.newFood) {
+        row.getCell(2).setText(update.newFood.description);
+        // The type of setLinkUrl is wrong (it should accept null) so
+        // we cast to string here.
+        row.getCell(2).setLinkUrl(update.newFood.url as string);
+      }
+      break;
   }
-  const elements = namedRange.getRange().getSelectedElements();
-  if (elements.length != 1) {
-    throw new Error("Expected 1 element in range");
-  }
-  const element = elements[0].getElement();
-  if (element.getType() != DocumentApp.ElementType.TABLE) {
-    throw new Error("Expected range to contain a table");
-  }
-  return element.asTable();
-}
-
-export function addIngredient(rangeId: string) {
-  const table = getTable(rangeId);
-  const row = table.getRow(1).copy();
-  const numCells = row.getNumCells();
-  for (let i = 0; i < numCells; i++) {
-    row.getCell(i).clear();
-  }
-  table.insertTableRow(table.getNumRows() - 1, row);
-}
-
-export function updateIngredient(
-  rangeId: string,
-  ingredientIndex: number,
-  ingredient: Ingredient
-) {
-  const table = getTable(rangeId);
-  // We add 1 because the first row is the header row.
-  const row = table.getRow(ingredientIndex + 1);
-  // TODO: handle nutrients also.
-  row.getCell(0).setText(ingredient.amount);
-  row.getCell(1).setText(ingredient.unit);
-  row.getCell(2).setText(ingredient.ingredient.description);
-  // The type of setLinkUrl is wrong (it should accept null) so
-  // we cast to string here.
-  row.getCell(2).setLinkUrl(ingredient.ingredient.url as string);
 }
 
 export function testParseDocument() {

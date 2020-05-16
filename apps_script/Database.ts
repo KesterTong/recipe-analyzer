@@ -11,7 +11,28 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Recipe, Ingredient } from "./Document";
+import { Recipe, Ingredient } from "../src/document/Document";
+
+export enum UpdateType {
+  ADD_INGREDIENT = "@AddIngredient",
+  UPDATE_INGREDIENT = "@UpdateIngredient",
+}
+
+export interface AddIngredient {
+  type: UpdateType.ADD_INGREDIENT;
+  recipeIndex: number;
+}
+
+export interface UpdateIngredient {
+  type: UpdateType.UPDATE_INGREDIENT;
+  recipeIndex: number;
+  ingredientIndex: number;
+  newAmount?: string;
+  newUnit?: string;
+  newFood?: { description: string; url: string | null };
+}
+
+export type Update = AddIngredient | UpdateIngredient;
 
 /**
  * A database of recipes.
@@ -21,10 +42,5 @@ import { Recipe, Ingredient } from "./Document";
  */
 export interface Database {
   parseDocument(): Promise<Recipe[]>;
-  addIngredient(rangeId: string): Promise<void>;
-  updateIngredient(
-    rangeId: string,
-    ingredientIndex: number,
-    ingredient: Ingredient
-  ): Promise<void>;
+  updateDocument(update: Update): Promise<void>;
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Database } from "../src/document/Database";
+import { Database } from "../apps_script/Database";
 
 /**
  * An implementation of a Database that stores recipes in a Google Doc.
@@ -44,7 +44,6 @@ export const FakeDatabase: Database = {
                 },
               ],
               nutrientNames: ["Protein", "Calories"],
-              rangeId: "3e1qfk20lh8q",
               title: "Recipe 1",
               url: "#heading=h.y3h0qes0821d",
             },
@@ -65,7 +64,6 @@ export const FakeDatabase: Database = {
                 },
               ],
               nutrientNames: ["Protein", "Calories"],
-              rangeId: "abcdefg",
               title: "Recipe 2",
               url: "#heading=h.abcd1234",
             },
@@ -74,6 +72,5 @@ export const FakeDatabase: Database = {
       );
     });
   },
-  addIngredient: (rangeId) => Promise.resolve(),
-  updateIngredient: (rangeId, ingredientIndex, ingredient) => Promise.resolve(),
+  updateDocument: (update) => Promise.resolve(),
 };

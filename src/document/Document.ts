@@ -25,7 +25,6 @@ export interface Ingredient {
 export interface Recipe {
   title: string;
   url: string;
-  rangeId: string;
   nutrientNames: string[];
   ingredients: Ingredient[];
   totalNutrientValues: string[];
