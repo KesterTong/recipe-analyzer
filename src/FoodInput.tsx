@@ -86,6 +86,9 @@ export class FoodInput extends React.Component<
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
         onSuggestionSelected={(event, params) => {
+          // Note that inputProps.onChange will also fire before this event.
+          // On the client side this doesn't matter, on the server side this
+          // is handled by debouncing.
           this.props.onChange(params.suggestion);
         }}
         getSuggestionValue={(suggestion) => suggestion.description}

@@ -18,6 +18,7 @@ import { makeFdcWebUrl, NormalizedFood } from "./core";
 import { Recipe, Ingredient } from "./document/Document";
 import { fetchFdcFoods } from "./document/fetchFdcFoods";
 import { Editor } from "./Editor";
+import { debounce } from "./debounce";
 
 export interface LoadingState {
   type: "Loading";
@@ -38,11 +39,14 @@ export interface ActiveState {
 export type RootState = LoadingState | ErrorState | ActiveState;
 
 export class Main extends React.Component<{ database: Database }, RootState> {
+  private updateServerDocument: (update: Update) => Promise<void>;
+
   constructor(props: Readonly<{ database: Database }>) {
     super(props);
     this.state = {
       type: "Loading",
     };
+    this.updateServerDocument = debounce(props.database.updateDocument);
     this.initialize();
   }
 
@@ -96,7 +100,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     }
 
     // We update the document on the server side asynchronously.
-    this.props.database.updateDocument(update);
+    this.updateServerDocument(update);
 
     const recipe = state.recipes[update.recipeIndex];
     let newSelectedIngredientIndex;
