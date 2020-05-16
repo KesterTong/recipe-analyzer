@@ -61,7 +61,6 @@ export class FoodInput extends React.Component<
   render() {
     const { suggestions } = this.state;
     const { value } = this.props;
-    console.log(suggestions);
 
     const inputProps = {
       placeholder: "",
