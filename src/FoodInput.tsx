@@ -13,6 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
+import { searchFdcFoodsUrl, FDCQueryResult, makeFdcWebUrl } from "./core";
 
 interface Props {
   id: string;
@@ -20,6 +21,8 @@ interface Props {
   value: { description: string; url: string | null };
   onChange(newValue: { description: string; url: string | null }): void;
 }
+
+const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
 
 export class FoodInput extends React.Component<
   Props,
@@ -35,19 +38,19 @@ export class FoodInput extends React.Component<
   }
 
   // TODO: actual suggestions
-  onSuggestionsFetchRequested = (props: { value: any }) => {
+  onSuggestionsFetchRequested = async (props: { value: any }) => {
     this.setState({
       suggestions: this.props.suggestions,
     });
-    setTimeout(() => {
-      this.setState({
-        suggestions: this.props.suggestions.concat({
-          description: "extra",
-          url: "a",
-        }),
-      });
-    }, 1000);
-  };
+    const response = await fetch(searchFdcFoodsUrl(props.value, FDC_API_KEY));
+    const result: FDCQueryResult = await response.json();
+    this.setState({
+      suggestions: result.foods.map((entry) => ({
+        description: entry.description,
+        url: makeFdcWebUrl(entry.fdcId),
+      })),
+    });
+  }
 
   onSuggestionsClearRequested = () => {
     this.setState({
