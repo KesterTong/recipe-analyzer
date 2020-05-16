@@ -75,4 +75,5 @@ export const FakeDatabase: Database = {
     });
   },
   addIngredient: (rangeId) => Promise.resolve(),
+  updateIngredient: (rangeId, ingredientIndex, ingredient) => Promise.resolve(),
 };

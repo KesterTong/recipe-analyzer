@@ -181,7 +181,7 @@ export function parseDocument(
   return recipes;
 }
 
-export function addIngredient(rangeId: string) {
+function getTable(rangeId: string): GoogleAppsScript.Document.Table {
   const document = DocumentApp.getActiveDocument();
   const namedRange = document.getNamedRangeById(rangeId);
   if (namedRange === null) {
@@ -195,13 +195,34 @@ export function addIngredient(rangeId: string) {
   if (element.getType() != DocumentApp.ElementType.TABLE) {
     throw new Error("Expected range to contain a table");
   }
-  const table = element.asTable();
-  let row = table.getRow(1).copy();
-  let numCells = row.getNumCells();
+  return element.asTable();
+}
+
+export function addIngredient(rangeId: string) {
+  const table = getTable(rangeId);
+  const row = table.getRow(1).copy();
+  const numCells = row.getNumCells();
   for (let i = 0; i < numCells; i++) {
     row.getCell(i).clear();
   }
   table.insertTableRow(table.getNumRows() - 1, row);
+}
+
+export function updateIngredient(
+  rangeId: string,
+  ingredientIndex: number,
+  ingredient: Ingredient
+) {
+  const table = getTable(rangeId);
+  // We add 1 because the first row is the header row.
+  const row = table.getRow(ingredientIndex + 1);
+  // TODO: handle nutrients also.
+  row.getCell(0).setText(ingredient.amount);
+  row.getCell(1).setText(ingredient.unit);
+  row.getCell(2).setText(ingredient.ingredient.description);
+  // The type of setLinkUrl is wrong (it should accept null) so
+  // we cast to string here.
+  row.getCell(2).setLinkUrl(ingredient.ingredient.url as string);
 }
 
 export function testParseDocument() {

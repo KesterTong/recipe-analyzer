@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Recipe } from "./Document";
+import { Recipe, Ingredient } from "./Document";
 
 /**
  * A database of recipes.
@@ -22,4 +22,9 @@ import { Recipe } from "./Document";
 export interface Database {
   parseDocument(): Promise<Recipe[]>;
   addIngredient(rangeId: string): Promise<void>;
+  updateIngredient(
+    rangeId: string,
+    ingredientIndex: number,
+    ingredient: Ingredient
+  ): Promise<void>;
 }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Database } from "../src/document/Database";
+import { debounce } from "throttle-debounce";
 
 /**
  * An implementation of a Database that stores recipes in a Google Doc.
@@ -35,4 +36,16 @@ export const DocsDatabase: Database = {
         .addIngredient(rangeId);
     });
   },
+
+  // TODO: this isn't quite right, we should batch updates otherwise we will
+  // lose updates when we edit multiple ingredients/recipes within the debounce
+  // period.
+  updateIngredient: debounce(5000, (rangeId, ingredientIndex, ingredient) => {
+    return new Promise((resolve, reject) => {
+      (<any>window).google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
+        .updateIngredient(rangeId, ingredientIndex, ingredient);
+    });
+  }),
 };
