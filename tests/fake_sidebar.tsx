@@ -15,24 +15,11 @@
 import ReactDOM = require("react-dom");
 import React = require("react");
 import { FakeDatabase } from "./FakeDatabase";
-import { Provider } from "react-redux";
-import { store, initialize } from "../src/store";
-import { MainContainer } from "../src/MainContainer";
-import { fetchFdcFoods } from "../src/document/fetchFdcFoods";
+import { Main } from "../src/Main";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <div style={{ width: "300px" }}>
-      <MainContainer database={FakeDatabase} />
-    </div>
-  </Provider>,
+  <div style={{ width: "300px" }}>
+    <Main database={FakeDatabase} />
+  </div>,
   document.getElementById("root")
 );
-
-async function init() {
-  const recipes = await FakeDatabase.parseDocument();
-  const fdcFoodsById = await fetchFdcFoods(recipes);
-  store.dispatch(initialize(recipes, fdcFoodsById));
-}
-
-init();

@@ -15,26 +15,9 @@
 import ReactDOM = require("react-dom");
 import React = require("react");
 import { DocsDatabase } from "./DocsDatabase";
-import { Provider } from "react-redux";
-import { store, initialize, setError } from "../src/store";
-import { MainContainer } from "../src/MainContainer";
-import { fetchFdcFoods } from "../src/document/fetchFdcFoods";
+import { Main } from "../src/Main";
 
 ReactDOM.render(
-  <Provider store={store}>
-    <MainContainer database={DocsDatabase} />
-  </Provider>,
+  <Main database={DocsDatabase} />,
   document.getElementById("root")
 );
-
-async function init() {
-  try {
-    const recipes = await DocsDatabase.parseDocument();
-    const fdcFoodsById = await fetchFdcFoods(recipes);
-    store.dispatch(initialize(recipes, fdcFoodsById));
-  } catch (error) {
-    store.dispatch(setError(error.message));
-  }
-}
-
-init();
