@@ -14,22 +14,43 @@
 
 import { Update } from "../apps_script/Database";
 
-type UdpateFn =  (update: Update) => Promise<void>;
+type UpdateFn =  (update: Update) => Promise<void>;
+
+// No updated has yet been dispatched
+interface InitialState {
+  type: "InitialState";
+}
+
+// The most recent update has already been dispatched (and
+// possibly completed).
+interface DispatchedState {
+  type: "Dispatched";
+  completed: Promise<void>;
+}
+
+type State = InitialState | DispatchedState;
 
 // Debouncing for updates to Google Doc.
 //
 // Currently just waits until the last update has finished.
-export function debounce(updateFn: UdpateFn): UdpateFn {
-  // The head of the queue of pending updates.
-  let lastPendingUpdate: Promise<void> | null = null;
+export function debounce(updateFn: UpdateFn): UpdateFn {
+  // The head of the queue of pending updates.  If not null,
+  // this is either a promise which 
+  let state: State = {type: "InitialState"};
   return function(update) {
-    if (lastPendingUpdate == null) {
-      lastPendingUpdate = updateFn(update);
-    } else {
-      lastPendingUpdate = lastPendingUpdate.then(() => {
-        return updateFn(update);
-      });
+    switch (state.type) {
+      case "InitialState":
+        state = {
+          type: "Dispatched",
+          completed: updateFn(update),
+        };
+        return state.completed;
+      case "Dispatched":
+        state = {
+          type: "Dispatched",
+          completed: state.completed.then(() => updateFn(update)),
+        }
+        return state.completed
     }
-    return lastPendingUpdate;
   }
 }
