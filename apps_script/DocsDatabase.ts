@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import { Database } from "./Database";
-import { debounce } from "throttle-debounce";
 
 const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   new Promise<any>((resolve, reject) => {
@@ -26,7 +25,7 @@ const wrapServerFunction = (functionName: string) => (...args: any[]) =>
 /**
  * An implementation of a Database that stores recipes in a Google Doc.
  */
-export const DocsDatabase: Database = {
+export const database: Database = {
   parseDocument: wrapServerFunction("parseDocument"),
   updateDocument: wrapServerFunction("updateDocument"),
 };

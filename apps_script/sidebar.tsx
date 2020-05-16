@@ -14,10 +14,7 @@
 
 import ReactDOM = require("react-dom");
 import React = require("react");
-import { DocsDatabase } from "./DocsDatabase";
+import { database } from "./DocsDatabase";
 import { Main } from "../src/Main";
 
-ReactDOM.render(
-  <Main database={DocsDatabase} />,
-  document.getElementById("root")
-);
+ReactDOM.render(<Main database={database} />, document.getElementById("root"));

@@ -14,12 +14,12 @@
 
 import ReactDOM = require("react-dom");
 import React = require("react");
-import { FakeDatabase } from "./FakeDatabase";
+import { database } from "./FakeDatabase";
 import { Main } from "../src/Main";
 
 ReactDOM.render(
   <div style={{ width: "300px" }}>
-    <Main database={FakeDatabase} />
+    <Main database={database} />
   </div>,
   document.getElementById("root")
 );
