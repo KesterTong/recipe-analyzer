@@ -71,5 +71,7 @@ export const database: Database = {
       setTimeout(() => resolve(INITIAL_RECIPES), 1000)
     );
   },
-  updateDocument: (update) => Promise.resolve(),
+  updateDocument: async (update) => {
+    console.log('Update for server document: ' + JSON.stringify(update));
+  }
 };
