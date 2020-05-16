@@ -50,7 +50,7 @@ export class FoodInput extends React.Component<
         url: makeFdcWebUrl(entry.fdcId),
       })),
     });
-  }
+  };
 
   onSuggestionsClearRequested = () => {
     this.setState({
@@ -68,21 +68,15 @@ export class FoodInput extends React.Component<
       value: value.url == null ? value.description : "",
       id: this.props.id,
       onChange: (event: React.ChangeEvent, props: { newValue: any }) => {
-        // Ignore changes for the input if a food with URL is selected.  We
-        // are already preventing key strokes from reaching the input in this
-        // case but other events (e.g. copy-paste by mouse) can still trigger
-        // this event.
+        // Ignore changes for the input if a food with URL is selected.
         if (value.url !== null) {
           return;
         }
         this.props.onChange({ url: null, description: props.newValue });
       },
       onKeyDown: (event: React.KeyboardEvent<Element>) => {
-        if (value.url !== null) {
-          event.preventDefault();
-          if (event.keyCode == 8 || event.keyCode == 46) {
-            this.props.onChange({ description: "", url: null });
-          }
+        if (value.url !== null && (event.keyCode == 8 || event.keyCode == 46)) {
+          this.props.onChange({ description: "", url: null });
         }
       },
     };
