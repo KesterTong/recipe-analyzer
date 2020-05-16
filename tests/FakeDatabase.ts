@@ -74,4 +74,5 @@ export const FakeDatabase: Database = {
       );
     });
   },
+  addIngredient: (rangeId) => Promise.resolve(),
 };

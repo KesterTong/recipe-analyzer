@@ -21,7 +21,7 @@ interface MainProps {
   database: Database;
   state: RootState;
   selectRecipe(index: number): void;
-  selectIngredient(index: number): void;
+  selectIngredient(database: Database, index: number): void;
 }
 
 export const Main: React.FunctionComponent<MainProps> = (props) => {
@@ -41,7 +41,8 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
   } else {
     const selectedRecipe = state.recipes[state.selectedRecipeIndex];
     // Note this is undefined if "New Ingredient" is selected.
-    let selectedIngredient = selectedRecipe.ingredients[state.selectedIngredientIndex];
+    let selectedIngredient =
+      selectedRecipe.ingredients[state.selectedIngredientIndex];
     if (selectedIngredient === undefined) {
       selectedIngredient = {
         amount: "",
@@ -50,30 +51,34 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
           description: "",
           url: null,
         },
-        nutrientValues: [],  // TODO: this is not correct.
-      }
+        nutrientValues: [], // TODO: this is not correct.
+      };
     }
-    const suggestions = state.recipes.map(recipe => ({
-      description: recipe.title,
-      url: recipe.url,
-    })).concat(Object.entries(state.fdcFoodsById).map(entry => ({
-      url: makeFdcWebUrl(Number(entry[0])),
-      description: entry[1].description,
-    })));
+    const suggestions = state.recipes
+      .map((recipe) => ({
+        description: recipe.title,
+        url: recipe.url,
+      }))
+      .concat(
+        Object.entries(state.fdcFoodsById).map((entry) => ({
+          url: makeFdcWebUrl(Number(entry[0])),
+          description: entry[1].description,
+        }))
+      );
     return (
       <React.Fragment>
         <div className="block form-group">
           <label htmlFor="recipe">Selected Recipe</label>
           <div className="control-group">
-            <select 
-              value={state.selectedRecipeIndex}   
-              onChange={(event) => props.selectRecipe(Number(event.target.value))}
+            <select
+              value={state.selectedRecipeIndex}
+              onChange={(event) =>
+                props.selectRecipe(Number(event.target.value))
+              }
               id="recipe"
             >
               {state.recipes.map((recipe, index) => (
-                <option value={index}>
-                  {recipe.title}
-                </option>
+                <option value={index}>{recipe.title}</option>
               ))}
             </select>
           </div>
@@ -84,21 +89,19 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
             <select
               value={state.selectedIngredientIndex}
               onChange={(event) =>
-                props.selectIngredient(Number(event.target.value))
+                props.selectIngredient(props.database, Number(event.target.value))
               }
               id="ingredient"
             >
-              {selectedRecipe.ingredients.map(
-                (ingredient, index) => (
-                  <option value={index}>
-                    {ingredient.amount +
-                      " " +
-                      ingredient.unit +
-                      " " +
-                      ingredient.ingredient.description}
-                  </option>
-                )
-              )}
+              {selectedRecipe.ingredients.map((ingredient, index) => (
+                <option value={index}>
+                  {ingredient.amount +
+                    " " +
+                    ingredient.unit +
+                    " " +
+                    ingredient.ingredient.description}
+                </option>
+              ))}
               <option value={selectedRecipe.ingredients.length}>
                 New Ingredient
               </option>
@@ -117,13 +120,21 @@ export const Main: React.FunctionComponent<MainProps> = (props) => {
         <div className="block form-group">
           <label htmlFor="ingredient-amount">Amount</label>
           <div className="control-group">
-            <input type="text" id="ingredient-amount" value={selectedIngredient.amount}></input>
+            <input
+              type="text"
+              id="ingredient-amount"
+              value={selectedIngredient.amount}
+            ></input>
           </div>
         </div>
         <div className="block form-group">
           <label htmlFor="ingredient-unit">Unit</label>
           <div className="control-group">
-            <input type="text" id="ingredient-unit" value={selectedIngredient.unit}></input>
+            <input
+              type="text"
+              id="ingredient-unit"
+              value={selectedIngredient.unit}
+            ></input>
           </div>
         </div>
         <div className="block form-group">

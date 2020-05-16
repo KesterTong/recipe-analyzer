@@ -26,4 +26,13 @@ export const DocsDatabase: Database = {
         .parseDocument();
     });
   },
+
+  addIngredient: (rangeId) => {
+    return new Promise((resolve, reject) => {
+      (<any>window).google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
+        .addIngredient(rangeId);
+    });
+  },
 };

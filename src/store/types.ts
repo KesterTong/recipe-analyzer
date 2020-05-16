@@ -43,6 +43,7 @@ export enum ActionType {
   SET_ERROR = "@SetError",
   SELECT_RECIPE = "@SelectRecipe",
   SELECT_INGREDIENT = "@SelectIngredient",
+  ADD_INGREDIENT = "@AddIngredient",
 }
 
 export interface Initialize {
@@ -66,11 +67,17 @@ export interface SelectIngredient {
   index: number;
 }
 
+export interface AddIngredient {
+  type: ActionType.ADD_INGREDIENT;
+  recipeIndex: number;
+}
+
 export type RootAction =
   | Initialize
   | SetError
   | SelectRecipe
-  | SelectIngredient;
+  | SelectIngredient
+  | AddIngredient;
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 export type ThunkDispatch = ReduxThunkDispatch<

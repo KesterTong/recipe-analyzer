@@ -11,9 +11,11 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { RootAction, ActionType } from "./types";
+import { RootAction, ActionType, ThunkDispatch, ThunkResult } from "./types";
 import { Recipe } from "../document/Document";
 import { NormalizedFood } from "../core";
+import { ThunkAction } from "redux-thunk";
+import { Database } from "../document/Database";
 
 export function initialize(
   recipes: Recipe[],
@@ -39,9 +41,29 @@ export function selectRecipe(index: number): RootAction {
   };
 }
 
-export function selectIngredient(index: number): RootAction {
-  return {
-    type: ActionType.SELECT_INGREDIENT,
-    index,
+export function selectIngredient(
+  database: Database,
+  index: number
+): ThunkResult<Promise<void>> {
+  return async (dispatch, getState) => {
+    const state = getState();
+    if (state.type != "Active") {
+      return;
+    }
+    const selectedRecipeIndex = state.selectedRecipeIndex;
+    const recipe = state.recipes[selectedRecipeIndex];
+    if (index < recipe.ingredients.length) {
+      dispatch({
+        type: ActionType.SELECT_INGREDIENT,
+        index,
+      });
+      return;
+    }
+    const rangeId = recipe.rangeId;
+    await database.addIngredient(rangeId);
+    dispatch({
+      type: ActionType.ADD_INGREDIENT,
+      recipeIndex: selectedRecipeIndex,
+    });
   };
 }

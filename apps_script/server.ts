@@ -181,6 +181,29 @@ export function parseDocument(
   return recipes;
 }
 
+export function addIngredient(rangeId: string) {
+  const document = DocumentApp.getActiveDocument();
+  const namedRange = document.getNamedRangeById(rangeId);
+  if (namedRange === null) {
+    throw new Error("Could not find range with id: " + rangeId);
+  }
+  const elements = namedRange.getRange().getSelectedElements();
+  if (elements.length != 1) {
+    throw new Error("Expected 1 element in range");
+  }
+  const element = elements[0].getElement();
+  if (element.getType() != DocumentApp.ElementType.TABLE) {
+    throw new Error("Expected range to contain a table");
+  }
+  const table = element.asTable();
+  let row = table.getRow(1).copy();
+  let numCells = row.getNumCells();
+  for (let i = 0; i < numCells; i++) {
+    row.getCell(i).clear();
+  }
+  table.insertTableRow(table.getNumRows() - 1, row);
+}
+
 export function testParseDocument() {
   const document = DocumentApp.getActiveDocument();
   console.log(JSON.stringify(parseDocument(document), undefined, 2));

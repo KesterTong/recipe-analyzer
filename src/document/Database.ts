@@ -21,4 +21,5 @@ import { Recipe } from "./Document";
  */
 export interface Database {
   parseDocument(): Promise<Recipe[]>;
+  addIngredient(rangeId: string): Promise<void>;
 }

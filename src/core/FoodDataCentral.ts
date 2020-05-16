@@ -83,7 +83,11 @@ export function parseFdcWebUrl(url: string): number | null {
 }
 
 export function makeFdcWebUrl(fdcId: number): string {
-  return "https://fdc.nal.usda.gov/fdc-app.html#/food-details/" + fdcId + "/nutrients";
+  return (
+    "https://fdc.nal.usda.gov/fdc-app.html#/food-details/" +
+    fdcId +
+    "/nutrients"
+  );
 }
 
 export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {

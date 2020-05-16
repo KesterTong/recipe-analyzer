@@ -16,12 +16,15 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Main } from "./Main";
 import { selectRecipe, selectIngredient } from "./store";
+import { Database } from "./document/Database";
 
 function mapStateToProps(state: RootState) {
   return { state };
 }
 
-function mapDispatchToProps(dispatch: ThunkDispatch) {
+function mapDispatchToProps(
+  dispatch: ThunkDispatch
+) {
   return bindActionCreators(
     {
       selectRecipe,

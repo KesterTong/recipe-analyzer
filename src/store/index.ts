@@ -60,6 +60,35 @@ function rootReducer(
         ...state,
         selectedIngredientIndex: action.index,
       };
+    case ActionType.ADD_INGREDIENT:
+      if (state.type != "Active") {
+        return state;
+      }
+      return {
+        ...state,
+        selectedIngredientIndex:
+          state.recipes[state.selectedRecipeIndex].ingredients.length,
+        recipes: state.recipes.map((recipe, index) => {
+          if (index != action.recipeIndex) {
+            return recipe;
+          }
+          return {
+            ...recipe,
+            ingredients: recipe.ingredients.concat([
+              {
+                amount: "",
+                unit: "",
+                ingredient: {
+                  description: "",
+                  url: null,
+                },
+                nutrientValues: [], // TODO: this is not correct.
+              },
+            ]),
+          };
+        }),
+      };
+
     default:
       return state;
   }
