@@ -20,3 +20,4 @@ export * from "./StatusOr";
 
 export { NormalizedFood } from "./NormalizedFood";
 export { normalizeFDCFood } from "./normalizeFDCFood";
+export { updateRecipes } from "./updateRecipes";

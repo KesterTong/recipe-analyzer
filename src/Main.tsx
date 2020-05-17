@@ -13,8 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import { Database, Update, UpdateType } from "../apps_script/Database";
-import { makeFdcWebUrl, NormalizedFood } from "./core";
-import { Recipe, Ingredient } from "./core/Recipe";
+import { makeFdcWebUrl, Recipe, NormalizedFood, updateRecipes, Ingredient } from "./core";
 import { fetchFdcFoods } from "./core/fetchFdcFoods";
 import { Editor } from "./Editor";
 import { debounce } from "./debounce";
@@ -80,99 +79,15 @@ export class Main extends React.Component<{ database: Database }, RootState> {
   }
 
   updateDocument(update: Update) {
-    const state = this.state;
-    if (state.type != "Active") {
+    if (this.state.type != "Active") {
       return;
     }
-
     // We update the document on the server side asynchronously.
     this.updateServerDocument(update);
-
-    const recipe = state.recipes[update.recipeIndex];
-    let newSelectedIngredientIndex;
-    let newRecipe: Recipe;
-    switch (update.type) {
-      case UpdateType.ADD_INGREDIENT:
-        const newIngredient = {
-          amount: "",
-          unit: "",
-          ingredient: {
-            description: "",
-            url: null,
-          },
-          nutrientValues: [], // TODO: this is not correct.
-        };
-        newRecipe = {
-          ...recipe,
-          ingredients: recipe.ingredients.concat([newIngredient]),
-        };
-        newSelectedIngredientIndex = newRecipe.ingredients.length - 1;
-        break;
-      case UpdateType.UPDATE_INGREDIENT:
-        newSelectedIngredientIndex = state.selectedIngredientIndex;
-        newRecipe = {
-          ...recipe,
-          ingredients: recipe.ingredients.map((ingredient, index) => {
-            if (index != update.ingredientIndex) {
-              return ingredient;
-            }
-            return {
-              ...ingredient,
-              amount:
-                update.newAmount === undefined
-                  ? ingredient.amount
-                  : update.newAmount,
-              unit:
-                update.newUnit === undefined ? ingredient.unit : update.newUnit,
-              ingredient:
-                update.newFood === undefined
-                  ? ingredient.ingredient
-                  : update.newFood,
-            };
-          }),
-        };
-        break;
-      case UpdateType.DELETE_INGREDIENT:
-        newSelectedIngredientIndex = 0; // TODO: handle case of no ingredients.
-        newRecipe = {
-          ...recipe,
-          ingredients: recipe.ingredients.filter(
-            (_, index) => index != update.ingredientIndex
-          ),
-        };
-        break;
-      case UpdateType.SWAP_INGREDIENTS:
-        if (state.selectedIngredientIndex == update.firstIngredientIndex) {
-          newSelectedIngredientIndex = state.selectedIngredientIndex + 1;
-        } else if (
-          state.selectedIngredientIndex ==
-          update.firstIngredientIndex + 1
-        ) {
-          newSelectedIngredientIndex = state.selectedIngredientIndex - 1;
-        } else {
-          newSelectedIngredientIndex = state.selectedIngredientIndex;
-        }
-        newRecipe = {
-          ...recipe,
-          ingredients: recipe.ingredients.map((ingredient, index) => {
-            if (index == update.firstIngredientIndex) {
-              return recipe.ingredients[index + 1];
-            } else if (index == update.firstIngredientIndex + 1) {
-              return recipe.ingredients[index - 1];
-            } else {
-              return ingredient;
-            }
-          }),
-        };
-        break;
-    }
-
+    let newRecipes = updateRecipes(this.state.recipes, update);
     this.setState({
       type: "Active",
-      selectedIngredientIndex: newSelectedIngredientIndex,
-      recipes: state.recipes.map((recipe, index) =>
-        index == update.recipeIndex ? newRecipe : recipe
-      ),
+      recipes: newRecipes,
     });
   }
 
@@ -201,6 +116,10 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       recipeIndex: this.state.selectedRecipeIndex,
       ingredientIndex: this.state.selectedIngredientIndex,
     });
+    this.setState({
+      type: "Active",
+      selectedIngredientIndex: 0,  // TODO: handle case of no ingredients.
+    });
   }
 
   moveSelectedIngredientUpward() {
@@ -214,6 +133,10 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       type: UpdateType.SWAP_INGREDIENTS,
       recipeIndex: this.state.selectedRecipeIndex,
       firstIngredientIndex: this.state.selectedIngredientIndex - 1,
+    });
+    this.setState({
+      type: "Active",
+      selectedIngredientIndex: this.state.selectedIngredientIndex - 1,
     });
   }
 
@@ -232,6 +155,10 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       recipeIndex: this.state.selectedRecipeIndex,
       firstIngredientIndex: this.state.selectedIngredientIndex,
     });
+    this.setState({
+      type: "Active",
+      selectedIngredientIndex: this.state.selectedIngredientIndex + 1,
+    });
   }
 
   selectIngredient(index: number) {
@@ -249,10 +176,15 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       return;
     }
     const selectedRecipeIndex = this.state.selectedRecipeIndex;
+    const currentNumIngredients =  this.state.recipes[selectedRecipeIndex].ingredients.length;
     this.updateDocument({
       type: UpdateType.ADD_INGREDIENT,
       recipeIndex: selectedRecipeIndex,
     });
+    this.setState({
+      type: "Active",
+      selectedIngredientIndex: currentNumIngredients,
+    })
   }
 
   getSuggestions(query: string, state: ActiveState) {
