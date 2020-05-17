@@ -67,27 +67,27 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
             New Ingredient
           </option>
         </select>
-        <button className="icon-button" onClick={props.deleteIngredient}>
-          <i className="material-icons">delete</i>
-        </button>
-        <button
-          className="icon-button"
-          onClick={props.moveUpward}
-          disabled={props.selectedIngredientIndex == 0}
-        >
-          <i className="material-icons">arrow_upward</i>
-        </button>
-        <button
-          className="icon-button"
-          onClick={props.moveDownward}
-          disabled={
-            props.selectedIngredientIndex ==
-            props.ingredientDisplayStrings.length - 1
-          }
-        >
-          <i className="material-icons">arrow_downward</i>
-        </button>
       </div>
+    </div>
+
+    <div className="block button-group">
+      <button>New</button>
+      <button onClick={props.deleteIngredient}>Delete</button>
+      <button
+        onClick={props.moveUpward}
+        disabled={props.selectedIngredientIndex == 0}
+      >
+        Move up
+      </button>
+      <button
+        onClick={props.moveDownward}
+        disabled={
+          props.selectedIngredientIndex ==
+          props.ingredientDisplayStrings.length - 1
+        }
+      >
+        Move down
+      </button>
     </div>
     <div className="block form-group">
       <label htmlFor="ingredient-amount">Amount</label>
