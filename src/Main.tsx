@@ -283,9 +283,9 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             updateFood={(food) =>
               this.updateSelectedIngredient({ newFood: food })
             }
-            deleteIngredient={() => this.deleteSelectedIngredient()}
-            moveUpward={() => this.moveSelectedIngredientUpward()}
-            moveDownward={() => this.moveSelectedIngredientDownward()}
+            deleteIngredient={this.deleteSelectedIngredient}
+            moveUpward={this.moveSelectedIngredientUpward}
+            moveDownward={this.moveSelectedIngredientDownward}
           />
         );
     }
