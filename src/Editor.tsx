@@ -14,6 +14,7 @@
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
 import { Ingredient } from "./document/Document";
+import { ListSelect } from "./ListSelect";
 
 interface Props {
   recipeTitles: string[];
@@ -40,31 +41,23 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
     <div className="block form-group">
       <label htmlFor="recipe">Selected Recipe</label>
       <div className="control-group">
-        <select
+        <ListSelect
+          labels={props.recipeTitles}
           value={props.selectedRecipeIndex}
-          onChange={(event) => props.selectRecipe(Number(event.target.value))}
-          id="recipe"
-        >
-          {props.recipeTitles.map((title, index) => (
-            <option value={index}>{title}</option>
-          ))}
-        </select>
+          id="ingredient"
+          onChange={props.selectRecipe}
+        />
       </div>
     </div>
     <div className="block form-group">
       <label htmlFor="ingredient">Selected Ingredient</label>
       <div className="control-group">
-        <select
+        <ListSelect
+          labels={props.ingredientDisplayStrings}
           value={props.selectedIngredientIndex}
-          onChange={(event) =>
-            props.selectIngredient(Number(event.target.value))
-          }
           id="ingredient"
-        >
-          {props.ingredientDisplayStrings.map((displayString, index) => (
-            <option value={index}>{displayString}</option>
-          ))}
-        </select>
+          onChange={props.selectIngredient}
+        />
       </div>
     </div>
 
