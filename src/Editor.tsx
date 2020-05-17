@@ -13,21 +13,16 @@
 // limitations under the License.
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
-import { NormalizedFood } from "./core";
-import { Recipe } from "./document/Document";
+import { Ingredient } from "./document/Document";
 
 interface Props {
-  // New Props
   recipeTitles: string[];
   selectedRecipeIndex: number;
   ingredientDisplayStrings: string[];
   selectedIngredientIndex: number;
+  selectedIngredient: Ingredient;
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
-
-  // Legacy props
-  selectedRecipe: Recipe;
-  fdcFoodsById: { [index: number]: NormalizedFood };
 
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
@@ -40,20 +35,6 @@ interface Props {
 }
 
 export const Editor: React.FunctionComponent<Props> = (props) => {
-  // Note this is undefined if "New Ingredient" is selected.
-  let selectedIngredient =
-    props.selectedRecipe.ingredients[props.selectedIngredientIndex];
-  if (selectedIngredient === undefined) {
-    selectedIngredient = {
-      amount: "",
-      unit: "",
-      ingredient: {
-        description: "",
-        url: null,
-      },
-      nutrientValues: [], // TODO: this is not correct.
-    };
-  }
   return (
     <React.Fragment>
       <div className="block form-group">
@@ -115,7 +96,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
           <input
             type="text"
             id="ingredient-amount"
-            value={selectedIngredient.amount}
+            value={props.selectedIngredient.amount}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               props.updateAmount(event.target.value)
             }
@@ -128,7 +109,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
           <input
             type="text"
             id="ingredient-unit"
-            value={selectedIngredient.unit}
+            value={props.selectedIngredient.unit}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               props.updateUnit(event.target.value)
             }
@@ -139,7 +120,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
         <label htmlFor="ingredient-food">Food</label>
         <FoodInput
           id="ingredient-food"
-          value={selectedIngredient.ingredient}
+          value={props.selectedIngredient.ingredient}
           suggestions={props.suggestions}
           onChange={props.updateFood}
         />

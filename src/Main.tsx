@@ -288,7 +288,8 @@ export class Main extends React.Component<{ database: Database }, RootState> {
         this.ingredientDisplayString
       ),
       selectedIngredientIndex: state.selectedIngredientIndex,
-      selectedRecipe,
+      selectedIngredient:
+        selectedRecipe.ingredients[state.selectedIngredientIndex],
     };
   }
 
@@ -309,10 +310,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       case "Active":
         return (
           <Editor
-            // New Props
             {...this.getEditorProps(this.state)}
-            // Legacy props
-            fdcFoodsById={this.state.fdcFoodsById}
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
             updateAmount={(amount) =>
