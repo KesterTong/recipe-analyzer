@@ -16,7 +16,7 @@
  * client.  From the point of view of the client this is server-side code.
  */
 
-import { Recipe, Ingredient } from "../src/document/Document";
+import { Recipe, Ingredient } from "../src/core/Recipe";
 import { Update, UpdateType } from "./Database";
 
 function parseToc(

@@ -14,8 +14,8 @@
 import * as React from "react";
 import { Database, Update, UpdateType } from "../apps_script/Database";
 import { makeFdcWebUrl, NormalizedFood } from "./core";
-import { Recipe, Ingredient } from "./document/Document";
-import { fetchFdcFoods } from "./document/fetchFdcFoods";
+import { Recipe, Ingredient } from "./core/Recipe";
+import { fetchFdcFoods } from "./core/fetchFdcFoods";
 import { Editor } from "./Editor";
 import { debounce } from "./debounce";
 

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Database } from "../apps_script/Database";
-import { Recipe } from "../src/document/Document";
+import { Recipe } from "../src/core/Recipe";
 
 const INITIAL_RECIPES: Recipe[] = [
   {
