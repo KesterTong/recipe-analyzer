@@ -34,97 +34,95 @@ interface Props {
   deleteIngredient(): void;
 }
 
-export const Editor: React.FunctionComponent<Props> = (props) => {
-  return (
-    <React.Fragment>
-      <div className="block form-group">
-        <label htmlFor="recipe">Selected Recipe</label>
-        <div className="control-group">
-          <select
-            value={props.selectedRecipeIndex}
-            onChange={(event) => props.selectRecipe(Number(event.target.value))}
-            id="recipe"
-          >
-            {props.recipeTitles.map((title, index) => (
-              <option value={index}>{title}</option>
-            ))}
-          </select>
-        </div>
+export const Editor: React.FunctionComponent<Props> = (props) => (
+  <React.Fragment>
+    <div className="block form-group">
+      <label htmlFor="recipe">Selected Recipe</label>
+      <div className="control-group">
+        <select
+          value={props.selectedRecipeIndex}
+          onChange={(event) => props.selectRecipe(Number(event.target.value))}
+          id="recipe"
+        >
+          {props.recipeTitles.map((title, index) => (
+            <option value={index}>{title}</option>
+          ))}
+        </select>
       </div>
-      <div className="block form-group">
-        <label htmlFor="ingredient">Selected Ingredient</label>
-        <div className="control-group">
-          <select
-            value={props.selectedIngredientIndex}
-            onChange={(event) =>
-              props.selectIngredient(Number(event.target.value))
-            }
-            id="ingredient"
-          >
-            {props.ingredientDisplayStrings.map((displayString, index) => (
-              <option value={index}>{displayString}</option>
-            ))}
-            <option value={props.ingredientDisplayStrings.length}>
-              New Ingredient
-            </option>
-          </select>
-          <button className="icon-button" onClick={props.deleteIngredient}>
-            <i className="material-icons">delete</i>
-          </button>
-          <button
-            className="icon-button"
-            onClick={props.moveUpward}
-            disabled={props.selectedIngredientIndex == 0}
-          >
-            <i className="material-icons">arrow_upward</i>
-          </button>
-          <button
-            className="icon-button"
-            onClick={props.moveDownward}
-            disabled={
-              props.selectedIngredientIndex ==
-              props.ingredientDisplayStrings.length - 1
-            }
-          >
-            <i className="material-icons">arrow_downward</i>
-          </button>
-        </div>
+    </div>
+    <div className="block form-group">
+      <label htmlFor="ingredient">Selected Ingredient</label>
+      <div className="control-group">
+        <select
+          value={props.selectedIngredientIndex}
+          onChange={(event) =>
+            props.selectIngredient(Number(event.target.value))
+          }
+          id="ingredient"
+        >
+          {props.ingredientDisplayStrings.map((displayString, index) => (
+            <option value={index}>{displayString}</option>
+          ))}
+          <option value={props.ingredientDisplayStrings.length}>
+            New Ingredient
+          </option>
+        </select>
+        <button className="icon-button" onClick={props.deleteIngredient}>
+          <i className="material-icons">delete</i>
+        </button>
+        <button
+          className="icon-button"
+          onClick={props.moveUpward}
+          disabled={props.selectedIngredientIndex == 0}
+        >
+          <i className="material-icons">arrow_upward</i>
+        </button>
+        <button
+          className="icon-button"
+          onClick={props.moveDownward}
+          disabled={
+            props.selectedIngredientIndex ==
+            props.ingredientDisplayStrings.length - 1
+          }
+        >
+          <i className="material-icons">arrow_downward</i>
+        </button>
       </div>
-      <div className="block form-group">
-        <label htmlFor="ingredient-amount">Amount</label>
-        <div className="control-group">
-          <input
-            type="text"
-            id="ingredient-amount"
-            value={props.selectedIngredient.amount}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              props.updateAmount(event.target.value)
-            }
-          ></input>
-        </div>
+    </div>
+    <div className="block form-group">
+      <label htmlFor="ingredient-amount">Amount</label>
+      <div className="control-group">
+        <input
+          type="text"
+          id="ingredient-amount"
+          value={props.selectedIngredient.amount}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            props.updateAmount(event.target.value)
+          }
+        ></input>
       </div>
-      <div className="block form-group">
-        <label htmlFor="ingredient-unit">Unit</label>
-        <div className="control-group">
-          <input
-            type="text"
-            id="ingredient-unit"
-            value={props.selectedIngredient.unit}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-              props.updateUnit(event.target.value)
-            }
-          ></input>
-        </div>
+    </div>
+    <div className="block form-group">
+      <label htmlFor="ingredient-unit">Unit</label>
+      <div className="control-group">
+        <input
+          type="text"
+          id="ingredient-unit"
+          value={props.selectedIngredient.unit}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            props.updateUnit(event.target.value)
+          }
+        ></input>
       </div>
-      <div className="block form-group">
-        <label htmlFor="ingredient-food">Food</label>
-        <FoodInput
-          id="ingredient-food"
-          value={props.selectedIngredient.ingredient}
-          suggestions={props.suggestions}
-          onChange={props.updateFood}
-        />
-      </div>
-    </React.Fragment>
-  );
-};
+    </div>
+    <div className="block form-group">
+      <label htmlFor="ingredient-food">Food</label>
+      <FoodInput
+        id="ingredient-food"
+        value={props.selectedIngredient.ingredient}
+        suggestions={props.suggestions}
+        onChange={props.updateFood}
+      />
+    </div>
+  </React.Fragment>
+);
