@@ -23,7 +23,7 @@ interface Props {
   suggestions: { description: string; url: string }[];
 
   // Legacy props
-  recipes: Recipe[];
+  selectedRecipe: Recipe;
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: NormalizedFood };
@@ -39,10 +39,9 @@ interface Props {
 }
 
 export const Editor: React.FunctionComponent<Props> = (props) => {
-  const selectedRecipe = props.recipes[props.selectedRecipeIndex];
   // Note this is undefined if "New Ingredient" is selected.
   let selectedIngredient =
-    selectedRecipe.ingredients[props.selectedIngredientIndex];
+    props.selectedRecipe.ingredients[props.selectedIngredientIndex];
   if (selectedIngredient === undefined) {
     selectedIngredient = {
       amount: "",
@@ -80,7 +79,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             }
             id="ingredient"
           >
-            {selectedRecipe.ingredients.map((ingredient, index) => (
+            {props.selectedRecipe.ingredients.map((ingredient, index) => (
               <option value={index}>
                 {ingredient.amount +
                   " " +
@@ -89,7 +88,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
                   ingredient.ingredient.description}
               </option>
             ))}
-            <option value={selectedRecipe.ingredients.length}>
+            <option value={props.selectedRecipe.ingredients.length}>
               New Ingredient
             </option>
           </select>
@@ -108,7 +107,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             onClick={props.moveDownward}
             disabled={
               props.selectedIngredientIndex ==
-              selectedRecipe.ingredients.length - 1
+              props.selectedRecipe.ingredients.length - 1
             }
           >
             <i className="material-icons">arrow_downward</i>

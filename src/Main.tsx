@@ -272,6 +272,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
   getEditorProps(state: ActiveState) {
     return {
       recipeTitles: state.recipes.map((recipe) => recipe.title),
+      selectedRecipe: state.recipes[state.selectedRecipeIndex],
       suggestions: this.getSuggestions("", state),
     };
   }
@@ -296,7 +297,6 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             // New Props
             {...this.getEditorProps(this.state)}
             // Legacy props
-            recipes={this.state.recipes}
             selectedRecipeIndex={this.state.selectedRecipeIndex}
             selectedIngredientIndex={this.state.selectedIngredientIndex}
             fdcFoodsById={this.state.fdcFoodsById}
