@@ -21,12 +21,12 @@ interface Props {
   recipeTitles: string[];
   selectedRecipeIndex: number;
   ingredientDisplayStrings: string[];
+  selectedIngredientIndex: number;
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
 
   // Legacy props
   selectedRecipe: Recipe;
-  selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: NormalizedFood };
 
   selectRecipe(index: number): void;

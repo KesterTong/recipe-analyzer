@@ -287,6 +287,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       ingredientDisplayStrings: selectedRecipe.ingredients.map(
         this.ingredientDisplayString
       ),
+      selectedIngredientIndex: state.selectedIngredientIndex,
       selectedRecipe,
     };
   }
@@ -311,7 +312,6 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             // New Props
             {...this.getEditorProps(this.state)}
             // Legacy props
-            selectedIngredientIndex={this.state.selectedIngredientIndex}
             fdcFoodsById={this.state.fdcFoodsById}
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
