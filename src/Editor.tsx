@@ -18,6 +18,7 @@ import { Recipe } from "./document/Document";
 
 interface Props {
   // New Props
+  recipeTitles: string[];
 
   // Legacy props
   recipes: Recipe[];
@@ -72,8 +73,8 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             onChange={(event) => props.selectRecipe(Number(event.target.value))}
             id="recipe"
           >
-            {props.recipes.map((recipe, index) => (
-              <option value={index}>{recipe.title}</option>
+            {props.recipeTitles.map((title, index) => (
+              <option value={index}>{title}</option>
             ))}
           </select>
         </div>

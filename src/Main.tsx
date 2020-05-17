@@ -254,6 +254,13 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     }
   }
 
+  getEditorProps(state: ActiveState) {
+
+    return {
+      recipeTitles: state.recipes.map(recipe => recipe.title),
+    }
+  }
+
   render() {
     switch (this.state.type) {
       case "Loading":
@@ -272,6 +279,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
         return (
           <Editor
             // New Props
+            {...this.getEditorProps(this.state)}
             // Legacy props
             recipes={this.state.recipes}
             selectedRecipeIndex={this.state.selectedRecipeIndex}
