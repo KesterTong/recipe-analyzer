@@ -98,10 +98,10 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
           <button className="icon-button" onClick={props.deleteIngredient}>
             <i className="material-icons">delete</i>
           </button>
-          <button className="icon-button">
-            <i className="material-icons">arrow_upward</i>
+          <button className="icon-button" disabled={props.selectedIngredientIndex == 0}>
+            <i className="material-icons" >arrow_upward</i>
           </button>
-          <button className="icon-button">
+          <button className="icon-button" disabled={props.selectedIngredientIndex == selectedRecipe.ingredients.length - 1}>
             <i className="material-icons">arrow_downward</i>
           </button>
         </div>
