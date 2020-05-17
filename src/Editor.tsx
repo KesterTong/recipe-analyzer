@@ -13,19 +13,21 @@
 // limitations under the License.
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
-import { makeFdcWebUrl, NormalizedFood } from "./core";
+import { NormalizedFood } from "./core";
 import { Recipe } from "./document/Document";
 
 interface Props {
   // New Props
   recipeTitles: string[];
+  // TODO: make this a function of query.
+  suggestions: { description: string; url: string }[];
 
   // Legacy props
   recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: NormalizedFood };
-  
+
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
   updateAmount(amount: string): void;
@@ -52,17 +54,6 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
       nutrientValues: [], // TODO: this is not correct.
     };
   }
-  const suggestions = props.recipes
-    .map((recipe) => ({
-      description: recipe.title,
-      url: recipe.url,
-    }))
-    .concat(
-      Object.entries(props.fdcFoodsById).map((entry) => ({
-        url: makeFdcWebUrl(Number(entry[0])),
-        description: entry[1].description,
-      }))
-    );
   return (
     <React.Fragment>
       <div className="block form-group">
@@ -155,7 +146,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
         <FoodInput
           id="ingredient-food"
           value={selectedIngredient.ingredient}
-          suggestions={suggestions}
+          suggestions={props.suggestions}
           onChange={props.updateFood}
         />
       </div>

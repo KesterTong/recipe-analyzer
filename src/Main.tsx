@@ -146,7 +146,8 @@ export class Main extends React.Component<{ database: Database }, RootState> {
         if (state.selectedIngredientIndex == update.firstIngredientIndex) {
           newSelectedIngredientIndex = state.selectedIngredientIndex + 1;
         } else if (
-          state.selectedIngredientIndex == update.firstIngredientIndex + 1
+          state.selectedIngredientIndex ==
+          update.firstIngredientIndex + 1
         ) {
           newSelectedIngredientIndex = state.selectedIngredientIndex - 1;
         } else {
@@ -254,11 +255,25 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     }
   }
 
-  getEditorProps(state: ActiveState) {
+  getSuggestions(query: string, state: ActiveState) {
+    return state.recipes
+      .map((recipe) => ({
+        description: recipe.title,
+        url: recipe.url,
+      }))
+      .concat(
+        Object.entries(state.fdcFoodsById).map((entry) => ({
+          url: makeFdcWebUrl(Number(entry[0])),
+          description: entry[1].description,
+        }))
+      );
+  }
 
+  getEditorProps(state: ActiveState) {
     return {
-      recipeTitles: state.recipes.map(recipe => recipe.title),
-    }
+      recipeTitles: state.recipes.map((recipe) => recipe.title),
+      suggestions: this.getSuggestions("", state),
+    };
   }
 
   render() {
@@ -285,7 +300,6 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             selectedRecipeIndex={this.state.selectedRecipeIndex}
             selectedIngredientIndex={this.state.selectedIngredientIndex}
             fdcFoodsById={this.state.fdcFoodsById}
-
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
             updateAmount={(amount) =>
