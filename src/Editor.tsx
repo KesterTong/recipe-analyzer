@@ -83,7 +83,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             {props.ingredientDisplayStrings.map((displayString, index) => (
               <option value={index}>{displayString}</option>
             ))}
-            <option value={props.selectedRecipe.ingredients.length}>
+            <option value={props.ingredientDisplayStrings.length}>
               New Ingredient
             </option>
           </select>
@@ -102,7 +102,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             onClick={props.moveDownward}
             disabled={
               props.selectedIngredientIndex ==
-              props.selectedRecipe.ingredients.length - 1
+              props.ingredientDisplayStrings.length - 1
             }
           >
             <i className="material-icons">arrow_downward</i>
