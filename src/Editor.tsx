@@ -19,12 +19,12 @@ import { Recipe } from "./document/Document";
 interface Props {
   // New Props
   recipeTitles: string[];
+  selectedRecipeIndex: number;
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
 
   // Legacy props
   selectedRecipe: Recipe;
-  selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: NormalizedFood };
 
