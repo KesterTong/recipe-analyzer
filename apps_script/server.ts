@@ -191,6 +191,12 @@ export function updateDocument(update: Update) {
     case UpdateType.DELETE_INGREDIENT:
       // We add 1 because the first row is the header row.
       table.removeRow(update.ingredientIndex + 1);
+      break;
+    case UpdateType.SWAP_INGREDIENTS:
+      const second_row = table.getRow(update.firstIngredientIndex + 2);
+      second_row.removeFromParent();
+      table.insertTableRow(update.firstIngredientIndex + 1, second_row);
+      break;
   }
 }
 

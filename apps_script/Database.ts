@@ -17,6 +17,7 @@ export enum UpdateType {
   ADD_INGREDIENT = "@AddIngredient",
   UPDATE_INGREDIENT = "@UpdateIngredient",
   DELETE_INGREDIENT = "@DeleteIngredient",
+  SWAP_INGREDIENTS = "@SwapIngredeints",
 }
 
 export interface AddIngredient {
@@ -39,7 +40,17 @@ export interface DeleteIngredient {
   ingredientIndex: number;
 }
 
-export type Update = AddIngredient | UpdateIngredient | DeleteIngredient;
+export interface SwapIngredeints {
+  type: UpdateType.SWAP_INGREDIENTS;
+  recipeIndex: number;
+  firstIngredientIndex: number;
+}
+
+export type Update =
+  | AddIngredient
+  | UpdateIngredient
+  | DeleteIngredient
+  | SwapIngredeints;
 
 /**
  * A database of recipes.

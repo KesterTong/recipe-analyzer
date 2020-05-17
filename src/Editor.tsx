@@ -26,6 +26,8 @@ interface Props {
   updateAmount(amount: string): void;
   updateUnit(unit: string): void;
   updateFood(food: { description: string; url: string | null }): void;
+  moveUpward(): void;
+  moveDownward(): void;
   deleteIngredient(): void;
 }
 
@@ -100,12 +102,14 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
           </button>
           <button
             className="icon-button"
+            onClick={props.moveUpward}
             disabled={props.selectedIngredientIndex == 0}
           >
             <i className="material-icons">arrow_upward</i>
           </button>
           <button
             className="icon-button"
+            onClick={props.moveDownward}
             disabled={
               props.selectedIngredientIndex ==
               selectedRecipe.ingredients.length - 1

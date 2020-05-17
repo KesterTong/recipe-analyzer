@@ -141,6 +141,30 @@ export class Main extends React.Component<{ database: Database }, RootState> {
             (_, index) => index != update.ingredientIndex
           ),
         };
+        break;
+      case UpdateType.SWAP_INGREDIENTS:
+        if (state.selectedIngredientIndex == update.firstIngredientIndex) {
+          newSelectedIngredientIndex = state.selectedIngredientIndex + 1;
+        } else if (
+          state.selectedIngredientIndex == update.firstIngredientIndex + 1
+        ) {
+          newSelectedIngredientIndex = state.selectedIngredientIndex - 1;
+        } else {
+          newSelectedIngredientIndex = state.selectedIngredientIndex;
+        }
+        newRecipe = {
+          ...recipe,
+          ingredients: recipe.ingredients.map((ingredient, index) => {
+            if (index == update.firstIngredientIndex) {
+              return recipe.ingredients[index + 1];
+            } else if (index == update.firstIngredientIndex + 1) {
+              return recipe.ingredients[index - 1];
+            } else {
+              return ingredient;
+            }
+          }),
+        };
+        break;
     }
 
     this.setState({
@@ -176,6 +200,37 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       type: UpdateType.DELETE_INGREDIENT,
       recipeIndex: this.state.selectedRecipeIndex,
       ingredientIndex: this.state.selectedIngredientIndex,
+    });
+  }
+
+  moveSelectedIngredientUpward() {
+    if (this.state.type != "Active") {
+      return;
+    }
+    if (this.state.selectedIngredientIndex == 0) {
+      return;
+    }
+    this.updateDocument({
+      type: UpdateType.SWAP_INGREDIENTS,
+      recipeIndex: this.state.selectedRecipeIndex,
+      firstIngredientIndex: this.state.selectedIngredientIndex - 1,
+    });
+  }
+
+  moveSelectedIngredientDownward() {
+    if (this.state.type != "Active") {
+      return;
+    }
+    if (
+      this.state.selectedIngredientIndex ==
+      this.state.recipes[this.state.selectedRecipeIndex].ingredients.length - 1
+    ) {
+      return;
+    }
+    this.updateDocument({
+      type: UpdateType.SWAP_INGREDIENTS,
+      recipeIndex: this.state.selectedRecipeIndex,
+      firstIngredientIndex: this.state.selectedIngredientIndex,
     });
   }
 
@@ -229,6 +284,8 @@ export class Main extends React.Component<{ database: Database }, RootState> {
               this.updateSelectedIngredient({ newFood: food })
             }
             deleteIngredient={() => this.deleteSelectedIngredient()}
+            moveUpward={() => this.moveSelectedIngredientUpward()}
+            moveDownward={() => this.moveSelectedIngredientDownward()}
           />
         );
     }
