@@ -234,24 +234,25 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     });
   }
 
-  async selectIngredient(index: number) {
+  selectIngredient(index: number) {
+    if (this.state.type != "Active") {
+      return;
+    }
+    this.setState({
+      type: "Active",
+      selectedIngredientIndex: index,
+    });
+  }
+
+  async newIngredient() {
     if (this.state.type != "Active") {
       return;
     }
     const selectedRecipeIndex = this.state.selectedRecipeIndex;
-    const recipe = this.state.recipes[selectedRecipeIndex];
-    if (index < recipe.ingredients.length) {
-      this.setState({
-        type: "Active",
-        selectedIngredientIndex: index,
-      });
-    } else {
-      const update: Update = {
-        type: UpdateType.ADD_INGREDIENT,
-        recipeIndex: selectedRecipeIndex,
-      };
-      this.updateDocument(update);
-    }
+    this.updateDocument({
+      type: UpdateType.ADD_INGREDIENT,
+      recipeIndex: selectedRecipeIndex,
+    });
   }
 
   getSuggestions(query: string, state: ActiveState) {
@@ -323,6 +324,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
               this.updateSelectedIngredient({ newFood: food })
             }
             deleteIngredient={() => this.deleteSelectedIngredient()}
+            newIngredient={() => this.newIngredient()}
             moveUpward={() => this.moveSelectedIngredientUpward()}
             moveDownward={() => this.moveSelectedIngredientDownward()}
           />

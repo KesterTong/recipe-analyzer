@@ -31,6 +31,7 @@ interface Props {
   updateFood(food: { description: string; url: string | null }): void;
   moveUpward(): void;
   moveDownward(): void;
+  newIngredient(): void;
   deleteIngredient(): void;
 }
 
@@ -63,15 +64,12 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
           {props.ingredientDisplayStrings.map((displayString, index) => (
             <option value={index}>{displayString}</option>
           ))}
-          <option value={props.ingredientDisplayStrings.length}>
-            New Ingredient
-          </option>
         </select>
       </div>
     </div>
 
     <div className="block button-group">
-      <button>New</button>
+      <button onClick={props.newIngredient}>New</button>
       <button onClick={props.deleteIngredient}>Delete</button>
       <button
         onClick={props.moveUpward}
