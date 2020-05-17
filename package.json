@@ -10,6 +10,7 @@
   "scripts": {
     "run": "ts-node index.ts",
     "test": "jest",
+    "watch": "webpack --watch",
     "build": "webpack",
     "format": "prettier --write \"**/*.{ts,tsx,test.ts}\""
   },
