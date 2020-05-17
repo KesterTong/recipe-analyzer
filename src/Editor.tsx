@@ -107,7 +107,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
       </div>
     </div>
     <div className="block form-group">
-      <label htmlFor="ingredient-food">Food</label>
+      <label htmlFor="ingredient-food">Food TESTING2</label>
       <FoodInput
         id="ingredient-food"
         value={props.selectedIngredient.ingredient}

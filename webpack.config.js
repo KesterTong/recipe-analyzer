@@ -47,6 +47,10 @@ function config(mode, entry, output) {
       }),
       new HtmlWebpackInlineSourcePlugin(),
     ],
+    ...{
+    devServer: {
+      contentBase: './test_ui',
+    },},
     optimization: {
       minimize: false
     },
