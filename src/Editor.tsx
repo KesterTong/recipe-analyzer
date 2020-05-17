@@ -20,6 +20,7 @@ interface Props {
   // New Props
   recipeTitles: string[];
   selectedRecipeIndex: number;
+  ingredientDisplayStrings: string[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
 
@@ -79,14 +80,8 @@ export const Editor: React.FunctionComponent<Props> = (props) => {
             }
             id="ingredient"
           >
-            {props.selectedRecipe.ingredients.map((ingredient, index) => (
-              <option value={index}>
-                {ingredient.amount +
-                  " " +
-                  ingredient.unit +
-                  " " +
-                  ingredient.ingredient.description}
-              </option>
+            {props.ingredientDisplayStrings.map((displayString, index) => (
+              <option value={index}>{displayString}</option>
             ))}
             <option value={props.selectedRecipe.ingredients.length}>
               New Ingredient

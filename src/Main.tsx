@@ -269,12 +269,26 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       );
   }
 
+  ingredientDisplayString(ingredient: Ingredient) {
+    return (
+      ingredient.amount +
+      " " +
+      ingredient.unit +
+      " " +
+      ingredient.ingredient.description
+    );
+  }
+
   getEditorProps(state: ActiveState) {
+    const selectedRecipe = state.recipes[state.selectedRecipeIndex];
     return {
       recipeTitles: state.recipes.map((recipe) => recipe.title),
       selectedRecipeIndex: state.selectedRecipeIndex,
-      selectedRecipe: state.recipes[state.selectedRecipeIndex],
       suggestions: this.getSuggestions("", state),
+      ingredientDisplayStrings: selectedRecipe.ingredients.map(
+        this.ingredientDisplayString
+      ),
+      selectedRecipe,
     };
   }
 
