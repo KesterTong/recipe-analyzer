@@ -271,7 +271,13 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       case "Active":
         return (
           <Editor
-            {...this.state}
+            // New Props
+            // Legacy props
+            recipes={this.state.recipes}
+            selectedRecipeIndex={this.state.selectedRecipeIndex}
+            selectedIngredientIndex={this.state.selectedIngredientIndex}
+            fdcFoodsById={this.state.fdcFoodsById}
+
             selectRecipe={(index) => this.selectRecipe(index)}
             selectIngredient={(index) => this.selectIngredient(index)}
             updateAmount={(amount) =>

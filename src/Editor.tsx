@@ -17,10 +17,14 @@ import { makeFdcWebUrl, NormalizedFood } from "./core";
 import { Recipe } from "./document/Document";
 
 interface Props {
+  // New Props
+
+  // Legacy props
   recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: NormalizedFood };
+  
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
   updateAmount(amount: string): void;
