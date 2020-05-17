@@ -13,7 +13,6 @@
 // limitations under the License.
 import * as React from "react";
 import { Database, Update, UpdateType } from "../apps_script/Database";
-import { FoodInput } from "./FoodInput";
 import { makeFdcWebUrl, NormalizedFood } from "./core";
 import { Recipe, Ingredient } from "./document/Document";
 import { fetchFdcFoods } from "./document/fetchFdcFoods";
