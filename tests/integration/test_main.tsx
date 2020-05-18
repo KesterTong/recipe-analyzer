@@ -78,13 +78,25 @@ const IngredientsTableHeader: React.FunctionComponent<{
   </thead>
 );
 
+const FoodLink: React.FunctionComponent<{
+  description: string;
+  url: string | null;
+}> = (props) =>
+  props.url === null ? (
+    <React.Fragment>{props.description}</React.Fragment>
+  ) : (
+    <a href={props.url}>{props.description}</a>
+  );
+
 const IngredientsTableRow: React.FunctionComponent<{
   ingredient: Ingredient;
 }> = (props) => (
   <tr>
     <td>{props.ingredient.amount}</td>
     <td>{props.ingredient.unit}</td>
-    <td>{props.ingredient.ingredient.description}</td>
+    <td>
+      <FoodLink {...props.ingredient.ingredient} />
+    </td>
     {props.ingredient.nutrientValues.map((value) => (
       <td>{value}</td>
     ))}
