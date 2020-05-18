@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Recipe } from "./Recipe";
-import { Update, UpdateType } from "../core/Database";
+import { Update, UpdateType } from "./Update";
 
 export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
   const recipe = recipes[update.recipeIndex];

@@ -17,7 +17,7 @@
  */
 
 import { Recipe, Ingredient } from "../core/Recipe";
-import { Update, UpdateType } from "../core/Database";
+import { Update, UpdateType } from "../core/Update";
 
 function parseToc(
   toc: GoogleAppsScript.Document.TableOfContents
