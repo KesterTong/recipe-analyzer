@@ -73,7 +73,7 @@ const IngredientsTableHeader: React.FunctionComponent<{
     <th></th>
     <th></th>
     {props.nutrientNames.map((name) => (
-      <th>{name}</th>
+      <th className="nutrient-header">{name}</th>
     ))}
   </thead>
 );
