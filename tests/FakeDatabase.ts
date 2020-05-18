@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Database } from "../apps_script/Database";
-import { Recipe } from "../src/core/Recipe";
+import { Database, Update } from "../apps_script/Database";
+import { Recipe, updateRecipes } from "../src/core";
 
 const INITIAL_RECIPES: Recipe[] = [
   {
@@ -62,21 +62,31 @@ const INITIAL_RECIPES: Recipe[] = [
   },
 ];
 
-/**
- * An implementation of a Database that stores recipes in a Google Doc.
- */
-export const database: Database = {
-  parseDocument: () => {
-    return new Promise((resolve) =>
-      setTimeout(() => resolve(INITIAL_RECIPES), 1000)
-    );
-  },
-  updateDocument: async (update) => {
-    return new Promise((resolve) =>
-      setTimeout(() => {
-        console.log("Update for server document: " + JSON.stringify(update));
-        resolve();
-      }, 1000)
-    );
-  },
-};
+function wait(timeout: number): Promise<void> {
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(), timeout)
+  );
+}
+
+const UPDATE_LATENCY_MS = 1000;
+
+class FakeDatabase implements Database {
+  recipes: Recipe[];
+
+  constructor(recipes: Recipe[]) {
+    this.recipes = recipes;
+  }
+
+  parseDocument = async (): Promise<Recipe[]> => {
+    await wait(UPDATE_LATENCY_MS);
+    return this.recipes;
+  }
+
+  updateDocument = async (update: Update): Promise<void> => {
+    await wait(UPDATE_LATENCY_MS);
+    this.recipes = updateRecipes(this.recipes, update);
+    console.log(this.recipes);
+  }
+}
+
+export const database = new FakeDatabase(INITIAL_RECIPES);

@@ -18,8 +18,24 @@ import { database } from "./FakeDatabase";
 import { Main } from "../src/Main";
 
 ReactDOM.render(
-  <div style={{ width: "300px" }}>
-    <Main database={database} />
+  <div style={{display: 'flex'}}>
+    <div style={{flexGrow: 1}}>
+      { database.recipes.map(recipe => (
+        <React.Fragment>
+          <h1 id={recipe.url.substr(1)}>{recipe.title}</h1>
+          <table>
+            <thead>
+              <th>Amount</th>
+              <th>Unit</th>
+              <th>Description</th>
+            </thead>
+          </table>
+        </React.Fragment>
+      ))}
+    </div>
+    <div style={{ width: "300px", minWidth: "300px" }}>
+      <Main database={database} />
+    </div>
   </div>,
   document.getElementById("root")
 );
