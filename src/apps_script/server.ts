@@ -65,8 +65,9 @@ function parseTable(
   table: GoogleAppsScript.Document.Table
 ): Recipe {
   let tableNumRows = table.getNumRows();
-  if (tableNumRows < 2) {
-    throw new Error("Table had less than 2 rows");
+  // Require 3 rows as each recipe must have at least 1 ingredient.
+  if (tableNumRows < 3) {
+    throw new Error("Table had less than 3 rows");
   }
   let headerRow = table.getRow(0);
   let tableNumCols = headerRow.getNumCells();

@@ -58,6 +58,9 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
       };
       break;
     case UpdateType.DELETE_INGREDIENT:
+      // TODO: if there is only one ingredient, clear it instead of delete.
+      // Do that either here or in updateDocument.  This ensure the constraint
+      // the each recipe has at least one ingredient is satisfied.
       newRecipe = {
         ...recipe,
         ingredients: recipe.ingredients.filter(

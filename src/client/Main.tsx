@@ -65,7 +65,7 @@ export class Main extends React.Component<{}, RootState> {
         recipes,
         fdcFoodsById,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
-        selectedIngredientIndex: 0, // TODO: handle empty ingredient list.
+        selectedIngredientIndex: 0,
       });
     } catch (error) {
       this.setState({
@@ -126,7 +126,7 @@ export class Main extends React.Component<{}, RootState> {
     });
     this.setState({
       type: "Active",
-      selectedIngredientIndex: 0, // TODO: handle case of no ingredients.
+      selectedIngredientIndex: 0,
     });
   }
 
