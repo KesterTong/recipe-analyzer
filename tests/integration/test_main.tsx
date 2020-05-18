@@ -70,9 +70,12 @@ const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
     <h1 id={props.recipe.url.substr(1)}>{props.recipe.title}</h1>
     <table>
       <thead>
-        <th>Amount</th>
-        <th>Unit</th>
-        <th>Description</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        {props.recipe.nutrientNames.map((nutrientName) => (
+          <th>{nutrientName}</th>
+        ))}
       </thead>
       <tbody>
         {props.recipe.ingredients.map((ingredient) => (
@@ -80,6 +83,9 @@ const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
             <th>{ingredient.amount}</th>
             <th>{ingredient.unit}</th>
             <th>{ingredient.ingredient.description}</th>
+            {ingredient.nutrientValues.map((nutrientValue) => (
+              <th>{nutrientValue}</th>
+            ))}
           </tr>
         ))}
       </tbody>
