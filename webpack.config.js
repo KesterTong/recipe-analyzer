@@ -42,12 +42,12 @@ module.exports = {
   ],
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'ui'),
+    path: path.resolve(__dirname, 'dist'),
   },
   optimization: {
     minimize: false
   },
   devServer: {
-    contentBase: './ui',
+    contentBase: './dist',
   },
 };

@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Database } from "../core/Update";
+import { Recipe } from "../core/Recipe";
+import { Update } from "../core/Update";
 
-const wrapServerFunction = (functionName: string) => (...args: any[]) =>
+ const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   new Promise<any>((resolve, reject) => {
     (<any>window).google.script.run
       .withSuccessHandler(resolve)
@@ -23,9 +24,14 @@ const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   });
 
 /**
- * An implementation of a Database that stores recipes in a Google Doc.
+ * Functions to call the server (Google Apps Script code) to read/write
+ * data from the Google Doc.
  */
-export const database: Database = {
-  parseDocument: wrapServerFunction("parseDocument"),
-  updateDocument: wrapServerFunction("updateDocument"),
-};
+
+export function parseDocument(): Promise<Recipe[]> {
+  return wrapServerFunction("parseDocument")();
+}
+
+export function updateDocument(update: Update): Promise<void> {
+  return wrapServerFunction("updateDocument")(update);
+}

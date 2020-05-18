@@ -51,14 +51,3 @@ export type Update =
   | UpdateIngredient
   | DeleteIngredient
   | SwapIngredeints;
-
-/**
- * A database of recipes.
- *
- * The only non-testing implementation of this class stores recipes
- * in a Google Doc.  See /apps_script/sidebar.tsx.
- */
-export interface Database {
-  parseDocument(): Promise<Recipe[]>;
-  updateDocument(update: Update): Promise<void>;
-}

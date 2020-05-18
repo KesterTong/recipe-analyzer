@@ -80,5 +80,7 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
       };
       break;
   }
-  return recipes.map((recipe, index) => index == update.recipeIndex ? newRecipe : recipe);
+  return recipes.map((recipe, index) =>
+    index == update.recipeIndex ? newRecipe : recipe
+  );
 }

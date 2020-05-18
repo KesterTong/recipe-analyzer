@@ -12,11 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { Database, Update, UpdateType } from "../core/Update";
-import { makeFdcWebUrl, Recipe, NormalizedFood, updateRecipes, Ingredient } from "../core";
+import { Update, UpdateType } from "../core/Update";
+import {
+  makeFdcWebUrl,
+  Recipe,
+  NormalizedFood,
+  updateRecipes,
+  Ingredient,
+} from "../core";
 import { fetchFdcFoods } from "../core/fetchFdcFoods";
 import { Editor } from "./Editor";
 import { debounce } from "./debounce";
+import { updateDocument, parseDocument } from "./doc";
 
 export interface LoadingState {
   type: "Loading";
@@ -36,21 +43,21 @@ export interface ActiveState {
 }
 export type RootState = LoadingState | ErrorState | ActiveState;
 
-export class Main extends React.Component<{ database: Database }, RootState> {
+export class Main extends React.Component<{}, RootState> {
   private updateServerDocument: (update: Update) => Promise<void>;
 
-  constructor(props: Readonly<{ database: Database }>) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       type: "Loading",
     };
-    this.updateServerDocument = debounce(props.database.updateDocument);
+    this.updateServerDocument = debounce(updateDocument);
     this.initialize();
   }
 
   async initialize() {
     try {
-      const recipes = await this.props.database.parseDocument();
+      const recipes = await parseDocument();
       const fdcFoodsById = await fetchFdcFoods(recipes);
       this.setState({
         type: "Active",
@@ -118,7 +125,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     });
     this.setState({
       type: "Active",
-      selectedIngredientIndex: 0,  // TODO: handle case of no ingredients.
+      selectedIngredientIndex: 0, // TODO: handle case of no ingredients.
     });
   }
 
@@ -176,7 +183,8 @@ export class Main extends React.Component<{ database: Database }, RootState> {
       return;
     }
     const selectedRecipeIndex = this.state.selectedRecipeIndex;
-    const currentNumIngredients =  this.state.recipes[selectedRecipeIndex].ingredients.length;
+    const currentNumIngredients = this.state.recipes[selectedRecipeIndex]
+      .ingredients.length;
     this.updateDocument({
       type: UpdateType.ADD_INGREDIENT,
       recipeIndex: selectedRecipeIndex,
@@ -184,7 +192,7 @@ export class Main extends React.Component<{ database: Database }, RootState> {
     this.setState({
       type: "Active",
       selectedIngredientIndex: currentNumIngredients,
-    })
+    });
   }
 
   getSuggestions(query: string, state: ActiveState) {
