@@ -131,7 +131,11 @@ const Recipes: React.FunctionComponent<{ recipes: Recipe[] }> = (props) => (
 
 function render() {
   ReactDOM.render(
-    <Recipes recipes={recipes} />,
+    <div className="document-container">
+      <div className="document">
+        <Recipes recipes={recipes} />
+      </div>
+    </div>,
     document.getElementById("root")
   );
 }
