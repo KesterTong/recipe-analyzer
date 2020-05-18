@@ -15,7 +15,7 @@ import ReactDOM = require("react-dom");
 import React = require("react");
 
 import { Update } from "../../src/core/Update";
-import { Recipe, updateRecipes } from "../../src/core";
+import { Recipe, updateRecipes, Ingredient } from "../../src/core";
 import { doc } from "prettier";
 
 let recipes: Recipe[] = [
@@ -65,28 +65,40 @@ let recipes: Recipe[] = [
   },
 ];
 
+const IngredientsTableHeader: React.FunctionComponent<{
+  nutrientNames: string[];
+}> = (props) => (
+  <thead>
+    <th></th>
+    <th></th>
+    <th></th>
+    {props.nutrientNames.map((name) => (
+      <th>{name}</th>
+    ))}
+  </thead>
+);
+
+const IngredientsTableRow: React.FunctionComponent<{
+  ingredient: Ingredient;
+}> = (props) => (
+  <tr>
+    <td>{props.ingredient.amount}</td>
+    <td>{props.ingredient.unit}</td>
+    <td>{props.ingredient.ingredient.description}</td>
+    {props.ingredient.nutrientValues.map((value) => (
+      <td>{value}</td>
+    ))}
+  </tr>
+);
+
 const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
   <React.Fragment>
     <h1 id={props.recipe.url.substr(1)}>{props.recipe.title}</h1>
     <table>
-      <thead>
-        <th></th>
-        <th></th>
-        <th></th>
-        {props.recipe.nutrientNames.map((nutrientName) => (
-          <th>{nutrientName}</th>
-        ))}
-      </thead>
+      <IngredientsTableHeader nutrientNames={props.recipe.nutrientNames} />
       <tbody>
         {props.recipe.ingredients.map((ingredient) => (
-          <tr>
-            <th>{ingredient.amount}</th>
-            <th>{ingredient.unit}</th>
-            <th>{ingredient.ingredient.description}</th>
-            {ingredient.nutrientValues.map((nutrientValue) => (
-              <th>{nutrientValue}</th>
-            ))}
-          </tr>
+          <IngredientsTableRow ingredient={ingredient} />
         ))}
       </tbody>
     </table>
