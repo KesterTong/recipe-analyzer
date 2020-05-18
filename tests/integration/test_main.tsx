@@ -16,6 +16,7 @@ import React = require("react");
 
 import { Update } from "../../src/core/Update";
 import { Recipe, updateRecipes } from "../../src/core";
+import { doc } from "prettier";
 
 
 let recipes: Recipe[] = [
@@ -65,13 +66,46 @@ let recipes: Recipe[] = [
   },
 ];
 
+const Recipes: React.FunctionComponent<{recipes: Recipe[]}> = (props) => (
+  <React.Fragment>
+    {
+      props.recipes.map(recipe => (
+        <React.Fragment>
+          <h1 id={recipe.url.substr(1)}>{recipe.title}</h1>
+          <table>
+            <thead>
+              <th>Amount</th>
+              <th>Unit</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              {recipe.ingredients.map(ingredient => (
+                <tr>
+                  <th>{ingredient.amount}</th>
+                  <th>{ingredient.unit}</th>
+                  <th>{ingredient.ingredient.description}</th>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </React.Fragment>
+      ))
+    }
+  </React.Fragment>);
+
+function render() {
+  ReactDOM.render(<Recipes recipes={recipes}/>, document.getElementById("root"));
+}
+
+render();
+
 async function parseDocument(): Promise<Recipe[]> {
   return recipes;
 }
 
 async function updateDocument(update: Update): Promise<void> {
   recipes = updateRecipes(recipes, update);
-  console.log(JSON.stringify(recipes, undefined, 2));
+  render()
 }
 
 class GoogleScriptRun {
