@@ -16,4 +16,4 @@ import ReactDOM = require("react-dom");
 import React = require("react");
 import { Main } from "./Main";
 
-ReactDOM.render(<Main/>, document.getElementById("root"));
+ReactDOM.render(<Main />, document.getElementById("root"));

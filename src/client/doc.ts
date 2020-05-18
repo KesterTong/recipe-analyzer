@@ -14,7 +14,7 @@
 
 import { Recipe, Update } from "../core";
 
- const wrapServerFunction = (functionName: string) => (...args: any[]) =>
+const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   new Promise<any>((resolve, reject) => {
     (<any>window).google.script.run
       .withSuccessHandler(resolve)

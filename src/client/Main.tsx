@@ -13,7 +13,8 @@
 // limitations under the License.
 import * as React from "react";
 import {
-  Update, UpdateType,
+  Update,
+  UpdateType,
   makeFdcWebUrl,
   Recipe,
   NormalizedFood,

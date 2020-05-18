@@ -18,7 +18,6 @@ import { Update } from "../../src/core/Update";
 import { Recipe, updateRecipes } from "../../src/core";
 import { doc } from "prettier";
 
-
 let recipes: Recipe[] = [
   {
     totalNutrientValues: ["1000", "200"],
@@ -66,35 +65,41 @@ let recipes: Recipe[] = [
   },
 ];
 
-const Recipes: React.FunctionComponent<{recipes: Recipe[]}> = (props) => (
+const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
   <React.Fragment>
-    {
-      props.recipes.map(recipe => (
-        <React.Fragment>
-          <h1 id={recipe.url.substr(1)}>{recipe.title}</h1>
-          <table>
-            <thead>
-              <th>Amount</th>
-              <th>Unit</th>
-              <th>Description</th>
-            </thead>
-            <tbody>
-              {recipe.ingredients.map(ingredient => (
-                <tr>
-                  <th>{ingredient.amount}</th>
-                  <th>{ingredient.unit}</th>
-                  <th>{ingredient.ingredient.description}</th>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </React.Fragment>
-      ))
-    }
-  </React.Fragment>);
+    <h1 id={props.recipe.url.substr(1)}>{props.recipe.title}</h1>
+    <table>
+      <thead>
+        <th>Amount</th>
+        <th>Unit</th>
+        <th>Description</th>
+      </thead>
+      <tbody>
+        {props.recipe.ingredients.map((ingredient) => (
+          <tr>
+            <th>{ingredient.amount}</th>
+            <th>{ingredient.unit}</th>
+            <th>{ingredient.ingredient.description}</th>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </React.Fragment>
+);
+
+const Recipes: React.FunctionComponent<{ recipes: Recipe[] }> = (props) => (
+  <React.Fragment>
+    {props.recipes.map((recipe) => (
+      <RecipeView recipe={recipe} />
+    ))}
+  </React.Fragment>
+);
 
 function render() {
-  ReactDOM.render(<Recipes recipes={recipes}/>, document.getElementById("root"));
+  ReactDOM.render(
+    <Recipes recipes={recipes} />,
+    document.getElementById("root")
+  );
 }
 
 render();
@@ -105,7 +110,7 @@ async function parseDocument(): Promise<Recipe[]> {
 
 async function updateDocument(update: Update): Promise<void> {
   recipes = updateRecipes(recipes, update);
-  render()
+  render();
 }
 
 class GoogleScriptRun {
@@ -126,7 +131,10 @@ class GoogleScriptRun {
   }
 
   private wrapFn(fn: (...args: any) => Promise<any>): (...args: any) => void {
-    return (...args) => fn(...args).then(this.successHandler).catch(this.failureHandler);
+    return (...args) =>
+      fn(...args)
+        .then(this.successHandler)
+        .catch(this.failureHandler);
   }
 
   parseDocument = this.wrapFn(parseDocument);
