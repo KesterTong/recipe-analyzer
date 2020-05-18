@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Recipe } from "../core/Recipe";
-import { Update } from "../core/Update";
+import { Recipe, Update } from "../core";
 
  const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   new Promise<any>((resolve, reject) => {

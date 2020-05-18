@@ -13,7 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
-import { Ingredient } from "../core/Recipe";
+import { Ingredient } from "../core";
 import { ListSelect } from "./ListSelect";
 
 interface Props {

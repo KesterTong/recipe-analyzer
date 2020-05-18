@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Update, UpdateType } from "../core/Update";
+import { Update, UpdateType } from "../core";
 
 type UpdateFn = (update: Update) => Promise<void>;
 

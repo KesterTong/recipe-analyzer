@@ -16,8 +16,7 @@
  * client.  From the point of view of the client this is server-side code.
  */
 
-import { Recipe, Ingredient } from "../core/Recipe";
-import { Update, UpdateType } from "../core/Update";
+import { Recipe, Ingredient, Update, UpdateType } from "../core";
 
 function parseToc(
   toc: GoogleAppsScript.Document.TableOfContents
