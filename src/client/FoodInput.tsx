@@ -13,7 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
-import { searchFdcFoodsUrl, FDCQueryResult, makeFdcWebUrl } from "./core";
+import { searchFdcFoodsUrl, FDCQueryResult, makeFdcWebUrl } from "../core";
 
 interface Props {
   id: string;

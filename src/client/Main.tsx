@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { Database, Update, UpdateType } from "../apps_script/Database";
-import { makeFdcWebUrl, Recipe, NormalizedFood, updateRecipes, Ingredient } from "./core";
-import { fetchFdcFoods } from "./core/fetchFdcFoods";
+import { Database, Update, UpdateType } from "../../apps_script/Database";
+import { makeFdcWebUrl, Recipe, NormalizedFood, updateRecipes, Ingredient } from "../core";
+import { fetchFdcFoods } from "../core/fetchFdcFoods";
 import { Editor } from "./Editor";
 import { debounce } from "./debounce";
 
