@@ -2,7 +2,9 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
-const SHARED_CONFIG = {
+module.exports = {
+  mode: 'development',
+  entry: './apps_script/sidebar.tsx',
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".js", ".ts", ".tsx"]
@@ -38,34 +40,14 @@ const SHARED_CONFIG = {
     }),
     new HtmlWebpackInlineSourcePlugin(),
   ],
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'ui'),
+  },
+  optimization: {
+    minimize: false
+  },
+  devServer: {
+    contentBase: './ui',
+  },
 };
-
-// NOTE: webpack-dev-server seems to only use the
-// devServer field of the first exported module in the
-// list, so we put this first.
-module.exports = [
-  {
-    ...SHARED_CONFIG,
-    mode: 'development',
-    entry: './tests/fake_sidebar.tsx',
-    output: {
-      filename: 'bundle.js',
-      path: path.resolve(__dirname, 'test_ui'),
-    },
-    optimization: {
-      minimize: false
-    },
-    devServer: {
-      contentBase: './test_ui',
-    },
-  },
-  {
-    ...SHARED_CONFIG,
-    mode: 'production',
-    entry: './apps_script/sidebar.tsx',
-    output: {
-      filename: 'bundle.js',
-      path: path.resolve(__dirname, 'ui'),
-    },
-  },
-];

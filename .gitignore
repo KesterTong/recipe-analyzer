@@ -4,7 +4,8 @@ package-lock.json
 
 # generated html and JS
 /test_ui
-/ui
+/ui/bundle.js
+/ui/sidebar.html
 
 # deployment configs
 .clasp.json
