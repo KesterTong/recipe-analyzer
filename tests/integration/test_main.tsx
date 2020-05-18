@@ -91,6 +91,19 @@ const IngredientsTableRow: React.FunctionComponent<{
   </tr>
 );
 
+const IngredientsTableTotalRow: React.FunctionComponent<{
+  totalNutrientValues: string[];
+}> = (props) => (
+  <tr>
+    <td></td>
+    <td></td>
+    <td>Total</td>
+    {props.totalNutrientValues.map((value) => (
+      <td>{value}</td>
+    ))}
+  </tr>
+);
+
 const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
   <React.Fragment>
     <h1 id={props.recipe.url.substr(1)}>{props.recipe.title}</h1>
@@ -100,6 +113,9 @@ const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
         {props.recipe.ingredients.map((ingredient) => (
           <IngredientsTableRow ingredient={ingredient} />
         ))}
+        <IngredientsTableTotalRow
+          totalValues={props.recipe.totalNutrientValues}
+        />
       </tbody>
     </table>
   </React.Fragment>
