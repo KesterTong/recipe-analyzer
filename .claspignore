@@ -1,12 +1,8 @@
 docs/**
 env/**
 node_modules/**
-apps_script/DocsDatabase.ts
-apps_script/sidebar.tsx
-apps_script/sidebar.html
-src/**
+src/client/**
 tests/**
-test_ui/**
-ui/bundle*
-ui/test_harness.html
+dist/bundle.js
+dist/test_harness.html
 webpack.config.js

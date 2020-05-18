@@ -11,20 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-/**
- * NOTE: This code is only intended to be called from Apps Script, not in the
- * client.  From the point of view of the client this is server-side code.
- */
-export function showSidebar() {
-  let htmlOutput = HtmlService.createHtmlOutputFromFile(
-    "ui/sidebar.html"
-  ).setTitle("Edit Recipes");
-  DocumentApp.getUi().showSidebar(htmlOutput);
-}
 
-export function onOpen() {
-  DocumentApp.getUi()
-    .createAddonMenu()
-    .addItem("Show", "showSidebar")
-    .addToUi();
-}
+import { Database } from "../core/Database";
+
+const wrapServerFunction = (functionName: string) => (...args: any[]) =>
+  new Promise<any>((resolve, reject) => {
+    (<any>window).google.script.run
+      .withSuccessHandler(resolve)
+      .withFailureHandler(reject)
+      [functionName].apply(null, args);
+  });
+
+/**
+ * An implementation of a Database that stores recipes in a Google Doc.
+ */
+export const database: Database = {
+  parseDocument: wrapServerFunction("parseDocument"),
+  updateDocument: wrapServerFunction("updateDocument"),
+};

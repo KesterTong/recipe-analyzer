@@ -4,7 +4,7 @@ const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin
 
 module.exports = {
   mode: 'development',
-  entry: './apps_script/sidebar.tsx',
+  entry: './src/client/sidebar.tsx',
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".js", ".ts", ".tsx"]
@@ -34,7 +34,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'apps_script/sidebar.html',
+      template: 'src/client/sidebar.html',
       filename: 'sidebar.html',
       inlineSource: '.(js|css)$', // embed all javascript and css inline
     }),

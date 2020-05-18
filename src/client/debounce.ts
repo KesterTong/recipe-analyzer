@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Update, UpdateIngredient, UpdateType } from "../../apps_script/Database";
-import { AssertionError } from "assert";
+import { Update, UpdateType } from "../core/Database";
 
 type UpdateFn = (update: Update) => Promise<void>;
 
