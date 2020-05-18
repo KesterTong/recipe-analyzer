@@ -114,7 +114,7 @@ const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
           <IngredientsTableRow ingredient={ingredient} />
         ))}
         <IngredientsTableTotalRow
-          totalValues={props.recipe.totalNutrientValues}
+          totalNutrientValues={props.recipe.totalNutrientValues}
         />
       </tbody>
     </table>
