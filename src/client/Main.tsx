@@ -19,8 +19,8 @@ import {
   NormalizedFood,
   updateRecipes,
   Ingredient,
+  fetchFdcFoods,
 } from "../core";
-import { fetchFdcFoods } from "../core/fetchFdcFoods";
 import { Editor } from "./Editor";
 import { debounce } from "./debounce";
 import { updateDocument, parseDocument } from "./doc";
