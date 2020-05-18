@@ -1,6 +1,6 @@
 import { Update } from "../../src/core/Update";
 
-const INITIAL_RECIPES = [
+let recipes = [
   {
     totalNutrientValues: ["1000", "200"],
     ingredients: [
@@ -49,25 +49,23 @@ const INITIAL_RECIPES = [
 
 let successHandler: any = undefined;
 let failureHandler: any = undefined;
-const google = {
-  script: {
-    run: {
-      withSuccessHandler: (fn: any) => {
-        successHandler = fn;
-        return google.script.run;
-      },
-      withFailureHandler: (fn: any) => {
-        failureHandler = fn;
-        return google.script.run;
-      },
-      parseDocument: () => {
-        successHandler(INITIAL_RECIPES);
-      },
-      updateDocument: (update: Update) => {
-        console.log("UPDATE: " + JSON.stringify(update, undefined, 2));
-      }
-    }
-  }
+const google: any = {};
+google.script = {};
+google.script.run = {};
+google.script.run.withSuccessHandler = (fn: any) => {
+  successHandler = fn;
+  return google.script.run;
+};
+google.script.run.withFailureHandler = (fn: any) => {
+  failureHandler = fn;
+  return google.script.run;
+};
+google.script.run.parseDocument = () => {
+  successHandler(recipes);
+};
+google.script.run.updateDocument = (update: Update) => {
+  successHandler();
+  console.log("UPDATE: " + JSON.stringify(update, undefined, 2));
 };
 
 (frames[0].window as any).google = google;
