@@ -2,9 +2,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
-module.exports = {
+const commonConfig = {
   mode: 'development',
-  entry: './src/client/sidebar.tsx',
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
     extensions: [".js", ".ts", ".tsx"]
@@ -32,22 +31,45 @@ module.exports = {
     "react": "React",
     "react-dom": "ReactDOM",
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: 'src/client/sidebar.html',
-      filename: 'sidebar.html',
-      inlineSource: '.(js|css)$', // embed all javascript and css inline
-    }),
-    new HtmlWebpackInlineSourcePlugin(),
-  ],
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
   optimization: {
     minimize: false
   },
-  devServer: {
-    contentBase: './dist',
+}
+
+module.exports = [
+  {
+    ...commonConfig,
+    entry: './src/client/sidebar.tsx',
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'src/client/sidebar.html',
+        filename: 'sidebar.html',
+        inlineSource: '.(js|css)$', // embed all javascript and css inline
+      }),
+      new HtmlWebpackInlineSourcePlugin(),
+    ],
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+    },
+    devServer: {
+      contentBase: './dist',
+    },
   },
-};
+  {
+    ...commonConfig,
+    entry: './tests/integration/test_main.tsx',
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'tests/integration/test_harness.html',
+        filename: 'test_harness.html',
+        inlineSource: '.(js|css)$', // embed all javascript and css inline
+      }),
+      new HtmlWebpackInlineSourcePlugin(),
+    ],
+    output: {
+      filename: 'test_harness_bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+    },
+  }
+];
