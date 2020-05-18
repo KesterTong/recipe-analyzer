@@ -8,4 +8,5 @@ src/**
 tests/**
 test_ui/**
 ui/bundle*
+ui/test_harness.html
 webpack.config.js
