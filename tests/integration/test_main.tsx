@@ -1,6 +1,24 @@
-import { Update } from "../../src/core/Update";
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+import ReactDOM = require("react-dom");
+import React = require("react");
 
-let recipes = [
+import { Update } from "../../src/core/Update";
+import { Recipe, updateRecipes } from "../../src/core";
+
+
+let recipes: Recipe[] = [
   {
     totalNutrientValues: ["1000", "200"],
     ingredients: [
@@ -47,25 +65,42 @@ let recipes = [
   },
 ];
 
-let successHandler: any = undefined;
-let failureHandler: any = undefined;
+async function parseDocument(): Promise<Recipe[]> {
+  return recipes;
+}
+
+async function updateDocument(update: Update): Promise<void> {
+  recipes = updateRecipes(recipes, update);
+  console.log(JSON.stringify(recipes, undefined, 2));
+}
+
+class GoogleScriptRun {
+  private successHandler: any;
+  private failureHandler: any;
+
+  constructor(succesHandler?: any, failureHandler?: any) {
+    this.successHandler = succesHandler;
+    this.failureHandler = failureHandler;
+  }
+
+  withSuccessHandler(succesHandler: any) {
+    return new GoogleScriptRun(succesHandler, this.failureHandler);
+  }
+
+  withFailureHandler(failureHandler: any) {
+    return new GoogleScriptRun(this.successHandler, failureHandler);
+  }
+
+  private wrapFn(fn: (...args: any) => Promise<any>): (...args: any) => void {
+    return (...args) => fn(...args).then(this.successHandler).catch(this.failureHandler);
+  }
+
+  parseDocument = this.wrapFn(parseDocument);
+  updateDocument = this.wrapFn(updateDocument);
+}
+
 const google: any = {};
 google.script = {};
-google.script.run = {};
-google.script.run.withSuccessHandler = (fn: any) => {
-  successHandler = fn;
-  return google.script.run;
-};
-google.script.run.withFailureHandler = (fn: any) => {
-  failureHandler = fn;
-  return google.script.run;
-};
-google.script.run.parseDocument = () => {
-  successHandler(recipes);
-};
-google.script.run.updateDocument = (update: Update) => {
-  successHandler();
-  console.log("UPDATE: " + JSON.stringify(update, undefined, 2));
-};
+google.script.run = new GoogleScriptRun();
 
 (frames[0].window as any).google = google;
