@@ -45,10 +45,10 @@ export class FoodInput extends React.Component<
     const response = await fetch(searchFdcFoodsUrl(props.value, FDC_API_KEY));
     const result: FDCQueryResult = await response.json();
     this.setState({
-      suggestions: result.foods.map((entry) => ({
+      suggestions: this.props.suggestions.concat(result.foods.map((entry) => ({
         description: entry.description,
         url: makeFdcWebUrl(entry.fdcId),
-      })),
+      }))),
     });
   };
 
