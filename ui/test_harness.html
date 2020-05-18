@@ -1,74 +1,94 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <iframe src="sidebar.html" style="width: 300px;"></iframe>
-<script>
-  const INITIAL_RECIPES = [
-    {
-      totalNutrientValues: ["1000", "200"],
-      ingredients: [
+    <style>
+      iframe {
+        border: 1px;
+        border-style: solid;
+        display: block;
+        height: 100%;
+        min-height: 500px;
+        margin: 0;
+        padding: 0;
+        width: 300px;
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div style="display: flex;">
+      <div style="flex-grow: 1;"></div>
+      <iframe src="sidebar.html"></iframe>
+    </div>
+    <script>
+      const INITIAL_RECIPES = [
         {
-          unit: "cup",
-          amount: "1",
-          ingredient: {
-            description: "flour",
-            url:
-              "https://fdc.nal.usda.gov/fdc-app.html#/food-details/169761/nutrients",
-          },
-          nutrientValues: ["100", "20"],
+          totalNutrientValues: ["1000", "200"],
+          ingredients: [
+            {
+              unit: "cup",
+              amount: "1",
+              ingredient: {
+                description: "flour",
+                url:
+                  "https://fdc.nal.usda.gov/fdc-app.html#/food-details/169761/nutrients",
+              },
+              nutrientValues: ["100", "20"],
+            },
+            {
+              unit: "g",
+              amount: "100",
+              ingredient: { description: "water", url: null },
+              nutrientValues: ["b", "c"],
+            },
+          ],
+          nutrientNames: ["Protein", "Calories"],
+          title: "Recipe 1",
+          url: "#heading=h.y3h0qes0821d",
         },
         {
-          unit: "g",
-          amount: "100",
-          ingredient: { description: "water", url: null },
-          nutrientValues: ["b", "c"],
+          totalNutrientValues: ["1000", "200"],
+          ingredients: [
+            {
+              unit: "cup",
+              amount: "1",
+              ingredient: { description: "flour", url: "#test" },
+              nutrientValues: ["100", "20"],
+            },
+            {
+              unit: "",
+              amount: "2",
+              ingredient: { description: "test2", url: "#bc" },
+              nutrientValues: ["b", "c"],
+            },
+          ],
+          nutrientNames: ["Protein", "Calories"],
+          title: "Recipe 2",
+          url: "#heading=h.abcd1234",
         },
-      ],
-      nutrientNames: ["Protein", "Calories"],
-      title: "Recipe 1",
-      url: "#heading=h.y3h0qes0821d",
-    },
-    {
-      totalNutrientValues: ["1000", "200"],
-      ingredients: [
-        {
-          unit: "cup",
-          amount: "1",
-          ingredient: { description: "flour", url: "#test" },
-          nutrientValues: ["100", "20"],
-        },
-        {
-          unit: "",
-          amount: "2",
-          ingredient: { description: "test2", url: "#bc" },
-          nutrientValues: ["b", "c"],
-        },
-      ],
-      nutrientNames: ["Protein", "Calories"],
-      title: "Recipe 2",
-      url: "#heading=h.abcd1234",
-    },
-  ];
+      ];
 
-  let successHandler = undefined;
-  let failureHandler = undefined;
-  const google = {}
-  google.script = {};
-  google.script.run = {};
-  google.script.run.withSuccessHandler = (fn) => {
-    successHandler = fn;
-    return google.script.run;
-  }
-  google.script.run.withFailureHandler = (fn) => {
-    failureHandler = fn;
-    return google.script.run;
-  }
-  google.script.run.parseDocument = () => {
-    successHandler(INITIAL_RECIPES);
-  }
-  google.script.run.updateDocument = (update) => {
-    console.log("UPDATE: " + JSON.stringify(update, undefined, 2));
-  }
-  
-  frames[0].window.google = google;
-</script>
+      let successHandler = undefined;
+      let failureHandler = undefined;
+      const google = {}
+      google.script = {};
+      google.script.run = {};
+      google.script.run.withSuccessHandler = (fn) => {
+        successHandler = fn;
+        return google.script.run;
+      }
+      google.script.run.withFailureHandler = (fn) => {
+        failureHandler = fn;
+        return google.script.run;
+      }
+      google.script.run.parseDocument = () => {
+        successHandler(INITIAL_RECIPES);
+      }
+      google.script.run.updateDocument = (update) => {
+        console.log("UPDATE: " + JSON.stringify(update, undefined, 2));
+      }
+      
+      frames[0].window.google = google;
+    </script>
+  </body>
+</html>
