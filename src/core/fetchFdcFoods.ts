@@ -24,7 +24,8 @@ const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
  * @returns The FDC Foods by id
  */
 export async function fetchFdcFoods(
-  recipes: Recipe[]
+  recipes: Recipe[],
+  currentFoods?: { [index: number]: NormalizedFood }
 ): Promise<{ [index: number]: NormalizedFood }> {
   const fdcIds: number[] = [];
   recipes.forEach((recipe) => {
@@ -33,6 +34,10 @@ export async function fetchFdcFoods(
       const url = ingredient.ingredient.url;
       const fdcId = url == null ? null : parseFdcWebUrl(url);
       if (fdcId == null) {
+        return;
+      }
+      // Skip foods that have already been loaded.
+      if (currentFoods && currentFoods[fdcId]) {
         return;
       }
       fdcIds.push(fdcId);
