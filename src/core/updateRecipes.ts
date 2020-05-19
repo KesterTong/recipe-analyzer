@@ -12,26 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Recipe } from "./Recipe";
+import { Recipe, Ingredient } from "./Recipe";
 import { Update, UpdateType } from "./Update";
+
+const BLANK_INGREDIENT: Ingredient = {
+  amount: "",
+  unit: "",
+  ingredient: {
+    description: "",
+    url: null,
+  },
+  nutrientValues: [], // TODO: this is not correct.
+};
 
 export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
   const recipe = recipes[update.recipeIndex];
   let newRecipe: Recipe;
   switch (update.type) {
     case UpdateType.ADD_INGREDIENT:
-      const newIngredient = {
-        amount: "",
-        unit: "",
-        ingredient: {
-          description: "",
-          url: null,
-        },
-        nutrientValues: [], // TODO: this is not correct.
-      };
       newRecipe = {
         ...recipe,
-        ingredients: recipe.ingredients.concat([newIngredient]),
+        ingredients: recipe.ingredients.concat([BLANK_INGREDIENT]),
       };
       break;
     case UpdateType.UPDATE_INGREDIENT:
@@ -58,14 +59,17 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
       };
       break;
     case UpdateType.DELETE_INGREDIENT:
-      // TODO: if there is only one ingredient, clear it instead of delete.
-      // Do that either here or in updateDocument.  This ensure the constraint
-      // the each recipe has at least one ingredient is satisfied.
+      // If there is only one ingredient, clear it instead of delete.
+      // This ensure the constraint the each recipe has at least one
+      // ingredient is satisfied.
       newRecipe = {
         ...recipe,
-        ingredients: recipe.ingredients.filter(
-          (_, index) => index != update.ingredientIndex
-        ),
+        ingredients:
+          recipe.ingredients.length == 1
+            ? [BLANK_INGREDIENT]
+            : recipe.ingredients.filter(
+                (_, index) => index != update.ingredientIndex
+              ),
       };
       break;
     case UpdateType.SWAP_INGREDIENTS:
