@@ -12,7 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Recipe } from "./Recipe";
-import { Status, StatusCode, getFdcFoodUrl, normalizeFDCFood } from ".";
+import {
+  status,
+  StatusCode,
+  getFdcFoodUrl,
+  normalizeFDCFood,
+  StatusOr,
+} from ".";
 import { NormalizedFood, parseFdcWebUrl, FDCFood } from ".";
 
 const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
@@ -25,8 +31,8 @@ const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
  */
 export async function fetchFdcFoods(
   recipes: Recipe[],
-  currentFoods?: { [index: number]: NormalizedFood }
-): Promise<{ [index: number]: NormalizedFood }> {
+  currentFoods?: { [index: number]: StatusOr<NormalizedFood> }
+): Promise<{ [index: number]: StatusOr<NormalizedFood> }> {
   const fdcIds: number[] = [];
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach(async (ingredient) => {
@@ -46,12 +52,21 @@ export async function fetchFdcFoods(
   const responses = await Promise.all(
     fdcIds.map(async (fdcId) => {
       const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
-      const food: FDCFood = await response.json();
-      const normalizedFood = normalizeFDCFood(food);
+      const json = await response.json();
+      if (json.error) {
+        return {
+          fdcId,
+          normalizedFood: status(
+            StatusCode.FDC_API_ERROR,
+            "Error fetching FDC food: " + fdcId
+          ),
+        };
+      }
+      const normalizedFood = normalizeFDCFood(json);
       return { fdcId, normalizedFood };
     })
   );
-  let result: { [index: number]: NormalizedFood } = {};
+  let result: { [index: number]: StatusOr<NormalizedFood> } = {};
   responses.forEach((response) => {
     result[response.fdcId] = response.normalizedFood;
   });

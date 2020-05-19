@@ -21,10 +21,15 @@ import {
   updateRecipes,
   Ingredient,
   fetchFdcFoods,
+  StatusOr,
+  isOk,
+  isError,
+  parseFdcWebUrl,
 } from "../core";
 import { Editor } from "./Editor";
 import { debounce } from "./debounce";
 import { updateDocument, parseDocument } from "./doc";
+import { filterNulls } from "../core/filterNulls";
 
 export interface LoadingState {
   type: "Loading";
@@ -40,7 +45,7 @@ export interface ActiveState {
   recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
-  fdcFoodsById: { [index: number]: NormalizedFood };
+  fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
 }
 export type RootState = LoadingState | ErrorState | ActiveState;
 
@@ -218,10 +223,16 @@ export class Main extends React.Component<{}, RootState> {
         url: recipe.url,
       }))
       .concat(
-        Object.entries(state.fdcFoodsById).map((entry) => ({
-          url: makeFdcWebUrl(Number(entry[0])),
-          description: entry[1].description,
-        }))
+        filterNulls(
+          Object.entries(state.fdcFoodsById).map((entry) =>
+            isOk(entry[1])
+              ? {
+                  url: makeFdcWebUrl(Number(entry[0])),
+                  description: entry[1].description,
+                }
+              : null
+          )
+        )
       );
   }
 
@@ -237,6 +248,20 @@ export class Main extends React.Component<{}, RootState> {
 
   getEditorProps(state: ActiveState) {
     const selectedRecipe = state.recipes[state.selectedRecipeIndex];
+    const selectedIngredient = selectedRecipe.ingredients[state.selectedIngredientIndex];
+    let selectedIngredientError: string | null = null;
+    if (selectedIngredient.ingredient.url) {
+      const fdcId = parseFdcWebUrl(selectedIngredient.ingredient.url);
+      if (fdcId !== null) {
+        const statusOrFood = state.fdcFoodsById[fdcId];
+        if (statusOrFood === undefined) {
+          selectedIngredientError = "Loading...";
+        } else if (isError(statusOrFood)) {
+          console.log(statusOrFood)
+          selectedIngredientError = statusOrFood.message;
+        }
+      }
+    }
     return {
       recipeTitles: state.recipes.map((recipe) => recipe.title),
       selectedRecipeIndex: state.selectedRecipeIndex,
@@ -245,8 +270,8 @@ export class Main extends React.Component<{}, RootState> {
         this.ingredientDisplayString
       ),
       selectedIngredientIndex: state.selectedIngredientIndex,
-      selectedIngredient:
-        selectedRecipe.ingredients[state.selectedIngredientIndex],
+      selectedIngredient,
+      selectedIngredientError,
     };
   }
 

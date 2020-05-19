@@ -22,6 +22,7 @@ interface Props {
   ingredientDisplayStrings: string[];
   selectedIngredientIndex: number;
   selectedIngredient: Ingredient;
+  selectedIngredientError: string | null;
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
 
@@ -114,6 +115,7 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
         suggestions={props.suggestions}
         onChange={props.updateFood}
       />
+      <div className="error">{props.selectedIngredientError}</div>
     </div>
   </React.Fragment>
 );
