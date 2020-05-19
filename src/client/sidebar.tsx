@@ -19,8 +19,11 @@ import { Provider } from "react-redux";
 import { store } from "./store";
 import { initialize } from "./actions";
 
-ReactDOM.render(<Provider store={store}>
-  <MainContainer />
-</Provider>, document.getElementById("root"));
+ReactDOM.render(
+  <Provider store={store}>
+    <MainContainer />
+  </Provider>,
+  document.getElementById("root")
+);
 
 store.dispatch(initialize());

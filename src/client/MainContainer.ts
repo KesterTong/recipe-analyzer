@@ -17,10 +17,15 @@ import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "./store";
 import { Main } from "./Main";
 import { updateDocument, selectIngredient, selectRecipe } from "./actions";
-import { parseFdcWebUrl, isError, Ingredient, isOk, makeFdcWebUrl } from "../core";
+import {
+  parseFdcWebUrl,
+  isError,
+  Ingredient,
+  isOk,
+  makeFdcWebUrl,
+} from "../core";
 import { connect } from "react-redux";
 import { filterNulls } from "../core/filterNulls";
-
 
 function getSuggestions(query: string, state: ActiveState) {
   return state.recipes
@@ -42,7 +47,6 @@ function getSuggestions(query: string, state: ActiveState) {
     );
 }
 
-
 function ingredientDisplayString(ingredient: Ingredient) {
   return (
     ingredient.amount +
@@ -54,7 +58,7 @@ function ingredientDisplayString(ingredient: Ingredient) {
 }
 
 function mapStateToProps(state: RootState) {
-  console.log(state)
+  console.log(state);
   if (state.type == "Loading") {
     return {};
   } else if (state.type == "Error") {
@@ -62,7 +66,8 @@ function mapStateToProps(state: RootState) {
   }
 
   const selectedRecipe = state.recipes[state.selectedRecipeIndex];
-  const selectedIngredient = selectedRecipe.ingredients[state.selectedIngredientIndex];
+  const selectedIngredient =
+    selectedRecipe.ingredients[state.selectedIngredientIndex];
   let selectedIngredientError: string | null = null;
   if (selectedIngredient.ingredient.url) {
     const fdcId = parseFdcWebUrl(selectedIngredient.ingredient.url);
@@ -71,7 +76,7 @@ function mapStateToProps(state: RootState) {
       if (statusOrFood === undefined) {
         selectedIngredientError = "Loading...";
       } else if (isError(statusOrFood)) {
-        console.log(statusOrFood)
+        console.log(statusOrFood);
         selectedIngredientError = statusOrFood.message;
       }
     }
@@ -87,19 +92,19 @@ function mapStateToProps(state: RootState) {
       selectedIngredientIndex: state.selectedIngredientIndex,
       selectedIngredient,
       selectedIngredientError,
-    }
+    },
   };
 }
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators({
-    updateDocument,
-    selectRecipe,
-    selectIngredient,
-  }, dispatch);
+  return bindActionCreators(
+    {
+      updateDocument,
+      selectRecipe,
+      selectIngredient,
+    },
+    dispatch
+  );
 }
 
-export const MainContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Main);
+export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);

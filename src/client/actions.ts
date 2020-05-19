@@ -16,12 +16,7 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
 import { parseDocument, updateDocument as updateServerDocument } from "./doc";
-import {
-  fetchFdcFoods,
-  Update,
-  UpdateType,
-  Recipe,
-} from "../core";
+import { fetchFdcFoods, Update, UpdateType, Recipe } from "../core";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -89,9 +84,9 @@ export function updateDocument(update: Update): ThunkResult<void> {
 }
 
 export function selectRecipe(index: number): RootAction {
-  return {type: ActionType.SELECT_RECIPE, index};
+  return { type: ActionType.SELECT_RECIPE, index };
 }
 
 export function selectIngredient(index: number): RootAction {
-  return {type: ActionType.SELECT_INGREDIENT, index};
+  return { type: ActionType.SELECT_INGREDIENT, index };
 }
