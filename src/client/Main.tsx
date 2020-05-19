@@ -98,18 +98,20 @@ export class Main extends React.Component<{}, RootState> {
       recipes: newRecipes,
     });
     // Load any ingredients that need loading
-    fetchFdcFoods(newRecipes, this.state.fdcFoodsById).then(newFdcFoodsById => {
-      if (this.state.type != "Active") {
-        return;
-      }
-      this.setState({
-        type: "Active",
-        fdcFoodsById: {
-          ...this.state.fdcFoodsById,
-          ...newFdcFoodsById
+    fetchFdcFoods(newRecipes, this.state.fdcFoodsById).then(
+      (newFdcFoodsById) => {
+        if (this.state.type != "Active") {
+          return;
         }
-      });
-    })
+        this.setState({
+          type: "Active",
+          fdcFoodsById: {
+            ...this.state.fdcFoodsById,
+            ...newFdcFoodsById,
+          },
+        });
+      }
+    );
   }
 
   updateSelectedIngredient(update: {
