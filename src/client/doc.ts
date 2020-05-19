@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Recipe, Update } from "../core";
+import { Recipe, Update, UpdateType } from "../core";
 
 const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   new Promise<any>((resolve, reject) => {
@@ -31,6 +31,80 @@ export function parseDocument(): Promise<Recipe[]> {
   return wrapServerFunction("parseDocument")();
 }
 
-export function updateDocument(update: Update): Promise<void> {
+export function rawUpdateDocument(update: Update): Promise<void> {
   return wrapServerFunction("updateDocument")(update);
+}
+
+class PendingUpdate {
+  pendingUpdate: Update | null;
+  timeoutHandle: number | null;
+  timeoutCallback: () => void;
+  complete: Promise<void>;
+
+  constructor(update: Update, previousUpdate: PendingUpdate | null) {
+    this.pendingUpdate = update === undefined ? null : update;
+    // For typechecking
+    this.timeoutHandle = null;
+    this.timeoutCallback = () => {};
+    // Set initial debounce timeout
+    const debounced = new Promise<void>((resolve) => {
+      this.timeoutCallback = resolve;
+      this.resetDebounceTimer();
+    });
+    const run = async () => {
+      if (previousUpdate !== null) {
+        await previousUpdate.complete;
+      }
+      await debounced;
+      // Dispatch the update, and then mark this.pendingUpdate as null
+      // since now the update has been sent.  This ensures we won't try
+      // to merge a new update with an already-sent one.
+      const updateFnComplete = rawUpdateDocument(this.pendingUpdate!);
+      this.pendingUpdate = null;
+      await updateFnComplete;
+    };
+    this.complete = run();
+  }
+
+  resetDebounceTimer() {
+    if (this.timeoutHandle !== null) {
+      window.clearTimeout(this.timeoutHandle);
+    }
+    this.timeoutHandle = window.setTimeout(this.timeoutCallback, 500);
+  }
+
+  maybeMergeUpdate(update: Update): boolean {
+    if (
+      update.type != UpdateType.UPDATE_INGREDIENT ||
+      !this.pendingUpdate ||
+      this.pendingUpdate.type != UpdateType.UPDATE_INGREDIENT ||
+      this.pendingUpdate.recipeIndex != update.recipeIndex ||
+      this.pendingUpdate.ingredientIndex != update.ingredientIndex
+    ) {
+      return false;
+    }
+
+    this.pendingUpdate = {
+      ...this.pendingUpdate,
+      ...update,
+    };
+    // reset timeout
+    this.resetDebounceTimer();
+    return true;
+  }
+}
+
+let lastPendingUpdate: PendingUpdate | null = null;
+
+// Debouncing for updates to Google Doc.
+//
+// Currently just waits until the last update has finished.
+export function updateDocument(update: Update): Promise<void> {
+  if (lastPendingUpdate && lastPendingUpdate.maybeMergeUpdate(update)) {
+    // If possible, merge with pending update.
+    return lastPendingUpdate.complete;
+  }
+  // Otherwise schedule a new update after the pending update.
+  lastPendingUpdate = new PendingUpdate(update, lastPendingUpdate);
+  return lastPendingUpdate.complete;
 }

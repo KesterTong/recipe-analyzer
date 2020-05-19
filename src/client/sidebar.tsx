@@ -14,6 +14,13 @@
 
 import ReactDOM = require("react-dom");
 import React = require("react");
-import { Main } from "./Main";
+import { MainContainer } from "./MainContainer";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import { initialize } from "./actions";
 
-ReactDOM.render(<Main />, document.getElementById("root"));
+ReactDOM.render(<Provider store={store}>
+  <MainContainer />
+</Provider>, document.getElementById("root"));
+
+store.dispatch(initialize());

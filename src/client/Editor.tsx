@@ -13,10 +13,10 @@
 // limitations under the License.
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
-import { Ingredient } from "../core";
+import { Ingredient, Update, UpdateType } from "../core";
 import { ListSelect } from "./ListSelect";
 
-interface Props {
+export interface StateProps {
   recipeTitles: string[];
   selectedRecipeIndex: number;
   ingredientDisplayStrings: string[];
@@ -25,19 +25,17 @@ interface Props {
   selectedIngredientError: string | null;
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
-
-  selectRecipe(index: number): void;
-  selectIngredient(index: number): void;
-  updateAmount(amount: string): void;
-  updateUnit(unit: string): void;
-  updateFood(food: { description: string; url: string | null }): void;
-  moveUpward(): void;
-  moveDownward(): void;
-  newIngredient(): void;
-  deleteIngredient(): void;
 }
 
-export const Editor: React.FunctionComponent<Props> = (props) => (
+export interface DispatchProps {
+  selectRecipe(index: number): void;
+  selectIngredient(index: number): void;
+  updateDocument(update: Update): void;
+}
+
+export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
+  props
+) => (
   <React.Fragment>
     <div className="block form-group">
       <label htmlFor="recipe">Selected Recipe</label>
@@ -63,16 +61,47 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
     </div>
 
     <div className="block button-group">
-      <button onClick={props.newIngredient}>New</button>
-      <button onClick={props.deleteIngredient}>Delete</button>
       <button
-        onClick={props.moveUpward}
+        onClick={() =>
+          props.updateDocument({
+            type: UpdateType.ADD_INGREDIENT,
+            recipeIndex: props.selectedRecipeIndex,
+          })
+        }
+      >
+        New
+      </button>
+      <button
+        onClick={() =>
+          props.updateDocument({
+            type: UpdateType.DELETE_INGREDIENT,
+            recipeIndex: props.selectedRecipeIndex,
+            ingredientIndex: props.selectedIngredientIndex,
+          })
+        }
+      >
+        Delete
+      </button>
+      <button
+        onClick={() =>
+          props.updateDocument({
+            type: UpdateType.SWAP_INGREDIENTS,
+            recipeIndex: props.selectedRecipeIndex,
+            firstIngredientIndex: props.selectedIngredientIndex - 1,
+          })
+        }
         disabled={props.selectedIngredientIndex == 0}
       >
         Move up
       </button>
       <button
-        onClick={props.moveDownward}
+        onClick={() =>
+          props.updateDocument({
+            type: UpdateType.SWAP_INGREDIENTS,
+            recipeIndex: props.selectedRecipeIndex,
+            firstIngredientIndex: props.selectedIngredientIndex,
+          })
+        }
         disabled={
           props.selectedIngredientIndex ==
           props.ingredientDisplayStrings.length - 1
@@ -89,7 +118,12 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
           id="ingredient-amount"
           value={props.selectedIngredient.amount}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            props.updateAmount(event.target.value)
+            props.updateDocument({
+              type: UpdateType.UPDATE_INGREDIENT,
+              recipeIndex: props.selectedRecipeIndex,
+              ingredientIndex: props.selectedIngredientIndex,
+              newAmount: event.target.value,
+            })
           }
         ></input>
       </div>
@@ -102,7 +136,12 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
           id="ingredient-unit"
           value={props.selectedIngredient.unit}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            props.updateUnit(event.target.value)
+            props.updateDocument({
+              type: UpdateType.UPDATE_INGREDIENT,
+              recipeIndex: props.selectedRecipeIndex,
+              ingredientIndex: props.selectedIngredientIndex,
+              newUnit: event.target.value,
+            })
           }
         ></input>
       </div>
@@ -113,7 +152,14 @@ export const Editor: React.FunctionComponent<Props> = (props) => (
         id="ingredient-food"
         value={props.selectedIngredient.ingredient}
         suggestions={props.suggestions}
-        onChange={props.updateFood}
+        onChange={(value) =>
+          props.updateDocument({
+            type: UpdateType.UPDATE_INGREDIENT,
+            recipeIndex: props.selectedRecipeIndex,
+            ingredientIndex: props.selectedIngredientIndex,
+            newFood: value,
+          })
+        }
       />
       <div className="error">{props.selectedIngredientError}</div>
     </div>
