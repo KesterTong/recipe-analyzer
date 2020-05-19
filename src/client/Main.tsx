@@ -31,23 +31,23 @@ import { debounce } from "./debounce";
 import { updateDocument, parseDocument } from "./doc";
 import { filterNulls } from "../core/filterNulls";
 
-export interface LoadingState {
+interface LoadingState {
   type: "Loading";
 }
 
-export interface ErrorState {
+interface ErrorState {
   type: "Error";
   message: string;
 }
 
-export interface ActiveState {
+interface ActiveState {
   type: "Active";
   recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
 }
-export type RootState = LoadingState | ErrorState | ActiveState;
+type RootState = LoadingState | ErrorState | ActiveState;
 
 export class Main extends React.Component<{}, RootState> {
   private updateServerDocument: (update: Update) => Promise<void>;
