@@ -49,14 +49,14 @@ interface ActiveState {
 }
 type RootState = LoadingState | ErrorState | ActiveState;
 
+const initialState: RootState = {type: "Loading"};
+
 export class Main extends React.Component<{}, RootState> {
   private updateServerDocument: (update: Update) => Promise<void>;
 
   constructor(props: {}) {
     super(props);
-    this.state = {
-      type: "Loading",
-    };
+    this.state = initialState;
     this.updateServerDocument = debounce(updateDocument);
     this.initialize();
   }
