@@ -15,15 +15,17 @@
 import { Recipe, Ingredient } from "./Recipe";
 import { Update, UpdateType } from "./Update";
 
-const BLANK_INGREDIENT: Ingredient = {
-  amount: "",
-  unit: "",
-  ingredient: {
-    description: "",
-    url: null,
-  },
-  nutrientValues: [], // TODO: this is not correct.
-};
+function blankIngredient(recipe: Recipe): Ingredient {
+  return {
+    amount: "",
+    unit: "",
+    ingredient: {
+      description: "",
+      url: null,
+    },
+    nutrientValues: recipe.ingredients[0].nutrientValues.map((_) => ""),
+  };
+}
 
 export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
   const recipe = recipes[update.recipeIndex];
@@ -32,7 +34,7 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
     case UpdateType.ADD_INGREDIENT:
       newRecipe = {
         ...recipe,
-        ingredients: recipe.ingredients.concat([BLANK_INGREDIENT]),
+        ingredients: recipe.ingredients.concat([blankIngredient(recipe)]),
       };
       break;
     case UpdateType.UPDATE_INGREDIENT:
@@ -66,7 +68,7 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
         ...recipe,
         ingredients:
           recipe.ingredients.length == 1
-            ? [BLANK_INGREDIENT]
+            ? [blankIngredient(recipe)]
             : recipe.ingredients.filter(
                 (_, index) => index != update.ingredientIndex
               ),
