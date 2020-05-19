@@ -58,7 +58,6 @@ function ingredientDisplayString(ingredient: Ingredient) {
 }
 
 function mapStateToProps(state: RootState) {
-  console.log(state);
   if (state.type == "Loading") {
     return {};
   } else if (state.type == "Error") {
@@ -76,7 +75,6 @@ function mapStateToProps(state: RootState) {
       if (statusOrFood === undefined) {
         selectedIngredientError = "Loading...";
       } else if (isError(statusOrFood)) {
-        console.log(statusOrFood);
         selectedIngredientError = statusOrFood.message;
       }
     }
