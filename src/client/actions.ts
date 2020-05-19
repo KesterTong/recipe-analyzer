@@ -16,7 +16,13 @@ import { ThunkAction } from "redux-thunk";
 import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
 import { parseDocument, updateDocument as updateServerDocument } from "./doc";
-import { fetchFdcFoods, Update, UpdateType, Recipe, parseFdcWebUrl } from "../core";
+import {
+  fetchFdcFoods,
+  Update,
+  UpdateType,
+  Recipe,
+  parseFdcWebUrl,
+} from "../core";
 import { fetchFdcFood } from "../core/fetchFdcFoods";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
@@ -56,13 +62,17 @@ export function updateDocument(update: Update): ThunkResult<void> {
     });
 
     // Load any ingredients that need loading
-    if (update.type == UpdateType.UPDATE_INGREDIENT && update.newFood && update.newFood.url) {
+    if (
+      update.type == UpdateType.UPDATE_INGREDIENT &&
+      update.newFood &&
+      update.newFood.url
+    ) {
       const fdcId = parseFdcWebUrl(update.newFood.url);
       if (fdcId !== null) {
         const newFdcFood = await fetchFdcFood(fdcId);
         dispatch({
           type: ActionType.UPDATE_FDC_FOODS,
-          fdcFoodsById: {[fdcId]: newFdcFood},
+          fdcFoodsById: { [fdcId]: newFdcFood },
         });
       }
     }

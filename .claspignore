@@ -3,6 +3,6 @@ env/**
 node_modules/**
 src/client/**
 tests/**
-dist/bundle.js
-dist/test_harness.html
+dist/*.js
+dist/test_harness*
 webpack.config.js

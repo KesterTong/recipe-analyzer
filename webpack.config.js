@@ -30,6 +30,8 @@ const commonConfig = {
   externals: {
     "react": "React",
     "react-dom": "ReactDOM",
+    "redux": "Redux",
+    //"react-redux": "ReactRedux",
   },
   optimization: {
     minimize: false

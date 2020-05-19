@@ -48,6 +48,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
         />
       </div>
     </div>
+
     <div className="block form-group">
       <label htmlFor="ingredient">Selected Ingredient</label>
       <div className="control-group">
@@ -163,5 +164,22 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
       />
       <div className="error">{props.selectedIngredientError}</div>
     </div>
+
+    <table className="nutrients-table">
+      <thead>
+        <th>Ingredient</th>
+        <th>Protein (g)</th>
+        <th>Energy (kcal)</th>
+      </thead>
+      <tbody>
+        {props.ingredientDisplayStrings.map((displayString) => (
+          <tr>
+            <td>{displayString}</td>
+            <td>15</td>
+            <td>200</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </React.Fragment>
 );

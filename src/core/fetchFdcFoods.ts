@@ -23,13 +23,16 @@ import { NormalizedFood, parseFdcWebUrl, FDCFood } from ".";
 
 const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
 
-export async function fetchFdcFood(fdcId: number): Promise<StatusOr<NormalizedFood>> {
+export async function fetchFdcFood(
+  fdcId: number
+): Promise<StatusOr<NormalizedFood>> {
   const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
   const json = await response.json();
   if (json.error) {
     return status(
-        StatusCode.FDC_API_ERROR,
-        "Error fetching FDC food: " + fdcId);
+      StatusCode.FDC_API_ERROR,
+      "Error fetching FDC food: " + fdcId
+    );
   }
   return normalizeFDCFood(json);
 }
