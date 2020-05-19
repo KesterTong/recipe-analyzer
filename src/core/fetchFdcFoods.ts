@@ -23,6 +23,17 @@ import { NormalizedFood, parseFdcWebUrl, FDCFood } from ".";
 
 const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
 
+export async function fetchFdcFood(fdcId: number): Promise<StatusOr<NormalizedFood>> {
+  const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
+  const json = await response.json();
+  if (json.error) {
+    return status(
+        StatusCode.FDC_API_ERROR,
+        "Error fetching FDC food: " + fdcId);
+  }
+  return normalizeFDCFood(json);
+}
+
 /**
  * Fetch FDC Foods contained in the recipes in the document.
  *
@@ -49,26 +60,10 @@ export async function fetchFdcFoods(
       fdcIds.push(fdcId);
     });
   });
-  const responses = await Promise.all(
-    fdcIds.map(async (fdcId) => {
-      const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
-      const json = await response.json();
-      if (json.error) {
-        return {
-          fdcId,
-          normalizedFood: status(
-            StatusCode.FDC_API_ERROR,
-            "Error fetching FDC food: " + fdcId
-          ),
-        };
-      }
-      const normalizedFood = normalizeFDCFood(json);
-      return { fdcId, normalizedFood };
-    })
-  );
+  const responses = await Promise.all(fdcIds.map(fetchFdcFood));
   let result: { [index: number]: StatusOr<NormalizedFood> } = {};
-  responses.forEach((response) => {
-    result[response.fdcId] = response.normalizedFood;
+  responses.forEach((response, index) => {
+    result[fdcIds[index]] = response;
   });
   return result;
 }
