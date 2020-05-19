@@ -49,13 +49,13 @@ let recipes: Recipe[] = [
       {
         unit: "cup",
         amount: "1",
-        ingredient: { description: "flour", url: "#test" },
+        ingredient: { description: "flour", url: "https://fdc.nal.usda.gov/fdc-app.html#/food-details/1234/nutrients" },
         nutrientValues: ["100", "20"],
       },
       {
         unit: "",
         amount: "2",
-        ingredient: { description: "test2", url: "#bc" },
+        ingredient: { description: "test2", url: "#abcd"},
         nutrientValues: ["b", "c"],
       },
     ],
