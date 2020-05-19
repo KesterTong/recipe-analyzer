@@ -16,12 +16,9 @@ import {
   Update,
   UpdateType,
   makeFdcWebUrl,
-  Recipe,
-  NormalizedFood,
   updateRecipes,
   Ingredient,
   fetchFdcFoods,
-  StatusOr,
   isOk,
   isError,
   parseFdcWebUrl,
@@ -30,24 +27,8 @@ import { Editor } from "./Editor";
 import { debounce } from "./debounce";
 import { updateDocument, parseDocument } from "./doc";
 import { filterNulls } from "../core/filterNulls";
+import { RootState, ActiveState } from "./RootState";
 
-interface LoadingState {
-  type: "Loading";
-}
-
-interface ErrorState {
-  type: "Error";
-  message: string;
-}
-
-interface ActiveState {
-  type: "Active";
-  recipes: Recipe[];
-  selectedRecipeIndex: number;
-  selectedIngredientIndex: number;
-  fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
-}
-type RootState = LoadingState | ErrorState | ActiveState;
 
 const initialState: RootState = {type: "Loading"};
 
