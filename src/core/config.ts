@@ -36,7 +36,7 @@ export interface Config {
   volumeUnits: Unit[];
 }
 
-export const config: Config = {
+export const defaultConfig: Config = {
   nutrients: [
     {
       id: 1008,
@@ -72,48 +72,48 @@ export const config: Config = {
   volumeUnits: [
     {
       value: 1,
-      name: 'ml',
-      otherNames: ['milliliter', 'milliliters'],
+      name: "ml",
+      otherNames: ["milliliter", "milliliters"],
     },
     {
       value: 29.5735,
-      name: 'fl oz',
-      otherNames: ['fl. oz'],
+      name: "fl oz",
+      otherNames: ["fl. oz"],
     },
     {
       value: 236.59,
-      name: 'cup',
-      otherNames: ['cups'],
+      name: "cup",
+      otherNames: ["cups"],
     },
     {
       value: 14.79,
-      name: 'tbsp',
-      otherNames: ['tablespoon', 'tablespoons'],
+      name: "tbsp",
+      otherNames: ["tablespoon", "tablespoons"],
     },
     {
       value: 4.93,
-      name: 'tsp',
-      otherNames: ['teaspoon', 'teaspoons'],
+      name: "tsp",
+      otherNames: ["teaspoon", "teaspoons"],
     },
     {
       value: 473.17,
-      name: 'pint',
-      otherNames: ['pt', 'pints'],
+      name: "pint",
+      otherNames: ["pt", "pints"],
     },
     {
       value: 946.35,
-      name: 'quart',
-      otherNames: ['qt', 'quarts'],
+      name: "quart",
+      otherNames: ["qt", "quarts"],
     },
     {
       value: 3785.41,
-      name: 'gallon',
-      otherNames: ['gallons'],
+      name: "gallon",
+      otherNames: ["gallons"],
     },
     {
       value: 1000,
-      name: 'L',
-      otherNames: ['liter', 'liters'],
+      name: "L",
+      otherNames: ["liter", "liters"],
     },
   ],
 };

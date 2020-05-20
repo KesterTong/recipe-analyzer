@@ -23,6 +23,7 @@ export interface StateProps {
   selectedIngredientIndex: number;
   selectedIngredient: Ingredient;
   selectedIngredientError: string | null;
+  nutrientNames: string[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
 }
@@ -53,8 +54,9 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
       <table id="ingredients" className="nutrients-table" tabIndex={0}>
         <thead>
           <th>Ingredient</th>
-          <th>Protein (g)</th>
-          <th>Energy (kcal)</th>
+          {props.nutrientNames.map((name) => (
+            <th>{name}</th>
+          ))}
         </thead>
         <tbody>
           {props.ingredientDisplayStrings.map((displayString, index) => (
@@ -65,14 +67,16 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
               onClick={() => props.selectIngredient(index)}
             >
               <td>{displayString}</td>
-              <td>15</td>
-              <td>200</td>
+              {props.nutrientNames.map((name) => (
+                <td>??</td>
+              ))}
             </tr>
           ))}
           <tr>
             <td>Total</td>
-            <td>150</td>
-            <td>2000</td>
+            {props.nutrientNames.map((name) => (
+              <td>??</td>
+            ))}
           </tr>
         </tbody>
       </table>

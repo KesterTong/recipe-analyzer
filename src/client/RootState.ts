@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Recipe, StatusOr, NormalizedFood } from "../core";
+import { Config } from "../core/config";
 
 export interface LoadingState {
   type: "Loading";
@@ -28,6 +29,7 @@ export interface ActiveState {
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
+  config: Config;
 }
 
 export type RootState = LoadingState | ErrorState | ActiveState;

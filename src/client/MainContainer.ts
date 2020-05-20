@@ -90,6 +90,7 @@ function mapStateToProps(state: RootState) {
       selectedIngredientIndex: state.selectedIngredientIndex,
       selectedIngredient,
       selectedIngredientError,
+      nutrientNames: state.config.nutrients.map((nutrient) => nutrient.name),
     },
   };
 }
