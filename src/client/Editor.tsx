@@ -65,6 +65,11 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
               <td>200</td>
             </tr>
           ))}
+          <tr>
+            <td>Total</td>
+              <td>150</td>
+              <td>2000</td>
+          </tr>
         </tbody>
       </table>
     </div>
