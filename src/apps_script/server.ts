@@ -37,16 +37,9 @@ function parseToc(
   return result;
 }
 
-function parseIngredient(
-  row: GoogleAppsScript.Document.TableRow,
-  numNutrients: number
-): Ingredient {
-  if (row.getNumCells() != 3 + numNutrients) {
-    throw new Error("Not all rows in table had same number of cells");
-  }
-  let nutrientValues = [];
-  for (let j = 3; j < 3 + numNutrients; j++) {
-    nutrientValues.push(row.getCell(j).getText());
+function parseIngredient(row: GoogleAppsScript.Document.TableRow): Ingredient {
+  if (row.getNumCells() != 3) {
+    throw new Error("Not all rows in table had 3 cells");
   }
   return {
     amount: row.getCell(0).getText(),
@@ -55,7 +48,6 @@ function parseIngredient(
       description: row.getCell(2).getText(),
       url: row.getCell(2).getLinkUrl(),
     },
-    nutrientValues,
   };
 }
 
@@ -66,40 +58,24 @@ function parseTable(
 ): Recipe {
   let tableNumRows = table.getNumRows();
   // Require 3 rows as each recipe must have at least 1 ingredient.
-  if (tableNumRows < 3) {
-    throw new Error("Table had less than 3 rows");
+  if (tableNumRows < 1) {
+    throw new Error("Table must have at least 1 row");
   }
   let headerRow = table.getRow(0);
   let tableNumCols = headerRow.getNumCells();
-  if (tableNumCols < 3) {
-    throw new Error("Table had less than 3 columns");
-  }
-  let nutrientNames = [];
-  for (let j = 3; j < tableNumCols; j++) {
-    nutrientNames.push(headerRow.getCell(j).getText());
+  if (tableNumCols != 3) {
+    throw new Error("Table must have 3 columns");
   }
   let ingredients = [];
-  for (let i = 1; i < tableNumRows - 1; i++) {
+  for (let i = 0; i < tableNumRows; i++) {
     let ingredientRow = table.getRow(i);
-    let ingredient = parseIngredient(ingredientRow, nutrientNames.length);
+    let ingredient = parseIngredient(ingredientRow);
     ingredients.push(ingredient);
-  }
-  // Parse total row like an ingredient but ignore everything
-  // except nutrient values.
-  let totalRow = table.getRow(tableNumRows - 1);
-  if (totalRow.getNumCells() != tableNumCols) {
-    throw new Error("Not all rows in table had same number of cells");
-  }
-  let totalNutrientValues = [];
-  for (let j = 3; j < tableNumCols; j++) {
-    totalNutrientValues.push(totalRow.getCell(j).getText());
   }
   return {
     title,
     url,
-    nutrientNames,
     ingredients,
-    totalNutrientValues,
   };
 }
 
@@ -164,16 +140,15 @@ export function updateDocument(update: Update) {
   switch (update.type) {
     case UpdateType.ADD_INGREDIENT:
       // Copy new row from existing row to get same styling.
-      const newRow = table.getRow(1).copy();
+      const newRow = table.getRow(0).copy();
       const numCells = newRow.getNumCells();
       for (let i = 0; i < numCells; i++) {
         newRow.getCell(i).clear();
       }
-      table.insertTableRow(table.getNumRows() - 1, newRow);
+      table.appendTableRow(newRow);
       break;
     case UpdateType.UPDATE_INGREDIENT:
-      // We add 1 because the first row is the header row.
-      const row = table.getRow(update.ingredientIndex + 1);
+      const row = table.getRow(update.ingredientIndex);
       // TODO: handle nutrients also.
       if (update.newAmount) {
         row.getCell(0).setText(update.newAmount);
@@ -189,13 +164,12 @@ export function updateDocument(update: Update) {
       }
       break;
     case UpdateType.DELETE_INGREDIENT:
-      // We add 1 because the first row is the header row.
-      table.removeRow(update.ingredientIndex + 1);
+      table.removeRow(update.ingredientIndex);
       break;
     case UpdateType.SWAP_INGREDIENTS:
-      const second_row = table.getRow(update.firstIngredientIndex + 2);
+      const second_row = table.getRow(update.firstIngredientIndex + 1);
       second_row.removeFromParent();
-      table.insertTableRow(update.firstIngredientIndex + 1, second_row);
+      table.insertTableRow(update.firstIngredientIndex, second_row);
       break;
   }
 }

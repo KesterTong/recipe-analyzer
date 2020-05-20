@@ -13,7 +13,6 @@
 // limitations under the License.
 
 export interface Ingredient {
-  nutrientValues: string[];
   amount: string;
   unit: string;
   ingredient: {
@@ -25,7 +24,5 @@ export interface Ingredient {
 export interface Recipe {
   title: string;
   url: string;
-  nutrientNames: string[];
   ingredients: Ingredient[];
-  totalNutrientValues: string[];
 }

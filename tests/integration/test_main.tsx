@@ -20,7 +20,6 @@ import { doc } from "prettier";
 
 let recipes: Recipe[] = [
   {
-    totalNutrientValues: ["1000", "200"],
     ingredients: [
       {
         unit: "cup",
@@ -30,21 +29,17 @@ let recipes: Recipe[] = [
           url:
             "https://fdc.nal.usda.gov/fdc-app.html#/food-details/169761/nutrients",
         },
-        nutrientValues: ["100", "20"],
       },
       {
         unit: "g",
         amount: "100",
         ingredient: { description: "water", url: null },
-        nutrientValues: ["b", "c"],
       },
     ],
-    nutrientNames: ["Protein", "Calories"],
     title: "Recipe 1",
     url: "#heading=h.y3h0qes0821d",
   },
   {
-    totalNutrientValues: ["1000", "200"],
     ingredients: [
       {
         unit: "cup",
@@ -54,33 +49,17 @@ let recipes: Recipe[] = [
           url:
             "https://fdc.nal.usda.gov/fdc-app.html#/food-details/1234/nutrients",
         },
-        nutrientValues: ["100", "20"],
       },
       {
         unit: "",
         amount: "2",
         ingredient: { description: "test2", url: "#abcd" },
-        nutrientValues: ["b", "c"],
       },
     ],
-    nutrientNames: ["Protein", "Calories"],
     title: "Recipe 2",
     url: "#heading=h.abcd1234",
   },
 ];
-
-const IngredientsTableHeader: React.FunctionComponent<{
-  nutrientNames: string[];
-}> = (props) => (
-  <thead>
-    <th></th>
-    <th></th>
-    <th></th>
-    {props.nutrientNames.map((name) => (
-      <th className="nutrient-header">{name}</th>
-    ))}
-  </thead>
-);
 
 const FoodLink: React.FunctionComponent<{
   description: string;
@@ -101,22 +80,6 @@ const IngredientsTableRow: React.FunctionComponent<{
     <td>
       <FoodLink {...props.ingredient.ingredient} />
     </td>
-    {props.ingredient.nutrientValues.map((value) => (
-      <td>{value}</td>
-    ))}
-  </tr>
-);
-
-const IngredientsTableTotalRow: React.FunctionComponent<{
-  totalNutrientValues: string[];
-}> = (props) => (
-  <tr>
-    <td></td>
-    <td></td>
-    <td>Total</td>
-    {props.totalNutrientValues.map((value) => (
-      <td>{value}</td>
-    ))}
   </tr>
 );
 
@@ -124,14 +87,10 @@ const RecipeView: React.FunctionComponent<{ recipe: Recipe }> = (props) => (
   <React.Fragment>
     <h1 id={props.recipe.url.substr(1)}>{props.recipe.title}</h1>
     <table>
-      <IngredientsTableHeader nutrientNames={props.recipe.nutrientNames} />
       <tbody>
         {props.recipe.ingredients.map((ingredient) => (
           <IngredientsTableRow ingredient={ingredient} />
         ))}
-        <IngredientsTableTotalRow
-          totalNutrientValues={props.recipe.totalNutrientValues}
-        />
       </tbody>
     </table>
   </React.Fragment>
