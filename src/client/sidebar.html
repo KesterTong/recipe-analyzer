@@ -122,6 +122,25 @@
 
       .nutrients-table {
         width: 100%;
+        border: 1px solid #dcdcdc;
+        color: #333;
+        cursor: default;
+        margin: 0;
+        outline: 0;
+        border-radius: 2px;
+      }
+
+      .nutrients-table:focus {
+        border: 1px solid #4d90fe;
+      }
+      .selected-row {
+        background-color : rgb(220, 220, 220); 
+      }
+      .nutrients-table:focus .selected-row {
+        background-color : rgb(16, 103, 222); 
+      }
+      .nutrients-table td, .nutrients-table th {
+        padding: 7px 19px 7px 4px;
       }
     </style>
   </head>

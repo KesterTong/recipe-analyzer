@@ -50,15 +50,23 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
     </div>
 
     <div className="block form-group">
-      <label htmlFor="ingredient">Selected Ingredient</label>
-      <div className="control-group">
-        <ListSelect
-          labels={props.ingredientDisplayStrings}
-          value={props.selectedIngredientIndex}
-          id="ingredient"
-          onChange={props.selectIngredient}
-        />
-      </div>
+      <table id="ingredients" className="nutrients-table" tabIndex={0}>
+        <thead>
+          <th>Ingredient</th>
+          <th>Protein (g)</th>
+          <th>Energy (kcal)</th>
+        </thead>
+        <tbody>
+          {props.ingredientDisplayStrings.map((displayString, index) => (
+            <tr className={index == props.selectedIngredientIndex ? "selected-row": ""}
+            onClick={() => props.selectIngredient(index)}>
+              <td>{displayString}</td>
+              <td>15</td>
+              <td>200</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
 
     <div className="block button-group">
@@ -164,22 +172,5 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
       />
       <div className="error">{props.selectedIngredientError}</div>
     </div>
-
-    <table className="nutrients-table">
-      <thead>
-        <th>Ingredient</th>
-        <th>Protein (g)</th>
-        <th>Energy (kcal)</th>
-      </thead>
-      <tbody>
-        {props.ingredientDisplayStrings.map((displayString) => (
-          <tr>
-            <td>{displayString}</td>
-            <td>15</td>
-            <td>200</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
   </React.Fragment>
 );
