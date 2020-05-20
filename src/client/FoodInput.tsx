@@ -24,6 +24,8 @@ interface Props {
 
 const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
 
+const minCharsToQueryFDC = 3;
+
 export class FoodInput extends React.Component<
   Props,
   {
@@ -42,6 +44,9 @@ export class FoodInput extends React.Component<
     this.setState({
       suggestions: this.props.suggestions,
     });
+    if (props.value.length < minCharsToQueryFDC) {
+      return;
+    }
     const response = await fetch(searchFdcFoodsUrl(props.value, FDC_API_KEY));
     const result: FDCQueryResult = await response.json();
     this.setState({
@@ -84,6 +89,7 @@ export class FoodInput extends React.Component<
 
     return (
       <Autosuggest
+        alwaysRenderSuggestions
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
