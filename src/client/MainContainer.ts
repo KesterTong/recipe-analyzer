@@ -24,6 +24,7 @@ import {
   isOk,
   makeFdcWebUrl,
   nutrientsForIngredient,
+  StatusCode,
 } from "../core";
 import { connect } from "react-redux";
 import { filterNulls } from "../core/filterNulls";
@@ -67,13 +68,26 @@ function mapStateToProps(state: RootState) {
 
   const selectedRecipe = state.recipes[state.selectedRecipeIndex];
   const nutrientsPerIngredient = selectedRecipe.ingredients.map((ingredient) =>
-        nutrientsForIngredient(ingredient, state.fdcFoodsById)
-      );
+    nutrientsForIngredient(ingredient, state.fdcFoodsById)
+  );
   const selectedIngredient =
     selectedRecipe.ingredients[state.selectedIngredientIndex];
-  const selectedIngredientNutrients = 
+  const selectedIngredientNutrients =
     nutrientsPerIngredient[state.selectedIngredientIndex];
-  const selectedIngredientError = isOk(selectedIngredientNutrients) ? null : selectedIngredientNutrients.message;
+  // We generate the error for `amount` here as that error is sometimes
+  // superceded by other errors in nutrientsForIngredient.
+  const selectedIngredientAmountError = isNaN(Number(selectedIngredient.amount))
+    ? "Enter a number"
+    : null;
+  let selectedIngredientUnitError = null;
+  let selectedIngredientFoodError = null;
+  if (!isOk(selectedIngredientNutrients)) {
+    if (selectedIngredientNutrients.code == StatusCode.UNKNOWN_UNIT) {
+      selectedIngredientUnitError = selectedIngredientNutrients.message;
+    } else if (selectedIngredientNutrients.code != StatusCode.NAN_AMOUNT) {
+      selectedIngredientFoodError = selectedIngredientNutrients.message;
+    }
+  }
   return {
     editorStateProps: {
       recipeTitles: state.recipes.map((recipe) => recipe.title),
@@ -86,7 +100,9 @@ function mapStateToProps(state: RootState) {
       selectedIngredient,
       nutrients: state.config.nutrients,
       nutrientsPerIngredient,
-      selectedIngredientError,
+      selectedIngredientAmountError,
+      selectedIngredientUnitError,
+      selectedIngredientFoodError,
     },
   };
 }

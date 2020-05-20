@@ -31,7 +31,9 @@ export interface StateProps {
   ingredientDisplayStrings: string[];
   selectedIngredientIndex: number;
   selectedIngredient: Ingredient;
-  selectedIngredientError: string | null;
+  selectedIngredientAmountError: string | null;
+  selectedIngredientUnitError: string | null;
+  selectedIngredientFoodError: string | null;
   nutrients: { name: string; id: number }[];
   nutrientsPerIngredient: StatusOr<Nutrients>[];
   // TODO: make this a function of query.
@@ -172,6 +174,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           }
         ></input>
       </div>
+      <div className="error">{props.selectedIngredientAmountError}</div>
     </div>
     <div className="block form-group">
       <label htmlFor="ingredient-unit">Unit</label>
@@ -190,6 +193,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           }
         ></input>
       </div>
+      <div className="error">{props.selectedIngredientUnitError}</div>
     </div>
     <div className="block form-group">
       <label htmlFor="ingredient-food">Food</label>
@@ -206,7 +210,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           })
         }
       />
-      <div className="error">{props.selectedIngredientError}</div>
+      <div className="error">{props.selectedIngredientFoodError}</div>
     </div>
   </React.Fragment>
 );

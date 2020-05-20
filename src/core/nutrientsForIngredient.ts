@@ -45,23 +45,33 @@ export function nutrientsForIngredient(
       normalizedFood = statusOrNormalizedFood;
     }
   }
-  let amount = Number(ingredient.amount);
-  if (isNaN(amount)) {
-    return status(StatusCode.NAN_AMOUNT, "Could not convert amount to number");
-  }
-  let unit = ingredient.unit;
-  ({ amount, unit } = canonicalizeQuantity({ amount, unit }));
+  // oneUnit = 1 x ingredient.unit
+  const oneUnit = canonicalizeQuantity({ amount: 1, unit: ingredient.unit });
   let matchingQuantities = normalizedFood.servingEquivalents.filter(
-    (quantity) => quantity.unit == unit
+    (quantity) => quantity.unit == oneUnit.unit
   );
   if (matchingQuantities.length === 0) {
     return status(
       StatusCode.UNKNOWN_UNIT,
-      "Could not convert unit " + unit + " for food"
+      "Could not convert unit " + oneUnit.unit + " for food"
     );
   }
+  // matchingQuantities[0] = 1 serving
+  let amount = Number(ingredient.amount);
+  if (isNaN(amount)) {
+    return status(StatusCode.NAN_AMOUNT, "Could not convert amount to number");
+  }
+  // Combining the above two equations, and the fact that matchingQuanties[0]
+  // has the same units as oneUnit:
+  //
+  // 1 serving / amatchingQuantities[0].amount = ingredient.unit / oneUnit.amount
+  //
+  // Multipling both sides by oneUnit.amount * ingredient.amount, we have
+  //
+  // ingredient.unit * ingredient.amount =
+  //   = 1 serving * oneUnit.amount * ingredient.amount / amatchingQuantities[0].amount
   return scaleNutrients(
     normalizedFood.nutrientsPerServing,
-    amount / matchingQuantities[0].amount
+    (amount * oneUnit.amount) / matchingQuantities[0].amount
   );
 }
