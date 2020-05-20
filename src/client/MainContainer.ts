@@ -23,6 +23,7 @@ import {
   Ingredient,
   isOk,
   makeFdcWebUrl,
+  nutrientsForIngredient,
 } from "../core";
 import { connect } from "react-redux";
 import { filterNulls } from "../core/filterNulls";
@@ -90,7 +91,10 @@ function mapStateToProps(state: RootState) {
       selectedIngredientIndex: state.selectedIngredientIndex,
       selectedIngredient,
       selectedIngredientError,
-      nutrientNames: state.config.nutrients.map((nutrient) => nutrient.name),
+      nutrients: state.config.nutrients,
+      nutrientsPerIngredient: selectedRecipe.ingredients.map((ingredient) =>
+        nutrientsForIngredient(ingredient, state.fdcFoodsById)
+      ),
     },
   };
 }

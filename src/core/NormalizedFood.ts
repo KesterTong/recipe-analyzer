@@ -21,7 +21,5 @@ import { Quantity } from "./Quantity";
 export interface NormalizedFood {
   description: string;
   nutrientsPerServing: Nutrients;
-  gramsPerServing: number | null;
-  mlPerServing: number | null;
-  otherServingEquivalents: Quantity[];
+  servingEquivalents: Quantity[];
 }

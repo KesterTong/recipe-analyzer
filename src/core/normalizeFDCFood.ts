@@ -15,8 +15,46 @@
 import { canonicalizeQuantity, Quantity } from "./Quantity";
 import { Nutrients, addNutrients, scaleNutrients } from "./Nutrients";
 import { SRLegacyFood, BrandedFood, FDCFood } from "./FoodDataCentral";
-import { parseQuantity } from "./parseQuantity";
 import { NormalizedFood } from "./NormalizedFood";
+
+/**
+ * Parse a quantity, e.g. "1 cup"
+ */
+function parseQuantity(text: string): Quantity | null {
+  const fractionValueBySymbol: { [index: string]: number } = {
+    "": 0,
+    "½": 1 / 2,
+    "⅓": 1 / 3,
+    "⅔": 2 / 3,
+    "¼": 1 / 4,
+    "¾": 3 / 4,
+    "⅕": 1 / 5,
+    "⅖": 2 / 5,
+    "⅗": 3 / 5,
+    "⅘": 4 / 5,
+    "⅙": 1 / 6,
+    "⅚": 5 / 6,
+    "⅐": 1 / 7,
+    "⅛": 3 / 8,
+    "⅜": 3 / 8,
+    "⅝": 5 / 7,
+    "⅞": 7 / 8,
+    "⅑": 1 / 9,
+    "⅒": 1 / 10,
+  };
+  let match = text.match(
+    /(\s*(\d*\.?\d*)\s*([½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅐⅛⅜⅝⅞⅑⅒]?)\s*(\w*)\s*)(.*)/
+  );
+  if (match == null) {
+    return null;
+  }
+  return {
+    amount:
+      Number(match[2] || (match[3] ? 0.0 : 1.0)) +
+      fractionValueBySymbol[match[3]],
+    unit: match[4].trim() || "serving",
+  };
+}
 
 export function normalizeFDCFood(food: FDCFood): NormalizedFood {
   const nutrientsPerServing: Nutrients = {};
@@ -26,28 +64,10 @@ export function normalizeFDCFood(food: FDCFood): NormalizedFood {
     var nutrientAmount = foodNutrient.amount || 0;
     nutrientsPerServing[nutrientId.toString()] = nutrientAmount;
   }
-  // Fetch a list of quantities that are equivalent to one serving.  The
-  // ordering serves two purposes.  First, it determines the order in which
-  // units are displayed.  Second it determines priority so that in the case
-  // of duplicate units only the first occuring unit will be used.
-  let gramsPerServing: number | null = null;
-  let mlPerServing: number | null = null;
-  let otherServingEquivalents: Quantity[] = [];
-  servingEquivalentQuantities(food).forEach((quantity) => {
-    if (quantity.unit == "g") {
-      gramsPerServing = gramsPerServing || quantity.amount;
-    } else if (quantity.unit == "ml") {
-      mlPerServing = mlPerServing || quantity.amount;
-    } else {
-      otherServingEquivalents.push(quantity);
-    }
-  });
   return {
     description: food.description,
     nutrientsPerServing,
-    gramsPerServing,
-    mlPerServing,
-    otherServingEquivalents,
+    servingEquivalents: servingEquivalentQuantities(food),
   };
 }
 
@@ -65,10 +85,10 @@ function SRLegacyServingEquivalentQuantities(food: SRLegacyFood): Quantity[] {
   let result = [{ amount: 100, unit: "g" }];
   for (let i = 0; i < food.foodPortions.length; i++) {
     const foodPortion = food.foodPortions[i];
-    const [amount, unit] = canonicalizeQuantity(
-      foodPortion.amount,
-      foodPortion.modifier
-    );
+    const { amount, unit } = canonicalizeQuantity({
+      amount: foodPortion.amount,
+      unit: foodPortion.modifier,
+    });
     const amountPerServing = (100.0 * amount) / foodPortion.gramWeight;
     result.push({ amount: amountPerServing, unit });
   }
@@ -83,10 +103,10 @@ function brandedServingEquivalentQuantities(food: BrandedFood): Quantity[] {
       ? null
       : parseQuantity(food.householdServingFullText);
   if (householdServingQuantity != null) {
-    const [amount, unit] = canonicalizeQuantity(
-      householdServingQuantity.amount,
-      householdServingQuantity.unit
-    );
+    const { amount, unit } = canonicalizeQuantity({
+      amount: householdServingQuantity.amount,
+      unit: householdServingQuantity.unit,
+    });
     const amountPerServing = (100.0 * amount) / food.servingSize;
     result.push({ amount: amountPerServing, unit });
   }

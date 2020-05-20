@@ -13,7 +13,14 @@
 // limitations under the License.
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
-import { Ingredient, Update, UpdateType } from "../core";
+import {
+  Ingredient,
+  Update,
+  UpdateType,
+  Nutrients,
+  StatusOr,
+  isOk,
+} from "../core";
 import { ListSelect } from "./ListSelect";
 
 export interface StateProps {
@@ -23,7 +30,8 @@ export interface StateProps {
   selectedIngredientIndex: number;
   selectedIngredient: Ingredient;
   selectedIngredientError: string | null;
-  nutrientNames: string[];
+  nutrients: { name: string; id: number }[];
+  nutrientsPerIngredient: StatusOr<Nutrients>[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
 }
@@ -32,6 +40,10 @@ export interface DispatchProps {
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
   updateDocument(update: Update): void;
+}
+
+function nutrientValue(nutrients: StatusOr<Nutrients>, id: number) {
+  return isOk(nutrients) ? nutrients[id] : "!!";
 }
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
@@ -54,7 +66,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
       <table id="ingredients" className="nutrients-table" tabIndex={0}>
         <thead>
           <th>Ingredient</th>
-          {props.nutrientNames.map((name) => (
+          {props.nutrients.map(({ name }) => (
             <th>{name}</th>
           ))}
         </thead>
@@ -67,14 +79,16 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
               onClick={() => props.selectIngredient(index)}
             >
               <td>{displayString}</td>
-              {props.nutrientNames.map((name) => (
-                <td>??</td>
+              {props.nutrients.map(({ id }) => (
+                <td>
+                  {nutrientValue(props.nutrientsPerIngredient[index], id)}
+                </td>
               ))}
             </tr>
           ))}
           <tr>
             <td>Total</td>
-            {props.nutrientNames.map((name) => (
+            {props.nutrients.map((name) => (
               <td>??</td>
             ))}
           </tr>

@@ -14,7 +14,8 @@
 
 export enum StatusCode {
   LOADING = "@Status/Loading",
-  UNKNOWN_QUANTITY = "@Status/UnknownQuantity",
+  // The specified unit could no be converted for the food.
+  UNKNOWN_UNIT = "@Status/UnknownUnit",
   // When the amount in the edit UI is not a number.
   NAN_AMOUNT = "@Status/NanAmount",
   // An error happened when processing an ingredient of a recipe.
@@ -23,6 +24,8 @@ export enum StatusCode {
   TITLE_NOT_IN_TOC_ERROR = "@Status/IngredientError",
   // Error loading food from FDC
   FDC_API_ERROR = "@Status/FdcApiError",
+  // The linked food was not found
+  FOOD_NOT_FOUND = "@Status/FoodNotFound",
 }
 
 export interface Status {

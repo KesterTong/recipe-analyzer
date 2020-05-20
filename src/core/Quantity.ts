@@ -23,10 +23,8 @@ export interface Quantity {
  *  - Removing trailing 's' to alllow plural and singular forms.
  *  - Convert to lowercase.
  */
-export function canonicalizeQuantity(
-  amount: number,
-  unit: string
-): [number, string] {
+export function canonicalizeQuantity(quantity: Quantity): Quantity {
+  let { amount, unit } = quantity;
   unit = unit.toLowerCase().replace(/(\w*)s$/, "$1");
   const gramEquivalentByUnit: { [index: string]: number } = {
     oz: 28.35,
@@ -47,10 +45,10 @@ export function canonicalizeQuantity(
   };
 
   if (gramEquivalentByUnit[unit]) {
-    return [amount * gramEquivalentByUnit[unit], "g"];
+    return { amount: amount * gramEquivalentByUnit[unit], unit: "g" };
   }
   if (mlEquivalentByUnit[unit]) {
-    return [amount * mlEquivalentByUnit[unit], "ml"];
+    return { amount: amount * mlEquivalentByUnit[unit], unit: "ml" };
   }
-  return [amount, unit];
+  return { amount, unit };
 }
