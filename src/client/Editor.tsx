@@ -45,11 +45,7 @@ export interface DispatchProps {
 }
 
 function nutrientValue(nutrients: StatusOr<Nutrients>, id: number) {
-  return isOk(nutrients)
-    ? nutrients[id]
-    : nutrients.code == StatusCode.LOADING
-    ? "..."
-    : "!!";
+  return isOk(nutrients) ? nutrients[id] : "";
 }
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (

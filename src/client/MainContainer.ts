@@ -66,20 +66,14 @@ function mapStateToProps(state: RootState) {
   }
 
   const selectedRecipe = state.recipes[state.selectedRecipeIndex];
+  const nutrientsPerIngredient = selectedRecipe.ingredients.map((ingredient) =>
+        nutrientsForIngredient(ingredient, state.fdcFoodsById)
+      );
   const selectedIngredient =
     selectedRecipe.ingredients[state.selectedIngredientIndex];
-  let selectedIngredientError: string | null = null;
-  if (selectedIngredient.ingredient.url) {
-    const fdcId = parseFdcWebUrl(selectedIngredient.ingredient.url);
-    if (fdcId !== null) {
-      const statusOrFood = state.fdcFoodsById[fdcId];
-      if (statusOrFood === undefined) {
-        selectedIngredientError = "Loading...";
-      } else if (isError(statusOrFood)) {
-        selectedIngredientError = statusOrFood.message;
-      }
-    }
-  }
+  const selectedIngredientNutrients = 
+    nutrientsPerIngredient[state.selectedIngredientIndex];
+  const selectedIngredientError = isOk(selectedIngredientNutrients) ? null : selectedIngredientNutrients.message;
   return {
     editorStateProps: {
       recipeTitles: state.recipes.map((recipe) => recipe.title),
@@ -90,11 +84,9 @@ function mapStateToProps(state: RootState) {
       ),
       selectedIngredientIndex: state.selectedIngredientIndex,
       selectedIngredient,
-      selectedIngredientError,
       nutrients: state.config.nutrients,
-      nutrientsPerIngredient: selectedRecipe.ingredients.map((ingredient) =>
-        nutrientsForIngredient(ingredient, state.fdcFoodsById)
-      ),
+      nutrientsPerIngredient,
+      selectedIngredientError,
     },
   };
 }
