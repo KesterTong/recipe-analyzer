@@ -58,8 +58,12 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
         </thead>
         <tbody>
           {props.ingredientDisplayStrings.map((displayString, index) => (
-            <tr className={index == props.selectedIngredientIndex ? "selected-row": ""}
-            onClick={() => props.selectIngredient(index)}>
+            <tr
+              className={
+                index == props.selectedIngredientIndex ? "selected-row" : ""
+              }
+              onClick={() => props.selectIngredient(index)}
+            >
               <td>{displayString}</td>
               <td>15</td>
               <td>200</td>
@@ -67,8 +71,8 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           ))}
           <tr>
             <td>Total</td>
-              <td>150</td>
-              <td>2000</td>
+            <td>150</td>
+            <td>2000</td>
           </tr>
         </tbody>
       </table>
