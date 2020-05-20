@@ -54,7 +54,7 @@ export function nutrientsForIngredient(
   let matchingQuantities = normalizedFood.servingEquivalents.filter(
     (quantity) => quantity.unit == unit
   );
-  if (!matchingQuantities) {
+  if (matchingQuantities.length === 0) {
     return status(
       StatusCode.UNKNOWN_UNIT,
       "Could not convert unit " + unit + " for food"

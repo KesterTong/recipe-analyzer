@@ -20,6 +20,7 @@ import {
   Nutrients,
   StatusOr,
   isOk,
+  StatusCode,
 } from "../core";
 import { ListSelect } from "./ListSelect";
 
@@ -43,7 +44,7 @@ export interface DispatchProps {
 }
 
 function nutrientValue(nutrients: StatusOr<Nutrients>, id: number) {
-  return isOk(nutrients) ? nutrients[id] : "!!";
+  return isOk(nutrients) ? nutrients[id] : nutrients.code == StatusCode.LOADING ? "..." :  "!!";
 }
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
