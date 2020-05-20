@@ -21,6 +21,7 @@ import {
   StatusOr,
   isOk,
   StatusCode,
+  hasCode,
 } from "../core";
 import { ListSelect } from "./ListSelect";
 
@@ -44,7 +45,11 @@ export interface DispatchProps {
 }
 
 function nutrientValue(nutrients: StatusOr<Nutrients>, id: number) {
-  return isOk(nutrients) ? nutrients[id] : nutrients.code == StatusCode.LOADING ? "..." :  "!!";
+  return isOk(nutrients)
+    ? nutrients[id]
+    : nutrients.code == StatusCode.LOADING
+    ? "..."
+    : "!!";
 }
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
@@ -75,7 +80,14 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           {props.ingredientDisplayStrings.map((displayString, index) => (
             <tr
               className={
-                index == props.selectedIngredientIndex ? "selected-row" : ""
+                (index == props.selectedIngredientIndex ? "selected-row" : "") +
+                (!isOk(props.nutrientsPerIngredient[index]) &&
+                !hasCode(
+                  props.nutrientsPerIngredient[index],
+                  StatusCode.LOADING
+                )
+                  ? " error"
+                  : "")
               }
               onClick={() => props.selectIngredient(index)}
             >
