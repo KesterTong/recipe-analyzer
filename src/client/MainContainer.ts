@@ -103,6 +103,7 @@ function mapStateToProps(state: RootState) {
       selectedIngredientAmountError,
       selectedIngredientUnitError,
       selectedIngredientFoodError,
+      numDigits: state.config.numDigits,
     },
   };
 }

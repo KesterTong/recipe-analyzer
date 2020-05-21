@@ -38,6 +38,7 @@ export interface StateProps {
   nutrientsPerIngredient: StatusOr<Nutrients>[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
+  numDigits: number;
 }
 
 export interface DispatchProps {
@@ -46,8 +47,8 @@ export interface DispatchProps {
   updateDocument(update: Update): void;
 }
 
-function nutrientValue(nutrients: StatusOr<Nutrients>, id: number) {
-  return isOk(nutrients) ? nutrients[id] : "";
+function nutrientValue(nutrients: StatusOr<Nutrients>, id: number, numDigits: number) {
+  return isOk(nutrients) ? nutrients[id]?.toFixed(numDigits) : "";
 }
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
@@ -97,7 +98,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
               </td>
               {props.nutrients.map(({ id }) => (
                 <td>
-                  {nutrientValue(props.nutrientsPerIngredient[index], id)}
+                  {nutrientValue(props.nutrientsPerIngredient[index], id, props.numDigits)}
                 </td>
               ))}
             </tr>

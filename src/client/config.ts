@@ -27,6 +27,7 @@ export interface Config {
   }[];
   massUnits: Unit[];
   volumeUnits: Unit[];
+  numDigits: number;
 }
 
 export const defaultConfig: Config = {
@@ -109,4 +110,5 @@ export const defaultConfig: Config = {
       otherNames: ["liter", "liters"],
     },
   ],
+  numDigits: 1,
 };
