@@ -81,16 +81,16 @@ function mapStateToProps(state: RootState) {
     ingredientInfos[state.selectedIngredientIndex].nutrients;
   // We generate the error for `amount` here as that error is sometimes
   // superceded by other errors in nutrientsForIngredient.
-  const selectedIngredientAmountError = isNaN(Number(selectedIngredient.amount))
+  const amountError = isNaN(Number(selectedIngredient.amount))
     ? "Enter a number"
     : null;
-  let selectedIngredientUnitError = null;
-  let selectedIngredientFoodError = null;
+  let unitError = null;
+  let foodError = null;
   if (!isOk(selectedIngredientNutrients)) {
     if (selectedIngredientNutrients.code == StatusCode.UNKNOWN_UNIT) {
-      selectedIngredientUnitError = selectedIngredientNutrients.message;
+      unitError = selectedIngredientNutrients.message;
     } else if (selectedIngredientNutrients.code != StatusCode.NAN_AMOUNT) {
-      selectedIngredientFoodError = selectedIngredientNutrients.message;
+      foodError = selectedIngredientNutrients.message;
     }
   }
   return {
@@ -100,11 +100,13 @@ function mapStateToProps(state: RootState) {
       suggestions: getSuggestions("", state),
       ingredientInfos,
       selectedIngredientIndex: state.selectedIngredientIndex,
-      selectedIngredient,
+      selectedIngredient: {
+        ...selectedIngredient,
+        amountError,
+        unitError,
+        foodError,
+      },
       nutrients: state.config.nutrients,
-      selectedIngredientAmountError,
-      selectedIngredientUnitError,
-      selectedIngredientFoodError,
       numDigits: state.config.numDigits,
     },
   };

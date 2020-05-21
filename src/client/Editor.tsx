@@ -33,10 +33,11 @@ export interface StateProps {
     nutrients: StatusOr<Nutrients>;
   }[];
   selectedIngredientIndex: number;
-  selectedIngredient: Ingredient;
-  selectedIngredientAmountError: string | null;
-  selectedIngredientUnitError: string | null;
-  selectedIngredientFoodError: string | null;
+  selectedIngredient: Ingredient & {
+    amountError: string | null;
+    unitError: string | null;
+    foodError: string | null;
+  };
   nutrients: { name: string; id: number }[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
@@ -181,7 +182,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           }
         ></input>
       </div>
-      <div className="error">{props.selectedIngredientAmountError}</div>
+      <div className="error">{props.selectedIngredient.amountError}</div>
     </div>
     <div className="block form-group">
       <label htmlFor="ingredient-unit">Unit</label>
@@ -200,7 +201,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           }
         ></input>
       </div>
-      <div className="error">{props.selectedIngredientUnitError}</div>
+      <div className="error">{props.selectedIngredient.unitError}</div>
     </div>
     <div className="block form-group">
       <label htmlFor="ingredient-food">Food</label>
@@ -217,7 +218,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           })
         }
       />
-      <div className="error">{props.selectedIngredientFoodError}</div>
+      <div className="error">{props.selectedIngredient.foodError}</div>
     </div>
   </React.Fragment>
 );
