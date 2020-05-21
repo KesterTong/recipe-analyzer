@@ -22,8 +22,10 @@ import {
   UpdateType,
   Recipe,
   parseFdcWebUrl,
+  initializeQuantityData,
 } from "../core";
 import { fetchFdcFood } from "../core/fetchFdcFoods";
+import { defaultConfig } from "./config";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -31,11 +33,17 @@ export function initialize(): ThunkResult<void> {
   return async (dispatch) => {
     try {
       const recipes = await parseDocument();
-      const fdcFoodsById = await fetchFdcFoods(recipes);
+      const conversionData = initializeQuantityData(
+        defaultConfig.massUnits,
+        defaultConfig.volumeUnits
+      )
+      const fdcFoodsById = await fetchFdcFoods(recipes, conversionData);
       dispatch({
         type: ActionType.INITIALIZE,
         recipes,
         fdcFoodsById,
+        config: defaultConfig,
+        conversionData,
       });
     } catch (error) {
       dispatch({
@@ -69,7 +77,7 @@ export function updateDocument(update: Update): ThunkResult<void> {
     ) {
       const fdcId = parseFdcWebUrl(update.newFood.url);
       if (fdcId !== null) {
-        const newFdcFood = await fetchFdcFood(fdcId);
+        const newFdcFood = await fetchFdcFood(fdcId, state.conversionData);
         dispatch({
           type: ActionType.UPDATE_FDC_FOODS,
           fdcFoodsById: { [fdcId]: newFdcFood },

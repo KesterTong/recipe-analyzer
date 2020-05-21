@@ -11,26 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Recipe, StatusOr, NormalizedFood, ConversionData } from "../core";
-import { Config } from "./config";
 
-export interface LoadingState {
-  type: "Loading";
+export interface Unit {
+  // The value of the unit in g or ml.
+  value: number;
+  // The primary name of the unit.
+  name: string;
+  // Othr names of the unit.
+  otherNames: string[];
 }
-
-export interface ErrorState {
-  type: "Error";
-  message: string;
-}
-
-export interface ActiveState {
-  type: "Active";
-  recipes: Recipe[];
-  selectedRecipeIndex: number;
-  selectedIngredientIndex: number;
-  fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
-  config: Config;
-  conversionData: ConversionData;
-}
-
-export type RootState = LoadingState | ErrorState | ActiveState;

@@ -68,7 +68,7 @@ function mapStateToProps(state: RootState) {
 
   const selectedRecipe = state.recipes[state.selectedRecipeIndex];
   const nutrientsPerIngredient = selectedRecipe.ingredients.map((ingredient) =>
-    nutrientsForIngredient(ingredient, state.fdcFoodsById)
+    nutrientsForIngredient(ingredient, state.fdcFoodsById, state.conversionData)
   );
   const selectedIngredient =
     selectedRecipe.ingredients[state.selectedIngredientIndex];

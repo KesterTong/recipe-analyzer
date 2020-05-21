@@ -17,7 +17,6 @@ import { RootAction, ActionType } from "./RootAction";
 import { updateRecipes, UpdateType } from "../core";
 import { createStore, applyMiddleware } from "redux";
 import thunk, { ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
-import { defaultConfig } from "../core/config";
 
 const initialState: RootState = { type: "Loading" };
 
@@ -36,7 +35,8 @@ function rootReducer(
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0,
         fdcFoodsById: action.fdcFoodsById,
-        config: defaultConfig,
+        config: action.config,
+        conversionData: action.conversionData,
       };
     case ActionType.INITIALIZATION_ERROR:
       return {

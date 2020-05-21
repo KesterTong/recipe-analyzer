@@ -12,14 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface Unit {
-  // The value of the unit in g or ml.
-  value: number;
-  // The primary name of the unit.
-  name: string;
-  // Othr names of the unit.
-  otherNames: string[];
-}
+import { Unit } from "../core";
 
 /**
  * Configuration for the app.

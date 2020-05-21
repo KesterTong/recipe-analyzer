@@ -20,11 +20,13 @@ import {
   StatusOr,
 } from ".";
 import { NormalizedFood, parseFdcWebUrl, FDCFood } from ".";
+import { ConversionData } from "./canonicalizeQuantity";
 
 const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
 
 export async function fetchFdcFood(
-  fdcId: number
+  fdcId: number,
+  conversionData: ConversionData
 ): Promise<StatusOr<NormalizedFood>> {
   const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
   const json = await response.json();
@@ -34,7 +36,7 @@ export async function fetchFdcFood(
       "Error fetching FDC food: " + fdcId
     );
   }
-  return normalizeFDCFood(json);
+  return normalizeFDCFood(json, conversionData);
 }
 
 /**
@@ -45,7 +47,7 @@ export async function fetchFdcFood(
  */
 export async function fetchFdcFoods(
   recipes: Recipe[],
-  currentFoods?: { [index: number]: StatusOr<NormalizedFood> }
+  conversionData: ConversionData
 ): Promise<{ [index: number]: StatusOr<NormalizedFood> }> {
   const fdcIds: number[] = [];
   recipes.forEach((recipe) => {
@@ -56,14 +58,12 @@ export async function fetchFdcFoods(
       if (fdcId == null) {
         return;
       }
-      // Skip foods that have already been loaded.
-      if (currentFoods && currentFoods[fdcId]) {
-        return;
-      }
       fdcIds.push(fdcId);
     });
   });
-  const responses = await Promise.all(fdcIds.map(fetchFdcFood));
+  const responses = await Promise.all(
+    fdcIds.map((food) => fetchFdcFood(food, conversionData))
+  );
   let result: { [index: number]: StatusOr<NormalizedFood> } = {};
   responses.forEach((response, index) => {
     result[fdcIds[index]] = response;

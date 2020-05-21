@@ -17,11 +17,12 @@ import { NormalizedFood } from "./NormalizedFood";
 import { Nutrients, scaleNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { parseFdcWebUrl } from "./FoodDataCentral";
-import { canonicalizeQuantity } from "./canonicalizeQuantity";
+import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 
 export function nutrientsForIngredient(
   ingredient: Ingredient,
-  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> }
+  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  conversionData: ConversionData
 ): StatusOr<Nutrients> {
   if (ingredient.ingredient.url == null) {
     // If the ingredient has no URL then it is just text and
@@ -46,7 +47,10 @@ export function nutrientsForIngredient(
     }
   }
   // oneUnit = 1 x ingredient.unit
-  const oneUnit = canonicalizeQuantity({ amount: 1, unit: ingredient.unit });
+  const oneUnit = canonicalizeQuantity(
+    { amount: 1, unit: ingredient.unit },
+    conversionData
+  );
   let matchingQuantities = normalizedFood.servingEquivalents.filter(
     (quantity) => quantity.unit == oneUnit.unit
   );

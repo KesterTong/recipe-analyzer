@@ -13,24 +13,36 @@
 // limitations under the License.
 
 import { Quantity } from "./Quantity";
-import { defaultConfig } from "./config";
+import { Unit } from "./Unit";
 
-const gramEquivalentByUnit: { [index: string]: number } = {};
-const mlEquivalentByUnit: { [index: string]: number } = {};
+// Data derived from the config, but optimized for conversion.
+// Fields should not be used outside of initializeQuantityData
+// and canonicalizeQuantity.
+export interface ConversionData {
+  gramEquivalentByUnit: { [index: string]: number };
+  mlEquivalentByUnit: { [index: string]: number };
+}
 
-defaultConfig.massUnits.forEach((unit) => {
-  gramEquivalentByUnit[unit.name] = unit.value;
-  unit.otherNames.forEach((name) => {
-    gramEquivalentByUnit[name] = unit.value;
+export function initializeQuantityData(
+  massUnits: Unit[],
+  volumeUnits: Unit[]
+): ConversionData {
+  const gramEquivalentByUnit: { [index: string]: number } = {};
+  const mlEquivalentByUnit: { [index: string]: number } = {};
+  massUnits.forEach((unit) => {
+    gramEquivalentByUnit[unit.name] = unit.value;
+    unit.otherNames.forEach((name) => {
+      gramEquivalentByUnit[name] = unit.value;
+    });
   });
-});
-
-defaultConfig.volumeUnits.forEach((unit) => {
-  mlEquivalentByUnit[unit.name] = unit.value;
-  unit.otherNames.forEach((name) => {
-    mlEquivalentByUnit[name] = unit.value;
+  volumeUnits.forEach((unit) => {
+    mlEquivalentByUnit[unit.name] = unit.value;
+    unit.otherNames.forEach((name) => {
+      mlEquivalentByUnit[name] = unit.value;
+    });
   });
-});
+  return { gramEquivalentByUnit, mlEquivalentByUnit };
+}
 
 /**
  * Transform a quantity by
@@ -38,7 +50,11 @@ defaultConfig.volumeUnits.forEach((unit) => {
  *  - Removing trailing 's' to alllow plural and singular forms.
  *  - Convert to lowercase.
  */
-export function canonicalizeQuantity(quantity: Quantity): Quantity {
+export function canonicalizeQuantity(
+  quantity: Quantity,
+  conversionData: ConversionData
+): Quantity {
+  const { gramEquivalentByUnit, mlEquivalentByUnit } = conversionData;
   let { amount, unit } = quantity;
   unit = unit.toLowerCase().replace(/(\w*)s$/, "$1");
   if (gramEquivalentByUnit[unit]) {

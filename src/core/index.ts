@@ -14,13 +14,15 @@
 
 export * from "./NormalizedFood";
 export * from "./FoodDataCentral";
+export * from "./nutrientsForIngredient";
+export * from "./canonicalizeQuantity";
 export * from "./Nutrients";
 export * from "./Recipe";
 export * from "./Update";
 export * from "./StatusOr";
+export * from "./Unit";
 
 export { NormalizedFood } from "./NormalizedFood";
 export { normalizeFDCFood } from "./normalizeFDCFood";
-export { nutrientsForIngredient } from "./nutrientsForIngredient";
 export { updateRecipes } from "./updateRecipes";
 export { fetchFdcFoods } from "./fetchFdcFoods";
