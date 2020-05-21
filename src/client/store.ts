@@ -49,22 +49,21 @@ function rootReducer(
       }
       let selectedIngredientIndex = state.selectedIngredientIndex;
       if (action.update.recipeIndex == state.selectedRecipeIndex) {
-        const selectedRecipe = state.recipes[state.selectedRecipeIndex];
         switch (action.update.type) {
           case UpdateType.ADD_INGREDIENT:
+            const selectedRecipe = state.recipes[state.selectedRecipeIndex];
             selectedIngredientIndex = selectedRecipe.ingredients.length;
             break;
           case UpdateType.DELETE_INGREDIENT:
-            if (action.update.ingredientIndex == selectedIngredientIndex) {
+            if (selectedIngredientIndex == action.update.ingredientIndex) {
               selectedIngredientIndex = 0;
             }
             break;
           case UpdateType.SWAP_INGREDIENTS:
-            if (action.update.firstIngredientIndex == selectedIngredientIndex) {
+            if (selectedIngredientIndex == action.update.firstIngredientIndex) {
               selectedIngredientIndex = selectedIngredientIndex + 1;
             } else if (
-              action.update.firstIngredientIndex ==
-              selectedIngredientIndex + 1
+              selectedIngredientIndex = action.update.firstIngredientIndex + 1
             ) {
               selectedIngredientIndex = selectedIngredientIndex - 1;
             }
