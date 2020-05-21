@@ -57,7 +57,7 @@ export function nutrientsForIngredient(
   if (matchingQuantities.length === 0) {
     return status(
       StatusCode.UNKNOWN_UNIT,
-      "Could not convert unit " + oneUnit.unit + " for food"
+      "Could not convert unit " + ingredient.unit + " for food"
     );
   }
   // matchingQuantities[0] = 1 serving

@@ -47,7 +47,6 @@ export function initializeQuantityData(
 /**
  * Transform a quantity by
  *  - Converting mass units to 'g' and volume units to 'ml'.
- *  - Removing trailing 's' to alllow plural and singular forms.
  *  - Convert to lowercase.
  */
 export function canonicalizeQuantity(
@@ -56,7 +55,7 @@ export function canonicalizeQuantity(
 ): Quantity {
   const { gramEquivalentByUnit, mlEquivalentByUnit } = conversionData;
   let { amount, unit } = quantity;
-  unit = unit.toLowerCase().replace(/(\w*)s$/, "$1");
+  unit = unit.toLowerCase();
   if (gramEquivalentByUnit[unit]) {
     return { amount: amount * gramEquivalentByUnit[unit], unit: "g" };
   }

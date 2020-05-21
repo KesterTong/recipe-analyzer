@@ -18,6 +18,7 @@ import { RecipeInput } from "./RecipeInput";
 import { IngredientsTable } from "./IngredientsTable";
 import { selectIngredient } from "./actions";
 import { IngredientEditor } from "./IngredientEditor";
+import { IngredientEditorContainer } from "./IngredientEditorContainer";
 
 export interface StateProps {
   recipeTitles: string[];
@@ -113,22 +114,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           Move down
         </button>
       </div>
-      <IngredientEditor
-        ingredient={props.selectedIngredient}
-        amountError={props.amountError}
-        unitError={props.unitError}
-        foodError={props.foodError}
-        nutrients={selectedIngredientInfo.nutrients}
-        suggestions={props.suggestions}
-        updateIngredient={(update) =>
-          props.updateDocument({
-            type: UpdateType.UPDATE_INGREDIENT,
-            recipeIndex: props.selectedRecipeIndex,
-            ingredientIndex: props.selectedIngredientIndex,
-            ...update,
-          })
-        }
-      />
+      <IngredientEditorContainer />
     </React.Fragment>
   );
 };
