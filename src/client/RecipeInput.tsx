@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
+import { MaybeComponent } from "./MaybeComponent";
 
-interface Props {
+export interface StateProps {
   recipeTitles: string[];
   selectedRecipeIndex: number;
+}
+
+interface DispatchProps {
   selectRecipe: (value: number) => void;
 }
 
-export const RecipeInput: React.FunctionComponent<Props> = (props) => (
+export const RecipeInput = MaybeComponent<StateProps, DispatchProps>((props) => (
   <div className="block form-group">
     <label htmlFor="recipe">Selected Recipe</label>
     <div className="control-group">
@@ -34,4 +38,4 @@ export const RecipeInput: React.FunctionComponent<Props> = (props) => (
       </select>
     </div>
   </div>
-);
+));

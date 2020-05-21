@@ -13,13 +13,12 @@
 // limitations under the License.
 import * as React from "react";
 import { Ingredient, Update, UpdateType, Nutrients, StatusOr } from "../core";
-import { RecipeInput } from "./RecipeInput";
 import { IngredientsTable } from "./IngredientsTable";
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
 import { MaybeComponent } from "./MaybeComponent";
+import { RecipeInputContainer } from "./RecipeInputContainer";
 
 export interface StateProps {
-  recipeTitles: string[];
   selectedRecipeIndex: number;
   ingredientInfos: {
     description: string;
@@ -43,15 +42,9 @@ export interface DispatchProps {
 }
 
 export const Editor = MaybeComponent<StateProps, DispatchProps>((props) => {
-  const selectedIngredientInfo =
-    props.ingredientInfos[props.selectedIngredientIndex];
   return (
     <React.Fragment>
-      <RecipeInput
-        recipeTitles={props.recipeTitles}
-        selectedRecipeIndex={props.selectedRecipeIndex}
-        selectRecipe={props.selectRecipe}
-      />
+      <RecipeInputContainer/>
       <IngredientsTable
         selectedRecipeIndex={props.selectedRecipeIndex}
         ingredientInfos={props.ingredientInfos}
