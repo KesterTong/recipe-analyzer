@@ -36,7 +36,7 @@ export function initialize(): ThunkResult<void> {
       const conversionData = initializeQuantityData(
         defaultConfig.massUnits,
         defaultConfig.volumeUnits
-      )
+      );
       const fdcFoodsById = await fetchFdcFoods(recipes, conversionData);
       dispatch({
         type: ActionType.INITIALIZE,

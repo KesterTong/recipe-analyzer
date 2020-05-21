@@ -17,7 +17,10 @@ import { TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from "../testData";
 import { defaultConfig } from "../../src/client/config";
 
 describe("normalizeFDCFood", () => {
-  const conversionData = initializeQuantityData(defaultConfig.massUnits, defaultConfig.volumeUnits);
+  const conversionData = initializeQuantityData(
+    defaultConfig.massUnits,
+    defaultConfig.volumeUnits
+  );
 
   it("SR Legacy Food", () => {
     const result = normalizeFDCFood(TEST_SR_LEGACY_FOOD, conversionData);

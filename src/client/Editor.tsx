@@ -28,14 +28,16 @@ import { ListSelect } from "./ListSelect";
 export interface StateProps {
   recipeTitles: string[];
   selectedRecipeIndex: number;
-  ingredientDisplayStrings: string[];
+  ingredientInfos: {
+    description: string;
+    nutrients: StatusOr<Nutrients>;
+  }[];
   selectedIngredientIndex: number;
   selectedIngredient: Ingredient;
   selectedIngredientAmountError: string | null;
   selectedIngredientUnitError: string | null;
   selectedIngredientFoodError: string | null;
   nutrients: { name: string; id: number }[];
-  nutrientsPerIngredient: StatusOr<Nutrients>[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
   numDigits: number;
@@ -47,7 +49,11 @@ export interface DispatchProps {
   updateDocument(update: Update): void;
 }
 
-function nutrientValue(nutrients: StatusOr<Nutrients>, id: number, numDigits: number) {
+function nutrientValue(
+  nutrients: StatusOr<Nutrients>,
+  id: number,
+  numDigits: number
+) {
   return isOk(nutrients) ? nutrients[id]?.toFixed(numDigits) : "";
 }
 
@@ -76,15 +82,11 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           ))}
         </thead>
         <tbody>
-          {props.ingredientDisplayStrings.map((displayString, index) => (
+          {props.ingredientInfos.map(({ description, nutrients }, index) => (
             <tr
               className={
                 (index == props.selectedIngredientIndex ? "selected-row" : "") +
-                (!isOk(props.nutrientsPerIngredient[index]) &&
-                !hasCode(
-                  props.nutrientsPerIngredient[index],
-                  StatusCode.LOADING
-                )
+                (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
                   ? " error"
                   : "")
               }
@@ -92,13 +94,13 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
             >
               <td>
                 <span>
-                  {displayString +
+                  {description +
                     "\u200b" /**  zero width space to ensure height is at least one font hieght */}
                 </span>
               </td>
               {props.nutrients.map(({ id }) => (
                 <td className="nutrient-value">
-                  {nutrientValue(props.nutrientsPerIngredient[index], id, props.numDigits)}
+                  {nutrientValue(nutrients, id, props.numDigits)}
                 </td>
               ))}
             </tr>
@@ -156,8 +158,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           })
         }
         disabled={
-          props.selectedIngredientIndex ==
-          props.ingredientDisplayStrings.length - 1
+          props.selectedIngredientIndex == props.ingredientInfos.length - 1
         }
       >
         Move down

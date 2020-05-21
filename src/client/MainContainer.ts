@@ -49,7 +49,7 @@ function getSuggestions(query: string, state: ActiveState) {
     );
 }
 
-function ingredientDisplayString(ingredient: Ingredient) {
+function ingredientDescription(ingredient: Ingredient) {
   return (
     ingredient.amount +
     " " +
@@ -67,13 +67,18 @@ function mapStateToProps(state: RootState) {
   }
 
   const selectedRecipe = state.recipes[state.selectedRecipeIndex];
-  const nutrientsPerIngredient = selectedRecipe.ingredients.map((ingredient) =>
-    nutrientsForIngredient(ingredient, state.fdcFoodsById, state.conversionData)
-  );
+  const ingredientInfos = selectedRecipe.ingredients.map((ingredient) => ({
+    description: ingredientDescription(ingredient),
+    nutrients: nutrientsForIngredient(
+      ingredient,
+      state.fdcFoodsById,
+      state.conversionData
+    ),
+  }));
   const selectedIngredient =
     selectedRecipe.ingredients[state.selectedIngredientIndex];
   const selectedIngredientNutrients =
-    nutrientsPerIngredient[state.selectedIngredientIndex];
+    ingredientInfos[state.selectedIngredientIndex].nutrients;
   // We generate the error for `amount` here as that error is sometimes
   // superceded by other errors in nutrientsForIngredient.
   const selectedIngredientAmountError = isNaN(Number(selectedIngredient.amount))
@@ -93,13 +98,10 @@ function mapStateToProps(state: RootState) {
       recipeTitles: state.recipes.map((recipe) => recipe.title),
       selectedRecipeIndex: state.selectedRecipeIndex,
       suggestions: getSuggestions("", state),
-      ingredientDisplayStrings: selectedRecipe.ingredients.map(
-        ingredientDisplayString
-      ),
+      ingredientInfos,
       selectedIngredientIndex: state.selectedIngredientIndex,
       selectedIngredient,
       nutrients: state.config.nutrients,
-      nutrientsPerIngredient,
       selectedIngredientAmountError,
       selectedIngredientUnitError,
       selectedIngredientFoodError,
