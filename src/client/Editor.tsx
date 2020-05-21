@@ -97,7 +97,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
                 </span>
               </td>
               {props.nutrients.map(({ id }) => (
-                <td>
+                <td className="nutrient-value">
                   {nutrientValue(props.nutrientsPerIngredient[index], id, props.numDigits)}
                 </td>
               ))}
@@ -106,7 +106,7 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
           <tr>
             <td>Total</td>
             {props.nutrients.map((name) => (
-              <td>??</td>
+              <td className="nutrient-value">??</td>
             ))}
           </tr>
         </tbody>
