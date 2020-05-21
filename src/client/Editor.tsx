@@ -89,7 +89,12 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
               }
               onClick={() => props.selectIngredient(index)}
             >
-              <td>{displayString}</td>
+              <td>
+                <span>
+                  {displayString +
+                    "\u200b" /**  zero width space to ensure height is at least one font hieght */}
+                </span>
+              </td>
               {props.nutrients.map(({ id }) => (
                 <td>
                   {nutrientValue(props.nutrientsPerIngredient[index], id)}

@@ -15,22 +15,22 @@
 import { Quantity } from "./Quantity";
 import { defaultConfig } from "./config";
 
-const gramEquivalentByUnit: {[index: string]: number} = {};
-const mlEquivalentByUnit: {[index: string]: number} = {};
+const gramEquivalentByUnit: { [index: string]: number } = {};
+const mlEquivalentByUnit: { [index: string]: number } = {};
 
-defaultConfig.massUnits.forEach(unit => {
+defaultConfig.massUnits.forEach((unit) => {
   gramEquivalentByUnit[unit.name] = unit.value;
-  unit.otherNames.forEach(name => {
+  unit.otherNames.forEach((name) => {
     gramEquivalentByUnit[name] = unit.value;
-  })
-})
+  });
+});
 
-defaultConfig.volumeUnits.forEach(unit => {
+defaultConfig.volumeUnits.forEach((unit) => {
   mlEquivalentByUnit[unit.name] = unit.value;
-  unit.otherNames.forEach(name => {
+  unit.otherNames.forEach((name) => {
     mlEquivalentByUnit[name] = unit.value;
-  })
-})
+  });
+});
 
 /**
  * Transform a quantity by

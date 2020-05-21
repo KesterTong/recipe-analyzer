@@ -63,7 +63,7 @@ function rootReducer(
             if (selectedIngredientIndex == action.update.firstIngredientIndex) {
               selectedIngredientIndex = selectedIngredientIndex + 1;
             } else if (
-              selectedIngredientIndex = action.update.firstIngredientIndex + 1
+              (selectedIngredientIndex = action.update.firstIngredientIndex + 1)
             ) {
               selectedIngredientIndex = selectedIngredientIndex - 1;
             }
