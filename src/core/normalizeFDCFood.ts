@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { canonicalizeQuantity, Quantity } from "./Quantity";
+import { Quantity } from "./Quantity";
+import { canonicalizeQuantity } from "./canonicalizeQuantity";
 import { Nutrients, addNutrients, scaleNutrients } from "./Nutrients";
 import { SRLegacyFood, BrandedFood, FDCFood } from "./FoodDataCentral";
 import { NormalizedFood } from "./NormalizedFood";

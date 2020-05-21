@@ -17,7 +17,7 @@ import { NormalizedFood } from "./NormalizedFood";
 import { Nutrients, scaleNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { parseFdcWebUrl } from "./FoodDataCentral";
-import { canonicalizeQuantity } from "./Quantity";
+import { canonicalizeQuantity } from "./canonicalizeQuantity";
 
 export function nutrientsForIngredient(
   ingredient: Ingredient,
