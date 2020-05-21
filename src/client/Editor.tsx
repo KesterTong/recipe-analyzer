@@ -13,15 +13,11 @@
 // limitations under the License.
 import * as React from "react";
 import { FoodInput } from "./FoodInput";
-import {
-  Ingredient,
-  Update,
-  UpdateType,
-  Nutrients,
-  StatusOr,
-} from "../core";
+import { Ingredient, Update, UpdateType, Nutrients, StatusOr } from "../core";
 import { RecipeInput } from "./RecipeInput";
 import { IngredientsTable } from "./IngredientsTable";
+import { selectIngredient } from "./actions";
+import { IngredientEditor } from "./IngredientEditor";
 
 export interface StateProps {
   recipeTitles: string[];
@@ -31,11 +27,10 @@ export interface StateProps {
     nutrients: StatusOr<Nutrients>;
   }[];
   selectedIngredientIndex: number;
-  selectedIngredient: Ingredient & {
-    amountError: string | null;
-    unitError: string | null;
-    foodError: string | null;
-  };
+  selectedIngredient: Ingredient;
+  amountError: string | null;
+  unitError: string | null;
+  foodError: string | null;
   nutrients: { name: string; id: number }[];
   // TODO: make this a function of query.
   suggestions: { description: string; url: string }[];
@@ -50,125 +45,90 @@ export interface DispatchProps {
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
   props
-) => (
-  <React.Fragment>
-    <RecipeInput
-      recipeTitles={props.recipeTitles}
-      selectedRecipeIndex={props.selectedRecipeIndex}
-      selectRecipe={props.selectRecipe}
-    />
-    <IngredientsTable
-      selectedRecipeIndex={props.selectedRecipeIndex}
-      ingredientInfos={props.ingredientInfos}
-      selectedIngredientIndex={props.selectedIngredientIndex}
-      nutrients={props.nutrients}
-      numDigits={props.numDigits}
-      selectIngredient={props.selectIngredient}
-    />
+) => {
+  const selectedIngredientInfo =
+    props.ingredientInfos[props.selectedIngredientIndex];
+  return (
+    <React.Fragment>
+      <RecipeInput
+        recipeTitles={props.recipeTitles}
+        selectedRecipeIndex={props.selectedRecipeIndex}
+        selectRecipe={props.selectRecipe}
+      />
+      <IngredientsTable
+        selectedRecipeIndex={props.selectedRecipeIndex}
+        ingredientInfos={props.ingredientInfos}
+        selectedIngredientIndex={props.selectedIngredientIndex}
+        nutrients={props.nutrients}
+        numDigits={props.numDigits}
+        selectIngredient={props.selectIngredient}
+      />
 
-    <div className="block button-group">
-      <button
-        onClick={() =>
-          props.updateDocument({
-            type: UpdateType.ADD_INGREDIENT,
-            recipeIndex: props.selectedRecipeIndex,
-          })
-        }
-      >
-        New
-      </button>
-      <button
-        onClick={() =>
-          props.updateDocument({
-            type: UpdateType.DELETE_INGREDIENT,
-            recipeIndex: props.selectedRecipeIndex,
-            ingredientIndex: props.selectedIngredientIndex,
-          })
-        }
-      >
-        Delete
-      </button>
-      <button
-        onClick={() =>
-          props.updateDocument({
-            type: UpdateType.SWAP_INGREDIENTS,
-            recipeIndex: props.selectedRecipeIndex,
-            firstIngredientIndex: props.selectedIngredientIndex - 1,
-          })
-        }
-        disabled={props.selectedIngredientIndex == 0}
-      >
-        Move up
-      </button>
-      <button
-        onClick={() =>
-          props.updateDocument({
-            type: UpdateType.SWAP_INGREDIENTS,
-            recipeIndex: props.selectedRecipeIndex,
-            firstIngredientIndex: props.selectedIngredientIndex,
-          })
-        }
-        disabled={
-          props.selectedIngredientIndex == props.ingredientInfos.length - 1
-        }
-      >
-        Move down
-      </button>
-    </div>
-    <div className="block form-group">
-      <label htmlFor="ingredient-amount">Amount</label>
-      <div className="control-group">
-        <input
-          type="text"
-          id="ingredient-amount"
-          value={props.selectedIngredient.amount}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+      <div className="block button-group">
+        <button
+          onClick={() =>
             props.updateDocument({
-              type: UpdateType.UPDATE_INGREDIENT,
+              type: UpdateType.ADD_INGREDIENT,
               recipeIndex: props.selectedRecipeIndex,
-              ingredientIndex: props.selectedIngredientIndex,
-              newAmount: event.target.value,
             })
           }
-        ></input>
-      </div>
-      <div className="error">{props.selectedIngredient.amountError}</div>
-    </div>
-    <div className="block form-group">
-      <label htmlFor="ingredient-unit">Unit</label>
-      <div className="control-group">
-        <input
-          type="text"
-          id="ingredient-unit"
-          value={props.selectedIngredient.unit}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+        >
+          New
+        </button>
+        <button
+          onClick={() =>
             props.updateDocument({
-              type: UpdateType.UPDATE_INGREDIENT,
+              type: UpdateType.DELETE_INGREDIENT,
               recipeIndex: props.selectedRecipeIndex,
               ingredientIndex: props.selectedIngredientIndex,
-              newUnit: event.target.value,
             })
           }
-        ></input>
+        >
+          Delete
+        </button>
+        <button
+          onClick={() =>
+            props.updateDocument({
+              type: UpdateType.SWAP_INGREDIENTS,
+              recipeIndex: props.selectedRecipeIndex,
+              firstIngredientIndex: props.selectedIngredientIndex - 1,
+            })
+          }
+          disabled={props.selectedIngredientIndex == 0}
+        >
+          Move up
+        </button>
+        <button
+          onClick={() =>
+            props.updateDocument({
+              type: UpdateType.SWAP_INGREDIENTS,
+              recipeIndex: props.selectedRecipeIndex,
+              firstIngredientIndex: props.selectedIngredientIndex,
+            })
+          }
+          disabled={
+            props.selectedIngredientIndex == props.ingredientInfos.length - 1
+          }
+        >
+          Move down
+        </button>
       </div>
-      <div className="error">{props.selectedIngredient.unitError}</div>
-    </div>
-    <div className="block form-group">
-      <label htmlFor="ingredient-food">Food</label>
-      <FoodInput
-        id="ingredient-food"
-        value={props.selectedIngredient.ingredient}
+      <IngredientEditor
+        ingredient={props.selectedIngredient}
+        amountError={props.amountError}
+        unitError={props.unitError}
+        foodError={props.foodError}
+        nutrients={selectedIngredientInfo.nutrients}
         suggestions={props.suggestions}
-        onChange={(value) =>
+        updateIngredient={(update) =>
           props.updateDocument({
             type: UpdateType.UPDATE_INGREDIENT,
             recipeIndex: props.selectedRecipeIndex,
             ingredientIndex: props.selectedIngredientIndex,
-            newFood: value,
+            ...update,
           })
         }
       />
-      <div className="error">{props.selectedIngredient.foodError}</div>
-    </div>
-  </React.Fragment>
-);
+    </React.Fragment>
+  );
+};
