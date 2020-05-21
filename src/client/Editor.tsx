@@ -19,11 +19,9 @@ import {
   UpdateType,
   Nutrients,
   StatusOr,
-  isOk,
-  StatusCode,
-  hasCode,
 } from "../core";
 import { RecipeInput } from "./RecipeInput";
+import { IngredientsTable } from "./IngredientsTable";
 
 export interface StateProps {
   recipeTitles: string[];
@@ -46,16 +44,8 @@ export interface StateProps {
 
 export interface DispatchProps {
   selectRecipe(index: number): void;
-  selectIngredient(index: number): void;
   updateDocument(update: Update): void;
-}
-
-function nutrientValue(
-  nutrients: StatusOr<Nutrients>,
-  id: number,
-  numDigits: number
-) {
-  return isOk(nutrients) ? nutrients[id]?.toFixed(numDigits) : "";
+  selectIngredient(index: number): void;
 }
 
 export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
@@ -67,47 +57,14 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
       selectedRecipeIndex={props.selectedRecipeIndex}
       selectRecipe={props.selectRecipe}
     />
-    <div className="block form-group">
-      <table id="ingredients" className="nutrients-table" tabIndex={0}>
-        <thead>
-          <th>Ingredient</th>
-          {props.nutrients.map(({ name }) => (
-            <th>{name}</th>
-          ))}
-        </thead>
-        <tbody>
-          {props.ingredientInfos.map(({ description, nutrients }, index) => (
-            <tr
-              className={
-                (index == props.selectedIngredientIndex ? "selected-row" : "") +
-                (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
-                  ? " error"
-                  : "")
-              }
-              onClick={() => props.selectIngredient(index)}
-            >
-              <td>
-                <span>
-                  {description +
-                    "\u200b" /**  zero width space to ensure height is at least one font hieght */}
-                </span>
-              </td>
-              {props.nutrients.map(({ id }) => (
-                <td className="nutrient-value">
-                  {nutrientValue(nutrients, id, props.numDigits)}
-                </td>
-              ))}
-            </tr>
-          ))}
-          <tr>
-            <td>Total</td>
-            {props.nutrients.map((name) => (
-              <td className="nutrient-value">??</td>
-            ))}
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <IngredientsTable
+      selectedRecipeIndex={props.selectedRecipeIndex}
+      ingredientInfos={props.ingredientInfos}
+      selectedIngredientIndex={props.selectedIngredientIndex}
+      nutrients={props.nutrients}
+      numDigits={props.numDigits}
+      selectIngredient={props.selectIngredient}
+    />
 
     <div className="block button-group">
       <button
