@@ -23,7 +23,7 @@ import {
   StatusCode,
   hasCode,
 } from "../core";
-import { ListSelect } from "./ListSelect";
+import { RecipeInput } from "./RecipeInput";
 
 export interface StateProps {
   recipeTitles: string[];
@@ -62,18 +62,11 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
   props
 ) => (
   <React.Fragment>
-    <div className="block form-group">
-      <label htmlFor="recipe">Selected Recipe</label>
-      <div className="control-group">
-        <ListSelect
-          labels={props.recipeTitles}
-          value={props.selectedRecipeIndex}
-          id="ingredient"
-          onChange={props.selectRecipe}
-        />
-      </div>
-    </div>
-
+    <RecipeInput
+      recipeTitles={props.recipeTitles}
+      selectedRecipeIndex={props.selectedRecipeIndex}
+      selectRecipe={props.selectRecipe}
+    />
     <div className="block form-group">
       <table id="ingredients" className="nutrients-table" tabIndex={0}>
         <thead>

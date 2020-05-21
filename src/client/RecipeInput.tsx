@@ -14,20 +14,24 @@
 import * as React from "react";
 
 interface Props {
-  labels: string[];
-  value: number;
-  id: string;
-  onChange: (value: number) => void;
+  recipeTitles: string[];
+  selectedRecipeIndex: number;
+  selectRecipe: (value: number) => void;
 }
 
-export const ListSelect: React.FunctionComponent<Props> = (props) => (
-  <select
-    value={props.value}
-    onChange={(event) => props.onChange(Number(event.target.value))}
-    id={props.id}
-  >
-    {props.labels.map((label, index) => (
-      <option value={index}>{label}</option>
-    ))}
-  </select>
+export const RecipeInput: React.FunctionComponent<Props> = (props) => (
+  <div className="block form-group">
+    <label htmlFor="recipe">Selected Recipe</label>
+    <div className="control-group">
+      <select
+        value={props.selectedRecipeIndex}
+        onChange={(event) => props.selectRecipe(Number(event.target.value))}
+        id="recipe"
+      >
+        {props.recipeTitles.map((title, index) => (
+          <option value={index}>{title}</option>
+        ))}
+      </select>
+    </div>
+  </div>
 );
