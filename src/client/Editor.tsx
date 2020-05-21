@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { FoodInput } from "./FoodInput";
 import { Ingredient, Update, UpdateType, Nutrients, StatusOr } from "../core";
 import { RecipeInput } from "./RecipeInput";
 import { IngredientsTable } from "./IngredientsTable";
-import { selectIngredient } from "./actions";
-import { IngredientEditor } from "./IngredientEditor";
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
+import { MaybeComponent } from "./MaybeComponent";
 
 export interface StateProps {
   recipeTitles: string[];
@@ -44,9 +42,7 @@ export interface DispatchProps {
   selectIngredient(index: number): void;
 }
 
-export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
-  props
-) => {
+export const Editor = MaybeComponent<StateProps, DispatchProps>((props) => {
   const selectedIngredientInfo =
     props.ingredientInfos[props.selectedIngredientIndex];
   return (
@@ -117,4 +113,4 @@ export const Editor: React.FunctionComponent<StateProps & DispatchProps> = (
       <IngredientEditorContainer />
     </React.Fragment>
   );
-};
+});

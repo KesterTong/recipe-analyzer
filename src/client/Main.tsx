@@ -12,40 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { Update } from "../core";
-import { Editor, StateProps as EditorStateProps } from "./Editor";
+import { EditorContainer } from "./EditorContainer";
 
 export interface MainProps {
   // TODO: use some kind of union type here.
-  editorStateProps?: EditorStateProps;
+  type: "Active" | "Error" | "Loading";
   errorMessage?: string;
-
-  selectRecipe(index: number): void;
-  selectIngredient(index: number): void;
-  updateDocument(update: Update): void;
 }
 
 export const Main: React.FunctionComponent<MainProps> = (props) => {
-  if (props.editorStateProps) {
-    return (
-      <Editor
-        {...props.editorStateProps}
-        selectRecipe={props.selectRecipe}
-        selectIngredient={props.selectIngredient}
-        updateDocument={props.updateDocument}
-      />
-    );
-  } else if (props.errorMessage) {
-    return (
-      <React.Fragment>
-        <div className="error">{props.errorMessage}</div>
-      </React.Fragment>
-    );
-  } else {
-    return (
-      <React.Fragment>
-        <div>Loading...</div>
-      </React.Fragment>
-    );
+  switch (props.type) {
+    case "Active":
+      return <EditorContainer />;
+    case "Error":
+      return (
+        <React.Fragment>
+          <div className="error">{props.errorMessage}</div>
+        </React.Fragment>
+      );
+    case "Loading":
+      return (
+        <React.Fragment>
+          <div>Loading...</div>
+        </React.Fragment>
+      );
   }
 };
