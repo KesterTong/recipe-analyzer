@@ -14,39 +14,11 @@
 
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { StateProps, Editor } from "./Editor";
-import { RootState, ActiveState } from "./RootState";
-import {
-  nutrientsForIngredient,
-  isOk,
-  StatusCode,
-  makeFdcWebUrl,
-  Ingredient,
-} from "../core";
-import { filterNulls } from "../core/filterNulls";
+import { RootState } from "./RootState";
 import { updateDocument, selectIngredient, selectRecipe } from "./actions";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-
-function getSuggestions(query: string, state: ActiveState) {
-  return state.recipes
-    .map((recipe) => ({
-      description: recipe.title,
-      url: recipe.url,
-    }))
-    .concat(
-      filterNulls(
-        Object.entries(state.fdcFoodsById).map((entry) =>
-          isOk(entry[1])
-            ? {
-                url: makeFdcWebUrl(Number(entry[0])),
-                description: entry[1].description,
-              }
-            : null
-        )
-      )
-    );
-}
 
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>((state) => {
   if (state.type !== "Active") {

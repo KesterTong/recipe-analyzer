@@ -12,15 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootState } from "./RootState";
+import { RootState, ActiveState } from "./RootState";
 import { StateProps } from "./IngredientEditor";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { updateDocument } from "./actions";
-import { nutrientsForIngredient, StatusCode, isOk, UpdateType } from "../core";
+import { nutrientsForIngredient, StatusCode, isOk, UpdateType, makeFdcWebUrl } from "../core";
 import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";
+import { filterNulls } from "../core/filterNulls";
+
+function getSuggestions(query: string, state: ActiveState) {
+  return state.recipes
+    .map((recipe) => ({
+      description: recipe.title,
+      url: recipe.url,
+    }))
+    .concat(
+      filterNulls(
+        Object.entries(state.fdcFoodsById).map((entry) =>
+          isOk(entry[1])
+            ? {
+                url: makeFdcWebUrl(Number(entry[0])),
+                description: entry[1].description,
+              }
+            : null
+        )
+      )
+    );
+}
 
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
   (state: RootState) => {
@@ -54,7 +75,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       unitError,
       foodError,
       nutrients,
-      suggestions: [], // TODO: implement this.
+      suggestions: getSuggestions("", state),
       updateContext: {
         type: UpdateType.UPDATE_INGREDIENT,
         recipeIndex: state.selectedRecipeIndex,
