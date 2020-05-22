@@ -23,6 +23,8 @@ import {
   Recipe,
   parseFdcWebUrl,
   initializeQuantityData,
+  makeFdcWebUrl,
+  isOk,
 } from "../core";
 import { fetchFdcFood } from "../core/fetchFdcFoods";
 import { defaultConfig } from "./config";
@@ -54,12 +56,54 @@ export function initialize(): ThunkResult<void> {
   };
 }
 
+const UPC_REGEX = /\d{12,13}/;
+
+function maybeRewrite(update: Update): ThunkResult<void> {
+  return async (dispatch, getState) => {
+    const state = getState();
+    if (state.type !== "Active") {
+      return;
+    }
+    if (update.type != UpdateType.UPDATE_INGREDIENT) {
+      return;
+    }
+    if (update.newFood === undefined) {
+      return;
+    }
+    if (update.newFood.url !== null) {
+      return;
+    }
+    const fdcId = parseFdcWebUrl(update.newFood.description);
+    if (fdcId === null) {
+      return;
+    }
+    const normalizedFood = await fetchFdcFood(fdcId, state.conversionData);
+    // TODO: handle errors.
+    dispatch(
+      updateDocument({
+        ...update,
+        newFood: {
+          description: isOk(normalizedFood)
+            ? normalizedFood.description
+            : "ERROR",
+          url: makeFdcWebUrl(fdcId),
+        },
+      })
+    );
+  };
+}
+
 export function updateDocument(update: Update): ThunkResult<void> {
   return async (dispatch, getState) => {
     const state = getState();
     if (state.type != "Active") {
       return;
     }
+
+    // Rewrite ingredient food updates so that users can type in
+    // or copy-paste a URL or UPC, and it will get rewritten to
+    // a link.  This is done asynchronously.
+    dispatch(maybeRewrite(update));
 
     // We update the document on the server side asynchronously.
     updateServerDocument(update);
