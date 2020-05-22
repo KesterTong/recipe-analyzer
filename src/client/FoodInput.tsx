@@ -13,23 +13,24 @@
 // limitations under the License.
 import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
-import { searchFdcFoodsUrl, FDCQueryResult, makeFdcWebUrl } from "../core";
+import { searchFdcFoods } from "../core";
+import { FoodReference } from "../core/FoodReference";
 
 interface Props {
   id: string;
-  suggestions: { description: string; url: string }[];
+  suggestions: FoodReference[];
   value: { description: string; url: string | null };
   onChange(newValue: { description: string; url: string | null }): void;
 }
 
+// TODO: make these part of config.
 const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
-
 const minCharsToQueryFDC = 3;
 
 export class FoodInput extends React.Component<
   Props,
   {
-    suggestions: { description: string; url: string }[];
+    suggestions: FoodReference[];
   }
 > {
   constructor(props: Props) {
@@ -47,16 +48,8 @@ export class FoodInput extends React.Component<
     if (props.value.length < minCharsToQueryFDC) {
       return;
     }
-    const response = await fetch(searchFdcFoodsUrl(props.value, FDC_API_KEY));
-    const result: FDCQueryResult = await response.json();
-    this.setState({
-      suggestions: this.props.suggestions.concat(
-        result.foods.map((entry) => ({
-          description: entry.description,
-          url: makeFdcWebUrl(entry.fdcId),
-        }))
-      ),
-    });
+    const suggestions = await searchFdcFoods(props.value, FDC_API_KEY);
+    this.setState({ suggestions: this.props.suggestions.concat(suggestions) });
   };
 
   onSuggestionsClearRequested = () => {

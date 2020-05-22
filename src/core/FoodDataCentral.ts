@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Nutrients } from "./Nutrients";
+import { FoodReference } from "./FoodReference";
 
 export interface BrandedFood {
   dataType: "Branded";
@@ -66,7 +67,7 @@ export interface FDCQueryResult {
   foods: FDCQueryFood[];
 }
 
-const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;
+export const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;
 
 /**
  * Parse a link to the FDC website as an FDC ID.
@@ -90,11 +91,20 @@ export function makeFdcWebUrl(fdcId: number): string {
   );
 }
 
+export async function searchFdcFoods(query: string, fdcApiKey: string): Promise<FoodReference[]> {
+  const response = await fetch(searchFdcFoodsUrl(query, fdcApiKey));
+  const result: FDCQueryResult = await response.json();
+  return result.foods.map((entry) => ({
+    description: entry.description,
+    url: makeFdcWebUrl(entry.fdcId),
+  }));
+}
+
 export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
 }
 
-export function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
+function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
   return fdcApiUrl("search", fdcApiKey, {
     generalSearchInput: encodeURIComponent(query),
     includeDataTypeList: "SR%20Legacy,Branded",
