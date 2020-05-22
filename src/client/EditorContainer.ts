@@ -48,59 +48,38 @@ function getSuggestions(query: string, state: ActiveState) {
     );
 }
 
-function ingredientDescription(ingredient: Ingredient) {
-  return (
-    ingredient.amount +
-    " " +
-    ingredient.unit +
-    " " +
-    ingredient.ingredient.description
-  );
-}
-
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>((state) => {
   if (state.type !== "Active") {
     return null;
   }
-  const selectedRecipe = state.recipes[state.selectedRecipeIndex];
-  const ingredientInfos = selectedRecipe.ingredients.map((ingredient) => ({
-    description: ingredientDescription(ingredient),
-    nutrients: nutrientsForIngredient(
-      ingredient,
-      state.fdcFoodsById,
-      state.conversionData
-    ),
-  }));
-  const selectedIngredient =
-    selectedRecipe.ingredients[state.selectedIngredientIndex];
-  const selectedIngredientNutrients =
-    ingredientInfos[state.selectedIngredientIndex].nutrients;
+  const recipe = state.recipes[state.selectedRecipeIndex];
+  const ingredient = recipe.ingredients[state.selectedIngredientIndex];
   // We generate the error for `amount` here as that error is sometimes
   // superceded by other errors in nutrientsForIngredient.
-  const amountError = isNaN(Number(selectedIngredient.amount))
+  const amountError = isNaN(Number(ingredient.amount))
     ? "Enter a number"
     : null;
+  const nutrients = nutrientsForIngredient(
+    ingredient,
+    state.fdcFoodsById,
+    state.conversionData
+  );
   let unitError = null;
   let foodError = null;
-  if (!isOk(selectedIngredientNutrients)) {
-    if (selectedIngredientNutrients.code == StatusCode.UNKNOWN_UNIT) {
-      unitError = selectedIngredientNutrients.message;
-    } else if (selectedIngredientNutrients.code != StatusCode.NAN_AMOUNT) {
-      foodError = selectedIngredientNutrients.message;
+  if (!isOk(nutrients)) {
+    if (nutrients.code == StatusCode.UNKNOWN_UNIT) {
+      unitError = nutrients.message;
+    } else if (nutrients.code != StatusCode.NAN_AMOUNT) {
+      foodError = nutrients.message;
     }
   }
   return {
-    recipeTitles: state.recipes.map((recipe) => recipe.title),
     selectedRecipeIndex: state.selectedRecipeIndex,
-    suggestions: getSuggestions("", state),
-    ingredientInfos,
     selectedIngredientIndex: state.selectedIngredientIndex,
-    selectedIngredient,
+    numIngredients: recipe.ingredients.length,
     amountError,
     unitError,
     foodError,
-    nutrients: state.config.nutrients,
-    numDigits: state.config.numDigits,
   };
 });
 

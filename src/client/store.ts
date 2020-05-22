@@ -93,6 +93,7 @@ function rootReducer(
       return {
         ...state,
         selectedRecipeIndex: action.index,
+        selectedIngredientIndex: 0,
       };
     case ActionType.SELECT_INGREDIENT:
       if (state.type != "Active") {

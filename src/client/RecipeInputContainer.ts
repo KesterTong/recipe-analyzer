@@ -20,18 +20,15 @@ import { ThunkDispatch } from "./store";
 import { selectRecipe } from "./actions";
 import { connect } from "react-redux";
 
-
-const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
-  (state) => {
-    if (state.type != "Active") {
-      return null;
-    }
-    return {
-      recipeTitles: state.recipes.map(recipe => recipe.title),
-      selectedRecipeIndex: state.selectedRecipeIndex,
-    };
+const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>((state) => {
+  if (state.type != "Active") {
+    return null;
   }
-);
+  return {
+    recipeTitles: state.recipes.map((recipe) => recipe.title),
+    selectedRecipeIndex: state.selectedRecipeIndex,
+  };
+});
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(

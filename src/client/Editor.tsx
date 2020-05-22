@@ -17,42 +17,26 @@ import { IngredientsTable } from "./IngredientsTable";
 import { IngredientEditorContainer } from "./IngredientEditorContainer";
 import { MaybeComponent } from "./MaybeComponent";
 import { RecipeInputContainer } from "./RecipeInputContainer";
+import { IngredientsTableContainer } from "./IngredientsTableContainer";
 
 export interface StateProps {
   selectedRecipeIndex: number;
-  ingredientInfos: {
-    description: string;
-    nutrients: StatusOr<Nutrients>;
-  }[];
   selectedIngredientIndex: number;
-  selectedIngredient: Ingredient;
+  numIngredients: number;
   amountError: string | null;
   unitError: string | null;
   foodError: string | null;
-  nutrients: { name: string; id: number }[];
-  // TODO: make this a function of query.
-  suggestions: { description: string; url: string }[];
-  numDigits: number;
 }
 
 export interface DispatchProps {
-  selectRecipe(index: number): void;
   updateDocument(update: Update): void;
-  selectIngredient(index: number): void;
 }
 
 export const Editor = MaybeComponent<StateProps, DispatchProps>((props) => {
   return (
     <React.Fragment>
-      <RecipeInputContainer/>
-      <IngredientsTable
-        selectedRecipeIndex={props.selectedRecipeIndex}
-        ingredientInfos={props.ingredientInfos}
-        selectedIngredientIndex={props.selectedIngredientIndex}
-        nutrients={props.nutrients}
-        numDigits={props.numDigits}
-        selectIngredient={props.selectIngredient}
-      />
+      <RecipeInputContainer />
+      <IngredientsTableContainer />
 
       <div className="block button-group">
         <button
@@ -96,9 +80,7 @@ export const Editor = MaybeComponent<StateProps, DispatchProps>((props) => {
               firstIngredientIndex: props.selectedIngredientIndex,
             })
           }
-          disabled={
-            props.selectedIngredientIndex == props.ingredientInfos.length - 1
-          }
+          disabled={props.selectedIngredientIndex == props.numIngredients - 1}
         >
           Move down
         </button>

@@ -23,19 +23,21 @@ interface DispatchProps {
   selectRecipe: (value: number) => void;
 }
 
-export const RecipeInput = MaybeComponent<StateProps, DispatchProps>((props) => (
-  <div className="block form-group">
-    <label htmlFor="recipe">Selected Recipe</label>
-    <div className="control-group">
-      <select
-        value={props.selectedRecipeIndex}
-        onChange={(event) => props.selectRecipe(Number(event.target.value))}
-        id="recipe"
-      >
-        {props.recipeTitles.map((title, index) => (
-          <option value={index}>{title}</option>
-        ))}
-      </select>
+export const RecipeInput = MaybeComponent<StateProps, DispatchProps>(
+  (props) => (
+    <div className="block form-group">
+      <label htmlFor="recipe">Selected Recipe</label>
+      <div className="control-group">
+        <select
+          value={props.selectedRecipeIndex}
+          onChange={(event) => props.selectRecipe(Number(event.target.value))}
+          id="recipe"
+        >
+          {props.recipeTitles.map((title, index) => (
+            <option value={index}>{title}</option>
+          ))}
+        </select>
+      </div>
     </div>
-  </div>
-));
+  )
+);

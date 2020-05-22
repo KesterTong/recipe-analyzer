@@ -13,6 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import { StatusOr, Nutrients, isOk, hasCode, StatusCode } from "../core";
+import { MaybeComponent } from "./MaybeComponent";
 
 function nutrientValue(
   nutrients: StatusOr<Nutrients>,
@@ -22,8 +23,7 @@ function nutrientValue(
   return isOk(nutrients) ? nutrients[id]?.toFixed(numDigits) : "";
 }
 
-export const IngredientsTable: React.FunctionComponent<{
-  selectedRecipeIndex: number;
+export interface StateProps {
   ingredientInfos: {
     description: string;
     nutrients: StatusOr<Nutrients>;
@@ -31,47 +31,54 @@ export const IngredientsTable: React.FunctionComponent<{
   selectedIngredientIndex: number;
   nutrients: { name: string; id: number }[];
   numDigits: number;
+}
+
+interface DispatchProps {
   selectIngredient(index: number): void;
-}> = (props) => (
-  <div className="block form-group">
-    <table id="ingredients" className="nutrients-table" tabIndex={0}>
-      <thead>
-        <th>Ingredient</th>
-        {props.nutrients.map(({ name }) => (
-          <th>{name}</th>
-        ))}
-      </thead>
-      <tbody>
-        {props.ingredientInfos.map(({ description, nutrients }, index) => (
-          <tr
-            className={
-              (index == props.selectedIngredientIndex ? "selected-row" : "") +
-              (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
-                ? " error"
-                : "")
-            }
-            onClick={() => props.selectIngredient(index)}
-          >
-            <td>
-              <span>
-                {description +
-                  "\u200b" /**  zero width space to ensure height is at least one font hieght */}
-              </span>
-            </td>
-            {props.nutrients.map(({ id }) => (
-              <td className="nutrient-value">
-                {nutrientValue(nutrients, id, props.numDigits)}
+}
+
+export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
+  (props) => (
+    <div className="block form-group">
+      <table id="ingredients" className="nutrients-table" tabIndex={0}>
+        <thead>
+          <th>Ingredient</th>
+          {props.nutrients.map(({ name }) => (
+            <th>{name}</th>
+          ))}
+        </thead>
+        <tbody>
+          {props.ingredientInfos.map(({ description, nutrients }, index) => (
+            <tr
+              className={
+                (index == props.selectedIngredientIndex ? "selected-row" : "") +
+                (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
+                  ? " error"
+                  : "")
+              }
+              onClick={() => props.selectIngredient(index)}
+            >
+              <td>
+                <span>
+                  {description +
+                    "\u200b" /**  zero width space to ensure height is at least one font hieght */}
+                </span>
               </td>
+              {props.nutrients.map(({ id }) => (
+                <td className="nutrient-value">
+                  {nutrientValue(nutrients, id, props.numDigits)}
+                </td>
+              ))}
+            </tr>
+          ))}
+          <tr>
+            <td>Total</td>
+            {props.nutrients.map((name) => (
+              <td className="nutrient-value">??</td>
             ))}
           </tr>
-        ))}
-        <tr>
-          <td>Total</td>
-          {props.nutrients.map((name) => (
-            <td className="nutrient-value">??</td>
-          ))}
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        </tbody>
+      </table>
+    </div>
+  )
 );
