@@ -29,8 +29,11 @@ import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { filterNulls } from "../core/filterNulls";
 
-function getSuggestions(query: string, state: ActiveState) {
+// Unfiltered suggestions of all recipes other than this recipe
+// and all ingredients in all recipes.
+function getSuggestions(state: ActiveState) {
   return state.recipes
+    .filter((_, index) => index != state.selectedRecipeIndex)
     .map((recipe) => ({
       description: recipe.title,
       url: recipe.url,
@@ -82,7 +85,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       unitError,
       foodError,
       nutrients,
-      suggestions: getSuggestions("", state),
+      suggestions: getSuggestions(state),
       updateContext: {
         type: UpdateType.UPDATE_INGREDIENT,
         recipeIndex: state.selectedRecipeIndex,

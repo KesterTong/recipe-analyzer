@@ -14,7 +14,7 @@
 
 import { Ingredient, Recipe } from "./Recipe";
 import { NormalizedFood } from "./NormalizedFood";
-import { Nutrients, scaleNutrients } from "./Nutrients";
+import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { parseFdcWebUrl } from "./FoodDataCentral";
 import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
@@ -25,9 +25,18 @@ export function normalizeRecipe(
   recipes: Recipe[],
   conversionData: ConversionData
 ): StatusOr<NormalizedFood> {
+  let nutrientsPerServing = {};
+  recipe.ingredients.forEach(ingredient => {
+    // TODO: Avoid cycles that would cause infinite recursion.
+    const nutrients = nutrientsForIngredient(ingredient, fdcFoodsById, recipes, conversionData);
+    // TODO: Don't ignore errors, propagate them.
+    if (isOk(nutrients)) {
+      nutrientsPerServing = addNutrients(nutrientsPerServing, nutrients);
+    }
+  });
   return {
-    description: "",
-    nutrientsPerServing: { 1008: -100 },
+    description: recipe.title,
+    nutrientsPerServing,
     servingEquivalents: [{ amount: 1, unit: "serving" }],
   };
 }
