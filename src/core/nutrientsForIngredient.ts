@@ -23,12 +23,13 @@ export function normalizeRecipe(
   recipe: Recipe,
   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
-  conversionData: ConversionData): StatusOr<NormalizedFood> {
-    return {
-      description: "",
-      nutrientsPerServing: {1008: -100},
-      servingEquivalents: [{amount: 1, unit: "serving"}],
-    };
+  conversionData: ConversionData
+): StatusOr<NormalizedFood> {
+  return {
+    description: "",
+    nutrientsPerServing: { 1008: -100 },
+    servingEquivalents: [{ amount: 1, unit: "serving" }],
+  };
 }
 
 function lookupIngredient(
@@ -38,17 +39,22 @@ function lookupIngredient(
   conversionData: ConversionData
 ): StatusOr<NormalizedFood> {
   let fdcId: number | null;
-  if (fdcId = parseFdcWebUrl(url)) {
+  if ((fdcId = parseFdcWebUrl(url))) {
     const normalizedFood = fdcFoodsById[fdcId];
     return normalizedFood === undefined
       ? status(StatusCode.LOADING, "Loading")
       : normalizedFood;
-  } else if (url.startsWith('#')) {
-    const matchingRecipes = recipes.filter(recipe => recipe.url === url);
+  } else if (url.startsWith("#")) {
+    const matchingRecipes = recipes.filter((recipe) => recipe.url === url);
     if (matchingRecipes.length == 0) {
       return status(StatusCode.FOOD_NOT_FOUND, "Recipe " + url + " not found");
     }
-    return normalizeRecipe(matchingRecipes[0], fdcFoodsById, recipes, conversionData);
+    return normalizeRecipe(
+      matchingRecipes[0],
+      fdcFoodsById,
+      recipes,
+      conversionData
+    );
   } else {
     return status(StatusCode.FOOD_NOT_FOUND, "URL " + url + " not recognized");
   }

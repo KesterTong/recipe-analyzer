@@ -17,7 +17,13 @@ import { StateProps } from "./IngredientEditor";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { updateDocument } from "./actions";
-import { nutrientsForIngredient, StatusCode, isOk, UpdateType, makeFdcWebUrl } from "../core";
+import {
+  nutrientsForIngredient,
+  StatusCode,
+  isOk,
+  UpdateType,
+  makeFdcWebUrl,
+} from "../core";
 import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";
@@ -54,7 +60,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       ingredient,
       state.fdcFoodsById,
       state.recipes,
-      state.conversionData,
+      state.conversionData
     );
     // We generate the error for `amount` here as that error is sometimes
     // superceded by other errors in nutrientsForIngredient.
