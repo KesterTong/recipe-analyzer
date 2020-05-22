@@ -82,7 +82,7 @@ export class FoodInput extends React.Component<
 
     return (
       <Autosuggest
-        alwaysRenderSuggestions
+        alwaysRenderSuggestions={this.props.value.url === null}
         suggestions={suggestions}
         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
