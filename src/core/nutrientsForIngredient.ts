@@ -80,7 +80,7 @@ function lookupIngredient(
   conversionData: ConversionData,
   stack?: Recipe[]
 ): StatusOr<NormalizedFood> {
-  if ((normalizedFoodByUrl[url] !== undefined)) {
+  if (normalizedFoodByUrl[url] !== undefined) {
     return normalizedFoodByUrl[url];
   } else if (url.startsWith("#")) {
     const matchingRecipes = recipes.filter((recipe) => recipe.url === url);

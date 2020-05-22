@@ -75,7 +75,9 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
           <tr>
             <td>Total</td>
             {props.nutrients.map(({ id }) => (
-              <td className="nutrient-value">{nutrientValue(props.totalNutrients, id, props.numDigits)}</td>
+              <td className="nutrient-value">
+                {nutrientValue(props.totalNutrients, id, props.numDigits)}
+              </td>
             ))}
           </tr>
         </tbody>

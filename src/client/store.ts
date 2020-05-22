@@ -72,11 +72,15 @@ function rootReducer(
         }
       }
       let normalizedFoodsByUrl = state.normalizedFoodsByUrl;
-      if (update.type == UpdateType.UPDATE_INGREDIENT && update.newFood && update.newFood.url) {
+      if (
+        update.type == UpdateType.UPDATE_INGREDIENT &&
+        update.newFood &&
+        update.newFood.url
+      ) {
         normalizedFoodsByUrl = {
           ...normalizedFoodsByUrl,
           [update.newFood.url]: status(StatusCode.LOADING, "Loading"),
-        }
+        };
       }
       return {
         ...state,

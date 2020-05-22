@@ -40,13 +40,14 @@ function getSuggestions(state: ActiveState) {
     }))
     .concat(
       filterNulls(
-        Object.entries(state.normalizedFoodsByUrl).map(([url, normalizedFood]) =>
-          isOk(normalizedFood)
-            ? {
-                url,
-                description: normalizedFood.description,
-              }
-            : null
+        Object.entries(state.normalizedFoodsByUrl).map(
+          ([url, normalizedFood]) =>
+            isOk(normalizedFood)
+              ? {
+                  url,
+                  description: normalizedFood.description,
+                }
+              : null
         )
       )
     );
