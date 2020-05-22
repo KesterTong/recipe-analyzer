@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "../core/Quantity";
+import { Quantity } from "./Quantity";
 
 /**
  * Parse a quantity, e.g. "1 cup"

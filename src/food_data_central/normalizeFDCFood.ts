@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "../core/Quantity";
+import { FDCFood, BrandedFood, SRLegacyFood } from "./FDCFood";
 import {
+  Quantity,
   ConversionData,
   canonicalizeQuantity,
-} from "../core/canonicalizeQuantity";
-import { Nutrients } from "../core/Nutrients";
-import { FDCFood, BrandedFood, SRLegacyFood } from "./FDCFood";
-import { Food } from "../core/Food";
-import { parseQuantity } from "./parseQuantity";
+  Food,
+  Nutrients,
+  parseQuantity,
+} from "../core";
 
 export function brandedServingEquivalents(
   food: BrandedFood,
