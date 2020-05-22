@@ -26,6 +26,8 @@ export enum StatusCode {
   FDC_API_ERROR = "@Status/FdcApiError",
   // The linked food was not found
   FOOD_NOT_FOUND = "@Status/FoodNotFound",
+  // Cycle of recipes detected
+  RECIPE_CYCLE_DETECTED = "@Status/RecipeCycleDetected",
 }
 
 export interface Status {

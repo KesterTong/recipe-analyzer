@@ -23,22 +23,44 @@ export function normalizeRecipe(
   recipe: Recipe,
   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
-  conversionData: ConversionData
+  conversionData: ConversionData,
+  stack: Recipe[] = []
 ): StatusOr<NormalizedFood> {
-  let nutrientsPerServing = {};
-  recipe.ingredients.forEach((ingredient) => {
-    // TODO: Avoid cycles that would cause infinite recursion.
+  if (stack.indexOf(recipe) != -1) {
+    console.log('got here')
+    return status(
+      StatusCode.RECIPE_CYCLE_DETECTED,
+      "Detected a cycle of recipes that depend on each other: " +
+        stack
+          .concat([recipe])
+          .map((recipe) => recipe.title)
+          .join(", ")
+    );
+  }
+  const nutrientsPerServing = recipe.ingredients.reduce<StatusOr<Nutrients>>((cumulativeTotal, ingredient) => {
+    if (!isOk(cumulativeTotal)) {
+      return cumulativeTotal;
+    }
     const nutrients = nutrientsForIngredient(
       ingredient,
       fdcFoodsById,
       recipes,
-      conversionData
+      conversionData,
+      stack.concat([recipe])
     );
-    // TODO: Don't ignore errors, propagate them.
     if (isOk(nutrients)) {
-      nutrientsPerServing = addNutrients(nutrientsPerServing, nutrients);
+      return addNutrients(cumulativeTotal, nutrients);
+    } else {
+      return nutrients;
     }
-  });
+  }, {});
+  if (!isOk(nutrientsPerServing)) {
+    if (nutrientsPerServing.code == StatusCode.RECIPE_CYCLE_DETECTED) {
+      return nutrientsPerServing;
+    } else {
+      return status(StatusCode.INGREDIENT_ERROR, "Error in recipe " + recipe.title);
+    }
+  }
   return {
     description: recipe.title,
     nutrientsPerServing,
@@ -50,7 +72,8 @@ function lookupIngredient(
   url: string,
   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
-  conversionData: ConversionData
+  conversionData: ConversionData,
+  stack?: Recipe[]
 ): StatusOr<NormalizedFood> {
   let fdcId: number | null;
   if ((fdcId = parseFdcWebUrl(url))) {
@@ -67,7 +90,8 @@ function lookupIngredient(
       matchingRecipes[0],
       fdcFoodsById,
       recipes,
-      conversionData
+      conversionData,
+      stack
     );
   } else {
     return status(StatusCode.FOOD_NOT_FOUND, "URL " + url + " not recognized");
@@ -79,7 +103,8 @@ export function nutrientsForIngredient(
   ingredient: Ingredient,
   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
-  conversionData: ConversionData
+  conversionData: ConversionData,
+  stack?: Recipe[]
 ): StatusOr<Nutrients> {
   if (ingredient.ingredient.url == null) {
     // If the ingredient has no URL then it is just text and
@@ -90,7 +115,8 @@ export function nutrientsForIngredient(
     ingredient.ingredient.url,
     fdcFoodsById,
     recipes,
-    conversionData
+    conversionData,
+    stack
   );
   if (!isOk(normalizedFood)) {
     return normalizedFood;
