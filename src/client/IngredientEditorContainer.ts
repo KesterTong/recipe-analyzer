@@ -66,25 +66,8 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       state.recipes,
       state.conversionData
     );
-    // We generate the error for `amount` here as that error is sometimes
-    // superceded by other errors in nutrientsForIngredient.
-    const amountError = isNaN(Number(ingredient.amount))
-      ? "Enter a number"
-      : null;
-    let unitError = null;
-    let foodError = null;
-    if (!isOk(nutrients)) {
-      if (nutrients.code == StatusCode.UNKNOWN_UNIT) {
-        unitError = nutrients.message;
-      } else if (nutrients.code != StatusCode.NAN_AMOUNT) {
-        foodError = nutrients.message;
-      }
-    }
     return {
       ingredient,
-      amountError,
-      unitError,
-      foodError,
       nutrients,
       suggestions: getSuggestions(state),
       updateContext: {
