@@ -34,7 +34,6 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       state.fdcFoodsById,
       state.conversionData
     );
-    console.log(ingredient);
     // We generate the error for `amount` here as that error is sometimes
     // superceded by other errors in nutrientsForIngredient.
     const amountError = isNaN(Number(ingredient.amount))

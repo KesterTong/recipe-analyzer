@@ -23,9 +23,6 @@ export interface StateProps {
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
   numIngredients: number;
-  amountError: string | null;
-  unitError: string | null;
-  foodError: string | null;
 }
 
 export interface DispatchProps {

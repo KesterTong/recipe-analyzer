@@ -53,33 +53,10 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>((state) => {
     return null;
   }
   const recipe = state.recipes[state.selectedRecipeIndex];
-  const ingredient = recipe.ingredients[state.selectedIngredientIndex];
-  // We generate the error for `amount` here as that error is sometimes
-  // superceded by other errors in nutrientsForIngredient.
-  const amountError = isNaN(Number(ingredient.amount))
-    ? "Enter a number"
-    : null;
-  const nutrients = nutrientsForIngredient(
-    ingredient,
-    state.fdcFoodsById,
-    state.conversionData
-  );
-  let unitError = null;
-  let foodError = null;
-  if (!isOk(nutrients)) {
-    if (nutrients.code == StatusCode.UNKNOWN_UNIT) {
-      unitError = nutrients.message;
-    } else if (nutrients.code != StatusCode.NAN_AMOUNT) {
-      foodError = nutrients.message;
-    }
-  }
   return {
     selectedRecipeIndex: state.selectedRecipeIndex,
     selectedIngredientIndex: state.selectedIngredientIndex,
     numIngredients: recipe.ingredients.length,
-    amountError,
-    unitError,
-    foodError,
   };
 });
 
