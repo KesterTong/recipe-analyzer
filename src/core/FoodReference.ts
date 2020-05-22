@@ -13,6 +13,6 @@
 // limitations under the License.
 
 export interface FoodReference {
-  description: string,
+  description: string;
   url: string | null;
-};
+}

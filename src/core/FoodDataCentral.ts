@@ -15,6 +15,10 @@
 import { Nutrients } from "./Nutrients";
 import { FoodReference } from "./FoodReference";
 import { Food } from "./Food";
+import { ConversionData } from "./canonicalizeQuantity";
+import { StatusOr, StatusCode, status } from "./StatusOr";
+import { normalizeFDCFood } from "./normalizeFDCFood";
+import { Recipe } from "./Recipe";
 
 export interface BrandedFood {
   dataType: "Branded";
@@ -94,10 +98,10 @@ function makeFdcWebUrl(fdcId: number): string {
 
 /**
  * Rewrites a FoodReference or returns the input unchanged.
- * 
+ *
  * This is used to take user-provided input (e.g. a URL or a UPC) and
  * convert it to a link.
- * 
+ *
  * @param description The string to be rewritten
  * @returns The rewritten food reference or null.
  */
@@ -110,7 +114,10 @@ export function maybeRewriteFoodReference(description: string): string | null {
   return makeFdcWebUrl(fdcId);
 }
 
-export async function searchFdcFoods(query: string, fdcApiKey: string): Promise<FoodReference[]> {
+export async function searchFdcFoods(
+  query: string,
+  fdcApiKey: string
+): Promise<FoodReference[]> {
   const response = await fetch(searchFdcFoodsUrl(query, fdcApiKey));
   const result: FDCQueryResult = await response.json();
   return result.foods.map((entry) => ({
@@ -119,7 +126,61 @@ export async function searchFdcFoods(query: string, fdcApiKey: string): Promise<
   }));
 }
 
-export function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
+const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
+
+export async function fetchFdcFood(
+  fdcId: number,
+  conversionData: ConversionData
+): Promise<StatusOr<Food>> {
+  const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
+  const json = await response.json();
+  if (json.error) {
+    return status(
+      StatusCode.FDC_API_ERROR,
+      "Error fetching FDC food: " + fdcId
+    );
+  }
+  return normalizeFDCFood(json, conversionData);
+}
+
+/**
+ * Fetch FDC Foods contained in the recipes in the document.
+ *
+ * @param document The document
+ * @returns The FDC Foods by id
+ */
+export async function fetchFdcFoods(
+  recipes: Recipe[],
+  conversionData: ConversionData
+): Promise<{ [index: string]: StatusOr<Food> }> {
+  const fdcIds: number[] = [];
+  const urls: string[] = [];
+  recipes.forEach((recipe) => {
+    recipe.ingredients.forEach(async (ingredient) => {
+      // Links the FDC Web App are parsed as the corresponding food.
+      const url = ingredient.ingredient.url;
+      if (url == null) {
+        return;
+      }
+      const fdcId = parseFdcWebUrl(url);
+      if (fdcId == null) {
+        return;
+      }
+      fdcIds.push(fdcId);
+      urls.push(url);
+    });
+  });
+  const responses = await Promise.all(
+    fdcIds.map((food) => fetchFdcFood(food, conversionData))
+  );
+  let result: { [index: string]: StatusOr<Food> } = {};
+  responses.forEach((response, index) => {
+    result[urls[index]] = response;
+  });
+  return result;
+}
+
+function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
 }
 

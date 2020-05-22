@@ -17,11 +17,7 @@ import { StateProps } from "./IngredientEditor";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { updateDocument } from "./actions";
-import {
-  nutrientsForIngredient,
-  isOk,
-  UpdateType,
-} from "../core";
+import { nutrientsForIngredient, isOk, UpdateType } from "../core";
 import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";

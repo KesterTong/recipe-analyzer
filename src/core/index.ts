@@ -23,6 +23,4 @@ export * from "./StatusOr";
 export * from "./Unit";
 
 export { Food as NormalizedFood } from "./Food";
-export { normalizeFDCFood } from "./normalizeFDCFood";
 export { updateRecipes } from "./updateRecipes";
-export { fetchFdcFoods } from "./fetchFdcFoods";

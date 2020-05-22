@@ -18,6 +18,7 @@ import { RootAction, ActionType } from "./RootAction";
 import { parseDocument, updateDocument as updateServerDocument } from "./doc";
 import {
   fetchFdcFoods,
+  fetchFdcFood,
   Update,
   UpdateType,
   parseFdcWebUrl,
@@ -25,7 +26,6 @@ import {
   isOk,
   maybeRewriteFoodReference,
 } from "../core";
-import { fetchFdcFood } from "../core/fetchFdcFoods";
 import { defaultConfig } from "./config";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
@@ -78,7 +78,10 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (url === null) {
       return;
     }
-    const normalizedFood = await fetchFdcFood(parseFdcWebUrl(url)!, state.conversionData);
+    const normalizedFood = await fetchFdcFood(
+      parseFdcWebUrl(url)!,
+      state.conversionData
+    );
     // TODO: handle errors.
     dispatch(
       updateDocument({
