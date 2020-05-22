@@ -27,16 +27,6 @@ import {
   addNutrients,
 } from "../core";
 
-function ingredientDescription(ingredient: Ingredient) {
-  return (
-    ingredient.amount +
-    " " +
-    ingredient.unit +
-    " " +
-    ingredient.ingredient.description
-  );
-}
-
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
   (state: RootState) => {
     if (state.type != "Active") {
@@ -45,7 +35,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
 
     const selectedRecipe = state.recipes[state.selectedRecipeIndex];
     const ingredientInfos = selectedRecipe.ingredients.map((ingredient) => ({
-      description: ingredientDescription(ingredient),
+      ingredient,
       nutrients: nutrientsForIngredient(
         ingredient,
         state.normalizedFoodsByUrl,

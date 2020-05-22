@@ -12,12 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from "react";
-import { StatusOr, Nutrients, isOk, hasCode, StatusCode } from "../core";
+import {
+  StatusOr,
+  Nutrients,
+  isOk,
+  hasCode,
+  StatusCode,
+  Ingredient,
+} from "../core";
 import { MaybeComponent } from "./MaybeComponent";
 
 export interface StateProps {
   ingredientInfos: {
-    description: string;
+    ingredient: Ingredient;
     nutrients: StatusOr<Nutrients>;
   }[];
   selectedIngredientIndex: number;
@@ -69,7 +76,7 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
           <NutrientsColumnHeaders nutrients={props.nutrients} />
         </thead>
         <tbody>
-          {props.ingredientInfos.map(({ description, nutrients }, index) => (
+          {props.ingredientInfos.map(({ ingredient, nutrients }, index) => (
             <tr
               className={
                 (index == props.selectedIngredientIndex ? "selected-row" : "") +
@@ -81,7 +88,11 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
             >
               <td>
                 <span>
-                  {description +
+                  {ingredient.amount +
+                    " " +
+                    ingredient.unit +
+                    " " +
+                    ingredient.ingredient.description +
                     "\u200b" /**  zero width space to ensure height is at least one font hieght */}
                 </span>
               </td>
