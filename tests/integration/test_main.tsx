@@ -126,8 +126,7 @@ async function updateDocument(update: Update): Promise<void> {
   render();
 }
 
-async function selectRecipe(recipeIndex: number): Promise<void> {
-}
+async function selectRecipe(recipeIndex: number): Promise<void> {}
 
 async function getConfig(): Promise<Config> {
   const response = await fetch("config.json");

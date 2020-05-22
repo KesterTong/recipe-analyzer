@@ -19,10 +19,12 @@ import {
   hasCode,
   StatusCode,
   Ingredient,
+  FoodReference,
 } from "../core";
 import { MaybeComponent } from "./MaybeComponent";
 
 export interface StateProps {
+  recipeIndexByUrl: { [index: string]: number };
   ingredientInfos: {
     ingredient: Ingredient;
     nutrients: StatusOr<Nutrients>;
@@ -34,6 +36,7 @@ export interface StateProps {
 }
 
 interface DispatchProps {
+  selectRecipe(index: number): void;
   selectIngredient(index: number): void;
 }
 
@@ -47,6 +50,35 @@ const NutrientsColumnHeaders: React.FunctionComponent<{
       ))}
     </React.Fragment>
   );
+};
+
+const IngredientLink: React.FunctionComponent<{
+  link: FoodReference;
+  recipeIndexByUrl: { [index: string]: number };
+  selectRecipe: (index: number) => void;
+}> = (props) => {
+  const { description, url } = props.link;
+  if (url === null) {
+    return <React.Fragment>{description}</React.Fragment>;
+  } else if (props.recipeIndexByUrl[url] !== undefined) {
+    return (
+      <a
+        href="#"
+        onClick={(event) => {
+          props.selectRecipe(props.recipeIndexByUrl[url]);
+          event.preventDefault();
+        }}
+      >
+        {description}
+      </a>
+    );
+  } else {
+    return (
+      <a href={url} target="_blank">
+        {description}
+      </a>
+    );
+  }
 };
 
 const NutrientsRowCells: React.FunctionComponent<{
@@ -91,9 +123,12 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
                   {ingredient.amount +
                     " " +
                     ingredient.unit +
-                    " " +
-                    ingredient.ingredient.description +
-                    "\u200b" /**  zero width space to ensure height is at least one font hieght */}
+                    " \u200b" /**  zero width space to ensure height is at least one font hieght */}
+                  <IngredientLink
+                    link={ingredient.ingredient}
+                    recipeIndexByUrl={props.recipeIndexByUrl}
+                    selectRecipe={props.selectRecipe}
+                  />
                 </span>
               </td>
               <NutrientsRowCells

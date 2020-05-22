@@ -12,27 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { selectIngredient } from "./actions";
+import { selectIngredient, selectRecipe } from "./actions";
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { RootState } from "./RootState";
 import { StateProps, IngredientsTable } from "./IngredientsTable";
 import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "./store";
 import { connect } from "react-redux";
-import {
-  Ingredient,
-  nutrientsForIngredient,
-  Nutrients,
-  isOk,
-  addNutrients,
-} from "../core";
+import { nutrientsForIngredient, Nutrients, isOk, addNutrients } from "../core";
 
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
   (state: RootState) => {
     if (state.type != "Active") {
       return null;
     }
-
+    const recipeIndexByUrl: { [index: string]: number } = {};
+    state.recipes.forEach((recipe, index) => {
+      recipeIndexByUrl[recipe.url] = index;
+    });
     const selectedRecipe = state.recipes[state.selectedRecipeIndex];
     const ingredientInfos = selectedRecipe.ingredients.map((ingredient) => ({
       ingredient,
@@ -55,6 +52,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       nutrients: state.config.nutrients,
       numDigits: state.config.numDigits,
       totalNutrients,
+      recipeIndexByUrl,
     };
   }
 );
@@ -63,6 +61,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
       selectIngredient,
+      selectRecipe,
     },
     dispatch
   );

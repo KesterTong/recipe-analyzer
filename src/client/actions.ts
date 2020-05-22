@@ -15,7 +15,12 @@
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
-import { parseDocument, updateDocument as updateServerDocument, selectRecipe as selectServerRecipe, getConfig } from "./doc";
+import {
+  parseDocument,
+  updateDocument as updateServerDocument,
+  selectRecipe as selectServerRecipe,
+  getConfig,
+} from "./doc";
 import {
   Update,
   UpdateType,
@@ -94,7 +99,11 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (url === null) {
       return;
     }
-    const normalizedFood = await fetchFdcFood(url, state.config.fdcApiKey, state.conversionData);
+    const normalizedFood = await fetchFdcFood(
+      url,
+      state.config.fdcApiKey,
+      state.conversionData
+    );
     // TODO: handle errors.
     dispatch(
       updateDocument({
@@ -153,9 +162,9 @@ export function updateDocument(update: Update): ThunkResult<void> {
 export function selectRecipe(index: number): ThunkResult<void> {
   return (dispatch) => {
     // Select the recipe in the Google Doc too.
-    selectServerRecipe(index)
+    selectServerRecipe(index);
     dispatch({ type: ActionType.SELECT_RECIPE, index });
-  }
+  };
 }
 
 export function selectIngredient(index: number): RootAction {

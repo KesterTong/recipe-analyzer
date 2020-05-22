@@ -18,9 +18,9 @@ import { TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from "../testData";
 
 describe("normalizeFDCFood", () => {
   const conversionData: ConversionData = {
-    gramEquivalentByUnit: {'g': 1},
-    mlEquivalentByUnit: {'ml': 1, 'cup': 236.59},
-  }
+    gramEquivalentByUnit: { g: 1 },
+    mlEquivalentByUnit: { ml: 1, cup: 236.59 },
+  };
 
   it("SR Legacy Food", () => {
     const result = normalizeFDCFood(TEST_SR_LEGACY_FOOD, conversionData);
@@ -30,11 +30,11 @@ describe("normalizeFDCFood", () => {
       servingEquivalents: [
         {
           amount: 100,
-          unit: 'g',
+          unit: "g",
         },
         {
           amount: 102.86521739130434,
-          unit: 'ml',
+          unit: "ml",
         },
         {
           amount: 0.6578947368421053,
@@ -52,7 +52,7 @@ describe("normalizeFDCFood", () => {
       servingEquivalents: [
         {
           amount: 100,
-          unit: 'g',
+          unit: "g",
         },
         {
           amount: 15,
