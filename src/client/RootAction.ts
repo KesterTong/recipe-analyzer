@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { Update, Recipe, StatusOr, Food, ConversionData } from "../core";
-import { Config } from "./config";
+import { Config } from "../config/config";
 
 export enum ActionType {
   INITIALIZE = "@Initialize",

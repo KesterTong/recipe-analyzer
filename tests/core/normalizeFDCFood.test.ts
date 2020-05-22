@@ -15,7 +15,7 @@
 import { initializeQuantityData } from "../../src/core";
 import { normalizeFDCFood } from "../../src/food_data_central/normalizeFdcFood";
 import { TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from "../testData";
-import { defaultConfig } from "../../src/client/config";
+import { defaultConfig } from "../../src/config/config";
 
 describe("normalizeFDCFood", () => {
   const conversionData = initializeQuantityData(
