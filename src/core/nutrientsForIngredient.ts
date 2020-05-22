@@ -12,13 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Ingredient } from "./Recipe";
+import { Ingredient, Recipe } from "./Recipe";
 import { NormalizedFood } from "./NormalizedFood";
 import { Nutrients, scaleNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { parseFdcWebUrl } from "./FoodDataCentral";
 import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 
+// export function normalizeRecipe(
+//   recipe: Recipe,
+//   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+//   recipes: Recipe[]): StatusOr<NormalizedFood> {
+
+// }
+
+function lookupIngredient(
+  url: string,
+  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> }
+): StatusOr<NormalizedFood> {
+  const fdcId = parseFdcWebUrl(url);
+  if (fdcId === null) {
+    return status(StatusCode.FOOD_NOT_FOUND, "URL " + url + " not recognized");
+  } else {
+    const normalizedFood = fdcFoodsById[fdcId];
+    return normalizedFood === undefined
+      ? status(StatusCode.LOADING, "Loading")
+      : normalizedFood;
+  }
+}
+
+// Stack is used to prevent infinite recursion
 export function nutrientsForIngredient(
   ingredient: Ingredient,
   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
@@ -29,23 +52,14 @@ export function nutrientsForIngredient(
     // we return no nutrients.
     return {};
   }
-  const fdcId = parseFdcWebUrl(ingredient.ingredient.url);
-  let normalizedFood: NormalizedFood;
-  if (fdcId === null) {
-    return status(
-      StatusCode.FOOD_NOT_FOUND,
-      "URL " + ingredient.ingredient.url + " not recognized"
-    );
-  } else {
-    let statusOrNormalizedFood = fdcFoodsById[fdcId];
-    if (statusOrNormalizedFood === undefined) {
-      return status(StatusCode.LOADING, "Loading");
-    } else if (!isOk(statusOrNormalizedFood)) {
-      return statusOrNormalizedFood;
-    } else {
-      normalizedFood = statusOrNormalizedFood;
-    }
+  const normalizedFood = lookupIngredient(
+    ingredient.ingredient.url,
+    fdcFoodsById
+  );
+  if (!isOk(normalizedFood)) {
+    return normalizedFood;
   }
+
   // oneUnit = 1 x ingredient.unit
   const oneUnit = canonicalizeQuantity(
     { amount: 1, unit: ingredient.unit },
