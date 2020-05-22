@@ -19,7 +19,7 @@ import { StateProps, IngredientsTable } from "./IngredientsTable";
 import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "./store";
 import { connect } from "react-redux";
-import { isOk, Ingredient, nutrientsForIngredient } from "../core";
+import { Ingredient, nutrientsForIngredient } from "../core";
 
 function ingredientDescription(ingredient: Ingredient) {
   return (
