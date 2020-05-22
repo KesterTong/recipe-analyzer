@@ -15,14 +15,6 @@ import * as React from "react";
 import { StatusOr, Nutrients, isOk, hasCode, StatusCode } from "../core";
 import { MaybeComponent } from "./MaybeComponent";
 
-function nutrientValue(
-  nutrients: StatusOr<Nutrients>,
-  id: number,
-  numDigits: number
-) {
-  return isOk(nutrients) ? nutrients[id]?.toFixed(numDigits) : "";
-}
-
 export interface StateProps {
   ingredientInfos: {
     description: string;
@@ -38,15 +30,43 @@ interface DispatchProps {
   selectIngredient(index: number): void;
 }
 
+const NutrientsColumnHeaders: React.FunctionComponent<{
+  nutrients: { name: string; id: number }[];
+}> = (props) => {
+  return (
+    <React.Fragment>
+      {props.nutrients.map(({ name }) => (
+        <th>{name}</th>
+      ))}
+    </React.Fragment>
+  );
+};
+
+const NutrientsRowCells: React.FunctionComponent<{
+  nutrientDefs: { name: string; id: number }[];
+  nutrients: StatusOr<Nutrients>;
+  numDigits: number;
+}> = (props) => {
+  return (
+    <React.Fragment>
+      {props.nutrientDefs.map(({ id }) => {
+        let displayValue = "";
+        if (isOk(props.nutrients) && props.nutrients[id] !== undefined) {
+          displayValue = props.nutrients[id].toFixed(props.numDigits);
+        }
+        return <td className="nutrient-value">{displayValue}</td>;
+      })}
+    </React.Fragment>
+  );
+};
+
 export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
   (props) => (
     <div className="block form-group">
       <table id="ingredients" className="nutrients-table" tabIndex={0}>
         <thead>
           <th>Ingredient</th>
-          {props.nutrients.map(({ name }) => (
-            <th>{name}</th>
-          ))}
+          <NutrientsColumnHeaders nutrients={props.nutrients} />
         </thead>
         <tbody>
           {props.ingredientInfos.map(({ description, nutrients }, index) => (
@@ -65,20 +85,20 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
                     "\u200b" /**  zero width space to ensure height is at least one font hieght */}
                 </span>
               </td>
-              {props.nutrients.map(({ id }) => (
-                <td className="nutrient-value">
-                  {nutrientValue(nutrients, id, props.numDigits)}
-                </td>
-              ))}
+              <NutrientsRowCells
+                nutrientDefs={props.nutrients}
+                nutrients={nutrients}
+                numDigits={props.numDigits}
+              />
             </tr>
           ))}
           <tr>
             <td>Total</td>
-            {props.nutrients.map(({ id }) => (
-              <td className="nutrient-value">
-                {nutrientValue(props.totalNutrients, id, props.numDigits)}
-              </td>
-            ))}
+            <NutrientsRowCells
+              nutrientDefs={props.nutrients}
+              nutrients={props.totalNutrients}
+              numDigits={props.numDigits}
+            />
           </tr>
         </tbody>
       </table>
