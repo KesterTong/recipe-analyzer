@@ -19,10 +19,8 @@ import { bindActionCreators } from "redux";
 import { updateDocument } from "./actions";
 import {
   nutrientsForIngredient,
-  StatusCode,
   isOk,
   UpdateType,
-  makeFdcWebUrl,
 } from "../core";
 import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";

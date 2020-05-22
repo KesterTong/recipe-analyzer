@@ -14,6 +14,7 @@
 
 import { Nutrients } from "./Nutrients";
 import { FoodReference } from "./FoodReference";
+import { Food } from "./Food";
 
 export interface BrandedFood {
   dataType: "Branded";
@@ -83,12 +84,30 @@ export function parseFdcWebUrl(url: string): number | null {
   return Number(match[1]);
 }
 
-export function makeFdcWebUrl(fdcId: number): string {
+function makeFdcWebUrl(fdcId: number): string {
   return (
     "https://fdc.nal.usda.gov/fdc-app.html#/food-details/" +
     fdcId +
     "/nutrients"
   );
+}
+
+/**
+ * Rewrites a FoodReference or returns the input unchanged.
+ * 
+ * This is used to take user-provided input (e.g. a URL or a UPC) and
+ * convert it to a link.
+ * 
+ * @param description The string to be rewritten
+ * @returns The rewritten food reference or null.
+ */
+export function maybeRewriteFoodReference(description: string): string | null {
+  // Detect links to FDC Web App.
+  const fdcId = parseFdcWebUrl(description);
+  if (fdcId === null) {
+    return null;
+  }
+  return makeFdcWebUrl(fdcId);
 }
 
 export async function searchFdcFoods(query: string, fdcApiKey: string): Promise<FoodReference[]> {

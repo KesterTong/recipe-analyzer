@@ -20,11 +20,10 @@ import {
   fetchFdcFoods,
   Update,
   UpdateType,
-  Recipe,
   parseFdcWebUrl,
   initializeQuantityData,
-  makeFdcWebUrl,
   isOk,
+  maybeRewriteFoodReference,
 } from "../core";
 import { fetchFdcFood } from "../core/fetchFdcFoods";
 import { defaultConfig } from "./config";
@@ -70,14 +69,16 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (update.newFood === undefined) {
       return;
     }
+    // Don't rewrite existing links.
     if (update.newFood.url !== null) {
       return;
     }
-    const fdcId = parseFdcWebUrl(update.newFood.description);
-    if (fdcId === null) {
+    // Detect whether description can be converted to a canonical URL.
+    const url = maybeRewriteFoodReference(update.newFood.description);
+    if (url === null) {
       return;
     }
-    const normalizedFood = await fetchFdcFood(fdcId, state.conversionData);
+    const normalizedFood = await fetchFdcFood(parseFdcWebUrl(url)!, state.conversionData);
     // TODO: handle errors.
     dispatch(
       updateDocument({
@@ -86,7 +87,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
           description: isOk(normalizedFood)
             ? normalizedFood.description
             : normalizedFood.message,
-          url: makeFdcWebUrl(fdcId),
+          url,
         },
       })
     );
