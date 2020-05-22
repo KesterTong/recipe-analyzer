@@ -40,8 +40,8 @@ export class FoodInput extends React.Component<
     };
   }
 
-  // TODO: actual suggestions
   onSuggestionsFetchRequested = async (props: { value: any }) => {
+    // TODO: filter this.props.suggestions.
     this.setState({
       suggestions: this.props.suggestions,
     });
