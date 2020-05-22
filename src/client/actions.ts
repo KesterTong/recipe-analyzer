@@ -49,7 +49,7 @@ export function initialize(): ThunkResult<void> {
         });
       });
       const responses = await Promise.all(
-        urls.map((url) => fetchFdcFood(url, conversionData))
+        urls.map((url) => fetchFdcFood(url, config.fdcApiKey, conversionData))
       );
       let normalizedFoodsByUrl: { [index: string]: StatusOr<Food> } = {};
       responses.forEach((response, index) => {
@@ -94,7 +94,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (url === null) {
       return;
     }
-    const normalizedFood = await fetchFdcFood(url, state.conversionData);
+    const normalizedFood = await fetchFdcFood(url, state.config.fdcApiKey, state.conversionData);
     // TODO: handle errors.
     dispatch(
       updateDocument({
@@ -139,6 +139,7 @@ export function updateDocument(update: Update): ThunkResult<void> {
     ) {
       const newFdcFood = await fetchFdcFood(
         update.newFood.url,
+        state.config.fdcApiKey,
         state.conversionData
       );
       dispatch({

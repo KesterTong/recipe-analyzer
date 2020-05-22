@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RootState, ActiveState } from "./RootState";
+import { RootState } from "./RootState";
 import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "./store";
 import { Main } from "./Main";

@@ -15,16 +15,17 @@ import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
 import { searchFdcFoods } from "../food_data_central";
 import { FoodReference } from "../core/FoodReference";
+import { Config } from "../config/config";
 
 interface Props {
   id: string;
   suggestions: FoodReference[];
   value: { description: string; url: string | null };
+  config: Config;
   onChange(newValue: { description: string; url: string | null }): void;
 }
 
-// TODO: make these part of config.
-const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
+// TODO: make this part of config.
 const minCharsToQueryFDC = 3;
 
 export class FoodInput extends React.Component<
@@ -48,7 +49,7 @@ export class FoodInput extends React.Component<
     if (props.value.length < minCharsToQueryFDC) {
       return;
     }
-    const suggestions = await searchFdcFoods(props.value, FDC_API_KEY);
+    const suggestions = await searchFdcFoods(props.value, this.props.config.fdcApiKey);
     this.setState({ suggestions: this.props.suggestions.concat(suggestions) });
   };
 

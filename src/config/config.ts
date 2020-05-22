@@ -21,6 +21,7 @@ import { Unit } from "../core";
  * and document-level config.
  */
 export interface Config {
+  fdcApiKey: string;
   nutrients: {
     id: number;
     name: string;

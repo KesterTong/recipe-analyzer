@@ -23,6 +23,7 @@ import {
 } from "../core";
 import { FoodInput } from "./FoodInput";
 import { MaybeComponent } from "./MaybeComponent";
+import { Config } from "../config/config";
 
 export interface StateProps {
   ingredient: Ingredient;
@@ -33,6 +34,7 @@ export interface StateProps {
     ingredientIndex: number;
   };
   suggestions: { description: string; url: string }[];
+  config: Config;
 }
 
 interface DispatchProps {
@@ -97,6 +99,7 @@ export const IngredientEditor = MaybeComponent<StateProps, DispatchProps>(
             id="ingredient-food"
             value={props.ingredient.ingredient}
             suggestions={props.suggestions}
+            config={props.config}
             onChange={(value) =>
               props.updateDocument({
                 ...props.updateContext,

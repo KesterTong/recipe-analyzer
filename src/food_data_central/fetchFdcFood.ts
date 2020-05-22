@@ -41,17 +41,16 @@ function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
 }
 
-const FDC_API_KEY = "exH4sAKIf3z3hK5vzw3PJlL9hSbUCLZ2H5feMsVJ";
-
 export async function fetchFdcFood(
   url: string,
+  fdcApiKey: string,
   conversionData: ConversionData
 ): Promise<StatusOr<Food>> {
   const fdcId = parseFdcWebUrl(url);
   if (fdcId === null) {
     return status(StatusCode.FOOD_NOT_FOUND, "Did not recognize URL " + url);
   }
-  const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
+  const response = await fetch(getFdcFoodUrl(fdcId, fdcApiKey));
   const json = await response.json();
   if (json.error) {
     return status(

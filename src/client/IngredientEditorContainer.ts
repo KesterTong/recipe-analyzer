@@ -69,6 +69,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
         recipeIndex: state.selectedRecipeIndex,
         ingredientIndex: state.selectedIngredientIndex,
       },
+      config: state.config,
     };
   }
 );
