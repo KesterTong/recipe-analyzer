@@ -21,12 +21,12 @@ import {
   fetchFdcFood,
   Update,
   UpdateType,
-  parseFdcWebUrl,
   initializeQuantityData,
   isOk,
   maybeRewriteFoodReference,
 } from "../core";
 import { defaultConfig } from "./config";
+import { url } from "inspector";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -78,10 +78,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (url === null) {
       return;
     }
-    const normalizedFood = await fetchFdcFood(
-      parseFdcWebUrl(url)!,
-      state.conversionData
-    );
+    const normalizedFood = await fetchFdcFood(url, state.conversionData);
     // TODO: handle errors.
     dispatch(
       updateDocument({
@@ -121,16 +118,14 @@ export function updateDocument(update: Update): ThunkResult<void> {
     if (
       update.type == UpdateType.UPDATE_INGREDIENT &&
       update.newFood &&
-      update.newFood.url
+      update.newFood.url &&
+      !update.newFood.url.startsWith("#")
     ) {
-      const fdcId = parseFdcWebUrl(update.newFood.url);
-      if (fdcId !== null) {
-        const newFdcFood = await fetchFdcFood(fdcId, state.conversionData);
-        dispatch({
-          type: ActionType.UPDATE_FDC_FOODS,
-          normalizedFoodsByUrl: { [update.newFood.url]: newFdcFood },
-        });
-      }
+      const newFdcFood = await fetchFdcFood(update.newFood.url, state.conversionData);
+      dispatch({
+        type: ActionType.UPDATE_FDC_FOODS,
+        normalizedFoodsByUrl: { [update.newFood.url]: newFdcFood },
+      });
     }
   };
 }

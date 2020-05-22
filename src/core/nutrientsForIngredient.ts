@@ -16,7 +16,6 @@ import { Ingredient, Recipe } from "./Recipe";
 import { Food } from "./Food";
 import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
-import { parseFdcWebUrl } from "./FoodDataCentral";
 import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 
 export function normalizeRecipe(
