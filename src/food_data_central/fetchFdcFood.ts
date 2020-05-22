@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food } from "../core/Food";
-import { ConversionData } from "../core/canonicalizeQuantity";
-import { StatusOr, StatusCode, status } from "../core/StatusOr";
+import { Food, ConversionData, StatusOr, StatusCode, status } from "../core";
 import { normalizeFDCFood } from "./normalizeFdcFood";
 import { fdcApiUrl } from "./fdcApiUrl";
 

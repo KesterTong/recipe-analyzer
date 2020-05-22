@@ -23,3 +23,4 @@ export * from "./Unit";
 export * from "./updateRecipes";
 export * from "./parseQuantity";
 export * from "./Quantity";
+export * from "./FoodReference";
