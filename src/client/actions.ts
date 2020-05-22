@@ -17,13 +17,14 @@ import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
 import { parseDocument, updateDocument as updateServerDocument } from "./doc";
 import {
-  fetchFdcFoods,
   fetchFdcFood,
   Update,
   UpdateType,
   initializeQuantityData,
   isOk,
   maybeRewriteFoodReference,
+  StatusOr,
+  Food,
 } from "../core";
 import { defaultConfig } from "./config";
 import { url } from "inspector";
@@ -38,7 +39,24 @@ export function initialize(): ThunkResult<void> {
         defaultConfig.massUnits,
         defaultConfig.volumeUnits
       );
-      const normalizedFoodsByUrl = await fetchFdcFoods(recipes, conversionData);
+      const urls: string[] = [];
+      recipes.forEach((recipe) => {
+        recipe.ingredients.forEach(async (ingredient) => {
+          // Links the FDC Web App are parsed as the corresponding food.
+          const url = ingredient.ingredient.url;
+          if (url == null || url.startsWith("#")) {
+            return;
+          }
+          urls.push(url);
+        });
+      });
+      const responses = await Promise.all(
+        urls.map((url) => fetchFdcFood(url, conversionData))
+      );
+      let normalizedFoodsByUrl: { [index: string]: StatusOr<Food> } = {};
+      responses.forEach((response, index) => {
+        normalizedFoodsByUrl[urls[index]] = response;
+      });
       dispatch({
         type: ActionType.INITIALIZE,
         recipes,
@@ -121,7 +139,10 @@ export function updateDocument(update: Update): ThunkResult<void> {
       update.newFood.url &&
       !update.newFood.url.startsWith("#")
     ) {
-      const newFdcFood = await fetchFdcFood(update.newFood.url, state.conversionData);
+      const newFdcFood = await fetchFdcFood(
+        update.newFood.url,
+        state.conversionData
+      );
       dispatch({
         type: ActionType.UPDATE_FDC_FOODS,
         normalizedFoodsByUrl: { [update.newFood.url]: newFdcFood },

@@ -50,7 +50,7 @@ export interface SRLegacyFood {
 export type FDCFood = BrandedFood | SRLegacyFood;
 
 // TODO: check if these fields are always present.
-export interface FDCQueryFood {
+interface FDCQueryFood {
   fdcId: number;
   description: string;
   dataType: string;
@@ -59,7 +59,7 @@ export interface FDCQueryFood {
   score: number;
 }
 
-export interface FDCQueryResult {
+interface FDCQueryResult {
   foodSearchCriteria: {
     generalSearchInput: string;
     pageNumber: number;
@@ -71,7 +71,7 @@ export interface FDCQueryResult {
   foods: FDCQueryFood[];
 }
 
-export const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;
+const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;
 
 /**
  * Parse a link to the FDC website as an FDC ID.
@@ -133,7 +133,7 @@ export async function fetchFdcFood(
 ): Promise<StatusOr<Food>> {
   const fdcId = parseFdcWebUrl(url);
   if (fdcId === null) {
-    return status(StatusCode.FOOD_NOT_FOUND, "Did not recognize URL " + url)
+    return status(StatusCode.FOOD_NOT_FOUND, "Did not recognize URL " + url);
   }
   const response = await fetch(getFdcFoodUrl(fdcId, FDC_API_KEY));
   const json = await response.json();
@@ -144,37 +144,6 @@ export async function fetchFdcFood(
     );
   }
   return normalizeFDCFood(json, conversionData);
-}
-
-/**
- * Fetch FDC Foods contained in the recipes in the document.
- *
- * @param document The document
- * @returns The FDC Foods by id
- */
-export async function fetchFdcFoods(
-  recipes: Recipe[],
-  conversionData: ConversionData
-): Promise<{ [index: string]: StatusOr<Food> }> {
-  const urls: string[] = [];
-  recipes.forEach((recipe) => {
-    recipe.ingredients.forEach(async (ingredient) => {
-      // Links the FDC Web App are parsed as the corresponding food.
-      const url = ingredient.ingredient.url;
-      if (url == null || url.startsWith("#")) {
-        return;
-      }
-      urls.push(url);
-    });
-  });
-  const responses = await Promise.all(
-    urls.map((url) => fetchFdcFood(url, conversionData))
-  );
-  let result: { [index: string]: StatusOr<Food> } = {};
-  responses.forEach((response, index) => {
-    result[urls[index]] = response;
-  });
-  return result;
 }
 
 function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
