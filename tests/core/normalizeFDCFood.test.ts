@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { initializeQuantityData } from "../../src/core";
-import { normalizeFDCFood } from "../../src/food_data_central/normalizeFDCFood";
+import { normalizeFDCFood } from "../../src/food_data_central/normalizeFdcFood";
 import { TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from "../testData";
 import { defaultConfig } from "../../src/client/config";
 

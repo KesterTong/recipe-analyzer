@@ -13,51 +13,12 @@
 // limitations under the License.
 
 import { Quantity } from "../core/Quantity";
-import { canonicalizeQuantity, ConversionData } from "../core/canonicalizeQuantity";
-import { Nutrients, addNutrients, scaleNutrients } from "../core/Nutrients";
+import { ConversionData } from "../core/canonicalizeQuantity";
+import { Nutrients } from "../core/Nutrients";
 import { FDCFood } from "./FoodDataCentral";
-import { SRLegacyFood } from "./SRLegacyFood";
-import { BrandedFood } from "./BrandedFood";
 import { Food } from "../core/Food";
-
-/**
- * Parse a quantity, e.g. "1 cup"
- */
-function parseQuantity(text: string): Quantity | null {
-  const fractionValueBySymbol: { [index: string]: number } = {
-    "": 0,
-    "½": 1 / 2,
-    "⅓": 1 / 3,
-    "⅔": 2 / 3,
-    "¼": 1 / 4,
-    "¾": 3 / 4,
-    "⅕": 1 / 5,
-    "⅖": 2 / 5,
-    "⅗": 3 / 5,
-    "⅘": 4 / 5,
-    "⅙": 1 / 6,
-    "⅚": 5 / 6,
-    "⅐": 1 / 7,
-    "⅛": 3 / 8,
-    "⅜": 3 / 8,
-    "⅝": 5 / 7,
-    "⅞": 7 / 8,
-    "⅑": 1 / 9,
-    "⅒": 1 / 10,
-  };
-  let match = text.match(
-    /(\s*(\d*\.?\d*)\s*([½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅐⅛⅜⅝⅞⅑⅒]?)\s*(\w*)\s*)(.*)/
-  );
-  if (match == null) {
-    return null;
-  }
-  return {
-    amount:
-      Number(match[2] || (match[3] ? 0.0 : 1.0)) +
-      fractionValueBySymbol[match[3]],
-    unit: match[4].trim() || "serving",
-  };
-}
+import { srLegacyServingEquivalents } from "./srLegacyServingEquivalents";
+import { brandedServingEquivalents } from "./brandedServingEquivalents";
 
 export function normalizeFDCFood(
   food: FDCFood,
@@ -70,66 +31,20 @@ export function normalizeFDCFood(
     var nutrientAmount = foodNutrient.amount || 0;
     nutrientsPerServing[nutrientId.toString()] = nutrientAmount;
   }
+  let servingEquivalents: Quantity[];
+  switch (food.dataType) {
+    case "SR Legacy":
+      servingEquivalents =  srLegacyServingEquivalents(food, conversionData);
+      break;
+    case "Branded":
+      servingEquivalents =  brandedServingEquivalents(food, conversionData);
+      break;
+  }
   return {
     description: food.description,
     nutrientsPerServing,
-    servingEquivalents: servingEquivalentQuantities(food, conversionData),
+    servingEquivalents,
   };
 }
 
-function servingEquivalentQuantities(
-  food: FDCFood,
-  conversionData: ConversionData
-): Quantity[] {
-  switch (food.dataType) {
-    case "SR Legacy":
-      return SRLegacyServingEquivalentQuantities(food, conversionData);
-    case "Branded":
-      return brandedServingEquivalentQuantities(food, conversionData);
-  }
-}
 
-function SRLegacyServingEquivalentQuantities(
-  food: SRLegacyFood,
-  conversionData: ConversionData
-): Quantity[] {
-  // A serving is 100 g by definition for SR Legacy foods.
-  let result = [{ amount: 100, unit: "g" }];
-  for (let i = 0; i < food.foodPortions.length; i++) {
-    const foodPortion = food.foodPortions[i];
-    const { amount, unit } = canonicalizeQuantity(
-      {
-        amount: foodPortion.amount,
-        unit: foodPortion.modifier,
-      },
-      conversionData
-    );
-    const amountPerServing = (100.0 * amount) / foodPortion.gramWeight;
-    result.push({ amount: amountPerServing, unit });
-  }
-  return result;
-}
-
-function brandedServingEquivalentQuantities(
-  food: BrandedFood,
-  conversionData: ConversionData
-): Quantity[] {
-  // A serving is 100 g or 100 ml depending on servingSizeUnit, for Branded foods.
-  let result = [{ amount: 100, unit: food.servingSizeUnit }];
-  let householdServingQuantity =
-    food.householdServingFullText == null
-      ? null
-      : parseQuantity(food.householdServingFullText);
-  if (householdServingQuantity != null) {
-    const { amount, unit } = canonicalizeQuantity(
-      {
-        amount: householdServingQuantity.amount,
-        unit: householdServingQuantity.unit,
-      },
-      conversionData
-    );
-    const amountPerServing = (100.0 * amount) / food.servingSize;
-    result.push({ amount: amountPerServing, unit });
-  }
-  return result;
-}

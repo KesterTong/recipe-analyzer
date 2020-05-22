@@ -16,7 +16,7 @@ import { FoodReference } from "../core/FoodReference";
 import { Food } from "../core/Food";
 import { ConversionData } from "../core/canonicalizeQuantity";
 import { StatusOr, StatusCode, status } from "../core/StatusOr";
-import { normalizeFDCFood } from "./normalizeFDCFood";
+import { normalizeFDCFood } from "./normalizeFdcFood";
 import { BrandedFood } from "./BrandedFood";
 import { SRLegacyFood } from "./SRLegacyFood";
 
