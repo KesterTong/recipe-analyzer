@@ -40,11 +40,11 @@ function getSuggestions(state: ActiveState) {
     }))
     .concat(
       filterNulls(
-        Object.entries(state.fdcFoodsById).map((entry) =>
-          isOk(entry[1])
+        Object.entries(state.normalizedFoodsByUrl).map(([url, normalizedFood]) =>
+          isOk(normalizedFood)
             ? {
-                url: makeFdcWebUrl(Number(entry[0])),
-                description: entry[1].description,
+                url,
+                description: normalizedFood.description,
               }
             : null
         )
@@ -61,7 +61,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
     const ingredient = recipe.ingredients[state.selectedIngredientIndex];
     const nutrients = nutrientsForIngredient(
       ingredient,
-      state.fdcFoodsById,
+      state.normalizedFoodsByUrl,
       state.recipes,
       state.conversionData
     );

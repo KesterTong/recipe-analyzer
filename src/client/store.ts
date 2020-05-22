@@ -14,7 +14,7 @@
 
 import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
-import { updateRecipes, UpdateType } from "../core";
+import { updateRecipes, UpdateType, StatusCode, status } from "../core";
 import { createStore, applyMiddleware } from "redux";
 import thunk, { ThunkDispatch as ReduxThunkDispatch } from "redux-thunk";
 
@@ -34,7 +34,7 @@ function rootReducer(
         recipes: action.recipes,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0,
-        fdcFoodsById: action.fdcFoodsById,
+        normalizedFoodsByUrl: action.normalizedFoodsByUrl,
         config: action.config,
         conversionData: action.conversionData,
       };
@@ -47,32 +47,41 @@ function rootReducer(
       if (state.type != "Active") {
         return state;
       }
+      const update = action.update;
       let selectedIngredientIndex = state.selectedIngredientIndex;
-      if (action.update.recipeIndex == state.selectedRecipeIndex) {
-        switch (action.update.type) {
+      if (update.recipeIndex == state.selectedRecipeIndex) {
+        switch (update.type) {
           case UpdateType.ADD_INGREDIENT:
             const selectedRecipe = state.recipes[state.selectedRecipeIndex];
             selectedIngredientIndex = selectedRecipe.ingredients.length;
             break;
           case UpdateType.DELETE_INGREDIENT:
-            if (selectedIngredientIndex == action.update.ingredientIndex) {
+            if (selectedIngredientIndex == update.ingredientIndex) {
               selectedIngredientIndex = 0;
             }
             break;
           case UpdateType.SWAP_INGREDIENTS:
-            if (selectedIngredientIndex == action.update.firstIngredientIndex) {
+            if (selectedIngredientIndex == update.firstIngredientIndex) {
               selectedIngredientIndex = selectedIngredientIndex + 1;
             } else if (
-              (selectedIngredientIndex = action.update.firstIngredientIndex + 1)
+              (selectedIngredientIndex = update.firstIngredientIndex + 1)
             ) {
               selectedIngredientIndex = selectedIngredientIndex - 1;
             }
             break;
         }
       }
+      let normalizedFoodsByUrl = state.normalizedFoodsByUrl;
+      if (update.type == UpdateType.UPDATE_INGREDIENT && update.newFood && update.newFood.url) {
+        normalizedFoodsByUrl = {
+          ...normalizedFoodsByUrl,
+          [update.newFood.url]: status(StatusCode.LOADING, "Loading"),
+        }
+      }
       return {
         ...state,
         selectedIngredientIndex,
+        normalizedFoodsByUrl,
         recipes: updateRecipes(state.recipes, action.update),
       };
     case ActionType.UPDATE_FDC_FOODS:
@@ -81,9 +90,9 @@ function rootReducer(
       }
       return {
         ...state,
-        fdcFoodsById: {
-          ...state.fdcFoodsById,
-          ...action.fdcFoodsById,
+        normalizedFoodsByUrl: {
+          ...state.normalizedFoodsByUrl,
+          ...action.normalizedFoodsByUrl,
         },
       };
     case ActionType.SELECT_RECIPE:

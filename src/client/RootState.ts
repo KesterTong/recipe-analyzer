@@ -28,7 +28,7 @@ export interface ActiveState {
   recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
-  fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
+  normalizedFoodsByUrl: { [index: string]: StatusOr<NormalizedFood> };
   config: Config;
   conversionData: ConversionData;
 }

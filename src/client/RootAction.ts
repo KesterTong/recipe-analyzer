@@ -32,7 +32,7 @@ export enum ActionType {
 export interface Initialize {
   type: ActionType.INITIALIZE;
   recipes: Recipe[];
-  fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
+  normalizedFoodsByUrl: { [index: string]: StatusOr<NormalizedFood> };
   config: Config;
   conversionData: ConversionData;
 }
@@ -49,7 +49,7 @@ export interface UpdateRecipes {
 
 export interface UpdateFdcFoods {
   type: ActionType.UPDATE_FDC_FOODS;
-  fdcFoodsById: { [index: number]: StatusOr<NormalizedFood> };
+  normalizedFoodsByUrl: { [index: number]: StatusOr<NormalizedFood> };
 }
 
 export interface SelectRecipe {

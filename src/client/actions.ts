@@ -37,11 +37,11 @@ export function initialize(): ThunkResult<void> {
         defaultConfig.massUnits,
         defaultConfig.volumeUnits
       );
-      const fdcFoodsById = await fetchFdcFoods(recipes, conversionData);
+      const normalizedFoodsByUrl = await fetchFdcFoods(recipes, conversionData);
       dispatch({
         type: ActionType.INITIALIZE,
         recipes,
-        fdcFoodsById,
+        normalizedFoodsByUrl,
         config: defaultConfig,
         conversionData,
       });
@@ -80,7 +80,7 @@ export function updateDocument(update: Update): ThunkResult<void> {
         const newFdcFood = await fetchFdcFood(fdcId, state.conversionData);
         dispatch({
           type: ActionType.UPDATE_FDC_FOODS,
-          fdcFoodsById: { [fdcId]: newFdcFood },
+          normalizedFoodsByUrl: { [update.newFood.url]: newFdcFood },
         });
       }
     }

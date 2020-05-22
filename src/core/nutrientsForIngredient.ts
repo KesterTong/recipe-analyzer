@@ -21,7 +21,7 @@ import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 
 export function normalizeRecipe(
   recipe: Recipe,
-  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  normalizedFoodByUrl: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
   conversionData: ConversionData,
   stack: Recipe[] = []
@@ -43,7 +43,7 @@ export function normalizeRecipe(
       }
       const nutrients = nutrientsForIngredient(
         ingredient,
-        fdcFoodsById,
+        normalizedFoodByUrl,
         recipes,
         conversionData,
         stack.concat([recipe])
@@ -75,17 +75,13 @@ export function normalizeRecipe(
 
 function lookupIngredient(
   url: string,
-  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  normalizedFoodByUrl: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
   conversionData: ConversionData,
   stack?: Recipe[]
 ): StatusOr<NormalizedFood> {
-  let fdcId: number | null;
-  if ((fdcId = parseFdcWebUrl(url))) {
-    const normalizedFood = fdcFoodsById[fdcId];
-    return normalizedFood === undefined
-      ? status(StatusCode.LOADING, "Loading")
-      : normalizedFood;
+  if ((normalizedFoodByUrl[url] !== undefined)) {
+    return normalizedFoodByUrl[url];
   } else if (url.startsWith("#")) {
     const matchingRecipes = recipes.filter((recipe) => recipe.url === url);
     if (matchingRecipes.length == 0) {
@@ -93,7 +89,7 @@ function lookupIngredient(
     }
     return normalizeRecipe(
       matchingRecipes[0],
-      fdcFoodsById,
+      normalizedFoodByUrl,
       recipes,
       conversionData,
       stack
@@ -106,7 +102,7 @@ function lookupIngredient(
 // Stack is used to prevent infinite recursion
 export function nutrientsForIngredient(
   ingredient: Ingredient,
-  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  normalizedFoodByUrl: { [index: string]: StatusOr<NormalizedFood> },
   recipes: Recipe[],
   conversionData: ConversionData,
   stack?: Recipe[]
@@ -118,7 +114,7 @@ export function nutrientsForIngredient(
   }
   const normalizedFood = lookupIngredient(
     ingredient.ingredient.url,
-    fdcFoodsById,
+    normalizedFoodByUrl,
     recipes,
     conversionData,
     stack

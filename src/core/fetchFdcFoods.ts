@@ -48,25 +48,30 @@ export async function fetchFdcFood(
 export async function fetchFdcFoods(
   recipes: Recipe[],
   conversionData: ConversionData
-): Promise<{ [index: number]: StatusOr<NormalizedFood> }> {
+): Promise<{ [index: string]: StatusOr<NormalizedFood> }> {
   const fdcIds: number[] = [];
+  const urls: string[] = [];
   recipes.forEach((recipe) => {
     recipe.ingredients.forEach(async (ingredient) => {
       // Links the FDC Web App are parsed as the corresponding food.
       const url = ingredient.ingredient.url;
-      const fdcId = url == null ? null : parseFdcWebUrl(url);
+      if (url == null) {
+        return;
+      }
+      const fdcId = parseFdcWebUrl(url);
       if (fdcId == null) {
         return;
       }
       fdcIds.push(fdcId);
+      urls.push(url);
     });
   });
   const responses = await Promise.all(
     fdcIds.map((food) => fetchFdcFood(food, conversionData))
   );
-  let result: { [index: number]: StatusOr<NormalizedFood> } = {};
+  let result: { [index: string]: StatusOr<NormalizedFood> } = {};
   responses.forEach((response, index) => {
-    result[fdcIds[index]] = response;
+    result[urls[index]] = response;
   });
   return result;
 }

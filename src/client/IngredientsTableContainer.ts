@@ -48,7 +48,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       description: ingredientDescription(ingredient),
       nutrients: nutrientsForIngredient(
         ingredient,
-        state.fdcFoodsById,
+        state.normalizedFoodsByUrl,
         state.recipes,
         state.conversionData
       ),
