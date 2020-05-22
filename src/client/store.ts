@@ -75,7 +75,8 @@ function rootReducer(
       if (
         update.type == UpdateType.UPDATE_INGREDIENT &&
         update.newFood &&
-        update.newFood.url
+        update.newFood.url &&
+        !update.newFood.url?.startsWith("")
       ) {
         normalizedFoodsByUrl = {
           ...normalizedFoodsByUrl,
