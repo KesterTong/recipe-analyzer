@@ -27,7 +27,6 @@ export function normalizeRecipe(
   stack: Recipe[] = []
 ): StatusOr<NormalizedFood> {
   if (stack.indexOf(recipe) != -1) {
-    console.log('got here')
     return status(
       StatusCode.RECIPE_CYCLE_DETECTED,
       "Detected a cycle of recipes that depend on each other: " +
@@ -37,28 +36,34 @@ export function normalizeRecipe(
           .join(", ")
     );
   }
-  const nutrientsPerServing = recipe.ingredients.reduce<StatusOr<Nutrients>>((cumulativeTotal, ingredient) => {
-    if (!isOk(cumulativeTotal)) {
-      return cumulativeTotal;
-    }
-    const nutrients = nutrientsForIngredient(
-      ingredient,
-      fdcFoodsById,
-      recipes,
-      conversionData,
-      stack.concat([recipe])
-    );
-    if (isOk(nutrients)) {
-      return addNutrients(cumulativeTotal, nutrients);
-    } else {
-      return nutrients;
-    }
-  }, {});
+  const nutrientsPerServing = recipe.ingredients.reduce<StatusOr<Nutrients>>(
+    (cumulativeTotal, ingredient) => {
+      if (!isOk(cumulativeTotal)) {
+        return cumulativeTotal;
+      }
+      const nutrients = nutrientsForIngredient(
+        ingredient,
+        fdcFoodsById,
+        recipes,
+        conversionData,
+        stack.concat([recipe])
+      );
+      if (isOk(nutrients)) {
+        return addNutrients(cumulativeTotal, nutrients);
+      } else {
+        return nutrients;
+      }
+    },
+    {}
+  );
   if (!isOk(nutrientsPerServing)) {
     if (nutrientsPerServing.code == StatusCode.RECIPE_CYCLE_DETECTED) {
       return nutrientsPerServing;
     } else {
-      return status(StatusCode.INGREDIENT_ERROR, "Error in recipe " + recipe.title);
+      return status(
+        StatusCode.INGREDIENT_ERROR,
+        "Error in recipe " + recipe.title
+      );
     }
   }
   return {
