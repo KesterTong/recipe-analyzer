@@ -85,7 +85,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
         newFood: {
           description: isOk(normalizedFood)
             ? normalizedFood.description
-            : "ERROR",
+            : normalizedFood.message,
           url: makeFdcWebUrl(fdcId),
         },
       })
