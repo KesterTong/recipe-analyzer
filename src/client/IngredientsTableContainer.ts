@@ -19,7 +19,13 @@ import { StateProps, IngredientsTable } from "./IngredientsTable";
 import { bindActionCreators } from "redux";
 import { ThunkDispatch } from "./store";
 import { connect } from "react-redux";
-import { Ingredient, nutrientsForIngredient } from "../core";
+import {
+  Ingredient,
+  nutrientsForIngredient,
+  Nutrients,
+  isOk,
+  addNutrients,
+} from "../core";
 
 function ingredientDescription(ingredient: Ingredient) {
   return (
@@ -47,11 +53,18 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
         state.conversionData
       ),
     }));
+    let totalNutrients: Nutrients = {};
+    ingredientInfos.forEach(({ nutrients }) => {
+      if (isOk(nutrients)) {
+        totalNutrients = addNutrients(totalNutrients, nutrients);
+      }
+    });
     return {
       ingredientInfos,
       selectedIngredientIndex: state.selectedIngredientIndex,
       nutrients: state.config.nutrients,
       numDigits: state.config.numDigits,
+      totalNutrients,
     };
   }
 );

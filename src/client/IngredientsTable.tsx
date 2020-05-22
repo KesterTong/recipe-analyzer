@@ -29,6 +29,7 @@ export interface StateProps {
     nutrients: StatusOr<Nutrients>;
   }[];
   selectedIngredientIndex: number;
+  totalNutrients: Nutrients;
   nutrients: { name: string; id: number }[];
   numDigits: number;
 }
@@ -73,8 +74,8 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
           ))}
           <tr>
             <td>Total</td>
-            {props.nutrients.map((name) => (
-              <td className="nutrient-value">??</td>
+            {props.nutrients.map(({ id }) => (
+              <td className="nutrient-value">{props.totalNutrients[id]}</td>
             ))}
           </tr>
         </tbody>
