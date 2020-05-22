@@ -15,7 +15,7 @@
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
-import { parseDocument, updateDocument as updateServerDocument } from "./doc";
+import { parseDocument, updateDocument as updateServerDocument, getConfig } from "./doc";
 import {
   Update,
   UpdateType,
@@ -24,7 +24,6 @@ import {
   StatusOr,
   Food,
 } from "../core";
-import { defaultConfig } from "../config/config";
 import { fetchFdcFood, maybeRewriteFoodReference } from "../food_data_central";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
@@ -33,9 +32,10 @@ export function initialize(): ThunkResult<void> {
   return async (dispatch) => {
     try {
       const recipes = await parseDocument();
+      const config = await getConfig();
       const conversionData = initializeQuantityData(
-        defaultConfig.massUnits,
-        defaultConfig.volumeUnits
+        config.massUnits,
+        config.volumeUnits
       );
       const urls: string[] = [];
       recipes.forEach((recipe) => {
@@ -59,7 +59,7 @@ export function initialize(): ThunkResult<void> {
         type: ActionType.INITIALIZE,
         recipes,
         normalizedFoodsByUrl,
-        config: defaultConfig,
+        config,
         conversionData,
       });
     } catch (error) {

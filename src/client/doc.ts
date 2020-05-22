@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Recipe, Update, UpdateType } from "../core";
+import { Config } from "../config/config";
 
 const wrapServerFunction = (functionName: string) => (...args: any[]) =>
   new Promise<any>((resolve, reject) => {
@@ -27,13 +28,11 @@ const wrapServerFunction = (functionName: string) => (...args: any[]) =>
  * data from the Google Doc.
  */
 
-export function parseDocument(): Promise<Recipe[]> {
-  return wrapServerFunction("parseDocument")();
-}
+export const parseDocument: () => Promise<Recipe[]> = wrapServerFunction("parseDocument");
 
-export function rawUpdateDocument(update: Update): Promise<void> {
-  return wrapServerFunction("updateDocument")(update);
-}
+const rawUpdateDocument: (update: Update) => Promise<void> = wrapServerFunction("updateDocument");
+
+export const getConfig: () => Promise<Config> = wrapServerFunction("getConfig");
 
 class PendingUpdate {
   pendingUpdate: Update | null;

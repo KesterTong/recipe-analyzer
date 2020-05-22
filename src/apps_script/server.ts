@@ -17,6 +17,7 @@
  */
 
 import { Recipe, Ingredient, Update, UpdateType } from "../core";
+import { Config } from "../config/config";
 
 function parseToc(
   toc: GoogleAppsScript.Document.TableOfContents
@@ -172,6 +173,16 @@ export function updateDocument(update: Update) {
       table.insertTableRow(update.firstIngredientIndex, second_row);
       break;
   }
+}
+
+const CONFIG_KEY = "RECIPE_ANALYZER_CONFIG"
+
+export function getConfig(): Config {
+  const value = PropertiesService.getScriptProperties().getProperty(CONFIG_KEY);
+  if (value === null) {
+    throw Error("No config found");
+  }
+  return JSON.parse(value);
 }
 
 export function testParseDocument() {

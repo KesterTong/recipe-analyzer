@@ -1,0 +1,82 @@
+{
+  "nutrients": [
+    {
+      "id": 1008,
+      "name": "Energy (kcal)"
+    },
+    {
+      "id": 1003,
+      "name": "Protein (g)"
+    }
+  ],
+  "massUnits": [
+    {
+      "value": 1,
+      "name": "g",
+      "otherNames": ["gram", "grams"]
+    },
+    {
+      "value": 28.35,
+      "name": "oz",
+      "otherNames": ["onz", "ounce", "ounces"]
+    },
+    {
+      "value": 453.58,
+      "name": "lb",
+      "otherNames": ["lbs", "pound", "pounds"]
+    },
+    {
+      "value": 1000,
+      "name": "kg",
+      "otherNames": ["kilo", "kilos", "kilogram", "kilograms"]
+    }
+  ],
+  "volumeUnits": [
+    {
+      "value": 1,
+      "name": "ml",
+      "otherNames": ["milliliter", "milliliters"]
+    },
+    {
+      "value": 29.5735,
+      "name": "fl oz",
+      "otherNames": ["fl. oz"]
+    },
+    {
+      "value": 236.59,
+      "name": "cup",
+      "otherNames": ["cups"]
+    },
+    {
+      "value": 14.79,
+      "name": "tbsp",
+      "otherNames": ["tablespoon", "tablespoons"]
+    },
+    {
+      "value": 4.93,
+      "name": "tsp",
+      "otherNames": ["teaspoon", "teaspoons"]
+    },
+    {
+      "value": 473.17,
+      "name": "pint",
+      "otherNames": ["pt", "pints"]
+    },
+    {
+      "value": 946.35,
+      "name": "quart",
+      "otherNames": ["qt", "quarts"]
+    },
+    {
+      "value": 3785.41,
+      "name": "gallon",
+      "otherNames": ["gallons"]
+    },
+    {
+      "value": 1000,
+      "name": "L",
+      "otherNames": ["liter", "liters"]
+    }
+  ],
+  "numDigits": 1
+}

@@ -16,6 +16,7 @@ import React = require("react");
 
 import { Update } from "../../src/core/Update";
 import { Recipe, updateRecipes, Ingredient } from "../../src/core";
+import { Config } from "../../src/config/config";
 
 let recipes: Recipe[] = [
   {
@@ -125,6 +126,11 @@ async function updateDocument(update: Update): Promise<void> {
   render();
 }
 
+async function getConfig(): Promise<Config> {
+  const response = await fetch("config.json");
+  return response.json();
+}
+
 class GoogleScriptRun {
   private successHandler: any;
   private failureHandler: any;
@@ -151,6 +157,7 @@ class GoogleScriptRun {
 
   parseDocument = this.wrapFn(parseDocument);
   updateDocument = this.wrapFn(updateDocument);
+  getConfig = this.wrapFn(getConfig);
 }
 
 const google: any = {};
