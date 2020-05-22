@@ -53,7 +53,8 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
     const nutrients = nutrientsForIngredient(
       ingredient,
       state.fdcFoodsById,
-      state.conversionData
+      state.recipes,
+      state.conversionData,
     );
     // We generate the error for `amount` here as that error is sometimes
     // superceded by other errors in nutrientsForIngredient.

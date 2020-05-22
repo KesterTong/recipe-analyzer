@@ -19,25 +19,38 @@ import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { parseFdcWebUrl } from "./FoodDataCentral";
 import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 
-// export function normalizeRecipe(
-//   recipe: Recipe,
-//   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
-//   recipes: Recipe[]): StatusOr<NormalizedFood> {
-
-// }
+export function normalizeRecipe(
+  recipe: Recipe,
+  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  recipes: Recipe[],
+  conversionData: ConversionData): StatusOr<NormalizedFood> {
+    return {
+      description: "",
+      nutrientsPerServing: {1008: -100},
+      servingEquivalents: [{amount: 1, unit: "serving"}],
+    };
+}
 
 function lookupIngredient(
   url: string,
-  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> }
+  fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  recipes: Recipe[],
+  conversionData: ConversionData
 ): StatusOr<NormalizedFood> {
-  const fdcId = parseFdcWebUrl(url);
-  if (fdcId === null) {
-    return status(StatusCode.FOOD_NOT_FOUND, "URL " + url + " not recognized");
-  } else {
+  let fdcId: number | null;
+  if (fdcId = parseFdcWebUrl(url)) {
     const normalizedFood = fdcFoodsById[fdcId];
     return normalizedFood === undefined
       ? status(StatusCode.LOADING, "Loading")
       : normalizedFood;
+  } else if (url.startsWith('#')) {
+    const matchingRecipes = recipes.filter(recipe => recipe.url === url);
+    if (matchingRecipes.length == 0) {
+      return status(StatusCode.FOOD_NOT_FOUND, "Recipe " + url + " not found");
+    }
+    return normalizeRecipe(matchingRecipes[0], fdcFoodsById, recipes, conversionData);
+  } else {
+    return status(StatusCode.FOOD_NOT_FOUND, "URL " + url + " not recognized");
   }
 }
 
@@ -45,6 +58,7 @@ function lookupIngredient(
 export function nutrientsForIngredient(
   ingredient: Ingredient,
   fdcFoodsById: { [index: string]: StatusOr<NormalizedFood> },
+  recipes: Recipe[],
   conversionData: ConversionData
 ): StatusOr<Nutrients> {
   if (ingredient.ingredient.url == null) {
@@ -54,7 +68,9 @@ export function nutrientsForIngredient(
   }
   const normalizedFood = lookupIngredient(
     ingredient.ingredient.url,
-    fdcFoodsById
+    fdcFoodsById,
+    recipes,
+    conversionData
   );
   if (!isOk(normalizedFood)) {
     return normalizedFood;
