@@ -26,9 +26,14 @@ export function normalizeRecipe(
   conversionData: ConversionData
 ): StatusOr<NormalizedFood> {
   let nutrientsPerServing = {};
-  recipe.ingredients.forEach(ingredient => {
+  recipe.ingredients.forEach((ingredient) => {
     // TODO: Avoid cycles that would cause infinite recursion.
-    const nutrients = nutrientsForIngredient(ingredient, fdcFoodsById, recipes, conversionData);
+    const nutrients = nutrientsForIngredient(
+      ingredient,
+      fdcFoodsById,
+      recipes,
+      conversionData
+    );
     // TODO: Don't ignore errors, propagate them.
     if (isOk(nutrients)) {
       nutrientsPerServing = addNutrients(nutrientsPerServing, nutrients);
