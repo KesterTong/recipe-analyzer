@@ -16,7 +16,6 @@ import React = require("react");
 
 import { Update } from "../../src/core/Update";
 import { Recipe, updateRecipes, Ingredient } from "../../src/core";
-import { doc } from "prettier";
 
 let recipes: Recipe[] = [
   {
