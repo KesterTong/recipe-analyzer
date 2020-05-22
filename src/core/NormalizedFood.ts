@@ -16,7 +16,10 @@ import { Nutrients } from "./Nutrients";
 import { Quantity } from "./Quantity";
 
 /**
- * Representation of a food used for calculations.
+ * Representation of a food used for recipe calculations.
+ * 
+ * This data can be derived from various sources, e.g. FDC Data
+ * or other recipes.
  */
 export interface NormalizedFood {
   description: string;
