@@ -175,6 +175,24 @@ export function updateDocument(update: Update) {
   }
 }
 
+/**
+ * Select a recipe
+ * 
+ * This is called when a user selects a recipe in the UI.
+ * 
+ * This function sets the cursor to the start of that recipe
+ * so users can see the changes in the doc as they update the
+ * recipe.
+ * 
+ * @param recipeIndex The index of the selected recipe
+ */
+export function selectRecipe(recipeIndex: number) {
+  const document = DocumentApp.getActiveDocument();
+  const table = document.getBody().getTables()[recipeIndex];
+  const previousElement = table.getPreviousSibling();
+  document.setCursor(document.newPosition(previousElement, 0));
+}
+
 const CONFIG_KEY = "RECIPE_ANALYZER_CONFIG"
 
 export function getConfig(): Config {

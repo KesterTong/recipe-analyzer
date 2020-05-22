@@ -29,9 +29,8 @@ const wrapServerFunction = (functionName: string) => (...args: any[]) =>
  */
 
 export const parseDocument: () => Promise<Recipe[]> = wrapServerFunction("parseDocument");
-
 const rawUpdateDocument: (update: Update) => Promise<void> = wrapServerFunction("updateDocument");
-
+export const selectRecipe: (recipeIndex: number) => Promise<Config> = wrapServerFunction("selectRecipe");
 export const getConfig: () => Promise<Config> = wrapServerFunction("getConfig");
 
 class PendingUpdate {

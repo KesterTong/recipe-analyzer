@@ -15,7 +15,7 @@
 import { ThunkAction } from "redux-thunk";
 import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
-import { parseDocument, updateDocument as updateServerDocument, getConfig } from "./doc";
+import { parseDocument, updateDocument as updateServerDocument, selectRecipe as selectServerRecipe, getConfig } from "./doc";
 import {
   Update,
   UpdateType,
@@ -150,8 +150,12 @@ export function updateDocument(update: Update): ThunkResult<void> {
   };
 }
 
-export function selectRecipe(index: number): RootAction {
-  return { type: ActionType.SELECT_RECIPE, index };
+export function selectRecipe(index: number): ThunkResult<void> {
+  return (dispatch) => {
+    // Select the recipe in the Google Doc too.
+    selectServerRecipe(index)
+    dispatch({ type: ActionType.SELECT_RECIPE, index });
+  }
 }
 
 export function selectIngredient(index: number): RootAction {

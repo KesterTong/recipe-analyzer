@@ -126,6 +126,9 @@ async function updateDocument(update: Update): Promise<void> {
   render();
 }
 
+async function selectRecipe(recipeIndex: number): Promise<void> {
+}
+
 async function getConfig(): Promise<Config> {
   const response = await fetch("config.json");
   return response.json();
@@ -158,6 +161,7 @@ class GoogleScriptRun {
   parseDocument = this.wrapFn(parseDocument);
   updateDocument = this.wrapFn(updateDocument);
   getConfig = this.wrapFn(getConfig);
+  selectRecipe = this.wrapFn(selectRecipe);
 }
 
 const google: any = {};
