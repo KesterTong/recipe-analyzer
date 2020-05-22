@@ -21,7 +21,7 @@ import { Quantity } from "./Quantity";
  * This data can be derived from various sources, e.g. FDC Data
  * or other recipes.
  */
-export interface NormalizedFood {
+export interface Food {
   description: string;
   nutrientsPerServing: Nutrients;
   servingEquivalents: Quantity[];

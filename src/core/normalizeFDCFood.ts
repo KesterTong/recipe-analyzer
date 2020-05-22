@@ -16,7 +16,7 @@ import { Quantity } from "./Quantity";
 import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 import { Nutrients, addNutrients, scaleNutrients } from "./Nutrients";
 import { SRLegacyFood, BrandedFood, FDCFood } from "./FoodDataCentral";
-import { NormalizedFood } from "./NormalizedFood";
+import { Food } from "./Food";
 
 /**
  * Parse a quantity, e.g. "1 cup"
@@ -60,7 +60,7 @@ function parseQuantity(text: string): Quantity | null {
 export function normalizeFDCFood(
   food: FDCFood,
   conversionData: ConversionData
-): NormalizedFood {
+): Food {
   const nutrientsPerServing: Nutrients = {};
   for (var i = 0; i < food.foodNutrients.length; i++) {
     var foodNutrient = food.foodNutrients[i];

@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Recipe, StatusOr, NormalizedFood, ConversionData } from "../core";
+import { Recipe, StatusOr, Food, ConversionData } from "../core";
 import { Config } from "./config";
 
 export interface LoadingState {
@@ -28,7 +28,7 @@ export interface ActiveState {
   recipes: Recipe[];
   selectedRecipeIndex: number;
   selectedIngredientIndex: number;
-  normalizedFoodsByUrl: { [index: string]: StatusOr<NormalizedFood> };
+  normalizedFoodsByUrl: { [index: string]: StatusOr<Food> };
   config: Config;
   conversionData: ConversionData;
 }

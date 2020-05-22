@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import { Ingredient, Recipe } from "./Recipe";
-import { NormalizedFood } from "./NormalizedFood";
+import { Food } from "./Food";
 import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { parseFdcWebUrl } from "./FoodDataCentral";
@@ -21,11 +21,11 @@ import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
 
 export function normalizeRecipe(
   recipe: Recipe,
-  normalizedFoodByUrl: { [index: string]: StatusOr<NormalizedFood> },
+  normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
   conversionData: ConversionData,
   stack: Recipe[] = []
-): StatusOr<NormalizedFood> {
+): StatusOr<Food> {
   if (stack.indexOf(recipe) != -1) {
     return status(
       StatusCode.RECIPE_CYCLE_DETECTED,
@@ -75,11 +75,11 @@ export function normalizeRecipe(
 
 function lookupIngredient(
   url: string,
-  normalizedFoodByUrl: { [index: string]: StatusOr<NormalizedFood> },
+  normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
   conversionData: ConversionData,
   stack?: Recipe[]
-): StatusOr<NormalizedFood> {
+): StatusOr<Food> {
   if (normalizedFoodByUrl[url] !== undefined) {
     return normalizedFoodByUrl[url];
   } else if (url.startsWith("#")) {
@@ -102,7 +102,7 @@ function lookupIngredient(
 // Stack is used to prevent infinite recursion
 export function nutrientsForIngredient(
   ingredient: Ingredient,
-  normalizedFoodByUrl: { [index: string]: StatusOr<NormalizedFood> },
+  normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
   conversionData: ConversionData,
   stack?: Recipe[]

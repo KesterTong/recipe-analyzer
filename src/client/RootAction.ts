@@ -15,7 +15,7 @@ import {
   Update,
   Recipe,
   StatusOr,
-  NormalizedFood,
+  Food,
   ConversionData,
 } from "../core";
 import { Config } from "./config";
@@ -32,7 +32,7 @@ export enum ActionType {
 export interface Initialize {
   type: ActionType.INITIALIZE;
   recipes: Recipe[];
-  normalizedFoodsByUrl: { [index: string]: StatusOr<NormalizedFood> };
+  normalizedFoodsByUrl: { [index: string]: StatusOr<Food> };
   config: Config;
   conversionData: ConversionData;
 }
@@ -49,7 +49,7 @@ export interface UpdateRecipes {
 
 export interface UpdateFdcFoods {
   type: ActionType.UPDATE_FDC_FOODS;
-  normalizedFoodsByUrl: { [index: number]: StatusOr<NormalizedFood> };
+  normalizedFoodsByUrl: { [index: number]: StatusOr<Food> };
 }
 
 export interface SelectRecipe {

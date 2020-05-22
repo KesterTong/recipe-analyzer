@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./NormalizedFood";
+export * from "./Food";
 export * from "./FoodDataCentral";
 export * from "./nutrientsForIngredient";
 export * from "./canonicalizeQuantity";
@@ -22,7 +22,7 @@ export * from "./Update";
 export * from "./StatusOr";
 export * from "./Unit";
 
-export { NormalizedFood } from "./NormalizedFood";
+export { Food as NormalizedFood } from "./Food";
 export { normalizeFDCFood } from "./normalizeFDCFood";
 export { updateRecipes } from "./updateRecipes";
 export { fetchFdcFoods } from "./fetchFdcFoods";
