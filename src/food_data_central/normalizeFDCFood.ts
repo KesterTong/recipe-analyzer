@@ -13,12 +13,59 @@
 // limitations under the License.
 
 import { Quantity } from "../core/Quantity";
-import { ConversionData } from "../core/canonicalizeQuantity";
+import {
+  ConversionData,
+  canonicalizeQuantity,
+} from "../core/canonicalizeQuantity";
 import { Nutrients } from "../core/Nutrients";
-import { FDCFood } from "./FoodDataCentral";
+import { FDCFood, BrandedFood, SRLegacyFood } from "./FDCFood";
 import { Food } from "../core/Food";
-import { srLegacyServingEquivalents } from "./srLegacyServingEquivalents";
-import { brandedServingEquivalents } from "./brandedServingEquivalents";
+import { parseQuantity } from "./parseQuantity";
+
+export function brandedServingEquivalents(
+  food: BrandedFood,
+  conversionData: ConversionData
+): Quantity[] {
+  // A serving is 100 g or 100 ml depending on servingSizeUnit, for Branded foods.
+  let result = [{ amount: 100, unit: food.servingSizeUnit }];
+  let householdServingQuantity =
+    food.householdServingFullText == null
+      ? null
+      : parseQuantity(food.householdServingFullText);
+  if (householdServingQuantity != null) {
+    const { amount, unit } = canonicalizeQuantity(
+      {
+        amount: householdServingQuantity.amount,
+        unit: householdServingQuantity.unit,
+      },
+      conversionData
+    );
+    const amountPerServing = (100.0 * amount) / food.servingSize;
+    result.push({ amount: amountPerServing, unit });
+  }
+  return result;
+}
+
+export function srLegacyServingEquivalents(
+  food: SRLegacyFood,
+  conversionData: ConversionData
+): Quantity[] {
+  // A serving is 100 g by definition for SR Legacy foods.
+  let result = [{ amount: 100, unit: "g" }];
+  for (let i = 0; i < food.foodPortions.length; i++) {
+    const foodPortion = food.foodPortions[i];
+    const { amount, unit } = canonicalizeQuantity(
+      {
+        amount: foodPortion.amount,
+        unit: foodPortion.modifier,
+      },
+      conversionData
+    );
+    const amountPerServing = (100.0 * amount) / foodPortion.gramWeight;
+    result.push({ amount: amountPerServing, unit });
+  }
+  return result;
+}
 
 export function normalizeFDCFood(
   food: FDCFood,
@@ -34,10 +81,10 @@ export function normalizeFDCFood(
   let servingEquivalents: Quantity[];
   switch (food.dataType) {
     case "SR Legacy":
-      servingEquivalents =  srLegacyServingEquivalents(food, conversionData);
+      servingEquivalents = srLegacyServingEquivalents(food, conversionData);
       break;
     case "Branded":
-      servingEquivalents =  brandedServingEquivalents(food, conversionData);
+      servingEquivalents = brandedServingEquivalents(food, conversionData);
       break;
   }
   return {
@@ -46,5 +93,3 @@ export function normalizeFDCFood(
     servingEquivalents,
   };
 }
-
-

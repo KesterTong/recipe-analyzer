@@ -12,18 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export interface SRLegacyFood {
-  dataType: "SR Legacy";
-  description: string;
-  foodNutrients: {
-    nutrient: {
-      id: number;
-    };
-    amount?: number;
-  }[];
-  foodPortions: {
-    modifier: string;
-    gramWeight: number;
-    amount: number;
-  }[];
+export function makeFdcWebUrl(fdcId: string): string {
+  return (
+    "https://fdc.nal.usda.gov/fdc-app.html#/food-details/" +
+    fdcId +
+    "/nutrients"
+  );
 }

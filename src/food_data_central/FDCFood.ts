@@ -27,3 +27,21 @@ export interface BrandedFood {
   ingredients?: string;
   brandOwner?: string;
 }
+
+export interface SRLegacyFood {
+  dataType: "SR Legacy";
+  description: string;
+  foodNutrients: {
+    nutrient: {
+      id: number;
+    };
+    amount?: number;
+  }[];
+  foodPortions: {
+    modifier: string;
+    gramWeight: number;
+    amount: number;
+  }[];
+}
+
+export type FDCFood = BrandedFood | SRLegacyFood;

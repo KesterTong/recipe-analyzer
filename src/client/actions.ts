@@ -25,7 +25,7 @@ import {
   Food,
 } from "../core";
 import { defaultConfig } from "./config";
-import { fetchFdcFood,  maybeRewriteFoodReference } from "../food_data_central";
+import { fetchFdcFood, maybeRewriteFoodReference } from "../food_data_central";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 

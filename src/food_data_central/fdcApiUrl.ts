@@ -12,6 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export { fetchFdcFood } from "./fetchFdcFood";
-export { maybeRewriteFoodReference } from "./maybeRewriteFoodReference";
-export { searchFdcFoods } from "./searchFdcFoods";
+export function fdcApiUrl(
+  resource: string,
+  fdcApiKey: string,
+  options: {
+    [index: string]: string;
+  }
+): string {
+  let url =
+    "https://api.nal.usda.gov/fdc/v1/" +
+    encodeURIComponent(resource) +
+    "?api_key=" +
+    fdcApiKey;
+  Object.keys(options).forEach((key) => {
+    url += "&" + key + "=" + options[key];
+  });
+  return url;
+}

@@ -41,12 +41,15 @@ export function parseQuantity(text: string): Quantity | null {
     "⅑": 1 / 9,
     "⅒": 1 / 10,
   };
-  let match = text.match(/(\s*(\d*\.?\d*)\s*([½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅐⅛⅜⅝⅞⅑⅒]?)\s*(\w*)\s*)(.*)/);
+  let match = text.match(
+    /(\s*(\d*\.?\d*)\s*([½⅓⅔¼¾⅕⅖⅗⅘⅙⅚⅐⅛⅜⅝⅞⅑⅒]?)\s*(\w*)\s*)(.*)/
+  );
   if (match == null) {
     return null;
   }
   return {
-    amount: Number(match[2] || (match[3] ? 0.0 : 1.0)) +
+    amount:
+      Number(match[2] || (match[3] ? 0.0 : 1.0)) +
       fractionValueBySymbol[match[3]],
     unit: match[4].trim() || "serving",
   };
