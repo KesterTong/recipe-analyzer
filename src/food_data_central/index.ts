@@ -12,12 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./Unit";
-export * from "./updateRecipes";
+export { searchFdcFoods, fetchFdcFood,  maybeRewriteFoodReference } from "./FoodDataCentral";

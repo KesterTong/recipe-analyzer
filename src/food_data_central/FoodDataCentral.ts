@@ -12,52 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FoodReference } from "./FoodReference";
-import { Food } from "./Food";
-import { ConversionData } from "./canonicalizeQuantity";
-import { StatusOr, StatusCode, status } from "./StatusOr";
+import { FoodReference } from "../core/FoodReference";
+import { Food } from "../core/Food";
+import { ConversionData } from "../core/canonicalizeQuantity";
+import { StatusOr, StatusCode, status } from "../core/StatusOr";
 import { normalizeFDCFood } from "./normalizeFDCFood";
-import { Recipe } from "./Recipe";
-
-export interface BrandedFood {
-  dataType: "Branded";
-  description: string;
-  servingSize: number;
-  servingSizeUnit: string;
-  householdServingFullText?: string;
-  foodNutrients: {
-    nutrient: { id: number };
-    amount?: number;
-  }[];
-  ingredients?: string;
-  brandOwner?: string;
-}
-
-export interface SRLegacyFood {
-  dataType: "SR Legacy";
-  description: string;
-  foodNutrients: {
-    nutrient: { id: number };
-    amount?: number;
-  }[];
-  foodPortions: {
-    modifier: string;
-    gramWeight: number;
-    amount: number;
-  }[];
-}
+import { BrandedFood } from "./BrandedFood";
+import { SRLegacyFood } from "./SRLegacyFood";
 
 export type FDCFood = BrandedFood | SRLegacyFood;
-
-// TODO: check if these fields are always present.
-interface FDCQueryFood {
-  fdcId: number;
-  description: string;
-  dataType: string;
-  gtinUpc: string;
-  brandOwner: string;
-  score: number;
-}
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -68,7 +31,10 @@ interface FDCQueryResult {
   totalHits: number;
   currentPage: number;
   totalPages: number;
-  foods: FDCQueryFood[];
+  foods: {
+    fdcId: number;
+    description: string;
+  }[];
 }
 
 const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;

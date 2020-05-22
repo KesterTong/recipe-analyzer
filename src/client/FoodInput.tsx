@@ -13,7 +13,7 @@
 // limitations under the License.
 import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
-import { searchFdcFoods } from "../core";
+import { searchFdcFoods } from "../food_data_central";
 import { FoodReference } from "../core/FoodReference";
 
 interface Props {

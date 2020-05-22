@@ -17,17 +17,15 @@ import { RootState } from "./RootState";
 import { RootAction, ActionType } from "./RootAction";
 import { parseDocument, updateDocument as updateServerDocument } from "./doc";
 import {
-  fetchFdcFood,
   Update,
   UpdateType,
   initializeQuantityData,
   isOk,
-  maybeRewriteFoodReference,
   StatusOr,
   Food,
 } from "../core";
 import { defaultConfig } from "./config";
-import { url } from "inspector";
+import { fetchFdcFood,  maybeRewriteFoodReference } from "../food_data_central";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 

@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./Unit";
-export * from "./updateRecipes";
+export interface SRLegacyFood {
+  dataType: "SR Legacy";
+  description: string;
+  foodNutrients: {
+    nutrient: {
+      id: number;
+    };
+    amount?: number;
+  }[];
+  foodPortions: {
+    modifier: string;
+    gramWeight: number;
+    amount: number;
+  }[];
+}

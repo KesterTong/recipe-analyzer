@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "../src/core/FoodDataCentral";
+import { FDCFood } from "../src/food_data_central/FoodDataCentral";
 
 export const TEST_SR_LEGACY_FOOD: FDCFood = {
   description: "Bananas",

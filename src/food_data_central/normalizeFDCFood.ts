@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "./Quantity";
-import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
-import { Nutrients, addNutrients, scaleNutrients } from "./Nutrients";
-import { SRLegacyFood, BrandedFood, FDCFood } from "./FoodDataCentral";
-import { Food } from "./Food";
+import { Quantity } from "../core/Quantity";
+import { canonicalizeQuantity, ConversionData } from "../core/canonicalizeQuantity";
+import { Nutrients, addNutrients, scaleNutrients } from "../core/Nutrients";
+import { FDCFood } from "./FoodDataCentral";
+import { SRLegacyFood } from "./SRLegacyFood";
+import { BrandedFood } from "./BrandedFood";
+import { Food } from "../core/Food";
 
 /**
  * Parse a quantity, e.g. "1 cup"
