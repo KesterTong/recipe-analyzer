@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Quantity } from "./Quantity";
+import { CanonicalizeQuantityConfig } from "./CanonicalizeQuantityConfig";
 
 /**
  * Transform a quantity by
@@ -21,10 +22,7 @@ import { Quantity } from "./Quantity";
  */
 export function canonicalizeQuantity(
   quantity: Quantity,
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  }
+  config: CanonicalizeQuantityConfig
 ): Quantity {
   const { massUnits, volumeUnits } = config;
   let { amount, unit } = quantity;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food, StatusOr, StatusCode, status } from "../core";
+import { Food, StatusOr, CanonicalizeQuantityConfig } from "../core";
 
 interface OffFood {
   product: {
@@ -37,9 +37,7 @@ export async function fetchOffFood(
       offScale: number; // Divide OFF number by this to get FDC equiv.
       name: string;
     }[];
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  }
+  } & CanonicalizeQuantityConfig
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getOffFoodUrl(eanOrUpc));
   const offFood: OffFood = await response.json();

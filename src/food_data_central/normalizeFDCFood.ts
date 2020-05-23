@@ -19,14 +19,12 @@ import {
   Food,
   Nutrients,
   parseQuantity,
+  CanonicalizeQuantityConfig,
 } from "../core";
 
 export function brandedServingEquivalents(
   food: BrandedFood,
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  }
+  config: CanonicalizeQuantityConfig
 ): Quantity[] {
   // A serving is 100 g or 100 ml depending on servingSizeUnit, for Branded foods.
   let result = [{ amount: 100, unit: food.servingSizeUnit }];
@@ -50,10 +48,7 @@ export function brandedServingEquivalents(
 
 export function srLegacyServingEquivalents(
   food: SrLegacyFood,
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  }
+  config: CanonicalizeQuantityConfig
 ): Quantity[] {
   // A serving is 100 g by definition for SR Legacy foods.
   let result = [{ amount: 100, unit: "g" }];
@@ -74,10 +69,7 @@ export function srLegacyServingEquivalents(
 
 export function normalizeFDCFood(
   food: FdcFood,
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  }
+  config: CanonicalizeQuantityConfig
 ): Food {
   const nutrientsPerServing: Nutrients = {};
   for (var i = 0; i < food.foodNutrients.length; i++) {

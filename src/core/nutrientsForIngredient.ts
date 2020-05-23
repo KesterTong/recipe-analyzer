@@ -17,15 +17,13 @@ import { Food } from "./Food";
 import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
 import { canonicalizeQuantity } from "./canonicalizeQuantity";
+import { CanonicalizeQuantityConfig } from "./CanonicalizeQuantityConfig";
 
 export function normalizeRecipe(
   recipe: Recipe,
   normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  },
+  config: CanonicalizeQuantityConfig,
   stack: Recipe[] = []
 ): StatusOr<Food> {
   if (stack.indexOf(recipe) != -1) {
@@ -79,10 +77,7 @@ function lookupIngredient(
   url: string,
   normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  },
+  config: CanonicalizeQuantityConfig,
   stack?: Recipe[]
 ): StatusOr<Food> {
   if (normalizedFoodByUrl[url] !== undefined) {
@@ -109,10 +104,7 @@ export function nutrientsForIngredient(
   ingredient: Ingredient,
   normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
-  config: {
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  },
+  config: CanonicalizeQuantityConfig,
   stack?: Recipe[]
 ): StatusOr<Nutrients> {
   if (ingredient.ingredient.url == null) {

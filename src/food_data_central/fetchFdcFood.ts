@@ -12,7 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food, StatusOr, StatusCode, status } from "../core";
+import {
+  Food,
+  StatusOr,
+  StatusCode,
+  status,
+  CanonicalizeQuantityConfig,
+} from "../core";
 import { normalizeFDCFood } from "./normalizeFdcFood";
 import { fdcApiUrl } from "./fdcApiUrl";
 
@@ -24,9 +30,7 @@ export async function fetchFdcFood(
   fdcId: number,
   config: {
     fdcApiKey: string;
-    massUnits: { [index: string]: number };
-    volumeUnits: { [index: string]: number };
-  }
+  } & CanonicalizeQuantityConfig
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getFdcFoodUrl(fdcId, config.fdcApiKey));
   const json = await response.json();

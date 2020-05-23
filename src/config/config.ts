@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { CanonicalizeQuantityConfig } from "../core";
+
 /**
  * Configuration for the app.
  *
  * This currently doesn't distinguish between script-level, user-level
  * and document-level config.
  */
-export interface Config {
+export interface Config extends CanonicalizeQuantityConfig {
   fdcApiKey: string;
   minCharsToQueryFDC: 3;
   nutrients: {
@@ -27,7 +29,5 @@ export interface Config {
     offScale: number; // Divide OFF number by this to get FDC equiv.
     name: string;
   }[];
-  massUnits: { [index: string]: number };
-  volumeUnits: { [index: string]: number };
   numDigits: number;
 }
