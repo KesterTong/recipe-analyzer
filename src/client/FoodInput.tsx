@@ -42,18 +42,22 @@ export class FoodInput extends React.Component<
   }
 
   onSuggestionsFetchRequested = async (props: { value: any }) => {
-    // TODO: filter this.props.suggestions.
+    const query: string = props.value;
+    const queryLower = query.toLocaleLowerCase();
+    const localSuggestions = this.props.suggestions.filter((suggestion) =>
+      suggestion.description.toLocaleLowerCase().includes(queryLower)
+    );
     this.setState({
-      suggestions: this.props.suggestions,
+      suggestions: localSuggestions,
     });
-    if (props.value.length < minCharsToQueryFDC) {
+    if (query.length < minCharsToQueryFDC) {
       return;
     }
-    const suggestions = await searchFdcFoods(
-      props.value,
+    const fdcSuggestions = await searchFdcFoods(
+      query,
       this.props.config.fdcApiKey
     );
-    this.setState({ suggestions: this.props.suggestions.concat(suggestions) });
+    this.setState({ suggestions: localSuggestions.concat(fdcSuggestions) });
   };
 
   onSuggestionsClearRequested = () => {
