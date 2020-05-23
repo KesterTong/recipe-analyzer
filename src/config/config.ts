@@ -12,9 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CanonicalizeQuantityConfig } from "../core";
 import { FdcConfig } from "../food_data_central";
-import { OffConfig } from "../open_food_facts";
+import { OffConfig, OffNutrient } from "../open_food_facts";
+
+interface NutrientConfig extends OffNutrient {
+  id: number;
+  name: string;
+}
 
 /**
  * Configuration for the app.
@@ -24,11 +28,6 @@ import { OffConfig } from "../open_food_facts";
  */
 export interface Config extends FdcConfig, OffConfig {
   minCharsToQueryFDC: 3;
-  nutrients: {
-    id: number;
-    offName: string;
-    offScale: number; // Divide OFF number by this to get FDC equiv.
-    name: string;
-  }[];
+  nutrients: NutrientConfig[];
   numDigits: number;
 }

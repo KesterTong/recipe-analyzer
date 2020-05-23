@@ -14,10 +14,12 @@
 
 import { CanonicalizeQuantityConfig } from "../core";
 
+export interface OffNutrient {
+  id: number;
+  offName: string;
+  offScale: number; // Divide OFF number by this to get FDC equiv.
+}
+
 export interface OffConfig extends CanonicalizeQuantityConfig {
-  nutrients: {
-    id: number;
-    offName: string;
-    offScale: number; // Divide OFF number by this to get FDC equiv.
-  }[];
+  nutrients: OffNutrient[];
 }
