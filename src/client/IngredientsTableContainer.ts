@@ -49,8 +49,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
     return {
       ingredientInfos,
       selectedIngredientIndex: state.selectedIngredientIndex,
-      nutrients: state.config.nutrients,
-      numDigits: state.config.numDigits,
+      config: state.config,
       totalNutrients,
       recipeIndexByUrl,
     };

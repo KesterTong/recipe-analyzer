@@ -22,6 +22,7 @@ import {
   FoodReference,
 } from "../core";
 import { MaybeComponent } from "./MaybeComponent";
+import { Config } from "../config/config";
 
 export interface StateProps {
   recipeIndexByUrl: { [index: string]: number };
@@ -31,8 +32,7 @@ export interface StateProps {
   }[];
   selectedIngredientIndex: number;
   totalNutrients: Nutrients;
-  nutrients: { name: string; id: number }[];
-  numDigits: number;
+  config: Config;
 }
 
 interface DispatchProps {
@@ -40,12 +40,10 @@ interface DispatchProps {
   selectIngredient(index: number): void;
 }
 
-const NutrientsColumnHeaders: React.FunctionComponent<{
-  nutrients: { name: string; id: number }[];
-}> = (props) => {
+const NutrientsColumnHeaders: React.FunctionComponent<{config: Config}> = (props) => {
   return (
     <React.Fragment>
-      {props.nutrients.map(({ name }) => (
+      {props.config.nutrients.map(({ name }) => (
         <th>{name}</th>
       ))}
     </React.Fragment>
@@ -82,16 +80,15 @@ const IngredientLink: React.FunctionComponent<{
 };
 
 const NutrientsRowCells: React.FunctionComponent<{
-  nutrientDefs: { name: string; id: number }[];
   nutrients: StatusOr<Nutrients>;
-  numDigits: number;
+  config: Config;
 }> = (props) => {
   return (
     <React.Fragment>
-      {props.nutrientDefs.map(({ id }) => {
+      {props.config.nutrients.map(({ id }) => {
         let displayValue = "";
         if (isOk(props.nutrients) && props.nutrients[id] !== undefined) {
-          displayValue = props.nutrients[id].toFixed(props.numDigits);
+          displayValue = props.nutrients[id].toFixed(props.config.numDigits);
         }
         return <td className="nutrient-value">{displayValue}</td>;
       })}
@@ -105,7 +102,7 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
       <table id="ingredients" className="nutrients-table" tabIndex={0}>
         <thead>
           <th>Ingredient</th>
-          <NutrientsColumnHeaders nutrients={props.nutrients} />
+          <NutrientsColumnHeaders config={props.config} />
         </thead>
         <tbody>
           {props.ingredientInfos.map(({ ingredient, nutrients }, index) => (
@@ -132,18 +129,16 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
                 </span>
               </td>
               <NutrientsRowCells
-                nutrientDefs={props.nutrients}
                 nutrients={nutrients}
-                numDigits={props.numDigits}
+                config={props.config}
               />
             </tr>
           ))}
           <tr>
             <td>Total</td>
             <NutrientsRowCells
-              nutrientDefs={props.nutrients}
               nutrients={props.totalNutrients}
-              numDigits={props.numDigits}
+              config={props.config}
             />
           </tr>
         </tbody>
