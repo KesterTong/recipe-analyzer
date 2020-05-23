@@ -40,7 +40,9 @@ interface DispatchProps {
   selectIngredient(index: number): void;
 }
 
-const NutrientsColumnHeaders: React.FunctionComponent<{config: Config}> = (props) => {
+const NutrientsColumnHeaders: React.FunctionComponent<{ config: Config }> = (
+  props
+) => {
   return (
     <React.Fragment>
       {props.config.nutrients.map(({ name }) => (
@@ -128,10 +130,7 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
                   />
                 </span>
               </td>
-              <NutrientsRowCells
-                nutrients={nutrients}
-                config={props.config}
-              />
+              <NutrientsRowCells nutrients={nutrients} config={props.config} />
             </tr>
           ))}
           <tr>
