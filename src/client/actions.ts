@@ -33,6 +33,7 @@ import {
   ConversionData,
 } from "../core";
 import { fetchFdcFood, isFdcWebUrl } from "../food_data_central";
+import { makeOffWebUrl } from "../open_food_facts";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -89,8 +90,7 @@ export function initialize(): ThunkResult<void> {
   };
 }
 
-const UPC_REGEX = /^\d{12}$/
-const EAN_REGEX = /^\d{13}$/
+const UPC_OR_EAN_REGEX = /^\d{12,13}$/
 
 function maybeRewrite(update: Update): ThunkResult<void> {
   return async (dispatch, getState) => {
@@ -108,11 +108,8 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     let match;
     if (update.newFood.description.startsWith("https://")) {
       url = update.newFood.description;
-    } else if (match = UPC_REGEX.test(update.newFood.description)) {
-      console.log(match)
-      url = "https://world.openfoodfacts.org/product/0" + update.newFood.description;
-    } else if (match = EAN_REGEX.test(update.newFood.description)) {
-      url = "https://world.openfoodfacts.org/product/" + update.newFood.description;
+    } else if (match = UPC_OR_EAN_REGEX.test(update.newFood.description)) {
+      url = makeOffWebUrl(update.newFood.description);
     } else {
       return;
     }
