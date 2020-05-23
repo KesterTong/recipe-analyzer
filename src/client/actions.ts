@@ -78,29 +78,38 @@ export function initialize(): ThunkResult<void> {
   };
 }
 
+const UPC_REGEX = /^\d{12}$/
+const EAN_REGEX = /^\d{13}$/
+
 function maybeRewrite(update: Update): ThunkResult<void> {
   return async (dispatch, getState) => {
     const state = getState();
     if (state.type != "Active") {
       return;
     }
-    if (
-      !(
-        update.type == UpdateType.UPDATE_INGREDIENT &&
-        update.newFood &&
-        update.newFood.url === null &&
-        update.newFood.description.startsWith("https://")
-      )
-    ) {
+    // Don't try to rewrite if the ingredient has a link already.
+    if (update.type != UpdateType.UPDATE_INGREDIENT ||
+        update.newFood === undefined ||
+        update.newFood.url !== null) {
       return;
     }
-    const url = update.newFood.description;
+    let url: string;
+    let match;
+    if (update.newFood.description.startsWith("https://")) {
+      url = update.newFood.description;
+    } else if (match = UPC_REGEX.test(update.newFood.description)) {
+      console.log(match)
+      url = "https://world.openfoodfacts.org/product/0" + update.newFood.description;
+    } else if (match = EAN_REGEX.test(update.newFood.description)) {
+      url = "https://world.openfoodfacts.org/product/" + update.newFood.description;
+    } else {
+      return;
+    }
     const normalizedFood = await fetchFdcFood(
       url,
       state.config.fdcApiKey,
       state.conversionData
     );
-    // TODO: handle errors.
     dispatch(
       updateDocument({
         ...update,
