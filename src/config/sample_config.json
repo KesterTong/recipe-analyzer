@@ -1,5 +1,6 @@
 {
   "fdcApiKey": "DEMO_KEY",
+  "minCharsToQueryFDC": 3,
   "nutrients": [
     {
       "id": 1008,

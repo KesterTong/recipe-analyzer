@@ -25,9 +25,6 @@ interface Props {
   onChange(newValue: { description: string; url: string | null }): void;
 }
 
-// TODO: make this part of config.
-const minCharsToQueryFDC = 3;
-
 export class FoodInput extends React.Component<
   Props,
   {
@@ -50,7 +47,7 @@ export class FoodInput extends React.Component<
     this.setState({
       suggestions: localSuggestions,
     });
-    if (query.length < minCharsToQueryFDC) {
+    if (query.length < this.props.config.minCharsToQueryFDC) {
       return;
     }
     const fdcSuggestions = await searchFdcFoods(

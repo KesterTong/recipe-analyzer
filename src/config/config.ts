@@ -20,6 +20,7 @@
  */
 export interface Config {
   fdcApiKey: string;
+  minCharsToQueryFDC: 3;
   nutrients: {
     id: number;
     offName: string;
