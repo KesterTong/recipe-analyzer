@@ -14,6 +14,7 @@
 
 import { CanonicalizeQuantityConfig } from "../core";
 import { FdcConfig } from "../food_data_central";
+import { OffConfig } from "../open_food_facts";
 
 /**
  * Configuration for the app.
@@ -21,7 +22,7 @@ import { FdcConfig } from "../food_data_central";
  * This currently doesn't distinguish between script-level, user-level
  * and document-level config.
  */
-export interface Config extends CanonicalizeQuantityConfig, FdcConfig {
+export interface Config extends FdcConfig, OffConfig {
   minCharsToQueryFDC: 3;
   nutrients: {
     id: number;

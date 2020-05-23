@@ -14,6 +14,11 @@
 
 import { CanonicalizeQuantityConfig } from "../core";
 
-export interface FdcConfig extends CanonicalizeQuantityConfig {
-  fdcApiKey: string;
+export interface OffConfig extends CanonicalizeQuantityConfig {
+  nutrients: {
+    id: number;
+    offName: string;
+    offScale: number; // Divide OFF number by this to get FDC equiv.
+    name: string;
+  }[];
 }

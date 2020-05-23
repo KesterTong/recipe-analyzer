@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { Food, StatusOr, CanonicalizeQuantityConfig } from "../core";
+import { OffConfig } from "./OffConfig";
 
 const OFF_WEB_URL_REGEX = /https:\/\/world\.openfoodfacts\.org\/product\/(\d{12,13})(?:.*)/;
 
@@ -32,14 +33,7 @@ function getOffFoodUrl(eanOrUpc: string): string {
 
 async function fetchOffFoodInternal(
   eanOrUpc: string,
-  config: {
-    nutrients: {
-      id: number;
-      offName: string;
-      offScale: number; // Divide OFF number by this to get FDC equiv.
-      name: string;
-    }[];
-  } & CanonicalizeQuantityConfig
+  config: OffConfig
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getOffFoodUrl(eanOrUpc));
   const offFood: OffFood = await response.json();
@@ -64,14 +58,7 @@ async function fetchOffFoodInternal(
 
 export function fetchOffFood(
   url: string,
-  config: {
-    nutrients: {
-      id: number;
-      offName: string;
-      offScale: number; // Divide OFF number by this to get FDC equiv.
-      name: string;
-    }[];
-  } & CanonicalizeQuantityConfig
+  config: OffConfig
 ): Promise<StatusOr<Food>> | null {
   const match = OFF_WEB_URL_REGEX.exec(url);
   if (match === null) {

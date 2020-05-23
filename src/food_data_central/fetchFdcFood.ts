@@ -32,7 +32,7 @@ const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-d
 
 async function fetchFdcFoodInternal(
   fdcId: number,
-  config: FdcConfig & CanonicalizeQuantityConfig
+  config: FdcConfig
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getFdcFoodUrl(fdcId, config.fdcApiKey));
   const json = await response.json();
@@ -47,7 +47,7 @@ async function fetchFdcFoodInternal(
 
 export function fetchFdcFood(
   url: string,
-  config: FdcConfig & CanonicalizeQuantityConfig
+  config: FdcConfig
 ): Promise<StatusOr<Food>> | null {
   const match = FDC_WEB_URL_REGEX.exec(url);
   if (match === null) {

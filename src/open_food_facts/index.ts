@@ -14,3 +14,4 @@
 
 export { makeOffWebUrl } from "./makeOffWebUrl";
 export { fetchOffFood } from "./fetchOffFood";
+export { OffConfig } from "./OffConfig";
