@@ -16,7 +16,7 @@ import { FoodReference } from "../core";
 import { makeFdcWebUrl } from "./makeFdcWebUrl";
 import { fdcApiUrl } from "./fdcApiUrl";
 
-export interface FDCQueryResult {
+interface FDCQueryResult {
   foodSearchCriteria: {
     generalSearchInput: string;
     pageNumber: number;
@@ -31,7 +31,7 @@ export interface FDCQueryResult {
   }[];
 }
 
-export function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
+function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
   return fdcApiUrl("search", fdcApiKey, {
     generalSearchInput: encodeURIComponent(query),
     includeDataTypeList: "SR%20Legacy,Branded",
