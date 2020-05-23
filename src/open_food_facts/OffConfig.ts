@@ -19,6 +19,5 @@ export interface OffConfig extends CanonicalizeQuantityConfig {
     id: number;
     offName: string;
     offScale: number; // Divide OFF number by this to get FDC equiv.
-    name: string;
   }[];
 }
