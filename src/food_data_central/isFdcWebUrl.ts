@@ -14,15 +14,6 @@
 
 import { parseFdcWebUrl } from "./parseFdcWebUrl";
 
-/**
- * Rewrites a FoodReference or returns the input unchanged.
- *
- * This is used to take user-provided input (e.g. a URL or a UPC) and
- * convert it to a link.
- *
- * @param description The string to be rewritten
- * @returns The rewritten food reference or null.
- */
 export function isFdcWebUrl(url: string): boolean {
   return parseFdcWebUrl(url) !== null;
 }

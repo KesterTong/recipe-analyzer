@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export function makeFdcWebUrl(fdcId: number): string {
-  return (
-    "https://fdc.nal.usda.gov/fdc-app.html#/food-details/" +
-    fdcId.toString() +
-    "/nutrients"
-  );
+import { parseOffWebUrl } from "./parseOffWebUrl";
+
+export function isOffWebUrl(url: string): boolean {
+  return parseOffWebUrl(url) !== null;
 }

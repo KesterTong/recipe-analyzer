@@ -46,6 +46,6 @@ export async function searchFdcFoods(
   const result: FDCQueryResult = await response.json();
   return result.foods.map((entry) => ({
     description: entry.description,
-    url: makeFdcWebUrl(entry.fdcId.toString()),
+    url: makeFdcWebUrl(entry.fdcId),
   }));
 }

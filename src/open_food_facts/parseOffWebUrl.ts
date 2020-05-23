@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export function makeFdcWebUrl(fdcId: number): string {
-  return (
-    "https://fdc.nal.usda.gov/fdc-app.html#/food-details/" +
-    fdcId.toString() +
-    "/nutrients"
-  );
+const OFF_WEB_URL_REGEX = /https:\/\/world\.openfoodfacts\.org\/product\/(\d{12,13})(?:.*)/;
+
+export function parseOffWebUrl(url: string): number | null {
+  const match = OFF_WEB_URL_REGEX.exec(url);
+  if (match === null) {
+    return null;
+  }
+  return Number(match[1]);
 }
