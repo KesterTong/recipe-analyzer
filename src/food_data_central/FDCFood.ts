@@ -28,7 +28,7 @@ export interface BrandedFood {
   brandOwner?: string;
 }
 
-export interface SRLegacyFood {
+export interface SrLegacyFood {
   dataType: "SR Legacy";
   description: string;
   foodNutrients: {
@@ -44,4 +44,4 @@ export interface SRLegacyFood {
   }[];
 }
 
-export type FDCFood = BrandedFood | SRLegacyFood;
+export type FdcFood = BrandedFood | SrLegacyFood;

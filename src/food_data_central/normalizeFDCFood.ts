@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood, BrandedFood, SRLegacyFood } from "./FDCFood";
+import { FdcFood, BrandedFood, SrLegacyFood } from "./FdcFood";
 import {
   Quantity,
   ConversionData,
@@ -47,7 +47,7 @@ export function brandedServingEquivalents(
 }
 
 export function srLegacyServingEquivalents(
-  food: SRLegacyFood,
+  food: SrLegacyFood,
   conversionData: ConversionData
 ): Quantity[] {
   // A serving is 100 g by definition for SR Legacy foods.
@@ -68,7 +68,7 @@ export function srLegacyServingEquivalents(
 }
 
 export function normalizeFDCFood(
-  food: FDCFood,
+  food: FdcFood,
   conversionData: ConversionData
 ): Food {
   const nutrientsPerServing: Nutrients = {};

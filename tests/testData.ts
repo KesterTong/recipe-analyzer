@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FDCFood } from "../src/food_data_central/FDCFood";
+import { FdcFood } from "../src/food_data_central/FdcFood";
 
-export const TEST_SR_LEGACY_FOOD: FDCFood = {
+export const TEST_SR_LEGACY_FOOD: FdcFood = {
   description: "Bananas",
   dataType: "SR Legacy",
   foodNutrients: [
@@ -41,7 +41,7 @@ export const TEST_SR_LEGACY_FOOD: FDCFood = {
   ],
 };
 
-export const TEST_BRANDED_FOOD: FDCFood = {
+export const TEST_BRANDED_FOOD: FdcFood = {
   description: "Plantain Chips",
   dataType: "Branded",
   foodNutrients: [
