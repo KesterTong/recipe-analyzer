@@ -141,21 +141,23 @@ export function updateDocument(update: Update): ThunkResult<void> {
       update.newFood.url &&
       !update.newFood.url.startsWith("#")
     ) {
+      const newFoodUrl = update.newFood.url;
       dispatch({
         type: ActionType.UPDATE_FDC_FOODS,
         normalizedFoodsByUrl: {
-          [update.newFood.url]: status(StatusCode.LOADING, "Loading"),
+          [newFoodUrl]: status(StatusCode.LOADING, "Loading"),
         },
       });
-      const newFdcFood = await fetchFdcFood(
+      fetchFdcFood(
         update.newFood.url,
         state.config.fdcApiKey,
         state.conversionData
+      ).then((newFdcFood) =>
+        dispatch({
+          type: ActionType.UPDATE_FDC_FOODS,
+          normalizedFoodsByUrl: { [newFoodUrl]: newFdcFood },
+        })
       );
-      dispatch({
-        type: ActionType.UPDATE_FDC_FOODS,
-        normalizedFoodsByUrl: { [update.newFood.url]: newFdcFood },
-      });
     }
 
     dispatch({
