@@ -12,8 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food, ConversionData, StatusOr, StatusCode, status } from "../core";
-import { parseOffWebUrl } from "./parseOffWebUrl";
+import { Food, StatusOr, StatusCode, status } from "../core";
+
+interface OffFood {
+  product: {
+    serving_size: string;
+    nutriments: {
+      [index: string]: number;
+    };
+  };
+}
 
 function getOffFoodUrl(eanOrUpc: string): string {
   return "https://world.openfoodfacts.org/api/v0/product/" + eanOrUpc + ".json";
@@ -21,7 +29,16 @@ function getOffFoodUrl(eanOrUpc: string): string {
 
 export async function fetchOffFood(
   eanOrUpc: string,
-  conversionData: ConversionData
+  config: {
+    nutrients: {
+      id: number;
+      offName: string;
+      offScale: number; // Divide OFF number by this to get FDC equiv.
+      name: string;
+    }[];
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  }
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getOffFoodUrl(eanOrUpc));
   const json = await response.json();

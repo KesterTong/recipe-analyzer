@@ -19,7 +19,6 @@ export * from "./Nutrients";
 export * from "./Recipe";
 export * from "./Update";
 export * from "./StatusOr";
-export * from "./Unit";
 export * from "./updateRecipes";
 export * from "./parseQuantity";
 export * from "./Quantity";

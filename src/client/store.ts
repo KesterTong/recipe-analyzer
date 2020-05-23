@@ -36,7 +36,6 @@ function rootReducer(
         selectedIngredientIndex: 0,
         normalizedFoodsByUrl: action.normalizedFoodsByUrl,
         config: action.config,
-        conversionData: action.conversionData,
       };
     case ActionType.INITIALIZATION_ERROR:
       return {

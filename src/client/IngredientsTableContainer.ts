@@ -37,7 +37,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
         ingredient,
         state.normalizedFoodsByUrl,
         state.recipes,
-        state.conversionData
+        state.config
       ),
     }));
     let totalNutrients: Nutrients = {};

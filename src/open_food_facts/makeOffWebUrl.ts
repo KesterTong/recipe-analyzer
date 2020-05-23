@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 export function makeOffWebUrl(eanOrUpc: string): string {
   if (eanOrUpc.length === 12) {
     eanOrUpc = "0" + eanOrUpc;

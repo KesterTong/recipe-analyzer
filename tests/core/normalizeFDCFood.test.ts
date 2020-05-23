@@ -12,18 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { initializeQuantityData, ConversionData } from "../../src/core";
 import { normalizeFDCFood } from "../../src/food_data_central/normalizeFdcFood";
 import { TEST_SR_LEGACY_FOOD, TEST_BRANDED_FOOD } from "../testData";
 
 describe("normalizeFDCFood", () => {
-  const conversionData: ConversionData = {
-    gramEquivalentByUnit: { g: 1 },
-    mlEquivalentByUnit: { ml: 1, cup: 236.59 },
+  const config = {
+    massUnits: {
+      g: 1,
+    },
+    volumeUnits: {
+      ml: 1,
+      cup: 236.59,
+    },
   };
 
   it("SR Legacy Food", () => {
-    const result = normalizeFDCFood(TEST_SR_LEGACY_FOOD, conversionData);
+    const result = normalizeFDCFood(TEST_SR_LEGACY_FOOD, config);
     expect(result).toEqual({
       description: "Bananas",
       nutrientsPerServing: { "1003": 10, "1008": 123 },
@@ -45,7 +49,7 @@ describe("normalizeFDCFood", () => {
   });
 
   it("Branded Food", () => {
-    const result = normalizeFDCFood(TEST_BRANDED_FOOD, conversionData);
+    const result = normalizeFDCFood(TEST_BRANDED_FOOD, config);
     expect(result).toEqual({
       description: "Plantain Chips",
       nutrientsPerServing: { "1003": 5, "1008": 425 },

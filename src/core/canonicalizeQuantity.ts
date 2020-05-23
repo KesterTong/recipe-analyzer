@@ -13,36 +13,6 @@
 // limitations under the License.
 
 import { Quantity } from "./Quantity";
-import { Unit } from "./Unit";
-
-// Data derived from the config, but optimized for conversion.
-// Fields should not be used outside of initializeQuantityData
-// and canonicalizeQuantity.
-export interface ConversionData {
-  gramEquivalentByUnit: { [index: string]: number };
-  mlEquivalentByUnit: { [index: string]: number };
-}
-
-export function initializeQuantityData(
-  massUnits: Unit[],
-  volumeUnits: Unit[]
-): ConversionData {
-  const gramEquivalentByUnit: { [index: string]: number } = {};
-  const mlEquivalentByUnit: { [index: string]: number } = {};
-  massUnits.forEach((unit) => {
-    gramEquivalentByUnit[unit.name] = unit.value;
-    unit.otherNames.forEach((name) => {
-      gramEquivalentByUnit[name] = unit.value;
-    });
-  });
-  volumeUnits.forEach((unit) => {
-    mlEquivalentByUnit[unit.name] = unit.value;
-    unit.otherNames.forEach((name) => {
-      mlEquivalentByUnit[name] = unit.value;
-    });
-  });
-  return { gramEquivalentByUnit, mlEquivalentByUnit };
-}
 
 /**
  * Transform a quantity by
@@ -51,16 +21,19 @@ export function initializeQuantityData(
  */
 export function canonicalizeQuantity(
   quantity: Quantity,
-  conversionData: ConversionData
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  }
 ): Quantity {
-  const { gramEquivalentByUnit, mlEquivalentByUnit } = conversionData;
+  const { massUnits, volumeUnits } = config;
   let { amount, unit } = quantity;
   unit = unit.toLowerCase();
-  if (gramEquivalentByUnit[unit]) {
-    return { amount: amount * gramEquivalentByUnit[unit], unit: "g" };
+  if (massUnits[unit]) {
+    return { amount: amount * massUnits[unit], unit: "g" };
   }
-  if (mlEquivalentByUnit[unit]) {
-    return { amount: amount * mlEquivalentByUnit[unit], unit: "ml" };
+  if (volumeUnits[unit]) {
+    return { amount: amount * volumeUnits[unit], unit: "ml" };
   }
   return { amount, unit };
 }

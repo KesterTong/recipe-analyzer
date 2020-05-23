@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food, ConversionData, StatusOr, StatusCode, status } from "../core";
+import { Food, StatusOr, StatusCode, status } from "../core";
 import { normalizeFDCFood } from "./normalizeFdcFood";
 import { fdcApiUrl } from "./fdcApiUrl";
-import { parseFdcWebUrl } from "./parseFdcWebUrl";
 
 function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
@@ -23,10 +22,13 @@ function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
 
 export async function fetchFdcFood(
   fdcId: number,
-  fdcApiKey: string,
-  conversionData: ConversionData
+  config: {
+    fdcApiKey: string;
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  }
 ): Promise<StatusOr<Food>> {
-  const response = await fetch(getFdcFoodUrl(fdcId, fdcApiKey));
+  const response = await fetch(getFdcFoodUrl(fdcId, config.fdcApiKey));
   const json = await response.json();
   if (json.error) {
     return status(
@@ -34,5 +36,5 @@ export async function fetchFdcFood(
       "Error fetching FDC food: " + fdcId
     );
   }
-  return normalizeFDCFood(json, conversionData);
+  return normalizeFDCFood(json, config);
 }

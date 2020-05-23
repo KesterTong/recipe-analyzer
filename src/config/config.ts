@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Unit } from "../core";
-
 /**
  * Configuration for the app.
  *
@@ -24,9 +22,11 @@ export interface Config {
   fdcApiKey: string;
   nutrients: {
     id: number;
+    offName: string;
+    offScale: number; // Divide OFF number by this to get FDC equiv.
     name: string;
   }[];
-  massUnits: Unit[];
-  volumeUnits: Unit[];
+  massUnits: { [index: string]: number };
+  volumeUnits: { [index: string]: number };
   numDigits: number;
 }

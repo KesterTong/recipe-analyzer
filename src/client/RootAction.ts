@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Update, Recipe, StatusOr, Food, ConversionData } from "../core";
+import { Update, Recipe, StatusOr, Food } from "../core";
 import { Config } from "../config/config";
 
 export enum ActionType {
@@ -28,7 +28,6 @@ export interface Initialize {
   recipes: Recipe[];
   normalizedFoodsByUrl: { [index: string]: StatusOr<Food> };
   config: Config;
-  conversionData: ConversionData;
 }
 
 export interface InitializationError {

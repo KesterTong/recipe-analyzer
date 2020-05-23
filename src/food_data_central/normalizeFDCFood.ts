@@ -15,7 +15,6 @@
 import { FdcFood, BrandedFood, SrLegacyFood } from "./FdcFood";
 import {
   Quantity,
-  ConversionData,
   canonicalizeQuantity,
   Food,
   Nutrients,
@@ -24,7 +23,10 @@ import {
 
 export function brandedServingEquivalents(
   food: BrandedFood,
-  conversionData: ConversionData
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  }
 ): Quantity[] {
   // A serving is 100 g or 100 ml depending on servingSizeUnit, for Branded foods.
   let result = [{ amount: 100, unit: food.servingSizeUnit }];
@@ -38,7 +40,7 @@ export function brandedServingEquivalents(
         amount: householdServingQuantity.amount,
         unit: householdServingQuantity.unit,
       },
-      conversionData
+      config
     );
     const amountPerServing = (100.0 * amount) / food.servingSize;
     result.push({ amount: amountPerServing, unit });
@@ -48,7 +50,10 @@ export function brandedServingEquivalents(
 
 export function srLegacyServingEquivalents(
   food: SrLegacyFood,
-  conversionData: ConversionData
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  }
 ): Quantity[] {
   // A serving is 100 g by definition for SR Legacy foods.
   let result = [{ amount: 100, unit: "g" }];
@@ -59,7 +64,7 @@ export function srLegacyServingEquivalents(
         amount: foodPortion.amount,
         unit: foodPortion.modifier,
       },
-      conversionData
+      config
     );
     const amountPerServing = (100.0 * amount) / foodPortion.gramWeight;
     result.push({ amount: amountPerServing, unit });
@@ -69,7 +74,10 @@ export function srLegacyServingEquivalents(
 
 export function normalizeFDCFood(
   food: FdcFood,
-  conversionData: ConversionData
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  }
 ): Food {
   const nutrientsPerServing: Nutrients = {};
   for (var i = 0; i < food.foodNutrients.length; i++) {
@@ -81,10 +89,10 @@ export function normalizeFDCFood(
   let servingEquivalents: Quantity[];
   switch (food.dataType) {
     case "SR Legacy":
-      servingEquivalents = srLegacyServingEquivalents(food, conversionData);
+      servingEquivalents = srLegacyServingEquivalents(food, config);
       break;
     case "Branded":
-      servingEquivalents = brandedServingEquivalents(food, conversionData);
+      servingEquivalents = brandedServingEquivalents(food, config);
       break;
   }
   return {

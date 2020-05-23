@@ -16,13 +16,16 @@ import { Ingredient, Recipe } from "./Recipe";
 import { Food } from "./Food";
 import { Nutrients, scaleNutrients, addNutrients } from "./Nutrients";
 import { StatusOr, StatusCode, status, isOk } from "./StatusOr";
-import { canonicalizeQuantity, ConversionData } from "./canonicalizeQuantity";
+import { canonicalizeQuantity } from "./canonicalizeQuantity";
 
 export function normalizeRecipe(
   recipe: Recipe,
   normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
-  conversionData: ConversionData,
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  },
   stack: Recipe[] = []
 ): StatusOr<Food> {
   if (stack.indexOf(recipe) != -1) {
@@ -44,7 +47,7 @@ export function normalizeRecipe(
         ingredient,
         normalizedFoodByUrl,
         recipes,
-        conversionData,
+        config,
         stack.concat([recipe])
       );
       if (isOk(nutrients)) {
@@ -76,7 +79,10 @@ function lookupIngredient(
   url: string,
   normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
-  conversionData: ConversionData,
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  },
   stack?: Recipe[]
 ): StatusOr<Food> {
   if (normalizedFoodByUrl[url] !== undefined) {
@@ -90,7 +96,7 @@ function lookupIngredient(
       matchingRecipes[0],
       normalizedFoodByUrl,
       recipes,
-      conversionData,
+      config,
       stack
     );
   } else {
@@ -103,7 +109,10 @@ export function nutrientsForIngredient(
   ingredient: Ingredient,
   normalizedFoodByUrl: { [index: string]: StatusOr<Food> },
   recipes: Recipe[],
-  conversionData: ConversionData,
+  config: {
+    massUnits: { [index: string]: number };
+    volumeUnits: { [index: string]: number };
+  },
   stack?: Recipe[]
 ): StatusOr<Nutrients> {
   if (ingredient.ingredient.url == null) {
@@ -115,7 +124,7 @@ export function nutrientsForIngredient(
     ingredient.ingredient.url,
     normalizedFoodByUrl,
     recipes,
-    conversionData,
+    config,
     stack
   );
   if (!isOk(normalizedFood)) {
@@ -125,7 +134,7 @@ export function nutrientsForIngredient(
   // oneUnit = 1 x ingredient.unit
   const oneUnit = canonicalizeQuantity(
     { amount: 1, unit: ingredient.unit },
-    conversionData
+    config
   );
   let matchingQuantities = normalizedFood.servingEquivalents.filter(
     (quantity) => quantity.unit == oneUnit.unit
