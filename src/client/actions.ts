@@ -84,9 +84,14 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (state.type != "Active") {
       return;
     }
-    if (!(update.type == UpdateType.UPDATE_INGREDIENT &&
-      update.newFood && update.newFood.url === null &&
-      update.newFood.description.startsWith("https://"))) {
+    if (
+      !(
+        update.type == UpdateType.UPDATE_INGREDIENT &&
+        update.newFood &&
+        update.newFood.url === null &&
+        update.newFood.description.startsWith("https://")
+      )
+    ) {
       return;
     }
     const url = update.newFood.description;
