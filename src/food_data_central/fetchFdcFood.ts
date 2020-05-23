@@ -15,27 +15,7 @@
 import { Food, ConversionData, StatusOr, StatusCode, status } from "../core";
 import { normalizeFDCFood } from "./normalizeFdcFood";
 import { fdcApiUrl } from "./fdcApiUrl";
-
-// Detects a URL for a the main page in the FDC Web App for a given food.
-//
-// Note that this only includes canonical URLs, i.e. URLs that end in /nutrients,
-// but not /measures.
-
-const FDC_CANONICAL_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/nutrients/;
-
-/**
- * Parse a link to the FDC website as an FDC ID.
- *
- * @param url A URL to the FDC website
- * @returns The FDC ID or none if parsing fails.
- */
-function parseFdcWebUrl(url: string): number | null {
-  const match = FDC_CANONICAL_WEB_URL_REGEX.exec(url);
-  if (match == null) {
-    return null;
-  }
-  return Number(match[1]);
-}
+import { parseFdcWebUrl } from "./parseFdcWebUrl";
 
 function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});

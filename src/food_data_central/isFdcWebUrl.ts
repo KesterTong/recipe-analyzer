@@ -12,13 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { makeFdcWebUrl } from "./makeFdcWebUrl";
-
-// Detects any URL for a page in the FDC Web App for a given food.
-//
-// Note that this includes non-canonical URLs that can't be used internally
-// to represent a food.
-const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;
+import { parseFdcWebUrl } from "./parseFdcWebUrl";
 
 /**
  * Rewrites a FoodReference or returns the input unchanged.
@@ -29,11 +23,6 @@ const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-d
  * @param description The string to be rewritten
  * @returns The rewritten food reference or null.
  */
-export function maybeRewriteFoodReference(description: string): string | null {
-  // Detect links to FDC Web App.
-  const match = FDC_WEB_URL_REGEX.exec(description);
-  if (match === null) {
-    return null;
-  }
-  return makeFdcWebUrl(match[1]);
+export function isFdcWebUrl(url: string): boolean {
+  return parseFdcWebUrl(url) !== null;
 }

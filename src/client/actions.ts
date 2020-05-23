@@ -31,7 +31,7 @@ import {
   Food,
   StatusCode,
 } from "../core";
-import { fetchFdcFood, maybeRewriteFoodReference } from "../food_data_central";
+import { fetchFdcFood } from "../food_data_central";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -81,24 +81,15 @@ export function initialize(): ThunkResult<void> {
 function maybeRewrite(update: Update): ThunkResult<void> {
   return async (dispatch, getState) => {
     const state = getState();
-    if (state.type !== "Active") {
+    if (state.type != "Active") {
       return;
     }
-    if (update.type != UpdateType.UPDATE_INGREDIENT) {
+    if (!(update.type == UpdateType.UPDATE_INGREDIENT &&
+      update.newFood && update.newFood.url === null &&
+      update.newFood.description.startsWith("https://"))) {
       return;
     }
-    if (update.newFood === undefined) {
-      return;
-    }
-    // Don't rewrite existing links.
-    if (update.newFood.url !== null) {
-      return;
-    }
-    // Detect whether description can be converted to a canonical URL.
-    const url = maybeRewriteFoodReference(update.newFood.description);
-    if (url === null) {
-      return;
-    }
+    const url = update.newFood.description;
     const normalizedFood = await fetchFdcFood(
       url,
       state.config.fdcApiKey,
@@ -111,7 +102,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
         newFood: {
           description: isOk(normalizedFood)
             ? normalizedFood.description
-            : normalizedFood.message,
+            : "broken link",
           url,
         },
       })
