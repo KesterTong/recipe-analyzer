@@ -32,8 +32,8 @@ import {
   StatusCode,
   ConversionData,
 } from "../core";
-import { fetchFdcFood, isFdcWebUrl } from "../food_data_central";
-import { makeOffWebUrl, isOffWebUrl, fetchOffFood } from "../open_food_facts";
+import { fetchFdcFood, parseFdcWebUrl } from "../food_data_central";
+import { makeOffWebUrl, parseOffWebUrl, fetchOffFood } from "../open_food_facts";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -41,10 +41,10 @@ async function fetchFood(
   url: string,
   fdcApiKey: string,
   conversionData: ConversionData): Promise<StatusOr<Food>> {
-  console.log('got here')
-  if (isFdcWebUrl(url)) {
-    return fetchFdcFood(url, fdcApiKey, conversionData);
-  } else if (isOffWebUrl(url)) {
+  let fdcId, eanOrUpc;
+  if (fdcId = parseFdcWebUrl(url)) {
+    return fetchFdcFood(fdcId, fdcApiKey, conversionData);
+  } else if (eanOrUpc = parseOffWebUrl(url)) {
     return fetchOffFood(url, conversionData);
   }
   return status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url);

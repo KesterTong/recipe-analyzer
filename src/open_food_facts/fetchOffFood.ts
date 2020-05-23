@@ -20,14 +20,9 @@ function getOffFoodUrl(eanOrUpc: string): string {
 }
 
 export async function fetchOffFood(
-  url: string,
+  eanOrUpc: string,
   conversionData: ConversionData
 ): Promise<StatusOr<Food>> {
-  const eanOrUpc = parseOffWebUrl(url);
-  console.log(eanOrUpc);
-  if (eanOrUpc === null) {
-    return status(StatusCode.FOOD_NOT_FOUND, "Did not recognize URL " + url);
-  }
   const response = await fetch(getOffFoodUrl(eanOrUpc));
   const json = await response.json();
   return status(StatusCode.FOOD_NOT_FOUND, JSON.stringify(json));

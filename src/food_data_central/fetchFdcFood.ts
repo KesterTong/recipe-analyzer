@@ -22,14 +22,10 @@ function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
 }
 
 export async function fetchFdcFood(
-  url: string,
+  fdcId: number,
   fdcApiKey: string,
   conversionData: ConversionData
 ): Promise<StatusOr<Food>> {
-  const fdcId = parseFdcWebUrl(url);
-  if (fdcId === null) {
-    return status(StatusCode.FOOD_NOT_FOUND, "Did not recognize URL " + url);
-  }
   const response = await fetch(getFdcFoodUrl(fdcId, fdcApiKey));
   const json = await response.json();
   if (json.error) {

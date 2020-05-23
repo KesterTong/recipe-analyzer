@@ -13,5 +13,5 @@
 // limitations under the License.
 
 export { fetchFdcFood } from "./fetchFdcFood";
-export { isFdcWebUrl } from "./isFdcWebUrl";
+export { parseFdcWebUrl } from "./parseFdcWebUrl";
 export { searchFdcFoods } from "./searchFdcFoods";
