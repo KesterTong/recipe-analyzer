@@ -82,10 +82,8 @@ function parseTable(
 
 const RECIPE_TITLE_HEADING_LEVEL = DocumentApp.ParagraphHeading.HEADING1;
 
-export function parseDocument(
-  document: GoogleAppsScript.Document.Document
-): Recipe[] {
-  document = DocumentApp.getActiveDocument();
+export function parseDocument(): Recipe[] {
+  let document = DocumentApp.getActiveDocument();
 
   let body = document.getBody();
   let bodyNumChildren = body.getNumChildren();
@@ -204,6 +202,5 @@ export function getConfig(): Config {
 }
 
 export function testParseDocument() {
-  const document = DocumentApp.getActiveDocument();
-  console.log(JSON.stringify(parseDocument(document), undefined, 2));
+  console.log(JSON.stringify(parseDocument(), undefined, 2));
 }
