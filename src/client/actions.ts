@@ -30,10 +30,21 @@ import {
   status,
   Food,
   StatusCode,
+  ConversionData,
 } from "../core";
-import { fetchFdcFood } from "../food_data_central";
+import { fetchFdcFood, isFdcWebUrl } from "../food_data_central";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
+
+function fetchFood(
+  url: string,
+  fdcApiKey: string,
+  conversionData: ConversionData): Promise<StatusOr<Food>> {
+  if (isFdcWebUrl(url)) {
+    return fetchFdcFood(url, fdcApiKey, conversionData);
+  }
+  return Promise.resolve(status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url));
+}
 
 export function initialize(): ThunkResult<void> {
   return async (dispatch) => {
@@ -56,7 +67,7 @@ export function initialize(): ThunkResult<void> {
         });
       });
       const responses = await Promise.all(
-        urls.map((url) => fetchFdcFood(url, config.fdcApiKey, conversionData))
+        urls.map((url) => fetchFood(url, config.fdcApiKey, conversionData))
       );
       let normalizedFoodsByUrl: { [index: string]: StatusOr<Food> } = {};
       responses.forEach((response, index) => {
@@ -105,7 +116,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     } else {
       return;
     }
-    const normalizedFood = await fetchFdcFood(
+    const normalizedFood = await fetchFood(
       url,
       state.config.fdcApiKey,
       state.conversionData
@@ -153,7 +164,7 @@ export function updateDocument(update: Update): ThunkResult<void> {
           [newFoodUrl]: status(StatusCode.LOADING, "Loading"),
         },
       });
-      fetchFdcFood(
+      fetchFood(
         update.newFood.url,
         state.config.fdcApiKey,
         state.conversionData
