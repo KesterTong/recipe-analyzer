@@ -17,5 +17,5 @@ export function makeOffWebUrl(eanOrUpc: string): string {
   if (eanOrUpc.length === 12) {
     eanOrUpc = "0" + eanOrUpc;
   }
-  return "https://world.openfoodfacts.org/product/0" + eanOrUpc;
+  return "https://world.openfoodfacts.org/product/" + eanOrUpc;
 }

@@ -14,3 +14,4 @@
 
 export { makeOffWebUrl } from "./makeOffWebUrl";
 export { isOffWebUrl } from "./isOffWebUrl";
+export { fetchOffFood } from "./fetchOffFood";

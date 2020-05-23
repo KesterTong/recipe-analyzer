@@ -33,7 +33,7 @@ import {
   ConversionData,
 } from "../core";
 import { fetchFdcFood, isFdcWebUrl } from "../food_data_central";
-import { makeOffWebUrl, isOffWebUrl } from "../open_food_facts";
+import { makeOffWebUrl, isOffWebUrl, fetchOffFood } from "../open_food_facts";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -45,8 +45,7 @@ async function fetchFood(
   if (isFdcWebUrl(url)) {
     return fetchFdcFood(url, fdcApiKey, conversionData);
   } else if (isOffWebUrl(url)) {
-    console.log('got here')
-    return status(StatusCode.FOOD_NOT_FOUND, "Open food facts foods not yet supported");
+    return fetchOffFood(url, conversionData);
   }
   return status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url);
 }

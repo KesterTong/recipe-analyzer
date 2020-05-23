@@ -14,10 +14,10 @@
 
 const OFF_WEB_URL_REGEX = /https:\/\/world\.openfoodfacts\.org\/product\/(\d{12,13})(?:.*)/;
 
-export function parseOffWebUrl(url: string): number | null {
+export function parseOffWebUrl(url: string): string | null {
   const match = OFF_WEB_URL_REGEX.exec(url);
   if (match === null) {
     return null;
   }
-  return Number(match[1]);
+  return match[1];
 }
