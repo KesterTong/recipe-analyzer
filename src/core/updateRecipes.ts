@@ -26,67 +26,56 @@ const blankIngredient: Ingredient = {
 
 export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
   const recipe = recipes[update.recipeIndex];
-  let newRecipe: Recipe;
+  let newIngredients: Ingredient[];
   switch (update.type) {
     case UpdateType.ADD_INGREDIENT:
-      newRecipe = {
-        ...recipe,
-        ingredients: recipe.ingredients.concat([blankIngredient]),
-      };
+      newIngredients = recipe.ingredients.concat([blankIngredient]);
       break;
     case UpdateType.UPDATE_INGREDIENT:
-      newRecipe = {
-        ...recipe,
-        ingredients: recipe.ingredients.map((ingredient, index) => {
-          if (index != update.ingredientIndex) {
-            return ingredient;
-          }
-          return {
-            ...ingredient,
-            amount:
-              update.newAmount === undefined
-                ? ingredient.amount
-                : update.newAmount,
-            unit:
-              update.newUnit === undefined ? ingredient.unit : update.newUnit,
-            ingredient:
-              update.newFood === undefined
-                ? ingredient.ingredient
-                : update.newFood,
-          };
-        }),
-      };
+      newIngredients = recipe.ingredients.map((ingredient, index) => {
+        if (index != update.ingredientIndex) {
+          return ingredient;
+        }
+        return {
+          ...ingredient,
+          amount:
+            update.newAmount === undefined
+              ? ingredient.amount
+              : update.newAmount,
+          unit: update.newUnit === undefined ? ingredient.unit : update.newUnit,
+          ingredient:
+            update.newFood === undefined
+              ? ingredient.ingredient
+              : update.newFood,
+        };
+      });
       break;
     case UpdateType.DELETE_INGREDIENT:
       // If there is only one ingredient, clear it instead of delete.
       // This ensure the constraint the each recipe has at least one
       // ingredient is satisfied.
-      newRecipe = {
-        ...recipe,
-        ingredients:
-          recipe.ingredients.length == 1
-            ? [blankIngredient]
-            : recipe.ingredients.filter(
-                (_, index) => index != update.ingredientIndex
-              ),
-      };
+      newIngredients =
+        recipe.ingredients.length == 1
+          ? [blankIngredient]
+          : recipe.ingredients.filter(
+              (_, index) => index != update.ingredientIndex
+            );
       break;
     case UpdateType.SWAP_INGREDIENTS:
-      newRecipe = {
-        ...recipe,
-        ingredients: recipe.ingredients.map((ingredient, index) => {
-          if (index == update.firstIngredientIndex) {
-            return recipe.ingredients[index + 1];
-          } else if (index == update.firstIngredientIndex + 1) {
-            return recipe.ingredients[index - 1];
-          } else {
-            return ingredient;
-          }
-        }),
-      };
+      newIngredients = recipe.ingredients.map((ingredient, index) => {
+        if (index == update.firstIngredientIndex) {
+          return recipe.ingredients[index + 1];
+        } else if (index == update.firstIngredientIndex + 1) {
+          return recipe.ingredients[index - 1];
+        } else {
+          return ingredient;
+        }
+      });
       break;
   }
   return recipes.map((recipe, index) =>
-    index == update.recipeIndex ? newRecipe : recipe
+    index == update.recipeIndex
+      ? { ...recipe, ingredients: newIngredients }
+      : recipe
   );
 }
