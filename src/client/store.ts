@@ -71,22 +71,9 @@ function rootReducer(
             break;
         }
       }
-      let normalizedFoodsByUrl = state.normalizedFoodsByUrl;
-      if (
-        update.type == UpdateType.UPDATE_INGREDIENT &&
-        update.newFood &&
-        update.newFood.url &&
-        !update.newFood.url?.startsWith("")
-      ) {
-        normalizedFoodsByUrl = {
-          ...normalizedFoodsByUrl,
-          [update.newFood.url]: status(StatusCode.LOADING, "Loading"),
-        };
-      }
       return {
         ...state,
         selectedIngredientIndex,
-        normalizedFoodsByUrl,
         recipes: updateRecipes(state.recipes, action.update),
       };
     case ActionType.UPDATE_FDC_FOODS:

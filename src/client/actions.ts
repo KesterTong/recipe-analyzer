@@ -27,7 +27,9 @@ import {
   initializeQuantityData,
   isOk,
   StatusOr,
+  status,
   Food,
+  StatusCode,
 } from "../core";
 import { fetchFdcFood, maybeRewriteFoodReference } from "../food_data_central";
 
@@ -75,8 +77,6 @@ export function initialize(): ThunkResult<void> {
     }
   };
 }
-
-const UPC_REGEX = /\d{12,13}/;
 
 function maybeRewrite(update: Update): ThunkResult<void> {
   return async (dispatch, getState) => {
@@ -134,11 +134,6 @@ export function updateDocument(update: Update): ThunkResult<void> {
     // We update the document on the server side asynchronously.
     updateServerDocument(update);
 
-    dispatch({
-      type: ActionType.UPDATE_RECIPES,
-      update,
-    });
-
     // Load any ingredients that need loading
     if (
       update.type == UpdateType.UPDATE_INGREDIENT &&
@@ -146,6 +141,12 @@ export function updateDocument(update: Update): ThunkResult<void> {
       update.newFood.url &&
       !update.newFood.url.startsWith("#")
     ) {
+      dispatch({
+        type: ActionType.UPDATE_FDC_FOODS,
+        normalizedFoodsByUrl: {
+          [update.newFood.url]: status(StatusCode.LOADING, "Loading"),
+        },
+      });
       const newFdcFood = await fetchFdcFood(
         update.newFood.url,
         state.config.fdcApiKey,
@@ -156,6 +157,11 @@ export function updateDocument(update: Update): ThunkResult<void> {
         normalizedFoodsByUrl: { [update.newFood.url]: newFdcFood },
       });
     }
+
+    dispatch({
+      type: ActionType.UPDATE_RECIPES,
+      update,
+    });
   };
 }
 
