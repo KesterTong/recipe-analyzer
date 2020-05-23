@@ -15,3 +15,4 @@
 export { fetchFdcFood } from "./fetchFdcFood";
 export { parseFdcWebUrl } from "./parseFdcWebUrl";
 export { searchFdcFoods } from "./searchFdcFoods";
+export { FdcConfig } from "./FdcConfig";

@@ -50,10 +50,7 @@ export class FoodInput extends React.Component<
     if (query.length < this.props.config.minCharsToQueryFDC) {
       return;
     }
-    const fdcSuggestions = await searchFdcFoods(
-      query,
-      this.props.config.fdcApiKey
-    );
+    const fdcSuggestions = await searchFdcFoods(query, this.props.config);
     this.setState({ suggestions: localSuggestions.concat(fdcSuggestions) });
   };
 

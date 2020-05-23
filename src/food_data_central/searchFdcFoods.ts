@@ -15,6 +15,7 @@
 import { FoodReference } from "../core";
 import { makeFdcWebUrl } from "./makeFdcWebUrl";
 import { fdcApiUrl } from "./fdcApiUrl";
+import { FdcConfig } from "./FdcConfig";
 
 interface FDCQueryResult {
   foodSearchCriteria: {
@@ -40,9 +41,9 @@ function searchFdcFoodsUrl(query: string, fdcApiKey: string): string {
 
 export async function searchFdcFoods(
   query: string,
-  fdcApiKey: string
+  config: FdcConfig
 ): Promise<FoodReference[]> {
-  const response = await fetch(searchFdcFoodsUrl(query, fdcApiKey));
+  const response = await fetch(searchFdcFoodsUrl(query, config.fdcApiKey));
   const result: FDCQueryResult = await response.json();
   return result.foods.map((entry) => ({
     description: entry.description,

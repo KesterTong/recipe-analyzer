@@ -21,6 +21,7 @@ import {
 } from "../core";
 import { normalizeFDCFood } from "./normalizeFdcFood";
 import { fdcApiUrl } from "./fdcApiUrl";
+import { FdcConfig } from "./FdcConfig";
 
 function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
@@ -28,9 +29,7 @@ function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
 
 export async function fetchFdcFood(
   fdcId: number,
-  config: {
-    fdcApiKey: string;
-  } & CanonicalizeQuantityConfig
+  config: FdcConfig & CanonicalizeQuantityConfig
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getFdcFoodUrl(fdcId, config.fdcApiKey));
   const json = await response.json();

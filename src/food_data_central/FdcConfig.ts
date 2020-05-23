@@ -12,22 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CanonicalizeQuantityConfig } from "../core";
-import { FdcConfig } from "../food_data_central";
-
-/**
- * Configuration for the app.
- *
- * This currently doesn't distinguish between script-level, user-level
- * and document-level config.
- */
-export interface Config extends CanonicalizeQuantityConfig, FdcConfig {
-  minCharsToQueryFDC: 3;
-  nutrients: {
-    id: number;
-    offName: string;
-    offScale: number; // Divide OFF number by this to get FDC equiv.
-    name: string;
-  }[];
-  numDigits: number;
+export interface FdcConfig {
+  fdcApiKey: string;
 }
