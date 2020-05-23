@@ -16,6 +16,7 @@ import { Food, StatusOr, StatusCode, status } from "../core";
 
 interface OffFood {
   product: {
+    product_name: string;
     serving_size: string;
     nutriments: {
       [index: string]: number;
@@ -41,6 +42,22 @@ export async function fetchOffFood(
   }
 ): Promise<StatusOr<Food>> {
   const response = await fetch(getOffFoodUrl(eanOrUpc));
-  const json = await response.json();
-  return status(StatusCode.FOOD_NOT_FOUND, JSON.stringify(json));
+  const offFood: OffFood = await response.json();
+  const product = offFood.product;
+  const nutrientsPerServing: { [index: number]: number } = {};
+  const nutriments = product.nutriments;
+  config.nutrients.forEach((nutrient) => {
+    const value = nutriments[nutrient.offName];
+    if (value === undefined) {
+      return;
+    }
+    nutrientsPerServing[nutrient.id] = value / nutrient.offScale;
+  });
+  // TODO: Figure out correct serving equivalents for OFF data.
+  const servingEquivalents = [{ amount: 100, unit: "g" }];
+  return {
+    description: product.product_name,
+    nutrientsPerServing,
+    servingEquivalents,
+  };
 }

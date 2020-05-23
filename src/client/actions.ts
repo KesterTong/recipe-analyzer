@@ -45,7 +45,7 @@ async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
   if ((fdcId = parseFdcWebUrl(url))) {
     return fetchFdcFood(fdcId, config);
   } else if ((eanOrUpc = parseOffWebUrl(url))) {
-    return fetchOffFood(url, config);
+    return fetchOffFood(eanOrUpc, config);
   }
   return status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url);
 }
