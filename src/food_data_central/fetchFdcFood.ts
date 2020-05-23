@@ -27,7 +27,10 @@ function getFdcFoodUrl(fdcId: number, fdcApiKey: string): string {
   return fdcApiUrl(fdcId.toString(), fdcApiKey, {});
 }
 
-export async function fetchFdcFood(
+// Detects any URL for a page in the FDC Web App for a given food.
+const FDC_WEB_URL_REGEX = /https:\/\/fdc\.nal\.usda\.gov\/fdc-app\.html#\/food-details\/(\d*)\/(?:.*)/;
+
+async function fetchFdcFoodInternal(
   fdcId: number,
   config: FdcConfig & CanonicalizeQuantityConfig
 ): Promise<StatusOr<Food>> {
@@ -40,4 +43,15 @@ export async function fetchFdcFood(
     );
   }
   return normalizeFDCFood(json, config);
+}
+
+export function fetchFdcFood(
+  url: string,
+  config: FdcConfig & CanonicalizeQuantityConfig
+): Promise<StatusOr<Food>> | null {
+  const match = FDC_WEB_URL_REGEX.exec(url);
+  if (match === null) {
+    return null;
+  }
+  return fetchFdcFoodInternal(Number(match[1]), config);
 }

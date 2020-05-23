@@ -14,6 +14,8 @@
 
 import { Food, StatusOr, CanonicalizeQuantityConfig } from "../core";
 
+const OFF_WEB_URL_REGEX = /https:\/\/world\.openfoodfacts\.org\/product\/(\d{12,13})(?:.*)/;
+
 interface OffFood {
   product: {
     product_name: string;
@@ -28,7 +30,7 @@ function getOffFoodUrl(eanOrUpc: string): string {
   return "https://world.openfoodfacts.org/api/v0/product/" + eanOrUpc + ".json";
 }
 
-export async function fetchOffFood(
+async function fetchOffFoodInternal(
   eanOrUpc: string,
   config: {
     nutrients: {
@@ -58,4 +60,22 @@ export async function fetchOffFood(
     nutrientsPerServing,
     servingEquivalents,
   };
+}
+
+export function fetchOffFood(
+  url: string,
+  config: {
+    nutrients: {
+      id: number;
+      offName: string;
+      offScale: number; // Divide OFF number by this to get FDC equiv.
+      name: string;
+    }[];
+  } & CanonicalizeQuantityConfig
+): Promise<StatusOr<Food>> | null {
+  const match = OFF_WEB_URL_REGEX.exec(url);
+  if (match === null) {
+    return null;
+  }
+  return fetchOffFoodInternal(match[1], config);
 }

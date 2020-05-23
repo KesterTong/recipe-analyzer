@@ -30,22 +30,18 @@ import {
   Food,
   StatusCode,
 } from "../core";
-import { fetchFdcFood, parseFdcWebUrl } from "../food_data_central";
-import {
-  makeOffWebUrl,
-  parseOffWebUrl,
-  fetchOffFood,
-} from "../open_food_facts";
+import { fetchFdcFood } from "../food_data_central";
+import { makeOffWebUrl, fetchOffFood } from "../open_food_facts";
 import { Config } from "../config/config";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
 async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
-  let fdcId, eanOrUpc;
-  if ((fdcId = parseFdcWebUrl(url))) {
-    return fetchFdcFood(fdcId, config);
-  } else if ((eanOrUpc = parseOffWebUrl(url))) {
-    return fetchOffFood(eanOrUpc, config);
+  let pendingFdcFood, pendingOffFood;
+  if ((pendingFdcFood = fetchFdcFood(url, config))) {
+    return pendingFdcFood;
+  } else if ((pendingOffFood = fetchOffFood(url, config))) {
+    return pendingOffFood;
   }
   return status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url);
 }

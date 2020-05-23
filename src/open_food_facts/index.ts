@@ -13,5 +13,4 @@
 // limitations under the License.
 
 export { makeOffWebUrl } from "./makeOffWebUrl";
-export { parseOffWebUrl } from "./parseOffWebUrl";
 export { fetchOffFood } from "./fetchOffFood";
