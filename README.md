@@ -44,6 +44,8 @@ The following are possible extensions/improvments
  * Use context-sensitive menu for add/delete/move ingredients.
  * Support drag-and-drop for moving ingredients.
  * UI for user/document level configuration.
+ * Use and interface for OpenFoodFacts and FDC wrappers, and possibly unify this with
+   recipe-related functionality.
  * Find a way to follow the cursor in the document
  * Add more unit tests
  * Maybe stop using the action-reducer pattern on the server-side so we don't have to
