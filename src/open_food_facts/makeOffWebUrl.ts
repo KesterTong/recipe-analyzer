@@ -12,15 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./updateRecipes";
-export * from "./parseQuantity";
-export * from "./Quantity";
-export * from "./FoodReference";
-export * from "./CanonicalizeQuantityConfig";
+export function makeOffWebUrl(eanOrUpc: string): string {
+  if (eanOrUpc.length === 12) {
+    eanOrUpc = "0" + eanOrUpc;
+  }
+  return "https://world.openfoodfacts.org/product/" + eanOrUpc;
+}

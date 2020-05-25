@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./updateRecipes";
-export * from "./parseQuantity";
-export * from "./Quantity";
-export * from "./FoodReference";
-export * from "./CanonicalizeQuantityConfig";
+import { CanonicalizeQuantityConfig } from "../core";
+
+export interface OffNutrient {
+  id: number;
+  offName: string;
+  offScale: number; // Divide OFF number by this to get FDC equiv.
+}
+
+export interface OffConfig extends CanonicalizeQuantityConfig {
+  nutrients: OffNutrient[];
+}

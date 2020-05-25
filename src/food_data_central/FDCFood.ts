@@ -12,17 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Nutrients } from "./Nutrients";
-import { Quantity } from "./Quantity";
-
-/**
- * Representation of a food used for recipe calculations.
- *
- * This data can be derived from various sources, e.g. FDC Data
- * or other recipes.
- */
-export interface Food {
+export interface BrandedFood {
+  dataType: "Branded";
   description: string;
-  nutrientsPerServing: Nutrients;
-  servingEquivalents: Quantity[];
+  servingSize: number;
+  servingSizeUnit: string;
+  householdServingFullText?: string;
+  foodNutrients: {
+    nutrient: {
+      id: number;
+    };
+    amount?: number;
+  }[];
+  ingredients?: string;
+  brandOwner?: string;
 }
+
+export interface SrLegacyFood {
+  dataType: "SR Legacy";
+  description: string;
+  foodNutrients: {
+    nutrient: {
+      id: number;
+    };
+    amount?: number;
+  }[];
+  foodPortions: {
+    modifier: string;
+    gramWeight: number;
+    amount: number;
+  }[];
+}
+
+export type FdcFood = BrandedFood | SrLegacyFood;

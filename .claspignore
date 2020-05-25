@@ -1,8 +1,8 @@
-tests/**
+docs/**
+env/**
 node_modules/**
-templates/**
-public/**
-index.ts
+src/client/**
+tests/**
+dist/*.js
+dist/test_harness*
 webpack.config.js
-**/*bundle.js
-client/**

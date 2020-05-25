@@ -11,16 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+/**
+ * NOTE: This code is only intended to be called from Apps Script, not in the
+ * client.  From the point of view of the client this is server-side code.
+ */
+export function showSidebar() {
+  let htmlOutput = HtmlService.createHtmlOutputFromFile(
+    "dist/sidebar.html"
+  ).setTitle("Edit Recipes");
+  DocumentApp.getUi().showSidebar(htmlOutput);
+}
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./updateRecipes";
-export * from "./parseQuantity";
-export * from "./Quantity";
-export * from "./FoodReference";
-export * from "./CanonicalizeQuantityConfig";
+export function onOpen() {
+  DocumentApp.getUi()
+    .createAddonMenu()
+    .addItem("Show", "showSidebar")
+    .addToUi();
+}

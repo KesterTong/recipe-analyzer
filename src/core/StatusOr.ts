@@ -14,24 +14,37 @@
 
 export enum StatusCode {
   LOADING = "@Status/Loading",
-  UNKNOWN_QUANTITY = "@Status/UnknownQuantity",
+  // The specified unit could no be converted for the food.
+  UNKNOWN_UNIT = "@Status/UnknownUnit",
   // When the amount in the edit UI is not a number.
   NAN_AMOUNT = "@Status/NanAmount",
   // An error happened when processing an ingredient of a recipe.
   INGREDIENT_ERROR = "@Status/IngredientError",
+  // A recipe had a title that was not in the table of contents.
+  TITLE_NOT_IN_TOC_ERROR = "@Status/IngredientError",
+  // Error loading food from FDC
+  FDC_API_ERROR = "@Status/FdcApiError",
+  // The linked food was not found
+  FOOD_NOT_FOUND = "@Status/FoodNotFound",
+  // Cycle of recipes detected
+  RECIPE_CYCLE_DETECTED = "@Status/RecipeCycleDetected",
 }
 
 export interface Status {
   code: StatusCode;
-  message?: string;
+  message: string;
 }
 
-export function status(code: StatusCode, message?: string): Status {
+export function status(code: StatusCode, message: string): Status {
   return { code, message };
 }
 
 export function hasCode<T>(status: StatusOr<T>, code: StatusCode): boolean {
   return (status as Status).code === code;
+}
+
+export function isError<T>(status: StatusOr<T>): status is Status {
+  return (status as Status).code !== undefined;
 }
 
 export function isOk<T>(status: StatusOr<T>): status is T {

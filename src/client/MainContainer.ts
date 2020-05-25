@@ -12,15 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./updateRecipes";
-export * from "./parseQuantity";
-export * from "./Quantity";
-export * from "./FoodReference";
-export * from "./CanonicalizeQuantityConfig";
+import { RootState } from "./RootState";
+import { bindActionCreators } from "redux";
+import { ThunkDispatch } from "./store";
+import { Main } from "./Main";
+import { connect } from "react-redux";
+
+function mapStateToProps(state: RootState) {
+  return {
+    type: state.type,
+    errorMessage: state.type === "Error" ? state.message : undefined,
+  };
+}
+
+function mapDispatchToProps(dispatch: ThunkDispatch) {
+  return bindActionCreators({}, dispatch);
+}
+
+export const MainContainer = connect(mapStateToProps, mapDispatchToProps)(Main);

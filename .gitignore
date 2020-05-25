@@ -1,7 +1,9 @@
 # node
 /node_modules
-/ui/bundle*
 package-lock.json
+
+# generated html and JS
+/dist
 
 # deployment configs
 .clasp.json

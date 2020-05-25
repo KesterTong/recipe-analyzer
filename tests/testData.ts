@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Food } from "../src/core/Food";
-import { BrandedFood } from "../src/core/FoodDataCentral";
+import { FdcFood } from "../src/food_data_central/FdcFood";
 
-export const TEST_SR_LEGACY_FOOD: Food = {
+export const TEST_SR_LEGACY_FOOD: FdcFood = {
   description: "Bananas",
   dataType: "SR Legacy",
   foodNutrients: [
@@ -42,7 +41,7 @@ export const TEST_SR_LEGACY_FOOD: Food = {
   ],
 };
 
-export const TEST_BRANDED_FOOD: BrandedFood = {
+export const TEST_BRANDED_FOOD: FdcFood = {
   description: "Plantain Chips",
   dataType: "Branded",
   foodNutrients: [
@@ -60,16 +59,16 @@ export const TEST_BRANDED_FOOD: BrandedFood = {
   householdServingFullText: "6 pieces",
 };
 
-export const TEST_RECIPE: Food = {
-  dataType: "Recipe",
-  description: "My Recipe",
-  ingredientsList: [
-    {
-      quantity: {
-        amount: 7.5,
-        unit: "piece",
-      },
-      foodId: "userData/id.abc123",
-    },
-  ],
-};
+// export const TEST_RECIPE: Food = {
+//   dataType: "Recipe",
+//   description: "My Recipe",
+//   ingredientsList: [
+//     {
+//       quantity: {
+//         amount: 7.5,
+//         unit: "piece",
+//       },
+//       foodId: "userData/id.abc123",
+//     },
+//   ],
+// };

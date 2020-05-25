@@ -11,16 +11,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { Recipe, StatusOr, Food } from "../core";
+import { Config } from "../config/config";
 
-export * from "./Food";
-export * from "./nutrientsForIngredient";
-export * from "./canonicalizeQuantity";
-export * from "./Nutrients";
-export * from "./Recipe";
-export * from "./Update";
-export * from "./StatusOr";
-export * from "./updateRecipes";
-export * from "./parseQuantity";
-export * from "./Quantity";
-export * from "./FoodReference";
-export * from "./CanonicalizeQuantityConfig";
+export interface LoadingState {
+  type: "Loading";
+}
+
+export interface ErrorState {
+  type: "Error";
+  message: string;
+}
+
+export interface ActiveState {
+  type: "Active";
+  recipes: Recipe[];
+  selectedRecipeIndex: number;
+  selectedIngredientIndex: number;
+  normalizedFoodsByUrl: { [index: string]: StatusOr<Food> };
+  config: Config;
+}
+
+export type RootState = LoadingState | ErrorState | ActiveState;

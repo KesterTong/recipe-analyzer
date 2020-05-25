@@ -10,8 +10,10 @@
   "scripts": {
     "run": "ts-node index.ts",
     "test": "jest",
+    "watch": "webpack --watch",
     "build": "webpack",
-    "format": "prettier --write \"**/*.{ts,tsx,test.ts}\""
+    "format": "prettier --write \"**/*.{ts,tsx,test.ts}\"",
+    "start": "webpack-dev-server --open"
   },
   "repository": {
     "type": "git",
@@ -24,24 +26,20 @@
   },
   "homepage": "https://github.com/KesterTong/recipe-analyzer#readme",
   "dependencies": {
-    "@material-ui/core": "^4.9.11",
-    "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.50",
     "@types/google-apps-script": "^1.0.12",
-    "@types/lodash": "^4.14.150",
+    "@types/react-autosuggest": "^9.3.14",
     "@types/react-dom": "^16.9.6",
-    "@types/react-redux": "^7.1.7",
-    "bootstrap": "^4.4.1",
-    "firebase": "^7.14.2",
-    "firebaseui": "^4.5.0",
-    "googleapis": "^47.0.0",
-    "lodash": "^4.17.15",
+    "@types/react-redux": "^7.1.9",
+    "@types/throttle-debounce": "^2.1.0",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "^3.2.0",
     "react": "^16.13.1",
+    "react-autosuggest": "^10.0.2",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
-    "reselect": "^4.0.0"
+    "throttle-debounce": "^2.1.0"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
@@ -54,7 +52,8 @@
     "ts-node": "^8.9.0",
     "typescript": "^3.8.3",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   },
   "jest": {
     "preset": "ts-jest"

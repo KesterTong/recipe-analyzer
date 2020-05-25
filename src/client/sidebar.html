@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+    <style>
+      select {
+        flex-grow: 1;
+        text-align: left;
+      }
+      input {
+        flex-grow: 1;
+      }
+      .button-group {
+        display: flex;
+        justify-content: space-between;
+      }
+      .button-group button {
+        min-width: 50px;
+      }
+      .control-group {
+        display: flex;
+      }
+      .icon-button {
+        min-width: 34px;
+        padding: 4px;
+      }
+      .icon-button + .icon-button {
+        margin-left: 3px;
+      }
+      select + .icon-button {
+        margin-left: 3px;
+      }
+      .material-icons {
+        font-size: 18px;
+      }
+
+      .react-autosuggest__container {
+        position: relative;
+      }
+
+      .react-autosuggest__input--focused {
+        outline: none;
+      }
+
+      .react-autosuggest__suggestions-container {
+        display: none;
+      }
+
+      .react-autosuggest__suggestions-container--open {
+        display: block;
+        border: 1px solid #aaa;
+        background-color: #fff;
+        z-index: 2;
+      }
+
+      .react-autosuggest__suggestions-list {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+      }
+
+      .react-autosuggest__suggestion {
+        cursor: pointer;
+        padding: 3px 6px;
+      }
+
+      .react-autosuggest__suggestion--highlighted {
+        background-color: #ddd;
+      }
+
+      .container {
+        display: flex;
+      }
+
+      .input-container {
+        display: flex;
+        background: #fff;
+        border: 1px solid #d9d9d9;
+        -moz-border-radius: 1px;
+        -webkit-border-radius: 1px;
+        border-radius: 1px;
+        border-top: 1px solid #c0c0c0;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        color: #000;
+        font-family: arial, sans-serif;
+        font-size: 13px;
+        font-weight: normal;
+        margin: 0;
+        outline: 0;
+        padding: 4px;
+      }
+
+      .input-container:focus-within {
+        border: 1px solid #4d90fe;
+        -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3);
+        -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3);
+      }
+
+      .input-container .react-autosuggest__input {
+        border: 0 !important;
+        outline: 0 !important;
+        box-shadow: none !important;
+      }
+
+      .input-selection {
+        position: relative;
+        margin: 1px;
+        padding: 2px 6px 2px 4px;
+        border: 1px solid #aaa;
+        max-width: 100%;
+        border-radius: 3px;
+        background-color: #eeeeee;
+        box-shadow: 0 0 2px #fff inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+        color: #333;
+        line-height: 13px;
+        cursor: default;
+      }
+
+      .nutrients-table {
+        width: 100%;
+        border: 1px solid #dcdcdc;
+        color: #333;
+        cursor: default;
+        margin: 0;
+        outline: 0;
+        border-radius: 2px;
+      }
+
+      .nutrients-table:focus {
+        border: 1px solid #4d90fe;
+      }
+      .selected-row {
+        background-color : rgb(220, 220, 220); 
+      }
+      .nutrients-table:focus .selected-row {
+        background-color : rgb(73, 147, 244); 
+      }
+      .nutrients-table td, .nutrients-table th {
+        padding: 7px 19px 7px 4px;
+      }
+      .nutrient-value {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <div class="block">
+        <div id="root"></div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.5/redux.min.js"></script>
+  </body>
+</html>

@@ -12,17 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Nutrients } from "./Nutrients";
 import { Quantity } from "./Quantity";
+import { CanonicalizeQuantityConfig } from "./CanonicalizeQuantityConfig";
 
 /**
- * Representation of a food used for recipe calculations.
- *
- * This data can be derived from various sources, e.g. FDC Data
- * or other recipes.
+ * Transform a quantity by
+ *  - Converting mass units to 'g' and volume units to 'ml'.
+ *  - Convert to lowercase.
  */
-export interface Food {
-  description: string;
-  nutrientsPerServing: Nutrients;
-  servingEquivalents: Quantity[];
+export function canonicalizeQuantity(
+  quantity: Quantity,
+  config: CanonicalizeQuantityConfig
+): Quantity {
+  const { massUnits, volumeUnits } = config;
+  let { amount, unit } = quantity;
+  unit = unit.toLowerCase();
+  if (massUnits[unit]) {
+    return { amount: amount * massUnits[unit], unit: "g" };
+  }
+  if (volumeUnits[unit]) {
+    return { amount: amount * volumeUnits[unit], unit: "ml" };
+  }
+  return { amount, unit };
 }
