@@ -33,3 +33,20 @@ The code has the following components
    doc.
  * TypeScript client-side code that provides a GUI for editing the recipes and
    computing nutrient values.
+
+## Roadmap
+
+The following are possible extensions/improvments
+
+ * Allow editing ingredient in-place instead of using a separate form.  This would
+   require using the contentEditable property since we have HTML links.
+ * This might also involve switching from a table to a list in the document itself.
+ * Use context-sensitive menu for add/delete/move ingredients.
+ * Support drag-and-drop for moving ingredients.
+ * UI for user/document level configuration.
+ * Find a way to follow the cursor in the document
+ * Add more unit tests
+ * Maybe stop using the action-reducer pattern on the server-side so we don't have to
+   share AppsScript and JS code.  Instead, use multiple server-side functions, possibly
+   expanding the client- and server-side wrappers to make it even simpler to wrap
+   and mock server-side functions.
