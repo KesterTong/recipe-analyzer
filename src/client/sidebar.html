@@ -139,11 +139,24 @@
       .nutrients-table:focus .selected-row {
         background-color : rgb(73, 147, 244); 
       }
-      .nutrients-table td, .nutrients-table th {
+      .nutrients-table td, .nutrients-table th, .context-menu option {
         padding: 7px 19px 7px 4px;
       }
       .nutrient-value {
         text-align: right;
+      }
+
+      .context-menu {
+        position: absolute;
+        border-style: solid;
+        border-width: 1px;
+        border-color: white;
+        border-radius: 3px;
+        background-color: white;
+        box-shadow: 0 0 5px;
+      }
+      .context-menu option:hover {
+        background-color: rgb(241, 243, 244);
       }
     </style>
   </head>

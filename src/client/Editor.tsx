@@ -25,63 +25,13 @@ export interface StateProps {
   numIngredients: number;
 }
 
-export interface DispatchProps {
-  updateDocument(update: Update): void;
-}
+export interface DispatchProps {}
 
 export const Editor = MaybeComponent<StateProps, DispatchProps>((props) => {
   return (
     <React.Fragment>
       <RecipeInputContainer />
       <IngredientsTableContainer />
-
-      <div className="block button-group">
-        <button
-          onClick={() =>
-            props.updateDocument({
-              type: UpdateType.ADD_INGREDIENT,
-              recipeIndex: props.selectedRecipeIndex,
-            })
-          }
-        >
-          New
-        </button>
-        <button
-          onClick={() =>
-            props.updateDocument({
-              type: UpdateType.DELETE_INGREDIENT,
-              recipeIndex: props.selectedRecipeIndex,
-              ingredientIndex: props.selectedIngredientIndex,
-            })
-          }
-        >
-          Delete
-        </button>
-        <button
-          onClick={() =>
-            props.updateDocument({
-              type: UpdateType.SWAP_INGREDIENTS,
-              recipeIndex: props.selectedRecipeIndex,
-              firstIngredientIndex: props.selectedIngredientIndex - 1,
-            })
-          }
-          disabled={props.selectedIngredientIndex == 0}
-        >
-          Move up
-        </button>
-        <button
-          onClick={() =>
-            props.updateDocument({
-              type: UpdateType.SWAP_INGREDIENTS,
-              recipeIndex: props.selectedRecipeIndex,
-              firstIngredientIndex: props.selectedIngredientIndex,
-            })
-          }
-          disabled={props.selectedIngredientIndex == props.numIngredients - 1}
-        >
-          Move down
-        </button>
-      </div>
       <IngredientEditorContainer />
     </React.Fragment>
   );

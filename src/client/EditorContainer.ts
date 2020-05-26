@@ -15,7 +15,7 @@
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { StateProps, Editor } from "./Editor";
 import { RootState } from "./RootState";
-import { updateDocument, selectIngredient, selectRecipe } from "./actions";
+import { selectIngredient, selectRecipe } from "./actions";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -35,7 +35,6 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>((state) => {
 function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
-      updateDocument,
       selectIngredient,
       selectRecipe,
     },

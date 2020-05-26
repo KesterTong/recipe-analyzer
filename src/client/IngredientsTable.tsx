@@ -20,11 +20,14 @@ import {
   StatusCode,
   Ingredient,
   FoodReference,
+  Update,
+  UpdateType,
 } from "../core";
 import { MaybeComponent } from "./MaybeComponent";
 import { Config } from "../config/config";
 
 export interface StateProps {
+  selectedRecipeIndex: number;
   recipeIndexByUrl: { [index: string]: number };
   ingredientInfos: {
     ingredient: Ingredient;
@@ -38,6 +41,7 @@ export interface StateProps {
 interface DispatchProps {
   selectRecipe(index: number): void;
   selectIngredient(index: number): void;
+  updateDocument(update: Update): void;
 }
 
 const NutrientsColumnHeaders: React.FunctionComponent<{ config: Config }> = (
@@ -99,49 +103,130 @@ const NutrientsRowCells: React.FunctionComponent<{
 };
 
 export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
-  (props) => (
-    <div className="block form-group">
-      <table id="ingredients" className="nutrients-table" tabIndex={0}>
-        <thead>
-          <th>Ingredient</th>
-          <NutrientsColumnHeaders config={props.config} />
-        </thead>
-        <tbody>
-          {props.ingredientInfos.map(({ ingredient, nutrients }, index) => (
-            <tr
-              className={
-                (index == props.selectedIngredientIndex ? "selected-row" : "") +
-                (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
-                  ? " error"
-                  : "")
-              }
-              onClick={() => props.selectIngredient(index)}
+  (props) => {
+    const [menu, setMenu] = React.useState<{ x: number; y: number } | null>(
+      null
+    );
+    return (
+      <div className="block form-group">
+        {menu ? (
+          <div className="context-menu" style={{ left: menu.x, top: menu.y }}>
+            <select
+              size={4}
+              style={{ border: "none" }}
+              onChange={(event) => {
+                switch (event.target.value) {
+                  case "new":
+                    props.updateDocument({
+                      type: UpdateType.ADD_INGREDIENT,
+                      recipeIndex: props.selectedRecipeIndex,
+                    });
+                    break;
+                  case "delete":
+                    props.updateDocument({
+                      type: UpdateType.DELETE_INGREDIENT,
+                      recipeIndex: props.selectedRecipeIndex,
+                      ingredientIndex: props.selectedIngredientIndex,
+                    });
+                    break;
+                  case "move-up":
+                    props.updateDocument({
+                      type: UpdateType.SWAP_INGREDIENTS,
+                      recipeIndex: props.selectedRecipeIndex,
+                      firstIngredientIndex: props.selectedIngredientIndex - 1,
+                    });
+                    break;
+                  case "move-down":
+                    props.updateDocument({
+                      type: UpdateType.SWAP_INGREDIENTS,
+                      recipeIndex: props.selectedRecipeIndex,
+                      firstIngredientIndex: props.selectedIngredientIndex,
+                    });
+                    break;
+                }
+                setMenu(null);
+              }}
             >
-              <td>
-                <span>
-                  {ingredient.amount +
-                    " " +
-                    ingredient.unit +
-                    " \u200b" /**  zero width space to ensure height is at least one font hieght */}
-                  <IngredientLink
-                    link={ingredient.ingredient}
-                    recipeIndexByUrl={props.recipeIndexByUrl}
-                    selectRecipe={props.selectRecipe}
-                  />
-                </span>
-              </td>
-              <NutrientsRowCells nutrients={nutrients} config={props.config} />
+              <option value="new">New</option>
+              <option value="delete">Delete</option>
+              <option
+                value="move-up"
+                disabled={props.selectedIngredientIndex == 0}
+              >
+                Move up
+              </option>
+              <option
+                value="move-down"
+                disabled={
+                  props.selectedIngredientIndex ==
+                  props.ingredientInfos.length - 1
+                }
+              >
+                Move down
+              </option>
+            </select>
+          </div>
+        ) : null}
+        <table
+          id="ingredients"
+          className="nutrients-table"
+          tabIndex={0}
+          onClick={() => setMenu(null)}
+        >
+          <thead>
+            <th>Ingredient</th>
+            <NutrientsColumnHeaders config={props.config} />
+          </thead>
+          <tbody>
+            {props.ingredientInfos.map(({ ingredient, nutrients }, index) => (
+              <tr
+                className={
+                  (index == props.selectedIngredientIndex
+                    ? "selected-row"
+                    : "") +
+                  (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
+                    ? " error"
+                    : "")
+                }
+                onClick={() => props.selectIngredient(index)}
+                onContextMenu={(event) => {
+                  setMenu({
+                    x: event.clientX,
+                    y: event.clientY,
+                  });
+                  props.selectIngredient(index);
+                  event.preventDefault();
+                }}
+              >
+                <td>
+                  <span>
+                    {ingredient.amount +
+                      " " +
+                      ingredient.unit +
+                      " \u200b" /**  zero width space to ensure height is at least one font hieght */}
+                    <IngredientLink
+                      link={ingredient.ingredient}
+                      recipeIndexByUrl={props.recipeIndexByUrl}
+                      selectRecipe={props.selectRecipe}
+                    />
+                  </span>
+                </td>
+                <NutrientsRowCells
+                  nutrients={nutrients}
+                  config={props.config}
+                />
+              </tr>
+            ))}
+            <tr>
+              <td>Total</td>
+              <NutrientsRowCells
+                nutrients={props.totalNutrients}
+                config={props.config}
+              />
             </tr>
-          ))}
-          <tr>
-            <td>Total</td>
-            <NutrientsRowCells
-              nutrients={props.totalNutrients}
-              config={props.config}
-            />
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  )
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 );

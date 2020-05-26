@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { selectIngredient, selectRecipe } from "./actions";
+import { updateDocument, selectIngredient, selectRecipe } from "./actions";
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { RootState } from "./RootState";
 import { StateProps, IngredientsTable } from "./IngredientsTable";
@@ -47,6 +47,7 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
       }
     });
     return {
+      selectedRecipeIndex: state.selectedRecipeIndex,
       ingredientInfos,
       selectedIngredientIndex: state.selectedIngredientIndex,
       config: state.config,
@@ -61,6 +62,7 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
     {
       selectIngredient,
       selectRecipe,
+      updateDocument,
     },
     dispatch
   );
