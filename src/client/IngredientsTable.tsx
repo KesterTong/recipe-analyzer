@@ -107,6 +107,41 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
     const [menu, setMenu] = React.useState<{ x: number; y: number } | null>(
       null
     );
+
+    const handleContextMenuSelection = (
+      event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+      switch (event.target.value) {
+        case "new":
+          props.updateDocument({
+            type: UpdateType.ADD_INGREDIENT,
+            recipeIndex: props.selectedRecipeIndex,
+          });
+          break;
+        case "delete":
+          props.updateDocument({
+            type: UpdateType.DELETE_INGREDIENT,
+            recipeIndex: props.selectedRecipeIndex,
+            ingredientIndex: props.selectedIngredientIndex,
+          });
+          break;
+        case "move-up":
+          props.updateDocument({
+            type: UpdateType.SWAP_INGREDIENTS,
+            recipeIndex: props.selectedRecipeIndex,
+            firstIngredientIndex: props.selectedIngredientIndex - 1,
+          });
+          break;
+        case "move-down":
+          props.updateDocument({
+            type: UpdateType.SWAP_INGREDIENTS,
+            recipeIndex: props.selectedRecipeIndex,
+            firstIngredientIndex: props.selectedIngredientIndex,
+          });
+          break;
+      }
+      setMenu(null);
+    };
     return (
       <div className="block form-group">
         {menu ? (
@@ -114,38 +149,7 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
             <select
               size={4}
               style={{ border: "none" }}
-              onChange={(event) => {
-                switch (event.target.value) {
-                  case "new":
-                    props.updateDocument({
-                      type: UpdateType.ADD_INGREDIENT,
-                      recipeIndex: props.selectedRecipeIndex,
-                    });
-                    break;
-                  case "delete":
-                    props.updateDocument({
-                      type: UpdateType.DELETE_INGREDIENT,
-                      recipeIndex: props.selectedRecipeIndex,
-                      ingredientIndex: props.selectedIngredientIndex,
-                    });
-                    break;
-                  case "move-up":
-                    props.updateDocument({
-                      type: UpdateType.SWAP_INGREDIENTS,
-                      recipeIndex: props.selectedRecipeIndex,
-                      firstIngredientIndex: props.selectedIngredientIndex - 1,
-                    });
-                    break;
-                  case "move-down":
-                    props.updateDocument({
-                      type: UpdateType.SWAP_INGREDIENTS,
-                      recipeIndex: props.selectedRecipeIndex,
-                      firstIngredientIndex: props.selectedIngredientIndex,
-                    });
-                    break;
-                }
-                setMenu(null);
-              }}
+              onChange={handleContextMenuSelection}
             >
               <option value="new">New</option>
               <option value="delete">Delete</option>
