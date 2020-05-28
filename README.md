@@ -41,7 +41,6 @@ The following are possible extensions/improvments
  * Allow editing ingredient in-place instead of using a separate form.  This would
    require using the contentEditable property since we have HTML links.
  * This might also involve switching from a table to a list in the document itself.
- * Replace new ingredient in context menu with insert-above and insert-below.
  * Support drag-and-drop for moving ingredients.
  * UI for user/document level configuration.
  * Use and interface for OpenFoodFacts and FDC wrappers, and possibly unify this with
