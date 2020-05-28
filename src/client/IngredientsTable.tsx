@@ -119,6 +119,18 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
           });
           break;
         case "delete":
+          // If there is only one ingredient, clear it instead of delete.
+          // This ensure that each recipe has at least one ingredient.
+          if (props.ingredientInfos.length === 1) {
+            props.updateDocument({
+              type: UpdateType.UPDATE_INGREDIENT,
+              recipeIndex: props.selectedIngredientIndex,
+              ingredientIndex: props.selectedIngredientIndex,
+              newAmount: "",
+              newUnit: "",
+              newFood: {description: "", url: null},
+            })
+          }
           props.updateDocument({
             type: UpdateType.DELETE_INGREDIENT,
             recipeIndex: props.selectedRecipeIndex,
