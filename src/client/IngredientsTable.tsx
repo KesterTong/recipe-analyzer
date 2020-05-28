@@ -168,7 +168,7 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
         {menu ? (
           <div className="context-menu" style={{ left: menu.x, top: menu.y }}>
             <select
-              size={4}
+              size={5}
               style={{ border: "none" }}
               onChange={handleContextMenuSelection}
             >
