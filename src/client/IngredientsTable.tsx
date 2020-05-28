@@ -112,10 +112,18 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
       event: React.ChangeEvent<HTMLSelectElement>
     ) => {
       switch (event.target.value) {
-        case "new":
+        case "insert-above":
           props.updateDocument({
-            type: UpdateType.ADD_INGREDIENT,
+            type: UpdateType.INSERT_INGREDIENT,
             recipeIndex: props.selectedRecipeIndex,
+            atIndex: props.selectedIngredientIndex,
+          });
+          break;
+        case "insert-below":
+          props.updateDocument({
+            type: UpdateType.INSERT_INGREDIENT,
+            recipeIndex: props.selectedRecipeIndex,
+            atIndex: props.selectedIngredientIndex + 1,
           });
           break;
         case "delete":
@@ -128,14 +136,15 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
               ingredientIndex: props.selectedIngredientIndex,
               newAmount: "",
               newUnit: "",
-              newFood: {description: "", url: null},
-            })
+              newFood: { description: "", url: null },
+            });
+          } else {
+            props.updateDocument({
+              type: UpdateType.DELETE_INGREDIENT,
+              recipeIndex: props.selectedRecipeIndex,
+              ingredientIndex: props.selectedIngredientIndex,
+            });
           }
-          props.updateDocument({
-            type: UpdateType.DELETE_INGREDIENT,
-            recipeIndex: props.selectedRecipeIndex,
-            ingredientIndex: props.selectedIngredientIndex,
-          });
           break;
         case "move-up":
           props.updateDocument({
@@ -163,7 +172,8 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
               style={{ border: "none" }}
               onChange={handleContextMenuSelection}
             >
-              <option value="new">New</option>
+              <option value="insert-above">Insert above</option>
+              <option value="insert-below">Insert below</option>
               <option value="delete">Delete</option>
               <option
                 value="move-up"

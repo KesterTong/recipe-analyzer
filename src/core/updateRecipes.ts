@@ -28,8 +28,12 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
   const recipe = recipes[update.recipeIndex];
   let newIngredients: Ingredient[];
   switch (update.type) {
-    case UpdateType.ADD_INGREDIENT:
-      newIngredients = recipe.ingredients.concat([blankIngredient]);
+    case UpdateType.INSERT_INGREDIENT:
+      newIngredients = [
+        ...recipe.ingredients.slice(0, update.atIndex),
+        blankIngredient,
+        ...recipe.ingredients.slice(update.atIndex),
+      ];
       break;
     case UpdateType.UPDATE_INGREDIENT:
       newIngredients = recipe.ingredients.map((ingredient, index) => {

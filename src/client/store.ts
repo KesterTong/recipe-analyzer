@@ -50,9 +50,8 @@ function rootReducer(
       let selectedIngredientIndex = state.selectedIngredientIndex;
       if (update.recipeIndex == state.selectedRecipeIndex) {
         switch (update.type) {
-          case UpdateType.ADD_INGREDIENT:
-            const selectedRecipe = state.recipes[state.selectedRecipeIndex];
-            selectedIngredientIndex = selectedRecipe.ingredients.length;
+          case UpdateType.INSERT_INGREDIENT:
+            selectedIngredientIndex = update.atIndex;
             break;
           case UpdateType.DELETE_INGREDIENT:
             if (selectedIngredientIndex == update.ingredientIndex) {

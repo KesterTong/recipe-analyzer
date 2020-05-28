@@ -14,15 +14,16 @@
 import { Recipe, Ingredient } from "./Recipe";
 
 export enum UpdateType {
-  ADD_INGREDIENT = "@AddIngredient",
+  INSERT_INGREDIENT = "@InsertIngredient",
   UPDATE_INGREDIENT = "@UpdateIngredient",
   DELETE_INGREDIENT = "@DeleteIngredient",
   SWAP_INGREDIENTS = "@SwapIngredeints",
 }
 
-export interface AddIngredient {
-  type: UpdateType.ADD_INGREDIENT;
+export interface InsertIngredient {
+  type: UpdateType.INSERT_INGREDIENT;
   recipeIndex: number;
+  atIndex: number;
 }
 
 export interface UpdateIngredient {
@@ -47,7 +48,7 @@ export interface SwapIngredeints {
 }
 
 export type Update =
-  | AddIngredient
+  | InsertIngredient
   | UpdateIngredient
   | DeleteIngredient
   | SwapIngredeints;

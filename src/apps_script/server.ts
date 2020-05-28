@@ -137,14 +137,14 @@ export function updateDocument(update: Update) {
   const document = DocumentApp.getActiveDocument();
   const table = document.getBody().getTables()[update.recipeIndex];
   switch (update.type) {
-    case UpdateType.ADD_INGREDIENT:
+    case UpdateType.INSERT_INGREDIENT:
       // Copy new row from existing row to get same styling.
       const newRow = table.getRow(0).copy();
       const numCells = newRow.getNumCells();
       for (let i = 0; i < numCells; i++) {
         newRow.getCell(i).clear();
       }
-      table.appendTableRow(newRow);
+      table.insertTableRow(update.atIndex, newRow);
       break;
     case UpdateType.UPDATE_INGREDIENT:
       const row = table.getRow(update.ingredientIndex);
