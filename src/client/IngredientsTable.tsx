@@ -202,9 +202,12 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
         dragEvent.start,
         dragEvent.end
       );
-      selectedIngredientIndex = newIndexAfterMove(selectedIngredientIndex, dragEvent.start, dragEvent.end);
+      selectedIngredientIndex = newIndexAfterMove(
+        selectedIngredientIndex,
+        dragEvent.start,
+        dragEvent.end
+      );
     }
-    
 
     return (
       <div className="block form-group">
@@ -252,9 +255,7 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
                 <tr
                   key={key}
                   className={
-                    (index == selectedIngredientIndex
-                      ? "selected-row"
-                      : "") +
+                    (index == selectedIngredientIndex ? "selected-row" : "") +
                     (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
                       ? " error"
                       : "")
