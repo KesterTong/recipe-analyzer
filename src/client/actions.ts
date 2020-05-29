@@ -33,7 +33,7 @@ import {
   FoodReference,
 } from "../core";
 import { dataSource as fdcDataSource } from "../food_data_central";
-import { makeOffWebUrl, dataSource as offDataSource } from "../open_food_facts";
+import { dataSource as offDataSource } from "../open_food_facts";
 import { Config } from "../config/config";
 import { ThunkDispatch } from "./store";
 import { filterNulls } from "../core/filterNulls";
@@ -54,7 +54,9 @@ async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
   );
 }
 
-export function searchFoods(query: string): ThunkResult<Promise<FoodReference[]>> {
+export function searchFoods(
+  query: string
+): ThunkResult<Promise<FoodReference[]>> {
   return async (_: ThunkDispatch, getState: () => RootState) => {
     const state = getState();
     if (state.type != "Active") {
@@ -132,8 +134,6 @@ export function initialize(): ThunkResult<void> {
   };
 }
 
-const UPC_OR_EAN_REGEX = /^\d{12,13}$/;
-
 function maybeRewrite(update: Update): ThunkResult<void> {
   return async (dispatch, getState) => {
     const state = getState();
@@ -148,13 +148,14 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     ) {
       return;
     }
-    let url: string;
-    let match;
-    if (update.newFood.description.startsWith("https://")) {
-      url = update.newFood.description;
-    } else if ((match = UPC_OR_EAN_REGEX.test(update.newFood.description))) {
-      url = makeOffWebUrl(update.newFood.description);
-    } else {
+    const description = update.newFood.description;
+    let url: string | null = null;
+    dataSources.forEach((dataSource) => {
+      if (url == null) {
+        url = dataSource.maybeUrlFromDescription(description);
+      }
+    });
+    if (url === null) {
       return;
     }
     const normalizedFood = await fetchFood(url, state.config);

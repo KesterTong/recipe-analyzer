@@ -14,12 +14,21 @@
 
 import { fetchOffFood } from "./fetchOffFood";
 import { DataSource } from "../core";
-import { OffConfig } from "./OffConfig";
+import { OffConfig, OffNutrient } from "./OffConfig";
+import { makeOffWebUrl } from "./makeOffWebUrl";
 
-export { makeOffWebUrl } from "./makeOffWebUrl";
-export { OffConfig, OffNutrient } from "./OffConfig";
+const UPC_OR_EAN_REGEX = /^\d{12,13}$/;
 
 export const dataSource: DataSource<OffConfig> = {
   fetchFood: fetchOffFood,
   searchFoods: () => Promise.resolve([]),
+  maybeUrlFromDescription: (description) => {
+    const match = UPC_OR_EAN_REGEX.test(description);
+    if (match === null) {
+      return null;
+    }
+    return makeOffWebUrl(description);
+  },
 };
+
+export { OffConfig, OffNutrient };

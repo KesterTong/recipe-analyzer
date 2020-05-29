@@ -19,6 +19,7 @@ import { searchFdcFoods } from "./searchFdcFoods";
 export const dataSource: DataSource<FdcConfig> = {
   fetchFood: fetchFdcFood,
   searchFoods: searchFdcFoods,
+  maybeUrlFromDescription: () => null,
 };
 
 export { FdcConfig };

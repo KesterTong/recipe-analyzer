@@ -19,4 +19,5 @@ import { FoodReference } from "./FoodReference";
 export interface DataSource<ConfigType> {
   fetchFood(url: string, config: ConfigType): Promise<StatusOr<Food>> | null;
   searchFoods(query: string, config: ConfigType): Promise<FoodReference[]>;
+  maybeUrlFromDescription(description: string): string | null;
 }
