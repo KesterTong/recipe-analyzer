@@ -22,6 +22,7 @@ import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { filterNulls } from "../core/filterNulls";
+import { DispatchProps } from "./IngredientEditor";
 
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
   (state: RootState) => {
@@ -58,5 +59,5 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
 
 export const IngredientEditorContainer = connect(
   mapStateToProps,
-  <any>mapDispatchToProps
+  mapDispatchToProps
 )(IngredientEditor);

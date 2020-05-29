@@ -37,7 +37,7 @@ export interface StateProps {
   config: Config;
 }
 
-interface DispatchProps {
+export interface DispatchProps {
   updateDocument(update: Update): void;
   searchFoods(query: String): Promise<FoodReference[]>;
 }
