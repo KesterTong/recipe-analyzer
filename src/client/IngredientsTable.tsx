@@ -104,9 +104,16 @@ const NutrientsRowCells: React.FunctionComponent<{
 
 export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
   (props) => {
+    // TODO: include the ingredient that has been right clicked as part of
+    // the context menu state, rather than using the currently selected
+    // ingredient.
     const [menu, setMenu] = React.useState<{ x: number; y: number } | null>(
       null
     );
+    const [dragEvent, setDragEvent] = React.useState<{
+      start: number;
+      end: number;
+    } | null>(null);
 
     const handleContextMenuSelection = (
       event: React.ChangeEvent<HTMLSelectElement>
@@ -148,21 +155,37 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
           break;
         case "move-up":
           props.updateDocument({
-            type: UpdateType.SWAP_INGREDIENTS,
+            type: UpdateType.MOVE_INGREDIENT,
             recipeIndex: props.selectedRecipeIndex,
-            firstIngredientIndex: props.selectedIngredientIndex - 1,
+            initialIngredientIndex: props.selectedIngredientIndex,
+            finalIngredientIndex: props.selectedIngredientIndex - 1,
           });
           break;
         case "move-down":
           props.updateDocument({
-            type: UpdateType.SWAP_INGREDIENTS,
+            type: UpdateType.MOVE_INGREDIENT,
             recipeIndex: props.selectedRecipeIndex,
-            firstIngredientIndex: props.selectedIngredientIndex,
+            initialIngredientIndex: props.selectedIngredientIndex,
+            finalIngredientIndex: props.selectedIngredientIndex + 1,
           });
           break;
       }
       setMenu(null);
     };
+
+    const handleDrop = () => {
+      console.log(dragEvent);
+      if (dragEvent == null || dragEvent.start == dragEvent.end) {
+        return;
+      }
+      props.updateDocument({
+        type: UpdateType.MOVE_INGREDIENT,
+        recipeIndex: props.selectedRecipeIndex,
+        initialIngredientIndex: dragEvent.start,
+        finalIngredientIndex: dragEvent.end,
+      });
+    };
+
     return (
       <div className="block form-group">
         {menu ? (
@@ -223,6 +246,15 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
                   props.selectIngredient(index);
                   event.preventDefault();
                 }}
+                draggable={true}
+                onDragStart={() => setDragEvent({ start: index, end: index })}
+                onDragEnter={() =>
+                  setDragEvent(
+                    dragEvent ? { start: dragEvent.start, end: index } : null
+                  )
+                }
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={handleDrop}
               >
                 <td>
                   <span>

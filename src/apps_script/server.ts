@@ -165,10 +165,10 @@ export function updateDocument(update: Update) {
     case UpdateType.DELETE_INGREDIENT:
       table.removeRow(update.ingredientIndex);
       break;
-    case UpdateType.SWAP_INGREDIENTS:
-      const second_row = table.getRow(update.firstIngredientIndex + 1);
+    case UpdateType.MOVE_INGREDIENT:
+      const second_row = table.getRow(update.initialIngredientIndex);
       second_row.removeFromParent();
-      table.insertTableRow(update.firstIngredientIndex, second_row);
+      table.insertTableRow(update.finalIngredientIndex, second_row);
       break;
   }
 }

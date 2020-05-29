@@ -58,13 +58,26 @@ function rootReducer(
               selectedIngredientIndex = 0;
             }
             break;
-          case UpdateType.SWAP_INGREDIENTS:
-            if (selectedIngredientIndex == update.firstIngredientIndex) {
-              selectedIngredientIndex = selectedIngredientIndex + 1;
+          case UpdateType.MOVE_INGREDIENT:
+            if (selectedIngredientIndex == update.initialIngredientIndex) {
+              // Case 1: This is the ingredient being moved.
+              selectedIngredientIndex = update.finalIngredientIndex;
             } else if (
-              (selectedIngredientIndex = update.firstIngredientIndex + 1)
+              selectedIngredientIndex <= update.finalIngredientIndex &&
+              selectedIngredientIndex > update.initialIngredientIndex
             ) {
+              // Case 2: The ingredient is being moved down (increasing its index) and this
+              // ingredient is being moved up one (decrementing index) to make room.
               selectedIngredientIndex = selectedIngredientIndex - 1;
+            } else if (
+              selectedIngredientIndex >= update.finalIngredientIndex &&
+              selectedIngredientIndex < update.initialIngredientIndex
+            ) {
+              // Case 3: The ingredient is being moved up (decreasing its index) and this
+              // ingredient is being moved odwn on (incrementing index) to make room.
+              selectedIngredientIndex = selectedIngredientIndex + 1;
+            } else {
+              // Case 4: This ingredient is above or below the ingredients that change place.
             }
             break;
         }

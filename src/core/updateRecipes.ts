@@ -62,15 +62,32 @@ export function updateRecipes(recipes: Recipe[], update: Update): Recipe[] {
               (_, index) => index != update.ingredientIndex
             );
       break;
-    case UpdateType.SWAP_INGREDIENTS:
-      newIngredients = recipe.ingredients.map((ingredient, index) => {
-        if (index == update.firstIngredientIndex) {
-          return recipe.ingredients[index + 1];
-        } else if (index == update.firstIngredientIndex + 1) {
-          return recipe.ingredients[index - 1];
+    case UpdateType.MOVE_INGREDIENT:
+      newIngredients = recipe.ingredients.map((_, index) => {
+        // The index that the current index should be copied from.
+        let previousIndex: number;
+        if (index == update.finalIngredientIndex) {
+          // Case 1: This is the ingredient being moved.
+          previousIndex = update.initialIngredientIndex;
+        } else if (
+          index < update.finalIngredientIndex &&
+          index >= update.initialIngredientIndex
+        ) {
+          // Case 2: The ingredient is being moved down (increasing its index) and this
+          // ingredient is being moved up one (decrementing index) to make room.
+          previousIndex = index + 1;
+        } else if (
+          index > update.finalIngredientIndex &&
+          index <= update.initialIngredientIndex
+        ) {
+          // Case 3: The ingredient is being moved up (decreasing its index) and this
+          // ingredient is being moved odwn on (incrementing index) to make room.
+          previousIndex = index - 1;
         } else {
-          return ingredient;
+          // Case 4: This ingredient is above or below the ingredients that change place.
+          previousIndex = index;
         }
+        return recipe.ingredients[previousIndex];
       });
       break;
   }

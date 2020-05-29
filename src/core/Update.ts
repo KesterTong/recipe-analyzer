@@ -17,7 +17,7 @@ export enum UpdateType {
   INSERT_INGREDIENT = "@InsertIngredient",
   UPDATE_INGREDIENT = "@UpdateIngredient",
   DELETE_INGREDIENT = "@DeleteIngredient",
-  SWAP_INGREDIENTS = "@SwapIngredeints",
+  MOVE_INGREDIENT = "@MoveIngredient",
 }
 
 export interface InsertIngredient {
@@ -41,14 +41,15 @@ export interface DeleteIngredient {
   ingredientIndex: number;
 }
 
-export interface SwapIngredeints {
-  type: UpdateType.SWAP_INGREDIENTS;
+export interface MoveIngredient {
+  type: UpdateType.MOVE_INGREDIENT;
   recipeIndex: number;
-  firstIngredientIndex: number;
+  initialIngredientIndex: number;
+  finalIngredientIndex: number;
 }
 
 export type Update =
   | InsertIngredient
   | UpdateIngredient
   | DeleteIngredient
-  | SwapIngredeints;
+  | MoveIngredient;
