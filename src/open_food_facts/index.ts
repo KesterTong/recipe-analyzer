@@ -23,8 +23,7 @@ export const dataSource: DataSource<OffConfig> = {
   fetchFood: fetchOffFood,
   searchFoods: () => Promise.resolve([]),
   maybeUrlFromDescription: (description) => {
-    const match = UPC_OR_EAN_REGEX.test(description);
-    if (match === null) {
+    if (!UPC_OR_EAN_REGEX.test(description)) {
       return null;
     }
     return makeOffWebUrl(description);
