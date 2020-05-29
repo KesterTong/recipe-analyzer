@@ -43,3 +43,30 @@ export function newIndexAfterMove(
     return index;
   }
 }
+
+export function moveItems<T>(
+  items: T[],
+  movedItemInitialIndex: number,
+  movedItemFinalIndex: number
+): T[] {
+  return items.map((_, index) => {
+    // The index that the current index should be copied from.
+    let previousIndex: number;
+    if (index == movedItemFinalIndex) {
+      // Case 1: This is the ingredient being moved.
+      previousIndex = movedItemInitialIndex;
+    } else if (index < movedItemFinalIndex && index >= movedItemInitialIndex) {
+      // Case 2: The ingredient is being moved down (increasing its index) and this
+      // ingredient is being moved up one (decrementing index) to make room.
+      previousIndex = index + 1;
+    } else if (index > movedItemFinalIndex && index <= movedItemInitialIndex) {
+      // Case 3: The ingredient is being moved up (decreasing its index) and this
+      // ingredient is being moved odwn on (incrementing index) to make room.
+      previousIndex = index - 1;
+    } else {
+      // Case 4: This ingredient is above or below the ingredients that change place.
+      previousIndex = index;
+    }
+    return items[previousIndex];
+  });
+}
