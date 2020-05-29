@@ -22,6 +22,8 @@ import {
   FoodReference,
   Update,
   UpdateType,
+  moveItems,
+  newIndexAfterMove,
 } from "../core";
 import { MaybeComponent } from "./MaybeComponent";
 import { Config } from "../config/config";
@@ -184,7 +186,25 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
         initialIngredientIndex: dragEvent.start,
         finalIngredientIndex: dragEvent.end,
       });
+      setDragEvent(null);
     };
+
+    let ingredientInfosWithKey = props.ingredientInfos.map(
+      (ingredientInfo, key) => ({
+        ...ingredientInfo,
+        key,
+      })
+    );
+    let selectedIngredientIndex = props.selectedIngredientIndex;
+    if (dragEvent) {
+      ingredientInfosWithKey = moveItems(
+        ingredientInfosWithKey,
+        dragEvent.start,
+        dragEvent.end
+      );
+      selectedIngredientIndex = newIndexAfterMove(selectedIngredientIndex, dragEvent.start, dragEvent.end);
+    }
+    
 
     return (
       <div className="block form-group">
@@ -227,54 +247,57 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
             <NutrientsColumnHeaders config={props.config} />
           </thead>
           <tbody>
-            {props.ingredientInfos.map(({ ingredient, nutrients }, index) => (
-              <tr
-                className={
-                  (index == props.selectedIngredientIndex
-                    ? "selected-row"
-                    : "") +
-                  (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
-                    ? " error"
-                    : "")
-                }
-                onClick={() => props.selectIngredient(index)}
-                onContextMenu={(event) => {
-                  setMenu({
-                    x: event.clientX,
-                    y: event.clientY,
-                  });
-                  props.selectIngredient(index);
-                  event.preventDefault();
-                }}
-                draggable={true}
-                onDragStart={() => setDragEvent({ start: index, end: index })}
-                onDragEnter={() =>
-                  setDragEvent(
-                    dragEvent ? { start: dragEvent.start, end: index } : null
-                  )
-                }
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={handleDrop}
-              >
-                <td>
-                  <span>
-                    {ingredient.amount +
-                      " " +
-                      ingredient.unit +
-                      " \u200b" /**  zero width space to ensure height is at least one font hieght */}
-                    <IngredientLink
-                      link={ingredient.ingredient}
-                      recipeIndexByUrl={props.recipeIndexByUrl}
-                      selectRecipe={props.selectRecipe}
-                    />
-                  </span>
-                </td>
-                <NutrientsRowCells
-                  nutrients={nutrients}
-                  config={props.config}
-                />
-              </tr>
-            ))}
+            {ingredientInfosWithKey.map(
+              ({ ingredient, nutrients, key }, index) => (
+                <tr
+                  key={key}
+                  className={
+                    (index == selectedIngredientIndex
+                      ? "selected-row"
+                      : "") +
+                    (!isOk(nutrients) && !hasCode(nutrients, StatusCode.LOADING)
+                      ? " error"
+                      : "")
+                  }
+                  onClick={() => props.selectIngredient(index)}
+                  onContextMenu={(event) => {
+                    setMenu({
+                      x: event.clientX,
+                      y: event.clientY,
+                    });
+                    props.selectIngredient(index);
+                    event.preventDefault();
+                  }}
+                  draggable={true}
+                  onDragStart={() => setDragEvent({ start: index, end: index })}
+                  onDragEnter={() =>
+                    setDragEvent(
+                      dragEvent ? { start: dragEvent.start, end: index } : null
+                    )
+                  }
+                  onDragOver={(event) => event.preventDefault()}
+                  onDrop={handleDrop}
+                >
+                  <td>
+                    <span>
+                      {ingredient.amount +
+                        " " +
+                        ingredient.unit +
+                        " \u200b" /**  zero width space to ensure height is at least one font hieght */}
+                      <IngredientLink
+                        link={ingredient.ingredient}
+                        recipeIndexByUrl={props.recipeIndexByUrl}
+                        selectRecipe={props.selectRecipe}
+                      />
+                    </span>
+                  </td>
+                  <NutrientsRowCells
+                    nutrients={nutrients}
+                    config={props.config}
+                  />
+                </tr>
+              )
+            )}
             <tr>
               <td>Total</td>
               <NutrientsRowCells
