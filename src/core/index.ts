@@ -24,3 +24,4 @@ export * from "./parseQuantity";
 export * from "./Quantity";
 export * from "./FoodReference";
 export * from "./CanonicalizeQuantityConfig";
+export * from "./listUtils";
