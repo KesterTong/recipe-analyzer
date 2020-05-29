@@ -13,16 +13,15 @@
 // limitations under the License.
 import * as React from "react";
 import * as Autosuggest from "react-autosuggest";
-import { searchFdcFoods } from "../food_data_central";
 import { FoodReference } from "../core/FoodReference";
 import { Config } from "../config/config";
 
 interface Props {
   id: string;
-  suggestions: FoodReference[];
   value: { description: string; url: string | null };
   config: Config;
   onChange(newValue: { description: string; url: string | null }): void;
+  searchFoods(query: String): Promise<FoodReference[]>;
 }
 
 export class FoodInput extends React.Component<
@@ -40,18 +39,8 @@ export class FoodInput extends React.Component<
 
   onSuggestionsFetchRequested = async (props: { value: any }) => {
     const query: string = props.value;
-    const queryLower = query.toLocaleLowerCase();
-    const localSuggestions = this.props.suggestions.filter((suggestion) =>
-      suggestion.description.toLocaleLowerCase().includes(queryLower)
-    );
-    this.setState({
-      suggestions: localSuggestions,
-    });
-    if (query.length < this.props.config.minCharsToQueryFDC) {
-      return;
-    }
-    const fdcSuggestions = await searchFdcFoods(query, this.props.config);
-    this.setState({ suggestions: localSuggestions.concat(fdcSuggestions) });
+    const suggestions = await this.props.searchFoods(query);
+    this.setState({ suggestions });
   };
 
   onSuggestionsClearRequested = () => {

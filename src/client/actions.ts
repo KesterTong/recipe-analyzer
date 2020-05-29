@@ -30,10 +30,13 @@ import {
   Food,
   StatusCode,
   DataSource,
+  FoodReference,
 } from "../core";
 import { dataSource as fdcDataSource } from "../food_data_central";
 import { makeOffWebUrl, dataSource as offDataSource } from "../open_food_facts";
 import { Config } from "../config/config";
+import { ThunkDispatch } from "./store";
+import { filterNulls } from "../core/filterNulls";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -49,6 +52,46 @@ async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
   return (
     pendingFood || status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url)
   );
+}
+
+export function searchFoods(query: string) {
+  return async (_: ThunkDispatch, getState: () => RootState) => {
+    const state = getState();
+    if (state.type != "Active") {
+      throw new Error("Cannot fetch results while state is not Active");
+    }
+    const queryLower = query.toLocaleLowerCase();
+    const localSuggestions: FoodReference[] = state.recipes
+      .filter((_, index) => index != state.selectedRecipeIndex)
+      .map((recipe) => ({
+        description: recipe.title,
+        url: recipe.url,
+      }))
+      .concat(
+        filterNulls(
+          Object.entries(state.normalizedFoodsByUrl).map(
+            ([url, normalizedFood]) =>
+              isOk(normalizedFood)
+                ? {
+                    url,
+                    description: normalizedFood.description,
+                  }
+                : null
+          )
+        )
+      )
+      .filter((suggestion) =>
+        suggestion.description.toLocaleLowerCase().includes(queryLower)
+      );
+    if (query.length < state.config.minCharsToQueryFDC) {
+      return [];
+    }
+    const remoteSuggestions = await dataSources[0].searchFoods(
+      query,
+      state.config
+    );
+    return localSuggestions.concat(remoteSuggestions);
+  };
 }
 
 export function initialize(): ThunkResult<void> {

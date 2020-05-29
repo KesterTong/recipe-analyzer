@@ -20,6 +20,7 @@ import {
   Update,
   StatusCode,
   isOk,
+  FoodReference,
 } from "../core";
 import { FoodInput } from "./FoodInput";
 import { MaybeComponent } from "./MaybeComponent";
@@ -33,12 +34,12 @@ export interface StateProps {
     recipeIndex: number;
     ingredientIndex: number;
   };
-  suggestions: { description: string; url: string }[];
   config: Config;
 }
 
 interface DispatchProps {
   updateDocument(update: Update): void;
+  searchFoods(query: String): Promise<FoodReference[]>;
 }
 
 export const IngredientEditor = MaybeComponent<StateProps, DispatchProps>(
@@ -98,7 +99,7 @@ export const IngredientEditor = MaybeComponent<StateProps, DispatchProps>(
           <FoodInput
             id="ingredient-food"
             value={props.ingredient.ingredient}
-            suggestions={props.suggestions}
+            searchFoods={props.searchFoods}
             config={props.config}
             onChange={(value) =>
               props.updateDocument({

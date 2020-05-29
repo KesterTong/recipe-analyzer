@@ -16,36 +16,12 @@ import { RootState, ActiveState } from "./RootState";
 import { StateProps } from "./IngredientEditor";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
-import { updateDocument } from "./actions";
+import { updateDocument, searchFoods } from "./actions";
 import { nutrientsForIngredient, isOk, UpdateType } from "../core";
 import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";
 import { filterNulls } from "../core/filterNulls";
-
-// Unfiltered suggestions of all recipes other than this recipe
-// and all ingredients in all recipes.
-function getSuggestions(state: ActiveState) {
-  return state.recipes
-    .filter((_, index) => index != state.selectedRecipeIndex)
-    .map((recipe) => ({
-      description: recipe.title,
-      url: recipe.url,
-    }))
-    .concat(
-      filterNulls(
-        Object.entries(state.normalizedFoodsByUrl).map(
-          ([url, normalizedFood]) =>
-            isOk(normalizedFood)
-              ? {
-                  url,
-                  description: normalizedFood.description,
-                }
-              : null
-        )
-      )
-    );
-}
 
 const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
   (state: RootState) => {
@@ -63,7 +39,6 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
     return {
       ingredient,
       nutrients,
-      suggestions: getSuggestions(state),
       updateContext: {
         type: UpdateType.UPDATE_INGREDIENT,
         recipeIndex: state.selectedRecipeIndex,
@@ -78,12 +53,14 @@ function mapDispatchToProps(dispatch: ThunkDispatch) {
   return bindActionCreators(
     {
       updateDocument,
+      searchFoods,
     },
     dispatch
   );
 }
 
+// TODO: get types to work.
 export const IngredientEditorContainer = connect(
   mapStateToProps,
-  mapDispatchToProps
+  <any>mapDispatchToProps
 )(IngredientEditor);

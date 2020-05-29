@@ -21,4 +21,5 @@ export { OffConfig, OffNutrient } from "./OffConfig";
 
 export const dataSource: DataSource<OffConfig> = {
   fetchFood: fetchOffFood,
+  searchFoods: () => Promise.resolve([]),
 };

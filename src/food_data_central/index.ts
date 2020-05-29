@@ -14,11 +14,11 @@
 import { DataSource } from "../core";
 import { FdcConfig } from "./FdcConfig";
 import { fetchFdcFood } from "./fetchFdcFood";
-
-export { searchFdcFoods } from "./searchFdcFoods";
+import { searchFdcFoods } from "./searchFdcFoods";
 
 export const dataSource: DataSource<FdcConfig> = {
   fetchFood: fetchFdcFood,
+  searchFoods: searchFdcFoods,
 };
 
 export { FdcConfig };
