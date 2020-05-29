@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { fetchOffFood } from "./fetchOffFood";
+import { DataSource } from "../core";
+import { OffConfig } from "./OffConfig";
+
 export { makeOffWebUrl } from "./makeOffWebUrl";
-export { fetchOffFood } from "./fetchOffFood";
 export { OffConfig, OffNutrient } from "./OffConfig";
+
+export const dataSource: DataSource<OffConfig> = {
+  fetchFood: fetchOffFood,
+};

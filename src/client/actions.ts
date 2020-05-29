@@ -29,21 +29,26 @@ import {
   status,
   Food,
   StatusCode,
+  DataSource,
 } from "../core";
-import { fetchFdcFood } from "../food_data_central";
-import { makeOffWebUrl, fetchOffFood } from "../open_food_facts";
+import { dataSource as fdcDataSource } from "../food_data_central";
+import { makeOffWebUrl, dataSource as offDataSource } from "../open_food_facts";
 import { Config } from "../config/config";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
+const dataSources: DataSource<Config>[] = [fdcDataSource, offDataSource];
+
 async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
-  let pendingFdcFood, pendingOffFood;
-  if ((pendingFdcFood = fetchFdcFood(url, config))) {
-    return pendingFdcFood;
-  } else if ((pendingOffFood = fetchOffFood(url, config))) {
-    return pendingOffFood;
-  }
-  return status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url);
+  let pendingFood: Promise<StatusOr<Food>> | null = null;
+  dataSources.forEach((dataSource) => {
+    if (pendingFood === null) {
+      pendingFood = dataSource.fetchFood(url, config);
+    }
+  });
+  return (
+    pendingFood || status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url)
+  );
 }
 
 export function initialize(): ThunkResult<void> {

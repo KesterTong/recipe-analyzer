@@ -11,7 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { DataSource } from "../core";
+import { FdcConfig } from "./FdcConfig";
+import { fetchFdcFood } from "./fetchFdcFood";
 
-export { fetchFdcFood } from "./fetchFdcFood";
 export { searchFdcFoods } from "./searchFdcFoods";
-export { FdcConfig } from "./FdcConfig";
+
+export const dataSource: DataSource<FdcConfig> = {
+  fetchFood: fetchFdcFood,
+};
+
+export { FdcConfig };
