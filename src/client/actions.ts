@@ -54,7 +54,7 @@ async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
   );
 }
 
-export function searchFoods(query: string) {
+export function searchFoods(query: string): ThunkResult<Promise<FoodReference[]>> {
   return async (_: ThunkDispatch, getState: () => RootState) => {
     const state = getState();
     if (state.type != "Active") {

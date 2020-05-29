@@ -17,7 +17,7 @@ import { StateProps } from "./IngredientEditor";
 import { ThunkDispatch } from "./store";
 import { bindActionCreators } from "redux";
 import { updateDocument, searchFoods } from "./actions";
-import { nutrientsForIngredient, isOk, UpdateType } from "../core";
+import { nutrientsForIngredient, isOk, UpdateType, Update } from "../core";
 import { connect } from "react-redux";
 import { IngredientEditor } from "./IngredientEditor";
 import { mapStateToMaybeProps } from "./MaybeComponent";
@@ -50,16 +50,12 @@ const mapStateToProps = mapStateToMaybeProps<RootState, StateProps>(
 );
 
 function mapDispatchToProps(dispatch: ThunkDispatch) {
-  return bindActionCreators(
-    {
-      updateDocument,
-      searchFoods,
-    },
-    dispatch
-  );
+  return {
+    updateDocument: (update: Update) => dispatch(updateDocument(update)),
+    searchFoods: (query: string) => dispatch(searchFoods(query)),
+  };
 }
 
-// TODO: get types to work.
 export const IngredientEditorContainer = connect(
   mapStateToProps,
   <any>mapDispatchToProps
