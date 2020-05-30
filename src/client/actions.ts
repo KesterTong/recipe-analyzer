@@ -42,22 +42,53 @@ export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
 const dataSources: DataSource<Config>[] = [fdcDataSource, offDataSource];
 
-async function fetchFood(url: string, config: Config): Promise<StatusOr<Food>> {
-  let pendingFood: Promise<StatusOr<Food>> | null = null;
-  dataSources.forEach((dataSource) => {
-    if (pendingFood === null) {
-      pendingFood = dataSource.fetchFood(url, config);
+/**
+ * Load a food if it hasn't been loaded already, and return it.
+ *
+ * @param url The URL of the food to load
+ */
+function loadFood(url: string): ThunkResult<Promise<StatusOr<Food>>> {
+  return async (dispatch, getState) => {
+    const state = getState();
+    if (state.type != "Active") {
+      throw new Error("loadFood called before initialization");
     }
-  });
-  return (
-    pendingFood || status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url)
-  );
+    if (state.normalizedFoodsByUrl[url] !== undefined) {
+      return state.normalizedFoodsByUrl[url];
+    }
+
+    let pendingFood: Promise<StatusOr<Food>> | null = null;
+    dataSources.forEach((dataSource) => {
+      if (pendingFood === null) {
+        pendingFood = dataSource.fetchFood(url, state.config);
+      }
+    });
+    if (pendingFood === null) {
+      pendingFood = Promise.resolve(
+        status(StatusCode.FOOD_NOT_FOUND, "Unrecognized URL " + url)
+      );
+    }
+    dispatch({
+      type: ActionType.UPDATE_FDC_FOODS,
+      normalizedFoodsByUrl: {
+        [url]: status(StatusCode.LOADING, "Loading"),
+      },
+    });
+    const food = await pendingFood;
+    dispatch({
+      type: ActionType.UPDATE_FDC_FOODS,
+      normalizedFoodsByUrl: {
+        [url]: food,
+      },
+    });
+    return food;
+  };
 }
 
 export function searchFoods(
   query: string
 ): ThunkResult<Promise<FoodReference[]>> {
-  return async (_: ThunkDispatch, getState: () => RootState) => {
+  return async (_, getState) => {
     const state = getState();
     if (state.type != "Active") {
       throw new Error("Cannot fetch results while state is not Active");
@@ -101,29 +132,20 @@ export function initialize(): ThunkResult<void> {
     try {
       const recipes = await parseDocument();
       const config = await getConfig();
-      const urls: string[] = [];
-      recipes.forEach((recipe) => {
-        recipe.ingredients.forEach(async (ingredient) => {
-          // Links the FDC Web App are parsed as the corresponding food.
-          const url = ingredient.ingredient.url;
-          if (url == null || url.startsWith("#")) {
-            return;
-          }
-          urls.push(url);
-        });
-      });
-      const responses = await Promise.all(
-        urls.map((url) => fetchFood(url, config))
-      );
-      let normalizedFoodsByUrl: { [index: string]: StatusOr<Food> } = {};
-      responses.forEach((response, index) => {
-        normalizedFoodsByUrl[urls[index]] = response;
-      });
       dispatch({
         type: ActionType.INITIALIZE,
         recipes,
-        normalizedFoodsByUrl,
         config,
+      });
+      // Load all ingredients for all recipes.
+      recipes.forEach((recipe) => {
+        recipe.ingredients.forEach((ingredient) => {
+          const url = ingredient.ingredient.url;
+          if (url === null || url.startsWith("#")) {
+            return;
+          }
+          dispatch(loadFood(url));
+        });
       });
     } catch (error) {
       dispatch({
@@ -158,7 +180,7 @@ function maybeRewrite(update: Update): ThunkResult<void> {
     if (url === null) {
       return;
     }
-    const normalizedFood = await fetchFood(url, state.config);
+    const normalizedFood = await dispatch(loadFood(url));
     dispatch(
       updateDocument({
         ...update,
@@ -195,19 +217,7 @@ export function updateDocument(update: Update): ThunkResult<void> {
       update.newFood.url &&
       !update.newFood.url.startsWith("#")
     ) {
-      const newFoodUrl = update.newFood.url;
-      dispatch({
-        type: ActionType.UPDATE_FDC_FOODS,
-        normalizedFoodsByUrl: {
-          [newFoodUrl]: status(StatusCode.LOADING, "Loading"),
-        },
-      });
-      fetchFood(update.newFood.url, state.config).then((newFdcFood) =>
-        dispatch({
-          type: ActionType.UPDATE_FDC_FOODS,
-          normalizedFoodsByUrl: { [newFoodUrl]: newFdcFood },
-        })
-      );
+      dispatch(loadFood(update.newFood.url));
     }
 
     dispatch({

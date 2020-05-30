@@ -26,7 +26,6 @@ export enum ActionType {
 export interface Initialize {
   type: ActionType.INITIALIZE;
   recipes: Recipe[];
-  normalizedFoodsByUrl: { [index: string]: StatusOr<Food> };
   config: Config;
 }
 

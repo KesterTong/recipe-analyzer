@@ -34,7 +34,7 @@ function rootReducer(
         recipes: action.recipes,
         selectedRecipeIndex: 0, // TODO: handle empty recipe set.
         selectedIngredientIndex: 0,
-        normalizedFoodsByUrl: action.normalizedFoodsByUrl,
+        normalizedFoodsByUrl: {},
         config: action.config,
       };
     case ActionType.INITIALIZATION_ERROR:
