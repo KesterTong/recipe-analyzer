@@ -17,6 +17,11 @@ import React = require("react");
 import { Update } from "../../src/core/Update";
 import { Recipe, updateRecipes, Ingredient } from "../../src/core";
 import { Config } from "../../src/config/config";
+import {
+  ClientFunctions,
+  AppsScriptFunctions,
+  appsScriptFunctionsKeys,
+} from "../../src/client/apps_script_client";
 
 let recipes: Recipe[] = [
   {
@@ -117,21 +122,18 @@ function render() {
 
 render();
 
-async function parseDocument(): Promise<Recipe[]> {
-  return recipes;
-}
-
-async function updateDocument(update: Update): Promise<void> {
-  recipes = updateRecipes(recipes, update);
-  render();
-}
-
-async function selectRecipe(recipeIndex: number): Promise<void> {}
-
-async function getConfig(): Promise<Config> {
-  const response = await fetch("config.json");
-  return response.json();
-}
+const fakeAppsScriptFunctions: ClientFunctions<AppsScriptFunctions> = {
+  parseDocument: async () => recipes,
+  updateDocument: async (update: Update) => {
+    recipes = updateRecipes(recipes, update);
+    render();
+  },
+  selectRecipe: async () => {},
+  getConfig: async () => {
+    const response = await fetch("config.json");
+    return response.json();
+  },
+};
 
 class GoogleScriptRun {
   private successHandler: any;
@@ -140,6 +142,9 @@ class GoogleScriptRun {
   constructor(succesHandler?: any, failureHandler?: any) {
     this.successHandler = succesHandler;
     this.failureHandler = failureHandler;
+    appsScriptFunctionsKeys.forEach((key) => {
+      (this as any)[key] = this.wrapFn(fakeAppsScriptFunctions[key]);
+    });
   }
 
   withSuccessHandler(succesHandler: any) {
@@ -156,11 +161,6 @@ class GoogleScriptRun {
         .then(this.successHandler)
         .catch(this.failureHandler);
   }
-
-  parseDocument = this.wrapFn(parseDocument);
-  updateDocument = this.wrapFn(updateDocument);
-  getConfig = this.wrapFn(getConfig);
-  selectRecipe = this.wrapFn(selectRecipe);
 }
 
 const google: any = {};

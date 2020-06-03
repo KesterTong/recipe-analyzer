@@ -15,29 +15,62 @@
 import { Recipe, Update, UpdateType } from "../core";
 import { Config } from "../config/config";
 
-const wrapServerFunction = (functionName: string) => (...args: any[]) =>
-  new Promise<any>((resolve, reject) => {
-    (<any>window).google.script.run
-      .withSuccessHandler(resolve)
-      .withFailureHandler(reject)
-      [functionName].apply(null, args);
+/**
+ * Functions provided by AppsScript code.
+ */
+export interface AppsScriptFunctions {
+  parseDocument(): Recipe[];
+  updateDocument(update: Update): void;
+  selectRecipe(recipeIndex: number): void;
+  getConfig(): Config;
+}
+
+export const appsScriptFunctionsKeys: (keyof AppsScriptFunctions)[] = [
+  "parseDocument",
+  "updateDocument",
+  "selectRecipe",
+  "getConfig",
+];
+
+type Promisify<T> = T extends (...args: infer ArgTys) => infer RetTy
+  ? (...args: ArgTys) => Promise<RetTy>
+  : never;
+
+export type ClientFunctions<T> = {
+  [P in keyof T]: Promisify<T[P]>;
+};
+
+function wrapServerFunction<T>(
+  functionName: string | number | symbol
+): Promisify<T> {
+  return ((...args: any[]) =>
+    new Promise<any>((resolve, reject) => {
+      (<any>window).google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)
+        [functionName].apply(null, args);
+    })) as Promisify<T>;
+}
+
+function wrapServerFunctions<T>(keys: (keyof T)[]): ClientFunctions<T> {
+  const result = {} as ClientFunctions<T>;
+  keys.forEach((key) => {
+    result[key] = wrapServerFunction(key);
   });
+  return result;
+}
 
 /**
  * Functions to call the server (Google Apps Script code) to read/write
  * data from the Google Doc.
  */
+const clientFunctions: ClientFunctions<AppsScriptFunctions> = wrapServerFunctions(
+  appsScriptFunctionsKeys
+);
 
-export const parseDocument: () => Promise<Recipe[]> = wrapServerFunction(
-  "parseDocument"
-);
-const rawUpdateDocument: (update: Update) => Promise<void> = wrapServerFunction(
-  "updateDocument"
-);
-export const selectRecipe: (
-  recipeIndex: number
-) => Promise<Config> = wrapServerFunction("selectRecipe");
-export const getConfig: () => Promise<Config> = wrapServerFunction("getConfig");
+export const parseDocument = clientFunctions.parseDocument;
+export const selectRecipe = clientFunctions.selectRecipe;
+export const getConfig = clientFunctions.getConfig;
 
 class PendingUpdate {
   pendingUpdate: Update | null;
@@ -63,7 +96,9 @@ class PendingUpdate {
       // Dispatch the update, and then mark this.pendingUpdate as null
       // since now the update has been sent.  This ensures we won't try
       // to merge a new update with an already-sent one.
-      const updateFnComplete = rawUpdateDocument(this.pendingUpdate!);
+      const updateFnComplete = clientFunctions.updateDocument(
+        this.pendingUpdate!
+      );
       this.pendingUpdate = null;
       await updateFnComplete;
     };

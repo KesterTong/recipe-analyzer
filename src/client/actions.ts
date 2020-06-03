@@ -20,7 +20,7 @@ import {
   updateDocument as updateServerDocument,
   selectRecipe as selectServerRecipe,
   getConfig,
-} from "./doc";
+} from "./apps_script_client";
 import {
   Update,
   UpdateType,
