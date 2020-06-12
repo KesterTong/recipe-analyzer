@@ -104,6 +104,24 @@ const NutrientsRowCells: React.FunctionComponent<{
   );
 };
 
+const MacrosRowCells: React.FunctionComponent<{
+  nutrients: StatusOr<Nutrients>;
+  config: Config;
+}> = (props) => {
+  return (
+    <React.Fragment>
+      {props.config.nutrients.map(({ id }) => {
+        let displayValue = "";
+        let calories = isOk(props.nutrients) ? props.nutrients[1008] : undefined;
+        if (isOk(props.nutrients) && calories && id === 1003 && props.nutrients[id] !== undefined) {
+          displayValue = (100 * props.nutrients[id] * 4.0 / calories).toFixed(props.config.numDigits);
+        }
+        return <td className="nutrient-value">{displayValue}</td>;
+      })}
+    </React.Fragment>
+  );
+};
+
 export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
   (props) => {
     // TODO: include the ingredient that has been right clicked as part of
@@ -302,6 +320,13 @@ export const IngredientsTable = MaybeComponent<StateProps, DispatchProps>(
             <tr>
               <td>Total</td>
               <NutrientsRowCells
+                nutrients={props.totalNutrients}
+                config={props.config}
+              />
+            </tr>
+            <tr>
+              <td>Macros</td>
+              <MacrosRowCells
                 nutrients={props.totalNutrients}
                 config={props.config}
               />
