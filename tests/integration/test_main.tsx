@@ -16,12 +16,13 @@ import React = require("react");
 
 import { Update } from "../../src/core/Update";
 import { Recipe, updateRecipes, Ingredient } from "../../src/core";
-import { Config } from "../../src/config/config";
+import * as config from "../../src/config/sample_config.json";
 import {
   ClientFunctions,
   AppsScriptFunctions,
   appsScriptFunctionsKeys,
 } from "../../src/client/apps_script_client";
+import { Config } from "../../src/config/config";
 
 let recipes: Recipe[] = [
   {
@@ -130,8 +131,7 @@ const fakeAppsScriptFunctions: ClientFunctions<AppsScriptFunctions> = {
   },
   selectRecipe: async () => {},
   getConfig: async () => {
-    const response = await fetch("config.json");
-    return response.json();
+    return config as Config;
   },
 };
 
