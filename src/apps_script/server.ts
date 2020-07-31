@@ -191,16 +191,6 @@ export function selectRecipe(recipeIndex: number) {
   document.setCursor(document.newPosition(previousElement, 0));
 }
 
-const CONFIG_KEY = "RECIPE_ANALYZER_CONFIG";
-
-export function getConfig(): Config {
-  const value = PropertiesService.getScriptProperties().getProperty(CONFIG_KEY);
-  if (value === null) {
-    throw Error("No config found");
-  }
-  return JSON.parse(value);
-}
-
 export function testParseDocument() {
   console.log(JSON.stringify(parseDocument(), undefined, 2));
 }

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import { Recipe, Update, UpdateType } from "../core";
-import { Config } from "../config/config";
 
 /**
  * Functions provided by AppsScript code.
@@ -22,14 +21,12 @@ export interface AppsScriptFunctions {
   parseDocument(): Recipe[];
   updateDocument(update: Update): void;
   selectRecipe(recipeIndex: number): void;
-  getConfig(): Config;
 }
 
 export const appsScriptFunctionsKeys: (keyof AppsScriptFunctions)[] = [
   "parseDocument",
   "updateDocument",
   "selectRecipe",
-  "getConfig",
 ];
 
 type Promisify<T> = T extends (...args: infer ArgTys) => infer RetTy
@@ -70,7 +67,6 @@ const clientFunctions: ClientFunctions<AppsScriptFunctions> = wrapServerFunction
 
 export const parseDocument = clientFunctions.parseDocument;
 export const selectRecipe = clientFunctions.selectRecipe;
-export const getConfig = clientFunctions.getConfig;
 
 class PendingUpdate {
   pendingUpdate: Update | null;

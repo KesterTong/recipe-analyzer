@@ -19,7 +19,6 @@ import {
   parseDocument,
   updateDocument as updateServerDocument,
   selectRecipe as selectServerRecipe,
-  getConfig,
 } from "./apps_script_client";
 import {
   Update,
@@ -34,9 +33,9 @@ import {
 } from "../core";
 import { dataSource as fdcDataSource } from "../food_data_central";
 import { dataSource as offDataSource } from "../open_food_facts";
-import { Config } from "../config/config";
-import { ThunkDispatch } from "./store";
 import { filterNulls } from "../core/filterNulls";
+import { Config } from "../config/config";
+import * as config from "../../src/config/sample_config.json";
 
 export type ThunkResult<R> = ThunkAction<R, RootState, undefined, RootAction>;
 
@@ -131,11 +130,10 @@ export function initialize(): ThunkResult<void> {
   return async (dispatch) => {
     try {
       const recipes = await parseDocument();
-      const config = await getConfig();
       dispatch({
         type: ActionType.INITIALIZE,
         recipes,
-        config,
+        config: config as Config,
       });
       // Load all ingredients for all recipes.
       recipes.forEach((recipe) => {
