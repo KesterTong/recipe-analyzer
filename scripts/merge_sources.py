@@ -96,6 +96,12 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         'dataType': 'Branded',
         'publicationDate': _convert_date_format(food.publication_date),
         'foodPortions': [],
+        # additions
+        'brand_name': branded_food.brand_name,
+        'subbrand_name': branded_food.subbrand_name,
+        'not_a_significant_source_of': branded_food.not_a_significant_source_of
+
+
     })
 
 

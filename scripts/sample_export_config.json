@@ -113,6 +113,18 @@
       "name": "sodium_100g",
       "nutrient_id": 1093,
       "scale": 0.001
+    },
+    {
+      "name": "brand_name",
+      "field": "brand_name"
+    },
+    {
+      "name": "subbrand_name",
+      "field": "subbrand_name"
+    },
+    {
+      "name": "not_a_significant_source_of",
+      "field": "not_a_significant_source_of"
     }
   ]
 }
