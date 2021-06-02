@@ -43,6 +43,8 @@ def _load_data_file(data_dir, filename, data_cls):
     with open(os.path.join(data_dir, filename)) as f:
         reader = csv.reader(f)
         header_row = next(reader)
+        print (header_row)
+        print (data_cls._fields)
         # Verify the header rows match the fields
         assert header_row == list(data_cls._fields)
         # For each row after the header row, convert from a
