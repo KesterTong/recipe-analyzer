@@ -50,7 +50,7 @@ def _convert_nutrient(nutrient):
         'id': int(nutrient.id),
         'name': nutrient.name,
         'unitName': _NEW_UNIT_NAMES.get(nutrient.unit_name, _UNKNOWN_UNIT),
-        'number': nutrient.nutrient_nbr,
+        'nutrient_nbr': nutrient.nutrient_nbr,
         'rank': int(nutrient.rank) if nutrient.rank else None
     })
 
@@ -125,7 +125,9 @@ def merge_sources(raw_data):
     # Convert nutrients to a dict for merging.
     # Skip nutrients with rank '' because it's not clear how to handle them.
     nutrients = {
-        nutrient.id: _convert_nutrient(nutrient)
+	# April 2021: food_nutrients.csv nutrient_id field contains in fact the nutrient_nbr field 
+
+        nutrient.nutrient_nbr: _convert_nutrient(nutrient)
         for nutrient in raw_data.nutrients}
 
     food_nutrients = defaultdict(list)
