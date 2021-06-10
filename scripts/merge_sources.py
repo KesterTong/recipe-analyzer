@@ -88,6 +88,7 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         'ingredients': branded_food.ingredients,
         'modifiedDate': _convert_date_format(branded_food.modified_date),
         'availableDate': _convert_date_format(branded_food.available_date),
+        'discontinuedDate': _convert_date_format(branded_food.discontinued_date),
         'servingSize': float(branded_food.serving_size),
         'servingSizeUnit': branded_food.serving_size_unit,
         'householdServingFullText': branded_food.household_serving_fulltext,
