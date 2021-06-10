@@ -15,16 +15,17 @@
       "field": "description"
     },
     {
-      "name": "data_source",
+      "name": "fdc_data_source",
       "field": "dataSource"
     },
     {
-      "name": "modifie_date",
+      "name": "modified_date",
       "field": "modifiedDate"
     },
     {
       "name": "available_date",
       "field": "availableDate"
+
     },
     {
       "name": "discontinued_date",
@@ -35,15 +36,15 @@
       "field": "publicationDate"
     },
     {
-      "name": "quantity",
+      "name": "serving_size",
       "field": "householdServingFullText"
     },
     {
-      "name": "categories",
+      "name": "fdc_category",
       "field": "brandedFoodCategory"
     },
     {
-      "name": "brands",
+      "name": "brand_owner",
       "field": "brandOwner"
     },
     {
@@ -51,7 +52,7 @@
       "field": "ingredients"
     },
     {
-      "name": "serving_size",
+      "name": "serving_size_value",
       "field": "servingSize"
     },
     {
@@ -68,59 +69,211 @@
       "scale": 1.0
     },
     {
-      "name": "proteins_100g",
+      "name": "proteins_g_100g",
       "nutrient_id": 1003,
       "scale": 1.0
     },
     {
-      "name": "carbohydrates_100g",
+      "name": "carbohydrates_g_100g",
       "nutrient_id": 1005,
       "scale": 1.0
     },
     {
-      "name": "sugars_100g",
+      "name": "sugars_g_100g",
       "nutrient_id": 2000,
       "scale": 1.0
     },
     {
-      "name": "fat_100g",
+      "name": "fat_g_100g",
       "nutrient_id": 1004,
       "scale": 1.0
     },
     {
-      "name": "saturated-fat_100g",
+      "name": "saturated-fat_g_100g",
       "nutrient_id": 1258,
       "scale": 1.0
     },
     {
-      "name": "monounsaturated-fat_100g",
+      "name": "monounsaturated-fat_g_100g",
       "nutrient_id": 1292,
       "scale": 1.0
     },
     {
-      "name": "polyunsaturated-fat_100g",
+      "name": "polyunsaturated-fat_g_100g",
       "nutrient_id": 1293,
       "scale": 1.0
     },
     {
-      "name": "trans-fat_100g",
+      "name": "trans-fat_g_100g",
       "nutrient_id": 1257,
       "scale": 1.0
     },
     {
-      "name": "cholesterol_100g",
+      "name": "cholesterol_mg_100g",
       "nutrient_id": 1253,
-      "scale": 0.001
+      "scale": 1.0
     },
     {
-      "name": "fiber_100g",
+      "name": "fiber_g_100g",
       "nutrient_id": 1079,
       "scale": 1.0
     },
     {
-      "name": "sodium_100g",
+      "name": "sodium_mg_100g",
       "nutrient_id": 1093,
-      "scale": 0.001
-    }
+      "scale": 1.0
+    },
+    {
+      "name": "calcium_mg_100g",
+      "nutrient_id": 1087,
+      "scale": 1.0
+    },
+    {
+      "name": "iron_mg_100g",
+      "nutrient_id": 1089,
+      "scale": 1.0
+    },
+    {
+      "name": "vitamin-a_iu_100g",
+      "nutrient_id": 1104,
+      "scale": 1.0
+    },
+    {
+      "name": "vitamin-c_mg_100g",
+      "nutrient_id": 1162,
+      "scale": 1.0
+     },
+    {
+      "name":"potassium_mg_100g",
+      "nutrient_id":1092,
+      "scale": 1.0
+    },
+    {
+      "name":"vitamin-pp_mg_100g",
+      "nutrient_id":1167,
+      "scale": 1.0
+    },
+    {
+      "name":"vitamin-b1_mg_100g",
+      "nutrient_id":1165,
+      "scale": 1.0
+    },
+    {
+      "name":"vitamin-b2_mg_100g",
+      "nutrient_id":1166,
+      "scale": 1.0
+    },
+    {
+      "name":"vitamin-b6_mg_100g",
+      "nutrient_id":1175,
+      "scale": 1.0
+    },
+    {
+      "name":"phosphorus_mg_100g",
+      "nutrient_id":1091,
+      "scale": 1.0
+    },
+    {
+      "name":"magnesium_mg_100g",
+      "nutrient_id":1090,
+      "scale": 1.0
+    },
+    {
+      "name":"vitamin_b12_ug_100g",
+      "nutrient_id":1178,
+      "scale": 1.0
+    },
+    {
+      "name":"zinc_mg_100g",
+      "nutrient_id":1095,
+      "scale": 1.0
+    },
+    {
+      "name":"folates_ug_100g",
+      "nutrient_id":1177,
+      "scale": 1.0
+    },
+    {
+      "name":"pantothenic-acid_mg_100g",
+      "nutrient_id":1170,
+      "scale": 1.0
+    },
+    {
+      "name":"vitamin-b9_ug_100g",
+      "nutrient_id":1186,
+      "scale": 1.0
+    },
+    {
+      "name":"soluble-fiber_g_100g",
+      "nutrient_id":1082,
+      "scale": 1.0
+    },
+    {
+      "name":"copper_mg_100g",
+      "nutrient_id":1098,
+      "scale": 1.0
+    },
+    {
+      "name":"insoluble-fiber_g_100g",
+      "nutrient_id":1084,
+      "scale": 1.0
+    },
+    {
+      "name":"manganese_mg_100g",
+      "nutrient_id":1101,
+      "scale": 1.0
+    },
+    {
+      "name":"polyols_g_100g",
+      "nutrient_id":1086,
+      "scale": 1.0
+    },
+    {
+      "name":"selenium_ug_100g",
+      "nutrient_id":1103,
+      "scale": 1.0
+    },
+    {
+      "name":"phylloquinone_ug_100g",
+      "nutrient_id":1185,
+      "scale": 1.0
+    },
+    {
+      "name":"iodine_ug_100g",
+      "nutrient_id":1100,
+      "scale": 1.0
+    },
+    {
+      "name":"biotin_ug_100g",
+      "nutrient_id":1176,
+      "scale": 1.0
+    },
+    {
+      "name":"caffeine_mg_100g",
+      "nutrient_id":1057,
+      "scale": 1.0
+    },
+    {
+      "name":"molybdenum_ug_100g",
+      "nutrient_id":1102,
+      "scale": 1.0
+    },
+    {
+      "name":"chromium_ug_100g",
+      "nutrient_id":1096,
+      "scale": 1.0
+    },
+    {
+      "name": "brand_name",
+      "field": "brand_name"
+    },
+    {
+      "name": "subbrand_name",
+      "field": "subbrand_name"
+    },
+    {
+      "name": "not_a_significant_source_of",
+      "field": "not_a_significant_source_of"
+    }    
   ]
 }

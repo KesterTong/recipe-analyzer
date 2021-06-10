@@ -23,15 +23,23 @@ BrandedFood = collections.namedtuple(
     [
         'fdc_id',
         'brand_owner',
+        # new
+        'brand_name',
+        # new
+        'subbrand_name',
         'gtin_upc',
         'ingredients',
+        # new
+        'not_a_significant_source_of',
         'serving_size',
         'serving_size_unit',
         'household_serving_fulltext',
         'branded_food_category',
         'data_source',
         'modified_date',
-        'available_date'
+        'available_date',
+        'market_country',
+        'discontinued_date'
     ])
 
 

@@ -13,18 +13,20 @@
 // limitations under the License.
 
 /** Tools for computations with nutritional data */
-export type Nutrients = number[];
-
-export interface NutrientInfo {
-  id: number;
-  name: string;
-  display: boolean;
-}
+export type Nutrients = { [index: string]: number };
 
 export function scaleNutrients(nutrients: Nutrients, scale: number): Nutrients {
-  return nutrients.map((value) => value * scale);
+  const result: Nutrients = {};
+  for (let key in nutrients) {
+    result[key] = nutrients[key] * scale;
+  }
+  return result;
 }
 
 export function addNutrients(lhs: Nutrients, rhs: Nutrients): Nutrients {
-  return lhs.map((value, index) => value + rhs[index]);
+  const result = { ...lhs };
+  for (let key in rhs) {
+    result[key] = (result[key] || 0) + rhs[key];
+  }
+  return result;
 }

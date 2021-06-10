@@ -12,22 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Quantity } from "./Quantity";
-
 export interface Ingredient {
-  quantity: Quantity;
-  foodId: string;
+  amount: string;
+  unit: string;
+  ingredient: {
+    description: string;
+    url: string | null;
+  };
 }
 
-// Note that Ingredient (and Recipe) store their nutritional values,
-// even though these could becomputed from the ingredients.
-//
-// This is a form of database normalization since Recipe might be stored
-// in a database and so storing the nutritional values avoids extra lookups.
 export interface Recipe {
-  dataType: "Recipe";
-  description: string;
-  // Note this is distinct from the ingredients field which is a text field
-  // used for FDC foods.
-  ingredientsList: Ingredient[];
+  title: string;
+  url: string;
+  ingredients: Ingredient[];
 }

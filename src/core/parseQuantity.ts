@@ -11,13 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import { Quantity } from "./Quantity";
 
 /**
  * Parse a quantity, e.g. "1 cup"
  */
 export function parseQuantity(text: string): Quantity | null {
-  const fractionValueBySymbol: { [index: string]: number } = {
+  const fractionValueBySymbol: {
+    [index: string]: number;
+  } = {
     "": 0,
     "½": 1 / 2,
     "⅓": 1 / 3,

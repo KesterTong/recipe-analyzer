@@ -1,0 +1,63 @@
+{
+  "fdcApiKey": "DEMO_KEY",
+  "minCharsToQueryFDC": 3,
+  "nutrients": [
+    {
+      "id": 1008,
+      "offName": "energy_100g",
+      "offScale": 4.18,
+      "name": "Energy (kcal)"
+    },
+    {
+      "id": 1003,
+      "offName": "proteins_100g",
+      "offScale": 1,
+      "name": "Protein (g)"
+    }
+  ],
+  "massUnits": {
+    "g": 1,
+    "gram": 1,
+    "grams": 1,
+    "oz": 28.35,
+    "onz": 28.35,
+    "ounce": 28.35,
+    "ounces": 28.35,
+    "lb": 453.58,
+    "lbs": 453.58,
+    "pound": 453.58,
+    "pounds": 453.58,
+    "kg": 1000,
+    "kilo": 1000,
+    "kilos": 1000,
+    "kilogram": 1000,
+    "kilograms": 1000
+  },
+  "volumeUnits": {
+    "ml": 1,
+    "milliliter": 1,
+    "milliliters": 1,
+    "fl oz": 29.5735,
+    "fl. oz": 29.5735,
+    "cup": 236.59,
+    "cups": 236.59,
+    "tbsp": 14.79,
+    "tablespoon": 14.79,
+    "tablespoons": 14.79,
+    "tsp": 4.93,
+    "teaspoon": 4.93,
+    "teaspoons": 4.93,
+    "pint": 473.17,
+    "pt": 473.17,
+    "pints": 473.17,
+    "quart": 946.35,
+    "qt": 946.35,
+    "quarts": 946.35,
+    "gallon": 3785.41,
+    "gallons": 3785.41,
+    "L": 1000,
+    "liter": 1000,
+    "liters": 1000
+  },
+  "numDigits": 1
+}

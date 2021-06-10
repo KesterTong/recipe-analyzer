@@ -1,49 +1,77 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 
-module.exports = {
-  mode: "production",
-  // Enable sourcemaps for debugging webpack's output.
-  devtool: "source-map",
+const commonConfig = {
+  mode: 'development',
   resolve: {
-      // Add '.ts' and '.tsx' as resolvable extensions.
-      extensions: [".ts", ".tsx"]
+    // Add '.ts' and '.tsx' as resolvable extensions.
+    extensions: [".js", ".ts", ".tsx"]
   },
   module: {
-      rules: [
-          {
-              test: /\.ts(x?)$/,
-              exclude: /node_modules/,
-              use: [
-                  {
-                      loader: "ts-loader"
-                  }
-              ]
-          },
-          // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-          {
-              enforce: "pre",
-              test: /\.js$/,
-              loader: "source-map-loader"
-          }
-      ]
-  },
-  entry: './src/web_main.tsx',
-  output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname, 'ui'),
+    rules: [
+        {
+            test: /\.ts(x?)$/,
+            exclude: /node_modules/,
+            use: [
+                {
+                    loader: "ts-loader"
+                }
+            ]
+        },
+        // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+        {
+            enforce: "pre",
+            test: /\.js$/,
+            loader: "source-map-loader"
+        }
+    ]
   },
   externals: {
-    firebase: 'firebase',
-    firebaseui: 'firebaseui',
-    react: "React",
-    "redux": "Redux",
-    "react-redux": "ReactRedux",
+    "react": "React",
     "react-dom": "ReactDOM",
-    "react-bootstrap": "ReactBootstrap",
-    "react-bootstrap-typeahead": "ReactBootstrapTypeahead",
+    "redux": "Redux",
+    //"react-redux": "ReactRedux",
   },
-	optimization: {
-		// We do not want to minimize our code.
-		minimize: false
-	},
-};
+  optimization: {
+    minimize: false
+  },
+}
+
+module.exports = [
+  {
+    ...commonConfig,
+    entry: './src/client/sidebar.tsx',
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'src/client/sidebar.html',
+        filename: 'sidebar.html',
+        inlineSource: '.(js|css)$', // embed all javascript and css inline
+      }),
+      new HtmlWebpackInlineSourcePlugin(),
+    ],
+    output: {
+      filename: 'bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+    },
+    devServer: {
+      contentBase: './dist',
+    },
+  },
+  {
+    ...commonConfig,
+    entry: './tests/integration/test_main.tsx',
+    plugins: [
+      new HtmlWebpackPlugin({
+        template: 'tests/integration/test_harness.html',
+        filename: 'test_harness.html',
+        inlineSource: '.(js|css)$', // embed all javascript and css inline
+      }),
+      new HtmlWebpackInlineSourcePlugin(),
+    ],
+    output: {
+      filename: 'test_harness_bundle.js',
+      path: path.resolve(__dirname, 'dist'),
+    },
+  }
+];

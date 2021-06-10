@@ -1,7 +1,9 @@
 # node
 /node_modules
-/ui/bundle*
 package-lock.json
+
+# generated html and JS
+/dist
 
 # deployment configs
 .clasp.json
@@ -12,5 +14,5 @@ package-lock.json
 .DS_Store
 
 # Python
-/env/**
+/env
 /**/__pycache__
