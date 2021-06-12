@@ -88,6 +88,7 @@ def _merge(branded_food, food, food_nutrients, nutrients):
         "marketCountry": branded_food.market_country,
         'modifiedDate': _convert_date_format(branded_food.modified_date),
         'availableDate': _convert_date_format(branded_food.available_date),
+        'discontinuedDate': _convert_date_format(branded_food.discontinued_date),
         'servingSize': float(branded_food.serving_size) if branded_food.serving_size else None,
         'servingSizeUnit': branded_food.serving_size_unit or None,
         'householdServingFullText': branded_food.household_serving_fulltext or None,

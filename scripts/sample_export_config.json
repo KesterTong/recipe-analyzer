@@ -28,6 +28,10 @@
 
     },
     {
+      "name": "discontinued_date",
+      "field": "discontinuedDate"
+    },
+    {
       "name": "publication_date",
       "field": "publicationDate"
     },
@@ -54,6 +58,10 @@
     {
       "name": "serving_size_unit",
       "field": "servingSizeUnit"
+    },
+    {
+      "name": "market_country",
+      "field": "marketCountry"
     },
     {
       "name": "energy-kcal_100g",
